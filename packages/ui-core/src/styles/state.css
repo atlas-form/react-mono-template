@@ -1,0 +1,83 @@
+@layer atlas-theme {
+  :root {
+    --_interactive-mix: black;
+    --_disabled-surface: var(--background, var(--app-bg, #f7f8fb));
+
+    --primary-hover: color-mix(
+      in oklab,
+      var(--primary, var(--app-primary)) 88%,
+      var(--_interactive-mix)
+    );
+    --primary-active: color-mix(
+      in oklab,
+      var(--primary, var(--app-primary)) 76%,
+      var(--_interactive-mix)
+    );
+    --primary-disabled: color-mix(
+      in oklab,
+      var(--primary, var(--app-primary)) 35%,
+      var(--_disabled-surface)
+    );
+
+    --secondary-hover: color-mix(
+      in oklab,
+      var(--secondary, var(--app-secondary)) 88%,
+      var(--_interactive-mix)
+    );
+    --secondary-active: color-mix(
+      in oklab,
+      var(--secondary, var(--app-secondary)) 76%,
+      var(--_interactive-mix)
+    );
+    --secondary-disabled: color-mix(
+      in oklab,
+      var(--secondary, var(--app-secondary)) 35%,
+      var(--_disabled-surface)
+    );
+
+    --destructive-hover: color-mix(
+      in oklab,
+      var(--destructive, var(--app-danger)) 88%,
+      var(--_interactive-mix)
+    );
+    --destructive-active: color-mix(
+      in oklab,
+      var(--destructive, var(--app-danger)) 76%,
+      var(--_interactive-mix)
+    );
+    --destructive-disabled: color-mix(
+      in oklab,
+      var(--destructive, var(--app-danger)) 35%,
+      var(--_disabled-surface)
+    );
+
+    --accent-hover: color-mix(
+      in oklab,
+      var(--accent, var(--app-info)) 88%,
+      var(--_interactive-mix)
+    );
+    --accent-active: color-mix(
+      in oklab,
+      var(--accent, var(--app-info)) 76%,
+      var(--_interactive-mix)
+    );
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --_interactive-mix: white;
+      --_disabled-surface: var(--background, var(--app-bg, #0b1220));
+    }
+  }
+
+  [data-theme="dark"],
+  .dark {
+    --_interactive-mix: white;
+    --_disabled-surface: var(--background, var(--app-bg, #0b1220));
+  }
+
+  [data-theme="light"] {
+    --_interactive-mix: black;
+    --_disabled-surface: var(--background, var(--app-bg, #f7f8fb));
+  }
+}

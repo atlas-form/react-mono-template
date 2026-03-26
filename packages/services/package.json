@@ -1,0 +1,26 @@
+{
+  "name": "@workspace/services",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "i18next": "catalog:",
+    "i18next-browser-languagedetector": "catalog:",
+    "i18next-http-backend": "catalog:",
+    "react-i18next": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "exports": {
+    "./api/auth": "./src/api/auth.ts",
+    "./api/base": "./src/api/base.ts",
+    "./api/file": "./src/api/file.ts",
+    "./http-client": "./src/http-client.ts",
+    "./i18n": "./src/i18n.ts",
+    "./url": "./src/url.ts"
+  }
+}

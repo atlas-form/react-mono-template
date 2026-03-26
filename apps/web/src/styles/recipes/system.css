@@ -1,0 +1,29 @@
+@layer components {
+  .ui-page-loading {
+    @apply flex items-center justify-center text-sm text-(--app-muted-text);
+  }
+
+  .ui-page-loading-full {
+    @apply min-h-screen;
+  }
+
+  .ui-page-loading-block {
+    @apply min-h-[220px];
+  }
+
+  .ui-page-loading-chip {
+    @apply rounded-full border border-(--app-border) bg-(--app-surface) px-4 py-2;
+  }
+
+  .ui-route-error {
+    @apply min-h-60 rounded-xl border border-red-200 bg-red-50 p-6 text-red-800;
+  }
+
+  .ui-route-error-title {
+    @apply text-lg font-semibold;
+  }
+
+  .ui-route-error-message {
+    @apply mt-2 text-sm break-all;
+  }
+}

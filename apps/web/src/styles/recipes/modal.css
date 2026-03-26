@@ -1,0 +1,37 @@
+@layer components {
+  .ui-modal-backdrop {
+    @apply fixed inset-0 z-120 flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4;
+  }
+
+  .ui-modal-card {
+    @apply my-8 w-full max-w-md rounded-2xl bg-white p-4 shadow-xl;
+  }
+
+  .ui-modal-title {
+    @apply text-base font-semibold text-slate-900;
+  }
+
+  .ui-modal-desc {
+    @apply mt-1 text-xs text-slate-500;
+  }
+
+  .ui-modal-crop-area {
+    @apply relative mt-4 h-64 w-full overflow-hidden rounded-xl bg-slate-900 sm:h-72;
+  }
+
+  .ui-modal-section {
+    @apply mt-4;
+  }
+
+  .ui-modal-label {
+    @apply mb-1 block text-xs text-slate-600;
+  }
+
+  .ui-modal-range {
+    @apply w-full;
+  }
+
+  .ui-modal-actions {
+    @apply mt-4 flex justify-end gap-2;
+  }
+}

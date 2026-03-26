@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/ui-theme",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./mode": "./src/theme/mode.ts",
+    "./styles.css": "./src/styles/index.css",
+    "./light.css": "./src/styles/light.css",
+    "./dark.css": "./src/styles/dark.css",
+    "./light/base.css": "./src/styles/light/base.css",
+    "./light/components.css": "./src/styles/light/components.css",
+    "./dark/base.css": "./src/styles/dark/base.css",
+    "./dark/components.css": "./src/styles/dark/components.css"
+  }
+}
