@@ -10,10 +10,10 @@ import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
 import { AppLink } from "@atlas-art/ui-react/adapters/react-router"
 import { Button } from "@workspace/ui-core/components/button"
+import { Input } from "@workspace/ui-core/components/input"
 import {
   FormField,
   FormFieldLabel,
-  Input,
   SplitCard,
   SplitCardAside,
   SplitCardMain,
@@ -100,7 +100,7 @@ export default function LoginPage() {
                   id="login-identifier"
                   type="text"
                   placeholder={t("login.form.identifier.placeholder")}
-                  state={errors.identifier ? "error" : "default"}
+                  aria-invalid={Boolean(errors.identifier)}
                   {...register("identifier")}
                 />
               </FormField>
@@ -113,7 +113,7 @@ export default function LoginPage() {
                   id="login-password"
                   type="password"
                   placeholder={t("login.form.password.placeholder")}
-                  state={errors.password ? "error" : "default"}
+                  aria-invalid={Boolean(errors.password)}
                   {...register("password")}
                 />
               </FormField>
