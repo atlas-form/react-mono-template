@@ -22,6 +22,12 @@
 - `IconName`
 - `IconProvider`
 
+## 使用建议
+
+- 业务侧统一传 `name` 字符串，不直接使用 `lucide-react` 组件。
+- 优先使用语义名（如 `add`、`delete`），便于跨图标库迁移。
+- 在 `lucide` provider 下，`Icon` 也支持直接传 lucide 名称（如 `square-pen`、`panel-left`），无需一一手写映射。
+
 ## 给 AI 的工作约束
 
 当你在这个包新增或修改图标时，遵循以下流程：
@@ -48,6 +54,20 @@ import { Icon } from "@workspace/ui-icon"
 
 export function DeleteButtonIcon() {
   return <Icon name="delete" className="size-4" />
+}
+```
+
+```tsx
+import { Icon } from "@workspace/ui-icon"
+
+export function EditButtonIcon() {
+  return (
+    <>
+      <Icon name="edit" className="size-4" />
+      <Icon name="square-pen" className="size-4" />
+      <Icon name="SquarePen" className="size-4" />
+    </>
+  )
 }
 ```
 

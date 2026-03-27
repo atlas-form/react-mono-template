@@ -1,6 +1,6 @@
 import type { ComponentType } from "react"
 
-export type IconName =
+export type SemanticIconName =
   | "add"
   | "edit"
   | "delete"
@@ -24,6 +24,8 @@ export type IconName =
   | "triangle-alert"
   | "octagon-x"
 
+export type IconName = SemanticIconName | (string & {})
+
 export type IconProvider = "lucide" | "heroicons"
 
 export type IconProps = {
@@ -38,4 +40,4 @@ export type IconComponent = ComponentType<{
   className?: string
 } & Record<string, unknown>>
 
-export type IconMap = Partial<Record<IconName, IconComponent>>
+export type IconMap = Partial<Record<SemanticIconName, IconComponent>>
