@@ -4,18 +4,27 @@ Headless UI primitives for the workspace.
 
 ## Purpose
 
-`ui-core` only defines behavior contracts, accessibility wiring, composition APIs, and token hooks.
+`ui-core` defines behavior contracts, accessibility wiring, composition APIs, and token hooks.
 
 This package is **not** the place for product visual design decisions.
+
+## Source Of Truth (Important)
+
+- `src/components/*`: shadcn CLI generated **raw source**.
+- `src/headless/*`: manually refactored **headless layer**, this is the **public interface** for app usage.
+
+Do not treat `src/components/*` as final API.
 
 ## Mandatory Workflow (For AI)
 
 When creating a new component in `ui-core`, follow this order strictly:
 
 1. Generate baseline code with shadcn CLI first.
-2. Refactor generated files into the `ui-core` headless convention.
-3. Add full controllability APIs (`unstyled`, `classNameMode`, `classResolver`) when needed.
-4. Export through package `exports` and component `index.ts`.
+2. Keep generated raw files in `src/components/<component>.tsx` (or generated layout by CLI).
+3. Create/refactor headless implementation in `src/headless/<component>/`.
+4. Follow existing `src/headless/button` pattern when implementing headless components.
+5. Add full controllability APIs (`unstyled`, `classNameMode`, `classResolver`) when needed.
+6. Export headless component through package `exports` and `index.ts`.
 
 Do **not** start from scratch for standard components that exist in shadcn.
 
@@ -34,6 +43,20 @@ pnpm -C packages/ui-core exec shadcn add button
 pnpm -C packages/ui-core exec shadcn add input
 pnpm -C packages/ui-core exec shadcn add select
 ```
+
+## Headless Component Convention
+
+Headless component files must follow:
+
+```text
+src/headless/component-name/
+  component-name.tsx
+  component-name.styles.ts
+  component-name.types.ts
+  index.ts
+```
+
+Use `src/headless/button` as the reference sample for coding style and controllability API design.
 
 ## Design boundaries
 
@@ -57,25 +80,14 @@ Use `@workspace/ui-components` for pre-designed, opinionated components.
 - Exception: direct app usage of `ui-core` is allowed only for special requirements.
 - In that exception case, keep it wrapped in app-local components instead of spreading raw headless usage.
 
-## Structure convention
-
-Each component should use this layout:
-
-```text
-component-name/
-  component-name.tsx
-  component-name.styles.ts
-  component-name.types.ts
-  index.ts
-```
-
 ## Output checklist
 
 - Generated via shadcn CLI first.
-- Moved into folder-based structure.
+- Raw file kept in `src/components/*`.
+- Headless version implemented in `src/headless/*` using the sample pattern.
 - Supports external full style control when applicable.
 - Uses tokens from `globals.css` and `state.css`.
-- Keeps API stable and explicit through `index.ts`.
+- Keeps API stable and explicit through `index.ts` and package `exports`.
 
 ## Styling inputs
 
