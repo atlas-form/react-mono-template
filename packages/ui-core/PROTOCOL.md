@@ -1,6 +1,19 @@
-# @workspace/ui-core
+# @workspace/ui-core Protocol (Constitution)
 
-Headless UI primitives for the workspace.
+This is the highest-priority rule set for `@workspace/ui-core`.
+
+## Non-Negotiable Principle
+
+Headless is the only principle. Any implementation that conflicts with headless is not allowed.
+
+## Mandatory Enforcement
+
+- AI must follow this protocol strictly.
+- Any conflict must be resolved in favor of this protocol.
+- `src/headless/*` is the only public interface of `ui-core`.
+- `src/components/*` is raw generation space only, not final API.
+- No dependency on upper-layer UI libraries inside `ui-core`.
+- Visual/library-specific concerns must stay outside `ui-core`.
 
 ## Purpose
 
