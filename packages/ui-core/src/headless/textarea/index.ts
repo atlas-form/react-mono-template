@@ -3,4 +3,5 @@ export { textareaClassNames } from "./textarea.styles"
 export type {
   TextareaClassNameMode,
   TextareaClassResolver,
+  TextareaProps,
 } from "./textarea.types"

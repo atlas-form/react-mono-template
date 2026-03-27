@@ -1,3 +1,9 @@
 export { Badge } from "./badge"
-export { badgeClassNames } from "./badge.styles"
-export type { BadgeClassNameMode, BadgeClassResolver } from "./badge.types"
+export { badgeClassNames, badgeVariants } from "./badge.styles"
+export type {
+  BadgeClassNameMode,
+  BadgeClassResolver,
+  BadgeProps,
+  BadgeVariant,
+  BadgeVariantProps,
+} from "./badge.types"

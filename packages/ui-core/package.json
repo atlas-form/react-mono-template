@@ -48,11 +48,6 @@
   },
   "exports": {
     "./styles.css": "./src/styles/index.css",
-    "./globals.css": "./src/styles/globals.css",
-    "./state.css": "./src/styles/state.css",
-    "./components/button": "./src/headless/button/index.ts",
-    "./components/input": "./src/headless/input/index.ts",
-    "./components/select": "./src/headless/select/index.ts",
     "./lib/*": "./src/lib/*",
     "./components/*": "./src/headless/*/index.ts",
     "./hooks/*": "./src/hooks/*.ts"

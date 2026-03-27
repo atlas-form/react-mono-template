@@ -1,118 +1,264 @@
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { drawerClassNames } from "./drawer.styles"
+import type {
+  DrawerClassResolver,
+  DrawerCloseProps,
+  DrawerContentProps,
+  DrawerDescriptionProps,
+  DrawerFooterProps,
+  DrawerHeaderProps,
+  DrawerOverlayProps,
+  DrawerPortalProps,
+  DrawerProps,
+  DrawerTitleProps,
+  DrawerTriggerProps,
+} from "./drawer.types"
 
-function Drawer({
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+function resolveStyledDrawerClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: DrawerClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function Drawer({ mode = DEFAULT_MODE, ...props }: DrawerProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Root {...props} />
+  }
+
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />
 }
 
-function DrawerTrigger({
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
+function DrawerTrigger({ mode = DEFAULT_MODE, ...props }: DrawerTriggerProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Trigger {...props} />
+  }
+
   return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />
 }
 
-function DrawerPortal({
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
+function DrawerPortal({ mode = DEFAULT_MODE, ...props }: DrawerPortalProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Portal {...props} />
+  }
+
   return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
 }
 
-function DrawerClose({
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Close>) {
+function DrawerClose({ mode = DEFAULT_MODE, ...props }: DrawerCloseProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Close {...props} />
+  }
+
   return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />
 }
 
 function DrawerOverlay({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
+}: DrawerOverlayProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Overlay className={className} {...props} />
+  }
+
   return (
     <DrawerPrimitive.Overlay
       data-slot="drawer-overlay"
-      className={cn(
-        "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
-        className
-      )}
+      className={resolveStyledDrawerClassName({
+        className,
+        defaultClassName: drawerClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function DrawerContent({
+  mode = DEFAULT_MODE,
   className,
   children,
+  showHandle = true,
+  classNameMode = "merge",
+  classResolver,
+  overlayClassName,
+  overlayClassNameMode = "merge",
+  overlayClassResolver,
+  handleClassName,
+  handleClassNameMode = "merge",
+  handleClassResolver,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: DrawerContentProps) {
+  if (mode === "headless") {
+    return (
+      <DrawerPrimitive.Portal>
+        <DrawerPrimitive.Overlay className={overlayClassName} />
+        <DrawerPrimitive.Content className={className} {...props}>
+          {showHandle && <div className={handleClassName} />}
+          {children}
+        </DrawerPrimitive.Content>
+      </DrawerPrimitive.Portal>
+    )
+  }
+
+  const resolvedOverlayClassName = resolveStyledDrawerClassName({
+    className: overlayClassName,
+    defaultClassName: drawerClassNames.slot0,
+    classNameMode: overlayClassNameMode,
+    classResolver: overlayClassResolver,
+  })
+  const resolvedContentClassName = resolveStyledDrawerClassName({
+    className,
+    defaultClassName: drawerClassNames.slot1,
+    classNameMode,
+    classResolver,
+  })
+  const resolvedHandleClassName = resolveStyledDrawerClassName({
+    className: handleClassName,
+    defaultClassName: drawerClassNames.slot2,
+    classNameMode: handleClassNameMode,
+    classResolver: handleClassResolver,
+  })
+
   return (
-    <DrawerPortal data-slot="drawer-portal">
-      <DrawerOverlay />
+    <DrawerPrimitive.Portal data-slot="drawer-portal">
+      <DrawerPrimitive.Overlay
+        data-slot="drawer-overlay"
+        className={resolvedOverlayClassName}
+      />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
-        className={cn(
-          "group/drawer-content fixed z-50 flex h-auto flex-col bg-popover text-sm text-popover-foreground data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-xl data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:rounded-r-xl data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:rounded-l-xl data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-xl data-[vaul-drawer-direction=top]:border-b data-[vaul-drawer-direction=left]:sm:max-w-sm data-[vaul-drawer-direction=right]:sm:max-w-sm",
-          className
-        )}
+        className={resolvedContentClassName}
         {...props}
       >
-        <div className="mx-auto mt-4 hidden h-1 w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        {showHandle && <div className={resolvedHandleClassName} />}
         {children}
       </DrawerPrimitive.Content>
-    </DrawerPortal>
+    </DrawerPrimitive.Portal>
   )
 }
 
-function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
+function DrawerHeader({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: DrawerHeaderProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="drawer-header"
-      className={cn(
-        "flex flex-col gap-0.5 p-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-0.5 md:text-left",
-        className
-      )}
+      className={resolveStyledDrawerClassName({
+        className,
+        defaultClassName: drawerClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
+function DrawerFooter({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: DrawerFooterProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      className={resolveStyledDrawerClassName({
+        className,
+        defaultClassName: drawerClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function DrawerTitle({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+}: DrawerTitleProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Title className={className} {...props} />
+  }
+
   return (
     <DrawerPrimitive.Title
       data-slot="drawer-title"
-      className={cn(
-        "font-heading text-base font-medium text-foreground",
-        className
-      )}
+      className={resolveStyledDrawerClassName({
+        className,
+        defaultClassName: drawerClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function DrawerDescription({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
+}: DrawerDescriptionProps) {
+  if (mode === "headless") {
+    return <DrawerPrimitive.Description className={className} {...props} />
+  }
+
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={resolveStyledDrawerClassName({
+        className,
+        defaultClassName: drawerClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

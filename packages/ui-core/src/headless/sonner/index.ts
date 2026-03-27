@@ -1,3 +1,7 @@
 export { Toaster } from "./sonner"
 export { sonnerClassNames } from "./sonner.styles"
-export type { SonnerClassNameMode, SonnerClassResolver } from "./sonner.types"
+export type {
+  SonnerClassNameMode,
+  SonnerClassResolver,
+  SonnerToasterProps,
+} from "./sonner.types"

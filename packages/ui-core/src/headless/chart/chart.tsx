@@ -2,26 +2,47 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-import type { TooltipValueType } from "recharts"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { chartClassNames } from "./chart.styles"
+import type {
+  ChartClassResolver,
+  ChartConfig,
+  ChartContainerProps,
+  ChartLegendContentProps,
+  ChartStyleProps,
+  ChartTooltipContentProps,
+} from "./chart.types"
 
-// Format: { THEME_NAME: CSS_SELECTOR }
+function resolveStyledChartClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: ChartClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
 const THEMES = { light: "", dark: ".dark" } as const
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const
-type TooltipNameType = number | string
-
-export type ChartConfig = Record<
-  string,
-  {
-    label?: React.ReactNode
-    icon?: React.ComponentType
-  } & (
-    | { color?: string; theme?: never }
-    | { color?: never; theme: Record<keyof typeof THEMES, string> }
-  )
->
 
 type ChartContextProps = {
   config: ChartConfig
@@ -40,34 +61,46 @@ function useChart() {
 }
 
 function ChartContainer({
+  mode = DEFAULT_MODE,
   id,
   className,
   children,
   config,
   initialDimension = INITIAL_DIMENSION,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"div"> & {
-  config: ChartConfig
-  children: React.ComponentProps<
-    typeof RechartsPrimitive.ResponsiveContainer
-  >["children"]
-  initialDimension?: {
-    width: number
-    height: number
-  }
-}) {
+}: ChartContainerProps) {
   const uniqueId = React.useId()
   const chartId = `chart-${id ?? uniqueId.replace(/:/g, "")}`
+  const defaultClassName =
+    "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden"
+
+  if (mode === "headless") {
+    return (
+      <ChartContext.Provider value={{ config }}>
+        <div className={className} {...props}>
+          <RechartsPrimitive.ResponsiveContainer
+            initialDimension={initialDimension}
+          >
+            {children}
+          </RechartsPrimitive.ResponsiveContainer>
+        </div>
+      </ChartContext.Provider>
+    )
+  }
 
   return (
     <ChartContext.Provider value={{ config }}>
       <div
         data-slot="chart"
         data-chart={chartId}
-        className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
-          className
-        )}
+        className={resolveStyledChartClassName({
+          className,
+          defaultClassName,
+          classNameMode,
+          classResolver,
+        })}
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
@@ -81,9 +114,9 @@ function ChartContainer({
   )
 }
 
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+const ChartStyle = ({ id, config }: ChartStyleProps) => {
   const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme ?? config.color
+    ([, itemConfig]) => itemConfig.theme ?? itemConfig.color
   )
 
   if (!colorConfig.length) {
@@ -117,6 +150,7 @@ ${colorConfig
 const ChartTooltip = RechartsPrimitive.Tooltip
 
 function ChartTooltipContent({
+  mode = DEFAULT_MODE,
   active,
   payload,
   className,
@@ -130,21 +164,25 @@ function ChartTooltipContent({
   color,
   nameKey,
   labelKey,
-}: React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-  React.ComponentProps<"div"> & {
-    hideLabel?: boolean
-    hideIndicator?: boolean
-    indicator?: "line" | "dot" | "dashed"
-    nameKey?: string
-    labelKey?: string
-  } & Omit<
-    RechartsPrimitive.DefaultTooltipContentProps<
-      TooltipValueType,
-      TooltipNameType
-    >,
-    "accessibilityLayer"
-  >) {
+  classNameMode = "merge",
+  classResolver,
+  labelClassNameMode = "merge",
+  labelClassResolver,
+  valueClassName,
+  valueClassNameMode = "merge",
+  valueClassResolver,
+}: ChartTooltipContentProps) {
   const { config } = useChart()
+
+  const resolvedLabelClassName =
+    mode === "headless"
+      ? labelClassName
+      : resolveStyledChartClassName({
+          className: labelClassName,
+          defaultClassName: "font-medium",
+          classNameMode: labelClassNameMode,
+          classResolver: labelClassResolver,
+        })
 
   const tooltipLabel = React.useMemo(() => {
     if (hideLabel || !payload?.length) {
@@ -161,7 +199,7 @@ function ChartTooltipContent({
 
     if (labelFormatter) {
       return (
-        <div className={cn("font-medium", labelClassName)}>
+        <div className={resolvedLabelClassName}>
           {labelFormatter(value, payload)}
         </div>
       )
@@ -171,15 +209,15 @@ function ChartTooltipContent({
       return null
     }
 
-    return <div className={cn("font-medium", labelClassName)}>{value}</div>
+    return <div className={resolvedLabelClassName}>{value}</div>
   }, [
     label,
     labelFormatter,
     payload,
     hideLabel,
-    labelClassName,
-    config,
     labelKey,
+    config,
+    resolvedLabelClassName,
   ])
 
   if (!active || !payload?.length) {
@@ -188,15 +226,64 @@ function ChartTooltipContent({
 
   const nestLabel = payload.length === 1 && indicator !== "dot"
 
+  if (mode === "headless") {
+    return (
+      <div className={className}>
+        {!nestLabel ? tooltipLabel : null}
+        <div>
+          {payload
+            .filter((item) => item.type !== "none")
+            .map((item, index) => {
+              const key = `${nameKey ?? item.name ?? item.dataKey ?? "value"}`
+              const itemConfig = getPayloadConfigFromPayload(config, item, key)
+              const indicatorColor = color ?? item.payload?.fill ?? item.color
+
+              return (
+                <div key={index}>
+                  {formatter && item?.value !== undefined && item.name ? (
+                    formatter(item.value, item.name, item, index, item.payload)
+                  ) : (
+                    <>
+                      {itemConfig?.icon ? <itemConfig.icon /> : null}
+                      {!itemConfig?.icon && !hideIndicator ? (
+                        <span style={{ color: indicatorColor }}>
+                          {indicator === "line"
+                            ? "|"
+                            : indicator === "dashed"
+                              ? "..."
+                              : "●"}
+                        </span>
+                      ) : null}
+                      <span>{itemConfig?.label ?? item.name}</span>
+                      {item.value != null ? (
+                        <span className={valueClassName}>
+                          {typeof item.value === "number"
+                            ? item.value.toLocaleString()
+                            : String(item.value)}
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              )
+            })}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
-      className={cn(
-        "grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
-        className
-      )}
+      className={resolveStyledChartClassName({
+        className,
+        defaultClassName:
+          "grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+        classNameMode,
+        classResolver,
+      })}
     >
       {!nestLabel ? tooltipLabel : null}
-      <div className="grid gap-1.5">
+      <div className={chartClassNames.slot1}>
         {payload
           .filter((item) => item.type !== "none")
           .map((item, index) => {
@@ -246,14 +333,21 @@ function ChartTooltipContent({
                         nestLabel ? "items-end" : "items-center"
                       )}
                     >
-                      <div className="grid gap-1.5">
+                      <div className={chartClassNames.slot1}>
                         {nestLabel ? tooltipLabel : null}
-                        <span className="text-muted-foreground">
+                        <span className={chartClassNames.slot2}>
                           {itemConfig?.label ?? item.name}
                         </span>
                       </div>
                       {item.value != null && (
-                        <span className="font-mono font-medium text-foreground tabular-nums">
+                        <span
+                          className={resolveStyledChartClassName({
+                            className: valueClassName,
+                            defaultClassName: chartClassNames.slot3,
+                            classNameMode: valueClassNameMode,
+                            classResolver: valueClassResolver,
+                          })}
+                        >
                           {typeof item.value === "number"
                             ? item.value.toLocaleString()
                             : String(item.value)}
@@ -273,28 +367,59 @@ function ChartTooltipContent({
 const ChartLegend = RechartsPrimitive.Legend
 
 function ChartLegendContent({
+  mode = DEFAULT_MODE,
   className,
   hideIcon = false,
   payload,
   verticalAlign = "bottom",
   nameKey,
-}: React.ComponentProps<"div"> & {
-  hideIcon?: boolean
-  nameKey?: string
-} & RechartsPrimitive.DefaultLegendContentProps) {
+  classNameMode = "merge",
+  classResolver,
+  itemClassName,
+  itemClassNameMode = "merge",
+  itemClassResolver,
+}: ChartLegendContentProps) {
   const { config } = useChart()
 
   if (!payload?.length) {
     return null
   }
 
+  if (mode === "headless") {
+    return (
+      <div className={className}>
+        {payload
+          .filter((item) => item.type !== "none")
+          .map((item, index) => {
+            const key = `${nameKey ?? item.dataKey ?? "value"}`
+            const itemConfig = getPayloadConfigFromPayload(config, item, key)
+
+            return (
+              <div key={index} className={itemClassName}>
+                {itemConfig?.icon && !hideIcon ? (
+                  <itemConfig.icon />
+                ) : (
+                  <span style={{ color: item.color }}>■</span>
+                )}
+                {itemConfig?.label}
+              </div>
+            )
+          })}
+      </div>
+    )
+  }
+
   return (
     <div
-      className={cn(
-        "flex items-center justify-center gap-4",
-        verticalAlign === "top" ? "pb-3" : "pt-3",
-        className
-      )}
+      className={resolveStyledChartClassName({
+        className,
+        defaultClassName: cn(
+          "flex items-center justify-center gap-4",
+          verticalAlign === "top" ? "pb-3" : "pt-3"
+        ),
+        classNameMode,
+        classResolver,
+      })}
     >
       {payload
         .filter((item) => item.type !== "none")
@@ -305,15 +430,19 @@ function ChartLegendContent({
           return (
             <div
               key={index}
-              className={cn(
-                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
-              )}
+              className={resolveStyledChartClassName({
+                className: itemClassName,
+                defaultClassName:
+                  "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground",
+                classNameMode: itemClassNameMode,
+                classResolver: itemClassResolver,
+              })}
             >
               {itemConfig?.icon && !hideIcon ? (
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                  className={chartClassNames.slot4}
                   style={{
                     backgroundColor: item.color,
                   }}

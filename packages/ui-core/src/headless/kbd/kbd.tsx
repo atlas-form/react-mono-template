@@ -1,23 +1,82 @@
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { kbdClassNames } from "./kbd.styles"
+import type {
+  KbdClassResolver,
+  KbdGroupProps,
+  KbdProps,
+} from "./kbd.types"
 
-function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {
+function resolveStyledKbdClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: KbdClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function Kbd({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: KbdProps) {
+  if (mode === "headless") {
+    return <kbd className={className} {...props} />
+  }
+
   return (
     <kbd
       data-slot="kbd"
-      className={cn(
-        "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 [&_svg:not([class*='size-'])]:size-3",
-        className
-      )}
+      className={resolveStyledKbdClassName({
+        className,
+        defaultClassName: kbdClassNames.slot1,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function KbdGroup({ className, ...props }: React.ComponentProps<"div">) {
+function KbdGroup({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: KbdGroupProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
-    <kbd
+    <div
       data-slot="kbd-group"
-      className={cn("inline-flex items-center gap-1", className)}
+      className={resolveStyledKbdClassName({
+        className,
+        defaultClassName: kbdClassNames.slot2,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

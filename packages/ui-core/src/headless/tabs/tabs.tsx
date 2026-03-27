@@ -1,85 +1,184 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { Tabs as TabsPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { tabsClassNames, tabsListVariants } from "./tabs.styles"
+import type {
+  TabsClassResolver,
+  TabsContentProps,
+  TabsListClassResolver,
+  TabsListProps,
+  TabsListVariant,
+  TabsProps,
+  TabsTriggerProps,
+} from "./tabs.types"
+
+function resolveStyledTabsClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: TabsClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function resolveStyledTabsListClassName({
+  className,
+  variant,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  variant: TabsListVariant
+  classNameMode: "merge" | "replace"
+  classResolver?: TabsListClassResolver
+}) {
+  const defaultClassName = tabsListVariants({ variant })
+
+  if (classResolver) {
+    return classResolver({
+      variant,
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function Tabs({
+  mode = DEFAULT_MODE,
   className,
   orientation = "horizontal",
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+}: TabsProps) {
+  if (mode === "headless") {
+    return (
+      <TabsPrimitive.Root
+        orientation={orientation}
+        className={className}
+        {...props}
+      />
+    )
+  }
+
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
-      className={cn(
-        "group/tabs flex gap-2 data-horizontal:flex-col",
-        className
-      )}
+      className={resolveStyledTabsClassName({
+        className,
+        defaultClassName: tabsClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-const tabsListVariants = cva(
-  "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-horizontal/tabs:h-8 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
-  {
-    variants: {
-      variant: {
-        default: "bg-muted",
-        line: "gap-1 bg-transparent",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-)
-
 function TabsList({
+  mode = DEFAULT_MODE,
   className,
   variant = "default",
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.List> &
-  VariantProps<typeof tabsListVariants>) {
+}: TabsListProps) {
+  if (mode === "headless") {
+    return <TabsPrimitive.List className={className} {...props} />
+  }
+
+  const resolvedVariant = (variant ?? "default") as TabsListVariant
+
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      data-variant={variant}
-      className={cn(tabsListVariants({ variant }), className)}
+      data-variant={resolvedVariant}
+      className={resolveStyledTabsListClassName({
+        className,
+        variant: resolvedVariant,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function TabsTrigger({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+}: TabsTriggerProps) {
+  if (mode === "headless") {
+    return <TabsPrimitive.Trigger className={className} {...props} />
+  }
+
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
-      className={cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
-        "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
-        "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
-        className
-      )}
+      className={resolveStyledTabsClassName({
+        className,
+        defaultClassName: cn(
+          tabsClassNames.slot5,
+          tabsClassNames.slot6,
+          tabsClassNames.slot7,
+          tabsClassNames.slot8
+        ),
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function TabsContent({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) {
+}: TabsContentProps) {
+  if (mode === "headless") {
+    return <TabsPrimitive.Content className={className} {...props} />
+  }
+
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn("flex-1 text-sm outline-none", className)}
+      className={resolveStyledTabsClassName({
+        className,
+        defaultClassName: tabsClassNames.slot9,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

@@ -1,36 +1,101 @@
 import * as React from "react"
 import { Popover as PopoverPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { popoverClassNames } from "./popover.styles"
+import type {
+  PopoverAnchorProps,
+  PopoverClassResolver,
+  PopoverContentProps,
+  PopoverDescriptionProps,
+  PopoverHeaderProps,
+  PopoverProps,
+  PopoverTitleProps,
+  PopoverTriggerProps,
+} from "./popover.types"
+
+function resolveStyledPopoverClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: PopoverClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function Popover({
+  mode = DEFAULT_MODE,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+}: PopoverProps) {
+  if (mode === "headless") {
+    return <PopoverPrimitive.Root {...props} />
+  }
+
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
 function PopoverTrigger({
+  mode = DEFAULT_MODE,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+}: PopoverTriggerProps) {
+  if (mode === "headless") {
+    return <PopoverPrimitive.Trigger {...props} />
+  }
+
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
 function PopoverContent({
+  mode = DEFAULT_MODE,
   className,
   align = "center",
   sideOffset = 4,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: PopoverContentProps) {
+  if (mode === "headless") {
+    return (
+      <PopoverPrimitive.Portal>
+        <PopoverPrimitive.Content
+          align={align}
+          sideOffset={sideOffset}
+          className={className}
+          {...props}
+        />
+      </PopoverPrimitive.Portal>
+    )
+  }
+
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
-        className={cn(
-          "z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          className
-        )}
+        className={resolveStyledPopoverClassName({
+          className,
+          defaultClassName: popoverClassNames.slot1,
+          classNameMode,
+          classResolver,
+        })}
         {...props}
       />
     </PopoverPrimitive.Portal>
@@ -38,39 +103,86 @@ function PopoverContent({
 }
 
 function PopoverAnchor({
+  mode = DEFAULT_MODE,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+}: PopoverAnchorProps) {
+  if (mode === "headless") {
+    return <PopoverPrimitive.Anchor {...props} />
+  }
+
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 }
 
-function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
+function PopoverHeader({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: PopoverHeaderProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="popover-header"
-      className={cn("flex flex-col gap-0.5 text-sm", className)}
+      className={resolveStyledPopoverClassName({
+        className,
+        defaultClassName: popoverClassNames.slot2,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function PopoverTitle({ className, ...props }: React.ComponentProps<"h2">) {
+function PopoverTitle({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: PopoverTitleProps) {
+  if (mode === "headless") {
+    return <h2 className={className} {...props} />
+  }
+
   return (
-    <div
+    <h2
       data-slot="popover-title"
-      className={cn("font-heading font-medium", className)}
+      className={resolveStyledPopoverClassName({
+        className,
+        defaultClassName: popoverClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function PopoverDescription({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"p">) {
+}: PopoverDescriptionProps) {
+  if (mode === "headless") {
+    return <p className={className} {...props} />
+  }
+
   return (
     <p
       data-slot="popover-description"
-      className={cn("text-muted-foreground", className)}
+      className={resolveStyledPopoverClassName({
+        className,
+        defaultClassName: popoverClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

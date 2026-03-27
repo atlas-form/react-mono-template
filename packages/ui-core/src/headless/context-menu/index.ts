@@ -17,6 +17,22 @@ export {
 } from "./context-menu"
 export { contextMenuClassNames } from "./context-menu.styles"
 export type {
+  ContextMenuCheckboxItemProps,
   ContextMenuClassNameMode,
   ContextMenuClassResolver,
+  ContextMenuContentProps,
+  ContextMenuGroupProps,
+  ContextMenuItemProps,
+  ContextMenuItemVariant,
+  ContextMenuLabelProps,
+  ContextMenuPortalProps,
+  ContextMenuProps,
+  ContextMenuRadioGroupProps,
+  ContextMenuRadioItemProps,
+  ContextMenuSeparatorProps,
+  ContextMenuShortcutProps,
+  ContextMenuSubContentProps,
+  ContextMenuSubProps,
+  ContextMenuSubTriggerProps,
+  ContextMenuTriggerProps,
 } from "./context-menu.types"

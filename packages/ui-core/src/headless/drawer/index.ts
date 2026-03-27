@@ -11,4 +11,17 @@ export {
   DrawerTrigger,
 } from "./drawer"
 export { drawerClassNames } from "./drawer.styles"
-export type { DrawerClassNameMode, DrawerClassResolver } from "./drawer.types"
+export type {
+  DrawerClassNameMode,
+  DrawerClassResolver,
+  DrawerCloseProps,
+  DrawerContentProps,
+  DrawerDescriptionProps,
+  DrawerFooterProps,
+  DrawerHeaderProps,
+  DrawerOverlayProps,
+  DrawerPortalProps,
+  DrawerProps,
+  DrawerTitleProps,
+  DrawerTriggerProps,
+} from "./drawer.types"

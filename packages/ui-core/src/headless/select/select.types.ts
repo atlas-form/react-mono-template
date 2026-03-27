@@ -2,7 +2,9 @@ import * as React from "react"
 import { Select as SelectPrimitive } from "radix-ui"
 import type { BaseMode } from "../../lib/component-mode"
 
-export type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>
+export type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root> & {
+  mode?: BaseMode
+}
 export type SelectClassNameMode = "merge" | "replace"
 
 export type SelectClassResolver = (params: {
@@ -20,7 +22,9 @@ export type SelectGroupProps = React.ComponentProps<
 
 export type SelectValueProps = React.ComponentProps<
   typeof SelectPrimitive.Value
->
+> & {
+  mode?: BaseMode
+}
 
 export type SelectTriggerProps = React.ComponentProps<
   typeof SelectPrimitive.Trigger

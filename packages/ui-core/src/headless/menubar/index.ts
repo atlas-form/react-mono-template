@@ -18,6 +18,23 @@ export {
 } from "./menubar"
 export { menubarClassNames } from "./menubar.styles"
 export type {
+  MenubarCheckboxItemProps,
   MenubarClassNameMode,
   MenubarClassResolver,
+  MenubarContentProps,
+  MenubarGroupProps,
+  MenubarItemProps,
+  MenubarItemVariant,
+  MenubarLabelProps,
+  MenubarMenuProps,
+  MenubarPortalProps,
+  MenubarProps,
+  MenubarRadioGroupProps,
+  MenubarRadioItemProps,
+  MenubarSeparatorProps,
+  MenubarShortcutProps,
+  MenubarSubContentProps,
+  MenubarSubProps,
+  MenubarSubTriggerProps,
+  MenubarTriggerProps,
 } from "./menubar.types"

@@ -2,103 +2,258 @@
 
 import * as React from "react"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { tableClassNames } from "./table.styles"
+import type {
+  TableBodyProps,
+  TableCaptionProps,
+  TableCellProps,
+  TableClassResolver,
+  TableFooterProps,
+  TableHeadProps,
+  TableHeaderProps,
+  TableProps,
+  TableRowProps,
+} from "./table.types"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function resolveStyledTableClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: TableClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function Table({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  containerClassName,
+  containerClassNameMode = "merge",
+  containerClassResolver,
+  ...props
+}: TableProps) {
+  if (mode === "headless") {
+    return (
+      <div className={containerClassName}>
+        <table className={className} {...props} />
+      </div>
+    )
+  }
+
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={resolveStyledTableClassName({
+        className: containerClassName,
+        defaultClassName: tableClassNames.slot1,
+        classNameMode: containerClassNameMode,
+        classResolver: containerClassResolver,
+      })}
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={resolveStyledTableClassName({
+          className,
+          defaultClassName: tableClassNames.slot2,
+          classNameMode,
+          classResolver,
+        })}
         {...props}
       />
     </div>
   )
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+function TableHeader({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableHeaderProps) {
+  if (mode === "headless") {
+    return <thead className={className} {...props} />
+  }
+
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+function TableBody({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableBodyProps) {
+  if (mode === "headless") {
+    return <tbody className={className} {...props} />
+  }
+
   return (
     <tbody
       data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0", className)}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
+function TableFooter({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableFooterProps) {
+  if (mode === "headless") {
+    return <tfoot className={className} {...props} />
+  }
+
   return (
     <tfoot
       data-slot="table-footer"
-      className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className
-      )}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+function TableRow({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableRowProps) {
+  if (mode === "headless") {
+    return <tr className={className} {...props} />
+  }
+
   return (
     <tr
       data-slot="table-row"
-      className={cn(
-        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-        className
-      )}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+function TableHead({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableHeadProps) {
+  if (mode === "headless") {
+    return <th className={className} {...props} />
+  }
+
   return (
     <th
       data-slot="table-head"
-      className={cn(
-        "h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0",
-        className
-      )}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot7,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+function TableCell({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: TableCellProps) {
+  if (mode === "headless") {
+    return <td className={className} {...props} />
+  }
+
   return (
     <td
       data-slot="table-cell"
-      className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
-        className
-      )}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot8,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function TableCaption({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"caption">) {
+}: TableCaptionProps) {
+  if (mode === "headless") {
+    return <caption className={className} {...props} />
+  }
+
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-4 text-sm text-muted-foreground", className)}
+      className={resolveStyledTableClassName({
+        className,
+        defaultClassName: tableClassNames.slot9,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

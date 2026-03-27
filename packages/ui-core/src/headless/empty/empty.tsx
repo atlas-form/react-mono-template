@@ -1,94 +1,220 @@
-import { cva, type VariantProps } from "class-variance-authority"
-
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { emptyClassNames, emptyMediaVariants } from "./empty.styles"
+import type {
+  EmptyClassResolver,
+  EmptyContentProps,
+  EmptyDescriptionProps,
+  EmptyHeaderProps,
+  EmptyMediaClassResolver,
+  EmptyMediaProps,
+  EmptyMediaVariant,
+  EmptyProps,
+  EmptyTitleProps,
+} from "./empty.types"
 
-function Empty({ className, ...props }: React.ComponentProps<"div">) {
+function resolveStyledEmptyClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: EmptyClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function resolveStyledEmptyMediaClassName({
+  className,
+  variant,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  variant: EmptyMediaVariant
+  classNameMode: "merge" | "replace"
+  classResolver?: EmptyMediaClassResolver
+}) {
+  const defaultClassName = emptyMediaVariants({ variant })
+
+  if (classResolver) {
+    return classResolver({
+      variant,
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function Empty({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: EmptyProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="empty"
-      className={cn(
-        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance",
-        className
-      )}
+      className={resolveStyledEmptyClassName({
+        className,
+        defaultClassName: emptyClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function EmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyHeader({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: EmptyHeaderProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="empty-header"
-      className={cn("flex max-w-sm flex-col items-center gap-2", className)}
+      className={resolveStyledEmptyClassName({
+        className,
+        defaultClassName: emptyClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-const emptyMediaVariants = cva(
-  "mb-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-transparent",
-        icon: "flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-)
-
 function EmptyMedia({
+  mode = DEFAULT_MODE,
   className,
   variant = "default",
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof emptyMediaVariants>) {
+}: EmptyMediaProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
+  const resolvedVariant = (variant ?? "default") as EmptyMediaVariant
+
   return (
     <div
       data-slot="empty-icon"
-      data-variant={variant}
-      className={cn(emptyMediaVariants({ variant, className }))}
+      data-variant={resolvedVariant}
+      className={resolveStyledEmptyMediaClassName({
+        className,
+        variant: resolvedVariant,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyTitle({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: EmptyTitleProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="empty-title"
-      className={cn(
-        "font-heading text-sm font-medium tracking-tight",
-        className
-      )}
+      className={resolveStyledEmptyClassName({
+        className,
+        defaultClassName: emptyClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
+function EmptyDescription({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: EmptyDescriptionProps) {
+  if (mode === "headless") {
+    return <p className={className} {...props} />
+  }
+
   return (
-    <div
+    <p
       data-slot="empty-description"
-      className={cn(
-        "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
-        className
-      )}
+      className={resolveStyledEmptyClassName({
+        className,
+        defaultClassName: emptyClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyContent({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: EmptyContentProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="empty-content"
-      className={cn(
-        "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance",
-        className
-      )}
+      className={resolveStyledEmptyClassName({
+        className,
+        defaultClassName: emptyClassNames.slot7,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

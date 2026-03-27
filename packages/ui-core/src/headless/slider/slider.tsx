@@ -1,16 +1,56 @@
 import * as React from "react"
 import { Slider as SliderPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { sliderClassNames } from "./slider.styles"
+import type { SliderClassResolver, SliderProps } from "./slider.types"
+
+function resolveStyledSliderClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: SliderClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function Slider({
+  mode = DEFAULT_MODE,
   className,
   defaultValue,
   value,
   min = 0,
   max = 100,
+  classNameMode = "merge",
+  classResolver,
+  trackClassName,
+  trackClassNameMode = "merge",
+  trackClassResolver,
+  rangeClassName,
+  rangeClassNameMode = "merge",
+  rangeClassResolver,
+  thumbClassName,
+  thumbClassNameMode = "merge",
+  thumbClassResolver,
   ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
+}: SliderProps) {
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
@@ -21,6 +61,26 @@ function Slider({
     [value, defaultValue, min, max]
   )
 
+  if (mode === "headless") {
+    return (
+      <SliderPrimitive.Root
+        defaultValue={defaultValue}
+        value={value}
+        min={min}
+        max={max}
+        className={className}
+        {...props}
+      >
+        <SliderPrimitive.Track className={trackClassName}>
+          <SliderPrimitive.Range className={rangeClassName} />
+        </SliderPrimitive.Track>
+        {Array.from({ length: _values.length }, (_, index) => (
+          <SliderPrimitive.Thumb key={index} className={thumbClassName} />
+        ))}
+      </SliderPrimitive.Root>
+    )
+  }
+
   return (
     <SliderPrimitive.Root
       data-slot="slider"
@@ -28,26 +88,43 @@ function Slider({
       value={value}
       min={min}
       max={max}
-      className={cn(
-        "relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col",
-        className
-      )}
+      className={resolveStyledSliderClassName({
+        className,
+        defaultClassName: sliderClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       <SliderPrimitive.Track
         data-slot="slider-track"
-        className="relative grow overflow-hidden rounded-full bg-muted data-horizontal:h-1 data-horizontal:w-full data-vertical:h-full data-vertical:w-1"
+        className={resolveStyledSliderClassName({
+          className: trackClassName,
+          defaultClassName: sliderClassNames.slot1,
+          classNameMode: trackClassNameMode,
+          classResolver: trackClassResolver,
+        })}
       >
         <SliderPrimitive.Range
           data-slot="slider-range"
-          className="absolute bg-primary select-none data-horizontal:h-full data-vertical:w-full"
+          className={resolveStyledSliderClassName({
+            className: rangeClassName,
+            defaultClassName: sliderClassNames.slot2,
+            classNameMode: rangeClassNameMode,
+            classResolver: rangeClassResolver,
+          })}
         />
       </SliderPrimitive.Track>
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
-          className="relative block size-3 shrink-0 rounded-full border border-ring bg-white ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
+          className={resolveStyledSliderClassName({
+            className: thumbClassName,
+            defaultClassName: sliderClassNames.slot3,
+            classNameMode: thumbClassNameMode,
+            classResolver: thumbClassResolver,
+          })}
         />
       ))}
     </SliderPrimitive.Root>

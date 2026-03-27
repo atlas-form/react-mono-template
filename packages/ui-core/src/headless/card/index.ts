@@ -8,4 +8,15 @@ export {
   CardTitle,
 } from "./card"
 export { cardClassNames } from "./card.styles"
-export type { CardClassNameMode, CardClassResolver } from "./card.types"
+export type {
+  CardActionProps,
+  CardClassNameMode,
+  CardClassResolver,
+  CardContentProps,
+  CardDescriptionProps,
+  CardFooterProps,
+  CardHeaderProps,
+  CardProps,
+  CardSize,
+  CardTitleProps,
+} from "./card.types"

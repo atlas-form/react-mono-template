@@ -1,58 +1,159 @@
 import * as React from "react"
 import { Accordion as AccordionPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { ChevronDownIcon, ChevronUpIcon } from "../../lib/icon-slots"
+import { accordionClassNames } from "./accordion.styles"
+import type {
+  AccordionClassResolver,
+  AccordionContentProps,
+  AccordionItemProps,
+  AccordionProps,
+  AccordionTriggerProps,
+} from "./accordion.types"
+
+function resolveStyledAccordionClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: AccordionClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function Accordion({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+}: AccordionProps) {
+  if (mode === "headless") {
+    return <AccordionPrimitive.Root className={className} {...props} />
+  }
+
   return (
     <AccordionPrimitive.Root
       data-slot="accordion"
-      className={cn("flex w-full flex-col", className)}
+      className={resolveStyledAccordionClassName({
+        className,
+        defaultClassName: accordionClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function AccordionItem({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+}: AccordionItemProps) {
+  if (mode === "headless") {
+    return <AccordionPrimitive.Item className={className} {...props} />
+  }
+
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("not-last:border-b", className)}
+      className={resolveStyledAccordionClassName({
+        className,
+        defaultClassName: accordionClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function AccordionTrigger({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
+  headerClassName,
+  headerClassNameMode = "merge",
+  headerClassResolver,
+  collapsedIconClassName,
+  collapsedIconClassNameMode = "merge",
+  collapsedIconClassResolver,
+  expandedIconClassName,
+  expandedIconClassNameMode = "merge",
+  expandedIconClassResolver,
   children,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+}: AccordionTriggerProps) {
+  if (mode === "headless") {
+    return (
+      <AccordionPrimitive.Header className={headerClassName}>
+        <AccordionPrimitive.Trigger className={className} {...props}>
+          {children}
+          <ChevronDownIcon className={collapsedIconClassName} />
+          <ChevronUpIcon className={expandedIconClassName} />
+        </AccordionPrimitive.Trigger>
+      </AccordionPrimitive.Header>
+    )
+  }
+
   return (
-    <AccordionPrimitive.Header className="flex">
+    <AccordionPrimitive.Header
+      className={resolveStyledAccordionClassName({
+        className: headerClassName,
+        defaultClassName: accordionClassNames.slot1,
+        classNameMode: headerClassNameMode,
+        classResolver: headerClassResolver,
+      })}
+    >
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
-        className={cn(
-          "group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
-          className
-        )}
+        className={resolveStyledAccordionClassName({
+          className,
+          defaultClassName: accordionClassNames.slot7,
+          classNameMode,
+          classResolver,
+        })}
         {...props}
       >
         {children}
         <ChevronDownIcon
           data-slot="accordion-trigger-icon"
-          className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
+          className={resolveStyledAccordionClassName({
+            className: collapsedIconClassName,
+            defaultClassName: accordionClassNames.slot2,
+            classNameMode: collapsedIconClassNameMode,
+            classResolver: collapsedIconClassResolver,
+          })}
         />
         <ChevronUpIcon
           data-slot="accordion-trigger-icon"
-          className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+          className={resolveStyledAccordionClassName({
+            className: expandedIconClassName,
+            defaultClassName: accordionClassNames.slot3,
+            classNameMode: expandedIconClassNameMode,
+            classResolver: expandedIconClassResolver,
+          })}
         />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
@@ -60,21 +161,42 @@ function AccordionTrigger({
 }
 
 function AccordionContent({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
+  innerClassName,
+  innerClassNameMode = "merge",
+  innerClassResolver,
   children,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+}: AccordionContentProps) {
+  if (mode === "headless") {
+    return (
+      <AccordionPrimitive.Content className={className} {...props}>
+        <div className={innerClassName}>{children}</div>
+      </AccordionPrimitive.Content>
+    )
+  }
+
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="overflow-hidden text-sm data-open:animate-accordion-down data-closed:animate-accordion-up"
+      className={resolveStyledAccordionClassName({
+        className,
+        defaultClassName: accordionClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       <div
-        className={cn(
-          "h-(--radix-accordion-content-height) pt-0 pb-2.5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
-          className
-        )}
+        className={resolveStyledAccordionClassName({
+          className: innerClassName,
+          defaultClassName: accordionClassNames.slot8,
+          classNameMode: innerClassNameMode,
+          classResolver: innerClassResolver,
+        })}
       >
         {children}
       </div>

@@ -1,92 +1,219 @@
 import * as React from "react"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { cardClassNames } from "./card.styles"
+import type {
+  CardActionProps,
+  CardClassResolver,
+  CardContentProps,
+  CardDescriptionProps,
+  CardFooterProps,
+  CardHeaderProps,
+  CardProps,
+  CardSize,
+  CardTitleProps,
+} from "./card.types"
+
+function resolveStyledCardClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: CardClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function Card({
+  mode = DEFAULT_MODE,
   className,
   size = "default",
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: CardProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
+  const resolvedSize = (size ?? "default") as CardSize
+
   return (
     <div
       data-slot="card"
-      data-size={size}
-      className={cn(
-        "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
-        className
-      )}
+      data-size={resolvedSize}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot1,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+function CardHeader({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardHeaderProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-header"
-      className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
-        className
-      )}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot2,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+function CardTitle({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardTitleProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-title"
-      className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
-        className
-      )}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+function CardDescription({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardDescriptionProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+function CardAction({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardActionProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+function CardContent({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardContentProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-content"
-      className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+function CardFooter({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: CardFooterProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="card-footer"
-      className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
-        className
-      )}
+      className={resolveStyledCardClassName({
+        className,
+        defaultClassName: cardClassNames.slot7,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

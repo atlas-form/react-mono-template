@@ -1,34 +1,96 @@
 import * as React from "react"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { ChevronDownIcon } from "../../lib/icon-slots"
+import { nativeSelectClassNames } from "./native-select.styles"
+import type {
+  NativeSelectClassResolver,
+  NativeSelectOptGroupProps,
+  NativeSelectOptionProps,
+  NativeSelectProps,
+  NativeSelectSize,
+} from "./native-select.types"
 
-type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
-  size?: "sm" | "default"
+function resolveStyledNativeSelectClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: NativeSelectClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
 }
 
 function NativeSelect({
+  mode = DEFAULT_MODE,
   className,
   size = "default",
+  classNameMode = "merge",
+  classResolver,
+  selectClassName,
+  selectClassNameMode = "merge",
+  selectClassResolver,
+  iconClassName,
+  iconClassNameMode = "merge",
+  iconClassResolver,
   ...props
 }: NativeSelectProps) {
+  if (mode === "headless") {
+    return (
+      <div className={className}>
+        <select className={selectClassName} {...props} />
+        <ChevronDownIcon className={iconClassName} aria-hidden="true" />
+      </div>
+    )
+  }
+
+  const resolvedSize = (size ?? "default") as NativeSelectSize
+
   return (
     <div
-      className={cn(
-        "group/native-select relative w-fit has-[select:disabled]:opacity-50",
-        className
-      )}
+      className={resolveStyledNativeSelectClassName({
+        className,
+        defaultClassName: nativeSelectClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       data-slot="native-select-wrapper"
-      data-size={size}
+      data-size={resolvedSize}
     >
       <select
         data-slot="native-select"
-        data-size={size}
-        className="h-8 w-full min-w-0 appearance-none rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm transition-colors outline-none select-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] data-[size=sm]:py-0.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
+        data-size={resolvedSize}
+        className={resolveStyledNativeSelectClassName({
+          className: selectClassName,
+          defaultClassName: nativeSelectClassNames.slot1,
+          classNameMode: selectClassNameMode,
+          classResolver: selectClassResolver,
+        })}
         {...props}
       />
       <ChevronDownIcon
-        className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-muted-foreground select-none"
+        className={resolveStyledNativeSelectClassName({
+          className: iconClassName,
+          defaultClassName: nativeSelectClassNames.slot2,
+          classNameMode: iconClassNameMode,
+          classResolver: iconClassResolver,
+        })}
         aria-hidden="true"
         data-slot="native-select-icon"
       />
@@ -36,18 +98,34 @@ function NativeSelect({
   )
 }
 
-function NativeSelectOption({ ...props }: React.ComponentProps<"option">) {
+function NativeSelectOption({ mode = DEFAULT_MODE, ...props }: NativeSelectOptionProps) {
+  if (mode === "headless") {
+    return <option {...props} />
+  }
+
   return <option data-slot="native-select-option" {...props} />
 }
 
 function NativeSelectOptGroup({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"optgroup">) {
+}: NativeSelectOptGroupProps) {
+  if (mode === "headless") {
+    return <optgroup className={className} {...props} />
+  }
+
   return (
     <optgroup
       data-slot="native-select-optgroup"
-      className={cn(className)}
+      className={resolveStyledNativeSelectClassName({
+        className,
+        defaultClassName: nativeSelectClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )

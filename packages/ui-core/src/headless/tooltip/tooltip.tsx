@@ -1,12 +1,51 @@
 import * as React from "react"
 import { Tooltip as TooltipPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { tooltipClassNames } from "./tooltip.styles"
+import type {
+  TooltipClassResolver,
+  TooltipContentProps,
+  TooltipProps,
+  TooltipProviderProps,
+  TooltipTriggerProps,
+} from "./tooltip.types"
+
+function resolveStyledTooltipClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: TooltipClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function TooltipProvider({
+  mode = DEFAULT_MODE,
   delayDuration = 0,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: TooltipProviderProps) {
+  if (mode === "headless") {
+    return <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} />
+  }
+
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
@@ -17,36 +56,76 @@ function TooltipProvider({
 }
 
 function Tooltip({
+  mode = DEFAULT_MODE,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+}: TooltipProps) {
+  if (mode === "headless") {
+    return <TooltipPrimitive.Root {...props} />
+  }
+
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
 }
 
 function TooltipTrigger({
+  mode = DEFAULT_MODE,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+}: TooltipTriggerProps) {
+  if (mode === "headless") {
+    return <TooltipPrimitive.Trigger {...props} />
+  }
+
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
 function TooltipContent({
+  mode = DEFAULT_MODE,
   className,
   sideOffset = 0,
+  classNameMode = "merge",
+  classResolver,
+  arrowClassName,
+  arrowClassNameMode = "merge",
+  arrowClassResolver,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: TooltipContentProps) {
+  if (mode === "headless") {
+    return (
+      <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Content
+          sideOffset={sideOffset}
+          className={className}
+          {...props}
+        >
+          {children}
+          <TooltipPrimitive.Arrow className={arrowClassName} />
+        </TooltipPrimitive.Content>
+      </TooltipPrimitive.Portal>
+    )
+  }
+
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}
-        className={cn(
-          "z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs text-background has-data-[slot=kbd]:pr-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 **:data-[slot=kbd]:relative **:data-[slot=kbd]:isolate **:data-[slot=kbd]:z-50 **:data-[slot=kbd]:rounded-sm data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          className
-        )}
+        className={resolveStyledTooltipClassName({
+          className,
+          defaultClassName: tooltipClassNames.slot2,
+          classNameMode,
+          classResolver,
+        })}
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" />
+        <TooltipPrimitive.Arrow
+          className={resolveStyledTooltipClassName({
+            className: arrowClassName,
+            defaultClassName: tooltipClassNames.slot1,
+            classNameMode: arrowClassNameMode,
+            classResolver: arrowClassResolver,
+          })}
+        />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   )

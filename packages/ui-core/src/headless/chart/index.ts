@@ -6,6 +6,13 @@ export {
   ChartTooltip,
   ChartTooltipContent,
 } from "./chart"
-export type { ChartConfig } from "./chart"
 export { chartClassNames } from "./chart.styles"
-export type { ChartClassNameMode, ChartClassResolver } from "./chart.types"
+export type {
+  ChartClassNameMode,
+  ChartClassResolver,
+  ChartConfig,
+  ChartContainerProps,
+  ChartLegendContentProps,
+  ChartStyleProps,
+  ChartTooltipContentProps,
+} from "./chart.types"

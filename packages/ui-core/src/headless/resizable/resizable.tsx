@@ -2,46 +2,113 @@
 
 import * as ResizablePrimitive from "react-resizable-panels"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
+import { resizableClassNames } from "./resizable.styles"
+import type {
+  ResizableClassResolver,
+  ResizableHandleProps,
+  ResizablePanelGroupProps,
+  ResizablePanelProps,
+} from "./resizable.types"
+
+function resolveStyledResizableClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: ResizableClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function ResizablePanelGroup({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: ResizablePrimitive.GroupProps) {
+}: ResizablePanelGroupProps) {
+  if (mode === "headless") {
+    return <ResizablePrimitive.Group className={className} {...props} />
+  }
+
   return (
     <ResizablePrimitive.Group
       data-slot="resizable-panel-group"
-      className={cn(
-        "flex h-full w-full aria-[orientation=vertical]:flex-col",
-        className
-      )}
+      className={resolveStyledResizableClassName({
+        className,
+        defaultClassName: resizableClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {
+function ResizablePanel({ mode = DEFAULT_MODE, ...props }: ResizablePanelProps) {
+  if (mode === "headless") {
+    return <ResizablePrimitive.Panel {...props} />
+  }
+
   return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
 }
 
 function ResizableHandle({
+  mode = DEFAULT_MODE,
   withHandle,
   className,
+  classNameMode = "merge",
+  classResolver,
+  handleClassName,
+  handleClassNameMode = "merge",
+  handleClassResolver,
   ...props
-}: ResizablePrimitive.SeparatorProps & {
-  withHandle?: boolean
-}) {
+}: ResizableHandleProps) {
+  if (mode === "headless") {
+    return (
+      <ResizablePrimitive.Separator className={className} {...props}>
+        {withHandle && <div className={handleClassName} />}
+      </ResizablePrimitive.Separator>
+    )
+  }
+
   return (
     <ResizablePrimitive.Separator
       data-slot="resizable-handle"
-      className={cn(
-        "relative flex w-px items-center justify-center bg-border ring-offset-background after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
-        className
-      )}
+      className={resolveStyledResizableClassName({
+        className,
+        defaultClassName: resizableClassNames.slot2,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       {withHandle && (
-        <div className="z-10 flex h-6 w-1 shrink-0 rounded-lg bg-border" />
+        <div
+          className={resolveStyledResizableClassName({
+            className: handleClassName,
+            defaultClassName: resizableClassNames.slot1,
+            classNameMode: handleClassNameMode,
+            classResolver: handleClassResolver,
+          })}
+        />
       )}
     </ResizablePrimitive.Separator>
   )

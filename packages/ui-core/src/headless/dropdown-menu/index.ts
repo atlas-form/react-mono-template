@@ -17,6 +17,22 @@ export {
 } from "./dropdown-menu"
 export { dropdownMenuClassNames } from "./dropdown-menu.styles"
 export type {
+  DropdownMenuCheckboxItemProps,
   DropdownMenuClassNameMode,
   DropdownMenuClassResolver,
+  DropdownMenuContentProps,
+  DropdownMenuGroupProps,
+  DropdownMenuItemProps,
+  DropdownMenuItemVariant,
+  DropdownMenuLabelProps,
+  DropdownMenuPortalProps,
+  DropdownMenuProps,
+  DropdownMenuRadioGroupProps,
+  DropdownMenuRadioItemProps,
+  DropdownMenuSeparatorProps,
+  DropdownMenuShortcutProps,
+  DropdownMenuSubContentProps,
+  DropdownMenuSubProps,
+  DropdownMenuSubTriggerProps,
+  DropdownMenuTriggerProps,
 } from "./dropdown-menu.types"

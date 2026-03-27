@@ -10,6 +10,14 @@ export {
 } from "./navigation-menu"
 export { navigationMenuClassNames } from "./navigation-menu.styles"
 export type {
+  NavigationMenuContentProps,
   NavigationMenuClassNameMode,
   NavigationMenuClassResolver,
+  NavigationMenuIndicatorProps,
+  NavigationMenuItemProps,
+  NavigationMenuLinkProps,
+  NavigationMenuListProps,
+  NavigationMenuProps,
+  NavigationMenuTriggerProps,
+  NavigationMenuViewportProps,
 } from "./navigation-menu.types"

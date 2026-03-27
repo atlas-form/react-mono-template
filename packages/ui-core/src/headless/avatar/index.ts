@@ -7,4 +7,14 @@ export {
   AvatarImage,
 } from "./avatar"
 export { avatarClassNames } from "./avatar.styles"
-export type { AvatarClassNameMode, AvatarClassResolver } from "./avatar.types"
+export type {
+  AvatarBadgeProps,
+  AvatarClassNameMode,
+  AvatarClassResolver,
+  AvatarFallbackProps,
+  AvatarGroupCountProps,
+  AvatarGroupProps,
+  AvatarImageProps,
+  AvatarProps,
+  AvatarSize,
+} from "./avatar.types"

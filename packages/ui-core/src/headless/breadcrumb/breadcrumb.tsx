@@ -1,38 +1,117 @@
 import * as React from "react"
 import { Slot } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { ChevronRightIcon, MoreHorizontalIcon } from "../../lib/icon-slots"
+import { breadcrumbClassNames } from "./breadcrumb.styles"
+import type {
+  BreadcrumbClassResolver,
+  BreadcrumbEllipsisProps,
+  BreadcrumbItemProps,
+  BreadcrumbLinkProps,
+  BreadcrumbListProps,
+  BreadcrumbPageProps,
+  BreadcrumbProps,
+  BreadcrumbSeparatorProps,
+} from "./breadcrumb.types"
 
-function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
+function resolveStyledBreadcrumbClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: BreadcrumbClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function Breadcrumb({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: BreadcrumbProps) {
+  if (mode === "headless") {
+    return <nav aria-label="breadcrumb" className={className} {...props} />
+  }
+
   return (
     <nav
       aria-label="breadcrumb"
       data-slot="breadcrumb"
-      className={cn(className)}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
+function BreadcrumbList({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: BreadcrumbListProps) {
+  if (mode === "headless") {
+    return <ol className={className} {...props} />
+  }
+
   return (
     <ol
       data-slot="breadcrumb-list"
-      className={cn(
-        "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground",
-        className
-      )}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot2,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
+function BreadcrumbItem({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: BreadcrumbItemProps) {
+  if (mode === "headless") {
+    return <li className={className} {...props} />
+  }
+
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("inline-flex items-center gap-1", className)}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
@@ -40,30 +119,63 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
 
 function BreadcrumbLink({
   asChild,
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"a"> & {
-  asChild?: boolean
-}) {
+}: BreadcrumbLinkProps) {
   const Comp = asChild ? Slot.Root : "a"
+
+  if (mode === "headless") {
+    return <Comp className={className} {...props} />
+  }
 
   return (
     <Comp
       data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot4,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+function BreadcrumbPage({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: BreadcrumbPageProps) {
+  if (mode === "headless") {
+    return (
+      <span
+        role="link"
+        aria-disabled="true"
+        aria-current="page"
+        className={className}
+        {...props}
+      />
+    )
+  }
+
   return (
     <span
       data-slot="breadcrumb-page"
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn("font-normal text-foreground", className)}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
@@ -71,15 +183,31 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
 
 function BreadcrumbSeparator({
   children,
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"li">) {
+}: BreadcrumbSeparatorProps) {
+  if (mode === "headless") {
+    return (
+      <li role="presentation" aria-hidden="true" className={className} {...props}>
+        {children ?? <ChevronRightIcon />}
+      </li>
+    )
+  }
+
   return (
     <li
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
-      className={cn("[&>svg]:size-3.5", className)}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       {children ?? <ChevronRightIcon />}
@@ -88,22 +216,40 @@ function BreadcrumbSeparator({
 }
 
 function BreadcrumbEllipsis({
+  mode = DEFAULT_MODE,
   className,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"span">) {
+}: BreadcrumbEllipsisProps) {
+  if (mode === "headless") {
+    return (
+      <span
+        role="presentation"
+        aria-hidden="true"
+        className={className}
+        {...props}
+      >
+        <MoreHorizontalIcon />
+      </span>
+    )
+  }
+
   return (
     <span
       data-slot="breadcrumb-ellipsis"
       role="presentation"
       aria-hidden="true"
-      className={cn(
-        "flex size-5 items-center justify-center [&>svg]:size-4",
-        className
-      )}
+      className={resolveStyledBreadcrumbClassName({
+        className,
+        defaultClassName: breadcrumbClassNames.slot7,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More</span>
+      <span className={breadcrumbClassNames.slot1}>More</span>
     </span>
   )
 }

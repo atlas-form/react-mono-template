@@ -3,82 +3,205 @@
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { MinusIcon } from "../../lib/icon-slots"
+import { inputOtpClassNames } from "./input-otp.styles"
+import type {
+  InputOtpClassResolver,
+  InputOTPGroupProps,
+  InputOTPProps,
+  InputOTPSeparatorProps,
+  InputOTPSlotProps,
+} from "./input-otp.types"
+
+function resolveStyledInputOtpClassName({
+  className,
+  defaultClassName,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  classNameMode: "merge" | "replace"
+  classResolver?: InputOtpClassResolver
+}) {
+  if (classResolver) {
+    return classResolver({
+      defaultClassName,
+      className,
+    })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function InputOTP({
+  mode = DEFAULT_MODE,
   className,
   containerClassName,
+  classNameMode = "merge",
+  classResolver,
+  containerClassNameMode = "merge",
+  containerClassResolver,
   ...props
-}: React.ComponentProps<typeof OTPInput> & {
-  containerClassName?: string
-}) {
+}: InputOTPProps) {
+  if (mode === "headless") {
+    return (
+      <OTPInput
+        containerClassName={containerClassName}
+        spellCheck={false}
+        className={className}
+        {...props}
+      />
+    )
+  }
+
   return (
     <OTPInput
       data-slot="input-otp"
-      containerClassName={cn(
-        "cn-input-otp flex items-center has-disabled:opacity-50",
-        containerClassName
-      )}
+      containerClassName={resolveStyledInputOtpClassName({
+        className: containerClassName,
+        defaultClassName: inputOtpClassNames.slot4,
+        classNameMode: containerClassNameMode,
+        classResolver: containerClassResolver,
+      })}
       spellCheck={false}
-      className={cn("disabled:cursor-not-allowed", className)}
+      className={resolveStyledInputOtpClassName({
+        className,
+        defaultClassName: inputOtpClassNames.slot0,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
+function InputOTPGroup({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  ...props
+}: InputOTPGroupProps) {
+  if (mode === "headless") {
+    return <div className={className} {...props} />
+  }
+
   return (
     <div
       data-slot="input-otp-group"
-      className={cn(
-        "flex items-center rounded-lg has-aria-invalid:border-destructive has-aria-invalid:ring-3 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40",
-        className
-      )}
+      className={resolveStyledInputOtpClassName({
+        className,
+        defaultClassName: inputOtpClassNames.slot5,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
 function InputOTPSlot({
+  mode = DEFAULT_MODE,
   index,
   className,
+  classNameMode = "merge",
+  classResolver,
+  caretContainerClassName,
+  caretContainerClassNameMode = "merge",
+  caretContainerClassResolver,
+  caretClassName,
+  caretClassNameMode = "merge",
+  caretClassResolver,
   ...props
-}: React.ComponentProps<"div"> & {
-  index: number
-}) {
+}: InputOTPSlotProps) {
   const inputOTPContext = React.useContext(OTPInputContext)
   const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}
+
+  if (mode === "headless") {
+    return (
+      <div className={className} {...props}>
+        {char}
+        {hasFakeCaret && (
+          <div className={caretContainerClassName}>
+            <div className={caretClassName} />
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div
       data-slot="input-otp-slot"
       data-active={isActive}
-      className={cn(
-        "relative flex size-8 items-center justify-center border-y border-r border-input text-sm transition-all outline-none first:rounded-l-lg first:border-l last:rounded-r-lg aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-3 data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40",
-        className
-      )}
+      className={resolveStyledInputOtpClassName({
+        className,
+        defaultClassName: inputOtpClassNames.slot6,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     >
       {char}
       {hasFakeCaret && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
+        <div
+          className={resolveStyledInputOtpClassName({
+            className: caretContainerClassName,
+            defaultClassName: inputOtpClassNames.slot1,
+            classNameMode: caretContainerClassNameMode,
+            classResolver: caretContainerClassResolver,
+          })}
+        >
+          <div
+            className={resolveStyledInputOtpClassName({
+              className: caretClassName,
+              defaultClassName: inputOtpClassNames.slot2,
+              classNameMode: caretClassNameMode,
+              classResolver: caretClassResolver,
+            })}
+          />
         </div>
       )}
     </div>
   )
 }
 
-function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
+function InputOTPSeparator({
+  mode = DEFAULT_MODE,
+  className,
+  classNameMode = "merge",
+  classResolver,
+  icon,
+  ...props
+}: InputOTPSeparatorProps) {
+  if (mode === "headless") {
+    return (
+      <div className={className} role="separator" {...props}>
+        {icon ?? <MinusIcon />}
+      </div>
+    )
+  }
+
   return (
     <div
       data-slot="input-otp-separator"
-      className="flex items-center [&_svg:not([class*='size-'])]:size-4"
+      className={resolveStyledInputOtpClassName({
+        className,
+        defaultClassName: inputOtpClassNames.slot3,
+        classNameMode,
+        classResolver,
+      })}
       role="separator"
       {...props}
     >
-      <MinusIcon />
+      {icon ?? <MinusIcon />}
     </div>
   )
 }

@@ -9,4 +9,15 @@ export {
   TableRow,
 } from "./table"
 export { tableClassNames } from "./table.styles"
-export type { TableClassNameMode, TableClassResolver } from "./table.types"
+export type {
+  TableBodyProps,
+  TableCaptionProps,
+  TableCellProps,
+  TableClassNameMode,
+  TableClassResolver,
+  TableFooterProps,
+  TableHeadProps,
+  TableHeaderProps,
+  TableProps,
+  TableRowProps,
+} from "./table.types"

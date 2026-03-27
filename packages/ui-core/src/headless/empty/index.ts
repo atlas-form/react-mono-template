@@ -6,5 +6,17 @@ export {
   EmptyMedia,
   EmptyTitle,
 } from "./empty"
-export { emptyClassNames } from "./empty.styles"
-export type { EmptyClassNameMode, EmptyClassResolver } from "./empty.types"
+export { emptyClassNames, emptyMediaVariants } from "./empty.styles"
+export type {
+  EmptyClassNameMode,
+  EmptyClassResolver,
+  EmptyContentProps,
+  EmptyDescriptionProps,
+  EmptyHeaderProps,
+  EmptyMediaClassResolver,
+  EmptyMediaProps,
+  EmptyMediaVariant,
+  EmptyMediaVariantProps,
+  EmptyProps,
+  EmptyTitleProps,
+} from "./empty.types"

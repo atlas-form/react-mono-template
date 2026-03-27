@@ -56,7 +56,11 @@ function resolveStyledClassName({
   return cn(defaultClassName, className)
 }
 
-export function Select({ ...props }: SelectProps) {
+export function Select({ mode = DEFAULT_MODE, ...props }: SelectProps) {
+  if (mode === "headless") {
+    return <SelectPrimitive.Root {...props} />
+  }
+
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
@@ -86,7 +90,11 @@ export function SelectGroup({
   )
 }
 
-export function SelectValue({ ...props }: SelectValueProps) {
+export function SelectValue({ mode = DEFAULT_MODE, ...props }: SelectValueProps) {
+  if (mode === "headless") {
+    return <SelectPrimitive.Value {...props} />
+  }
+
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
