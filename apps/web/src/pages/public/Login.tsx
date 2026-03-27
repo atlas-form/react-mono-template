@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux"
 import { useNavigate, useLocation } from "react-router"
 import { useTranslation } from "react-i18next"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -11,6 +11,13 @@ import { loginSuccess } from "@/store/authSlice"
 import { AppLink } from "@atlas-art/ui-react/adapters/react-router"
 import { Button } from "@workspace/ui-core/components/button"
 import { Input } from "@workspace/ui-core/components/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui-core/components/select"
 import {
   FormField,
   FormFieldLabel,
@@ -23,6 +30,7 @@ import {
 
 export default function LoginPage() {
   const { t } = useTranslation()
+  const [selectDemoValue, setSelectDemoValue] = useState("option-1")
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -88,6 +96,16 @@ export default function LoginPage() {
               {t("login.title")}
             </Text>
             <Text variant="muted">{t("login.subtitle")}</Text>
+            <Select value={selectDemoValue} onValueChange={setSelectDemoValue}>
+              <SelectTrigger className="mt-2 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="option-1">选项一</SelectItem>
+                <SelectItem value="option-2">选项二</SelectItem>
+                <SelectItem value="option-3">选项三</SelectItem>
+              </SelectContent>
+            </Select>
           </Stack>
 
           <form onSubmit={handleLogin}>

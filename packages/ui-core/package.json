@@ -42,6 +42,7 @@
     "./state.css": "./src/styles/state.css",
     "./components/button": "./src/components/button/index.ts",
     "./components/input": "./src/components/input/index.ts",
+    "./components/select": "./src/components/select/index.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
     "./hooks/*": "./src/hooks/*.ts"
