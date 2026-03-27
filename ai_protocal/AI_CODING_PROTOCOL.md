@@ -28,24 +28,29 @@ AI 生成代码必须兼容以上栈，不引入同类替代库（如 Zustand、
 ## 3. 新功能落地流程（必须遵守）
 
 1. 先定义数据类型
+
 - 在 `src/models` 新增/扩展 `xxxModel.ts`。
 - 接口字段保留后端原始字段语义；若前端使用不同命名，在 `api` 层做映射。
 
 2. 再封装接口
+
 - 在 `src/api/xxxApi.ts` 增加函数。
 - 统一调用 `request<T, R>`。
 - `group` 必须按网关分类：`api` / `auth` / `file`。
 
 3. 需要全局状态再进 store
+
 - 仅当跨页面共享时，新增 slice 到 `src/store`。
 - 局部 UI 状态优先 `useState`，避免过度 Redux 化。
 
 4. 路由与页面
+
 - 页面组件放到 `src/pages/public` 或 `src/pages/protected`。
 - 路由仅在 `src/routes/publicRoutes.tsx` 或 `src/routes/protectedRoutes.tsx` 注册。
 - 需要统一框架壳时放在 layout（`AppLayout` / `AuthLayout`）。
 
 5. 组件拆分
+
 - 可复用业务组件放 `src/components`。
 - 新增基础组件优先复用 `@atlas-art/ui-react`，不要重复造轮子。
 - 若 `ui-react` 当前能力不足，需要补充基础组件时，先参考 `ui-react` + `ui-core` 的现有实现/风格。
@@ -55,6 +60,7 @@ AI 生成代码必须兼容以上栈，不引入同类替代库（如 Zustand、
 - 这样后续可将成熟组件归档回外部库（`ui-react` / `ui-core`）。
 
 6. 文案与主题同步
+
 - 可见文案接入 i18n，不硬编码。
 - 新增 key 时同步更新：
   - `public/locales/en/translation.json`

@@ -56,15 +56,14 @@
   }
 
   .ui-panel-note {
-    @apply text-sm text-(--app-muted-text) break-all;
+    @apply text-sm break-all text-(--app-muted-text);
   }
 
   .ui-code-card {
-    @apply rounded bg-(--app-hover) p-3 text-xs text-(--app-muted-text) space-y-1;
+    @apply space-y-1 rounded bg-(--app-hover) p-3 text-xs text-(--app-muted-text);
   }
 
   .ui-break-all {
     @apply break-all;
   }
-
 }

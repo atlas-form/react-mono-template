@@ -1,27 +1,27 @@
-import { createPortal } from "react-dom";
-import Cropper from "react-easy-crop";
-import type { Area, Point } from "react-easy-crop";
-import "react-easy-crop/react-easy-crop.css";
+import { createPortal } from "react-dom"
+import Cropper from "react-easy-crop"
+import type { Area, Point } from "react-easy-crop"
+import "react-easy-crop/react-easy-crop.css"
 
 interface ImageCropperModalProps {
-  open: boolean;
-  imageUrl: string;
-  crop: Point;
-  zoom: number;
-  minZoom?: number;
-  maxZoom?: number;
-  confirming?: boolean;
-  onCropChange: (value: Point) => void;
-  onZoomChange: (value: number) => void;
-  onCropComplete: (areaPixels: Area) => void;
-  onCancel: () => void;
-  onConfirm: () => void;
-  title?: string;
-  description?: string;
-  zoomLabel?: string;
-  cancelLabel?: string;
-  confirmLabel?: string;
-  confirmingLabel?: string;
+  open: boolean
+  imageUrl: string
+  crop: Point
+  zoom: number
+  minZoom?: number
+  maxZoom?: number
+  confirming?: boolean
+  onCropChange: (value: Point) => void
+  onZoomChange: (value: number) => void
+  onCropComplete: (areaPixels: Area) => void
+  onCancel: () => void
+  onConfirm: () => void
+  title?: string
+  description?: string
+  zoomLabel?: string
+  cancelLabel?: string
+  confirmLabel?: string
+  confirmingLabel?: string
 }
 
 export default function ImageCropperModal({
@@ -44,7 +44,7 @@ export default function ImageCropperModal({
   confirmLabel = "Save",
   confirmingLabel = "Uploading...",
 }: ImageCropperModalProps) {
-  if (!open || typeof document === "undefined") return null;
+  if (!open || typeof document === "undefined") return null
 
   return createPortal(
     <div className="ui-modal-backdrop">
@@ -63,7 +63,9 @@ export default function ImageCropperModal({
             maxZoom={maxZoom}
             cropShape="round"
             showGrid={false}
-            classes={{ containerClassName: "cursor-grab active:cursor-grabbing" }}
+            classes={{
+              containerClassName: "cursor-grab active:cursor-grabbing",
+            }}
             style={{
               cropAreaStyle: {
                 border: "2px solid rgba(255,255,255,0.95)",
@@ -109,6 +111,6 @@ export default function ImageCropperModal({
         </div>
       </div>
     </div>,
-    document.body,
-  );
+    document.body
+  )
 }

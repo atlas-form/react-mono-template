@@ -144,11 +144,9 @@ export function SelectTrigger({
       {children}
       {!hideIndicator && (
         <SelectPrimitive.Icon asChild>
-          {
-            indicator ?? (
-              <Icon name="arrow-down" className={resolvedIndicatorClassName} />
-            )
-          }
+          {indicator ?? (
+            <Icon name="arrow-down" className={resolvedIndicatorClassName} />
+          )}
         </SelectPrimitive.Icon>
       )}
     </SelectPrimitive.Trigger>

@@ -90,7 +90,7 @@ interface UpdateProfileRequestBody {
 }
 
 export const updatePasswordApi = async (
-  payload: UpdatePasswordPayload,
+  payload: UpdatePasswordPayload
 ): Promise<void> => {
   await request<UpdatePasswordPayload, undefined>({
     method: "PUT",
@@ -101,7 +101,7 @@ export const updatePasswordApi = async (
 }
 
 export const updateEmailApi = async (
-  payload: UpdateEmailPayload,
+  payload: UpdateEmailPayload
 ): Promise<void> => {
   await request<UpdateEmailPayload, undefined>({
     method: "PUT",
@@ -112,7 +112,7 @@ export const updateEmailApi = async (
 }
 
 export const updateProfileApi = async (
-  payload: UpdateProfilePayload,
+  payload: UpdateProfilePayload
 ): Promise<void> => {
   const body: UpdateProfileRequestBody = {
     display_name: payload.displayName,

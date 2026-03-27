@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next";
-import { Button } from "@workspace/ui-core/components/button";
+import { useTranslation } from "react-i18next"
+import { Button } from "@workspace/ui-core/components/button"
 import {
   Card,
   CardContent,
@@ -7,10 +7,10 @@ import {
   CardTitle,
   Stack,
   Text,
-} from "@atlas-art/ui-react";
+} from "@atlas-art/ui-react"
 
 export default function GuidePage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="space-y-10 py-4">
@@ -50,14 +50,14 @@ export default function GuidePage() {
                 <Button
                   type="button"
                   unstyled
-                  className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)] [clip-path:polygon(12%_0,100%_0,88%_100%,0_100%)]"
+                  className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors [clip-path:polygon(12%_0,100%_0,88%_100%,0_100%)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)]"
                 >
                   左斜按钮
                 </Button>
                 <Button
                   type="button"
                   unstyled
-                  className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)] [clip-path:polygon(0_0,88%_0,100%_100%,12%_100%)]"
+                  className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors [clip-path:polygon(0_0,88%_0,100%_100%,12%_100%)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)]"
                 >
                   右斜按钮
                 </Button>
@@ -81,5 +81,5 @@ export default function GuidePage() {
         </Stack>
       </section>
     </div>
-  );
+  )
 }

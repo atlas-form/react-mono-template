@@ -1,5 +1,10 @@
 export { Alert, AlertAction, AlertDescription, AlertTitle } from "./alert"
-export { alertVariants } from "./alert.styles"
+export {
+  alertActionClassName,
+  alertDescriptionClassName,
+  alertTitleClassName,
+  alertVariants,
+} from "./alert.styles"
 export type {
   AlertActionProps,
   AlertClassResolver,

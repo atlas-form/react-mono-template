@@ -29,6 +29,7 @@
   - 简体中文翻译资源。
 
 说明：
+
 - `translation.json` 放通用业务文案。
 - `error.json` 放错误码文案（与后端 code 对齐）。
 

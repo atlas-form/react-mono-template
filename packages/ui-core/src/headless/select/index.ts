@@ -10,7 +10,25 @@ export {
   SelectTrigger,
   SelectValue,
 } from "./select"
+export {
+  selectContentBaseClassName,
+  selectContentPopperOffsetClassName,
+  selectContentVariantClassNames,
+  selectGroupClassName,
+  selectItemClassName,
+  selectItemIndicatorContainerClassName,
+  selectItemVariantClassNames,
+  selectLabelClassName,
+  selectScrollButtonClassName,
+  selectSeparatorClassName,
+  selectTriggerClassName,
+  selectTriggerIconClassName,
+  selectTriggerVariantClassNames,
+  selectViewportClassName,
+} from "./select.styles"
 export type {
+  SelectClassNameMode,
+  SelectClassResolver,
   SelectContentProps,
   SelectGroupProps,
   SelectItemProps,

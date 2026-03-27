@@ -24,7 +24,7 @@
   }
 
   .ui-header-item {
-    @apply block w-full rounded-lg px-3 py-2 text-left text-sm transition text-(--app-text) hover:bg-(--app-active-bg) hover:text-(--app-active-text);
+    @apply block w-full rounded-lg px-3 py-2 text-left text-sm text-(--app-text) transition hover:bg-(--app-active-bg) hover:text-(--app-active-text);
   }
 
   .ui-header-item-active {

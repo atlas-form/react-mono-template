@@ -1,14 +1,13 @@
-import { defineConfig } from "vitest/config";
-import { loadEnv } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "node:path";
+import { defineConfig } from "vitest/config"
+import { loadEnv } from "vite"
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react-swc"
+import path from "node:path"
 
 export default defineConfig(({ mode }) => {
   const envDir =
-    process.env.FRONTEND_ENV_DIR ??
-    path.resolve(__dirname, "../../");
-  const env = loadEnv(mode, envDir, "");
+    process.env.FRONTEND_ENV_DIR ?? path.resolve(__dirname, "../../")
+  const env = loadEnv(mode, envDir, "")
 
   return {
     envDir,
@@ -22,29 +21,30 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (!id.includes("node_modules")) return;
+            if (!id.includes("node_modules")) return
 
-            if (id.includes("react-toastify")) return "vendor-toast";
-            if (id.includes("@tanstack/react-query")) return "vendor-query";
+            if (id.includes("react-toastify")) return "vendor-toast"
+            if (id.includes("@tanstack/react-query")) return "vendor-query"
             if (
               id.includes("i18next") ||
               id.includes("react-i18next") ||
               id.includes("i18next-browser-languagedetector") ||
               id.includes("i18next-http-backend")
             ) {
-              return "vendor-i18n";
+              return "vendor-i18n"
             }
             if (
               id.includes("@reduxjs/toolkit") ||
               id.includes("react-redux") ||
               id.includes("redux")
             ) {
-              return "vendor-redux";
+              return "vendor-redux"
             }
-            if (id.includes("react-router")) return "vendor-router";
-            if (id.includes("react") || id.includes("scheduler")) return "vendor-react";
+            if (id.includes("react-router")) return "vendor-router"
+            if (id.includes("react") || id.includes("scheduler"))
+              return "vendor-react"
 
-            return "vendor-misc";
+            return "vendor-misc"
           },
         },
       },
@@ -82,5 +82,5 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-  };
-});
+  }
+})

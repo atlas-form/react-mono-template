@@ -1,60 +1,63 @@
-import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RouterProvider, createBrowserRouter, Navigate } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ToastContainer } from "react-toastify";
-import { loginSuccess } from "@/store/authSlice";
-import type { RootState } from "@/store";
-import { publicRoutes } from "@/routes/publicRoutes";
-import { protectedRoutes } from "@/routes/protectedRoutes";
-import PageLoading from "@/components/system/PageLoading";
-import { meApi } from "./api";
-import { toAppError } from "@/errors/appError";
+import { useEffect, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { RouterProvider, createBrowserRouter, Navigate } from "react-router"
+import { useQuery } from "@tanstack/react-query"
+import { ToastContainer } from "react-toastify"
+import { loginSuccess } from "@/store/authSlice"
+import type { RootState } from "@/store"
+import { publicRoutes } from "@/routes/publicRoutes"
+import { protectedRoutes } from "@/routes/protectedRoutes"
+import PageLoading from "@/components/system/PageLoading"
+import { meApi } from "./api"
+import { toAppError } from "@/errors/appError"
 
 export default function App() {
-	const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-	const dispatch = useDispatch();
-	const token = localStorage.getItem("token");
+  const isLogin = useSelector((state: RootState) => state.auth.isLogin)
+  const dispatch = useDispatch()
+  const token = localStorage.getItem("token")
 
-	const restoreQuery = useQuery({
-		queryKey: ["auth", "restore", token],
-		enabled: Boolean(token),
-		retry: false,
-		queryFn: async () => meApi(),
-	});
+  const restoreQuery = useQuery({
+    queryKey: ["auth", "restore", token],
+    enabled: Boolean(token),
+    retry: false,
+    queryFn: async () => meApi(),
+  })
 
-	useEffect(() => {
-		if (!token || !restoreQuery.data) return;
-		dispatch(loginSuccess({ token, user: restoreQuery.data }));
-	}, [dispatch, restoreQuery.data, token]);
+  useEffect(() => {
+    if (!token || !restoreQuery.data) return
+    dispatch(loginSuccess({ token, user: restoreQuery.data }))
+  }, [dispatch, restoreQuery.data, token])
 
-	useEffect(() => {
-		if (!restoreQuery.isError) return;
-		console.warn("🔁 Failed to restore session:", toAppError(restoreQuery.error));
-		localStorage.removeItem("token");
-		localStorage.removeItem("refreshToken");
-	}, [restoreQuery.error, restoreQuery.isError]);
+  useEffect(() => {
+    if (!restoreQuery.isError) return
+    console.warn(
+      "🔁 Failed to restore session:",
+      toAppError(restoreQuery.error)
+    )
+    localStorage.removeItem("token")
+    localStorage.removeItem("refreshToken")
+  }, [restoreQuery.error, restoreQuery.isError])
 
-	const isRestored = !token || restoreQuery.status !== "pending";
+  const isRestored = !token || restoreQuery.status !== "pending"
 
-	const router = useMemo(() => {
-		if (!isRestored) return null;
+  const router = useMemo(() => {
+    if (!isRestored) return null
 
-		return createBrowserRouter([
-			isLogin ? protectedRoutes : publicRoutes,
-			{
-				path: "*",
-				element: <Navigate to={isLogin ? "/" : "/login"} replace />,
-			},
-		]);
-	}, [isLogin, isRestored]);
+    return createBrowserRouter([
+      isLogin ? protectedRoutes : publicRoutes,
+      {
+        path: "*",
+        element: <Navigate to={isLogin ? "/" : "/login"} replace />,
+      },
+    ])
+  }, [isLogin, isRestored])
 
-	if (!router) return <PageLoading fullscreen />;
+  if (!router) return <PageLoading fullscreen />
 
-	return (
-		<>
-			<RouterProvider router={router} />
-			<ToastContainer />
-		</>
-	);
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
+  )
 }

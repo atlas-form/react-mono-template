@@ -1,1 +1,1 @@
-export const directionClassNames = {} as const
+export const directionBaseClassName = "intentionally-empty"

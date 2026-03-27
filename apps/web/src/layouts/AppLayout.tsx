@@ -1,7 +1,7 @@
-import { Link, Outlet } from "react-router";
-import HeaderMe from "@/components/header/HeaderMe";
-import HeaderLanguageSwitcher from "@/components/header/HeaderLanguageSwitcher";
-import HeaderThemeSwitcher from "@/components/header/HeaderThemeSwitcher";
+import { Link, Outlet } from "react-router"
+import HeaderMe from "@/components/header/HeaderMe"
+import HeaderLanguageSwitcher from "@/components/header/HeaderLanguageSwitcher"
+import HeaderThemeSwitcher from "@/components/header/HeaderThemeSwitcher"
 
 export default function AppLayout() {
   return (
@@ -35,5 +35,5 @@ export default function AppLayout() {
         </div>
       </footer>
     </div>
-  );
+  )
 }

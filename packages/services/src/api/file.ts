@@ -41,7 +41,7 @@ export interface DeleteSignResponse {
 }
 
 export const getAccessSignApi = async (
-  query: AccessSignQuery,
+  query: AccessSignQuery
 ): Promise<DownloadSignResponse> => {
   return request<AccessSignQuery, DownloadSignResponse>({
     method: "GET",
@@ -52,7 +52,7 @@ export const getAccessSignApi = async (
 }
 
 export const getDeleteSignApi = async (
-  query: DeleteSignQuery,
+  query: DeleteSignQuery
 ): Promise<DeleteSignResponse> => {
   return request<DeleteSignQuery, DeleteSignResponse>({
     method: "GET",
@@ -71,7 +71,7 @@ export const getUploadAvatarSignApi = async (): Promise<UploadSignResponse> => {
 }
 
 export const getUploadDocumentSignApi = async (
-  query: UploadExtQuery,
+  query: UploadExtQuery
 ): Promise<UploadSignResponse> => {
   return request<UploadExtQuery, UploadSignResponse>({
     method: "GET",
@@ -82,7 +82,7 @@ export const getUploadDocumentSignApi = async (
 }
 
 export const getUploadImageSignApi = async (
-  query: UploadExtQuery,
+  query: UploadExtQuery
 ): Promise<UploadSignResponse> => {
   return request<UploadExtQuery, UploadSignResponse>({
     method: "GET",
@@ -97,7 +97,7 @@ export const uploadWithSignedUrlApi = async (
   sign: UploadSignResponse,
   options?: {
     contentType?: string
-  },
+  }
 ): Promise<Response> => {
   const headers = new Headers({
     Authorization: sign.headers.authorization,
@@ -127,7 +127,7 @@ export const uploadWithSignedUrlApi = async (
 }
 
 export const deleteWithSignedUrlApi = async (
-  sign: DeleteSignResponse,
+  sign: DeleteSignResponse
 ): Promise<Response> => {
   const headers = new Headers({
     Authorization: sign.headers.authorization,

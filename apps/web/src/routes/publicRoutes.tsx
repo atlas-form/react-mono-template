@@ -1,13 +1,13 @@
-import { Suspense, type ReactNode } from "react";
-import type { RouteObject } from "react-router";
-import { Navigate } from "react-router";
-import AuthLayout from "@/layouts/AuthLayout";
-import PageLoading from "@/components/system/PageLoading";
-import RouteErrorBoundary from "@/components/system/RouteErrorBoundary";
-import { GuidePage, LoginPage, RegisterPage } from "@/routes/lazy/publicPages";
+import { Suspense, type ReactNode } from "react"
+import type { RouteObject } from "react-router"
+import { Navigate } from "react-router"
+import AuthLayout from "@/layouts/AuthLayout"
+import PageLoading from "@/components/system/PageLoading"
+import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
+import { GuidePage, LoginPage, RegisterPage } from "@/routes/lazy/publicPages"
 
 function withSuspense(node: ReactNode) {
-  return <Suspense fallback={<PageLoading />}>{node}</Suspense>;
+  return <Suspense fallback={<PageLoading />}>{node}</Suspense>
 }
 
 export const publicRoutes: RouteObject = {
@@ -32,4 +32,4 @@ export const publicRoutes: RouteObject = {
       element: withSuspense(<GuidePage />),
     },
   ],
-};
+}

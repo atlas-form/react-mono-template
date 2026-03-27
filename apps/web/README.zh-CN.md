@@ -82,9 +82,11 @@ my-app/
 S3 上传签名服务使用 [file-service](https://github.com/code-serenade/file-service)。
 
 前端上传流程：
+
 - 先请求签名接口获取上传参数
 - 再通过签名 URL 直传到对象存储
 
 相关前端代码：
+
 - `src/api/fileApi.ts`
 - `src/components/S3UploadPanel.tsx`

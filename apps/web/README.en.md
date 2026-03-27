@@ -82,9 +82,11 @@ Run it locally if you want to use login and user features.
 S3 upload signing is powered by [file-service](https://github.com/code-serenade/file-service).
 
 Frontend upload flow:
+
 - Request a signing endpoint first to get upload parameters
 - Upload directly to object storage through the signed URL
 
 Related frontend files:
+
 - `src/api/fileApi.ts`
 - `src/components/S3UploadPanel.tsx`

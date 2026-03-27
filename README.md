@@ -17,11 +17,11 @@ This will place the ui components in the `packages/ui-core/src/components` direc
 To use the components in your app, import them from the `ui-core` package.
 
 ```tsx
-import { Button } from "@workspace/ui-core/components/button";
+import { Button } from "@workspace/ui-core/components/button"
 ```
 
 Global theme styles are exported from `ui-theme`:
 
 ```tsx
-import "@workspace/ui-core/globals.css";
+import "@workspace/ui-core/globals.css"
 ```

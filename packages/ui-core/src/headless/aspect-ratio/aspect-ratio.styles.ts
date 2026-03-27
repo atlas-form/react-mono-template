@@ -1,1 +1,1 @@
-export const aspectRatioClassNames = {} as const
+export const aspectRatioBaseClassName = "intentionally-empty"

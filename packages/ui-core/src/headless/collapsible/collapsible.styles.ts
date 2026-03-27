@@ -1,1 +1,1 @@
-export const collapsibleClassNames = {} as const
+export const collapsibleBaseClassName = "intentionally-empty"

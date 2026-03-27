@@ -34,8 +34,8 @@ export async function request<T = unknown, R = unknown>({
           if (v != null) acc[k] = String(v)
           return acc
         },
-        {} as Record<string, string>,
-      ),
+        {} as Record<string, string>
+      )
     ).toString()
 
     finalUrl = `${url}?${queryParams}`
@@ -72,7 +72,7 @@ export function streamRequest<
 export async function upload(
   fullUrl: string,
   formData: FormData,
-  onError?: (err: Error) => void,
+  onError?: (err: Error) => void
 ): Promise<Response> {
   return httpClient.uploadFile(fullUrl, formData, onError)
 }

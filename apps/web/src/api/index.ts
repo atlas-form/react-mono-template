@@ -14,7 +14,7 @@ export {
   type UpdatePasswordPayload,
   type UpdateProfilePayload,
   type UserInfo,
-} from "@workspace/services/api/auth";
+} from "@workspace/services/api/auth"
 
 export {
   deleteWithSignedUrlApi,
@@ -30,4 +30,4 @@ export {
   type DownloadSignResponse,
   type UploadExtQuery,
   type UploadSignResponse,
-} from "@workspace/services/api/file";
+} from "@workspace/services/api/file"

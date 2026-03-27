@@ -1,15 +1,15 @@
-import { z } from "zod";
-import type { TFunction } from "i18next";
+import { z } from "zod"
+import type { TFunction } from "i18next"
 
 export function createLoginSchema(t: TFunction) {
   return z.object({
     identifier: z.string().trim().min(1, t("common.validation.required")),
     password: z.string().trim().min(1, t("common.validation.required")),
-  });
+  })
 }
 
 export function createRegisterSchema(t: TFunction) {
-  const emailValidator = z.email();
+  const emailValidator = z.email()
 
   return z
     .object({
@@ -22,7 +22,7 @@ export function createRegisterSchema(t: TFunction) {
           (value) => value === "" || emailValidator.safeParse(value).success,
           {
             message: t("common.validation.emailInvalid"),
-          },
+          }
         ),
       password: z.string().trim().min(1, t("common.validation.required")),
       confirmPassword: z
@@ -33,5 +33,5 @@ export function createRegisterSchema(t: TFunction) {
     .refine((value) => value.password === value.confirmPassword, {
       path: ["confirmPassword"],
       message: t("register.error.passwordMismatch"),
-    });
+    })
 }

@@ -1,17 +1,17 @@
-import { Link, useNavigate } from "react-router";
-import { useTranslation } from "react-i18next";
-import { useMemo } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { registerApi } from "@/api";
-import { createRegisterSchema } from "@/forms/authSchemas";
+import { Link, useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
+import { useMemo } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { registerApi } from "@/api"
+import { createRegisterSchema } from "@/forms/authSchemas"
 
 export default function RegisterPage() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const registerSchema = useMemo(() => createRegisterSchema(t), [t]);
-  type RegisterFormValues = z.infer<typeof registerSchema>;
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const registerSchema = useMemo(() => createRegisterSchema(t), [t])
+  type RegisterFormValues = z.infer<typeof registerSchema>
   const {
     register,
     handleSubmit,
@@ -25,7 +25,7 @@ export default function RegisterPage() {
       password: "",
       confirmPassword: "",
     },
-  });
+  })
 
   const handleRegister = handleSubmit(async (values) => {
     const payload = {
@@ -33,22 +33,20 @@ export default function RegisterPage() {
       password: values.password,
       display_name: values.displayName.trim() || undefined,
       email: values.email.trim() || undefined,
-    };
-    try {
-      await registerApi(payload);
-      navigate("/login", { replace: true });
-    } catch (err) {
-      console.error("Register failed:", err);
     }
-  });
+    try {
+      await registerApi(payload)
+      navigate("/login", { replace: true })
+    } catch (err) {
+      console.error("Register failed:", err)
+    }
+  })
 
   return (
     <div className="ui-auth-shell">
       <section className="ui-auth-aside">
         <div>
-          <p className="ui-auth-aside-brand">
-            {t("register.brand")}
-          </p>
+          <p className="ui-auth-aside-brand">{t("register.brand")}</p>
           <h1 className="ui-auth-aside-title">
             {t("register.hero.titleLine1")}
             <br />
@@ -64,12 +62,8 @@ export default function RegisterPage() {
 
       <section className="ui-auth-content">
         <div className="ui-auth-content-header">
-          <p className="ui-auth-content-kicker">
-            {t("register.welcome")}
-          </p>
-          <h2 className="ui-auth-content-title">
-            {t("register.title")}
-          </h2>
+          <p className="ui-auth-content-kicker">{t("register.welcome")}</p>
+          <h2 className="ui-auth-content-title">{t("register.title")}</h2>
           <p className="ui-auth-content-subtitle">{t("register.subtitle")}</p>
         </div>
 
@@ -154,20 +148,19 @@ export default function RegisterPage() {
             disabled={isSubmitting}
             className="ui-btn-primary"
           >
-            {isSubmitting ? t("register.form.submitting") : t("register.form.submit")}
+            {isSubmitting
+              ? t("register.form.submitting")
+              : t("register.form.submit")}
           </button>
         </form>
 
         <p className="ui-auth-footer">
           {t("register.footer.toLoginPrefix")}{" "}
-          <Link
-            to="/login"
-            className="ui-link-primary"
-          >
+          <Link to="/login" className="ui-link-primary">
             {t("register.footer.toLoginAction")}
           </Link>
         </p>
       </section>
     </div>
-  );
+  )
 }

@@ -1,37 +1,107 @@
-import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
 import { cn } from "@workspace/ui-core/lib/utils"
 import { Separator } from "@workspace/ui-core/headless/separator"
+import {
+  buttonGroupBaseClassName,
+  buttonGroupOrientationClassNames,
+  buttonGroupSeparatorClassName,
+  buttonGroupTextClassName,
+} from "./button-group.styles"
+import type {
+  ButtonGroupClassResolver,
+  ButtonGroupOrientation,
+  ButtonGroupProps,
+  ButtonGroupSeparatorProps,
+  ButtonGroupTextProps,
+} from "./button-group.types"
 
-const buttonGroupVariants = cva(
-  "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
-  {
-    variants: {
-      orientation: {
-        horizontal:
-          "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:first-child)]:border-l-0 [&>*:not(:last-child)]:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg!",
-        vertical:
-          "flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg!",
-      },
-    },
-    defaultVariants: {
-      orientation: "horizontal",
-    },
+function resolveClassName({
+  className,
+  defaultClassName,
+  unstyled,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  defaultClassName: string
+  unstyled: boolean
+  classNameMode: "merge" | "replace"
+  classResolver?: (params: {
+    defaultClassName: string
+    className?: string
+  }) => string
+}) {
+  if (unstyled) {
+    return className
   }
-)
+
+  if (classResolver) {
+    return classResolver({ defaultClassName, className })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
+
+function resolveButtonGroupClassName({
+  className,
+  orientation,
+  unstyled,
+  classNameMode,
+  classResolver,
+}: {
+  className?: string
+  orientation: ButtonGroupOrientation
+  unstyled: boolean
+  classNameMode: "merge" | "replace"
+  classResolver?: ButtonGroupClassResolver
+}) {
+  const defaultClassName = cn(
+    buttonGroupBaseClassName,
+    buttonGroupOrientationClassNames[orientation]
+  )
+
+  if (unstyled) {
+    return className
+  }
+
+  if (classResolver) {
+    return classResolver({ orientation, defaultClassName, className })
+  }
+
+  if (classNameMode === "replace") {
+    return className ?? defaultClassName
+  }
+
+  return cn(defaultClassName, className)
+}
 
 function ButtonGroup({
   className,
-  orientation,
+  orientation = "horizontal",
+  unstyled = false,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof buttonGroupVariants>) {
+}: ButtonGroupProps) {
+  const resolvedOrientation = orientation as ButtonGroupOrientation
+
   return (
     <div
       role="group"
       data-slot="button-group"
-      data-orientation={orientation}
-      className={cn(buttonGroupVariants({ orientation }), className)}
+      data-orientation={resolvedOrientation}
+      className={resolveButtonGroupClassName({
+        className,
+        orientation: resolvedOrientation,
+        unstyled,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
@@ -40,18 +110,22 @@ function ButtonGroup({
 function ButtonGroupText({
   className,
   asChild = false,
+  unstyled = false,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<"div"> & {
-  asChild?: boolean
-}) {
+}: ButtonGroupTextProps) {
   const Comp = asChild ? Slot.Root : "div"
 
   return (
     <Comp
-      className={cn(
-        "flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
+      className={resolveClassName({
+        className,
+        defaultClassName: buttonGroupTextClassName,
+        unstyled,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
@@ -60,24 +134,25 @@ function ButtonGroupText({
 function ButtonGroupSeparator({
   className,
   orientation = "vertical",
+  unstyled = false,
+  classNameMode = "merge",
+  classResolver,
   ...props
-}: React.ComponentProps<typeof Separator>) {
+}: ButtonGroupSeparatorProps) {
   return (
     <Separator
       data-slot="button-group-separator"
       orientation={orientation}
-      className={cn(
-        "relative self-stretch bg-input data-horizontal:mx-px data-horizontal:w-auto data-vertical:my-px data-vertical:h-auto",
-        className
-      )}
+      className={resolveClassName({
+        className,
+        defaultClassName: buttonGroupSeparatorClassName,
+        unstyled,
+        classNameMode,
+        classResolver,
+      })}
       {...props}
     />
   )
 }
 
-export {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-  buttonGroupVariants,
-}
+export { ButtonGroup, ButtonGroupSeparator, ButtonGroupText }

@@ -27,7 +27,10 @@ function resolveClassName({
   defaultClassName: string
   unstyled: boolean
   classNameMode: "merge" | "replace"
-  classResolver?: (params: { defaultClassName: string; className?: string }) => string
+  classResolver?: (params: {
+    defaultClassName: string
+    className?: string
+  }) => string
 }) {
   if (unstyled) {
     return className

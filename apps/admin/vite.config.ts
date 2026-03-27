@@ -5,8 +5,7 @@ import { defineConfig, loadEnv } from "vite"
 
 export default defineConfig(({ mode }) => {
   const envDir =
-    process.env.FRONTEND_ENV_DIR ??
-    path.resolve(__dirname, "../../")
+    process.env.FRONTEND_ENV_DIR ?? path.resolve(__dirname, "../../")
   const env = loadEnv(mode, envDir, "")
 
   return {

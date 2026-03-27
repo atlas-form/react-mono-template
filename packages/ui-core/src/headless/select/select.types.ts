@@ -9,13 +9,17 @@ export type SelectClassResolver = (params: {
   className?: string
 }) => string
 
-export type SelectGroupProps = React.ComponentProps<typeof SelectPrimitive.Group> & {
+export type SelectGroupProps = React.ComponentProps<
+  typeof SelectPrimitive.Group
+> & {
   unstyled?: boolean
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }
 
-export type SelectValueProps = React.ComponentProps<typeof SelectPrimitive.Value>
+export type SelectValueProps = React.ComponentProps<
+  typeof SelectPrimitive.Value
+>
 
 export type SelectTriggerProps = React.ComponentProps<
   typeof SelectPrimitive.Trigger
@@ -59,7 +63,9 @@ export type SelectLabelProps = React.ComponentProps<
   classResolver?: SelectClassResolver
 }
 
-export type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
+export type SelectItemProps = React.ComponentProps<
+  typeof SelectPrimitive.Item
+> & {
   variant?: "default" | "primary" | "destructive"
   hideIndicator?: boolean
   indicator?: React.ReactNode

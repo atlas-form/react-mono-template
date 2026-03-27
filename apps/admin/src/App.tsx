@@ -10,7 +10,7 @@ export function App() {
           <p>Start adding dashboard pages and management modules here.</p>
           <Button className="mt-2">Admin Button</Button>
         </div>
-        <div className="text-muted-foreground font-mono text-xs">
+        <div className="font-mono text-xs text-muted-foreground">
           (Press <kbd>d</kbd> to toggle dark mode)
         </div>
       </div>

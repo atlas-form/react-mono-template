@@ -14,7 +14,7 @@
   }
 
   .ui-auth-aside-title {
-    @apply mt-4 text-4xl font-semibold leading-tight;
+    @apply mt-4 text-4xl leading-tight font-semibold;
     font-family: var(--ui-font-hero);
   }
 
@@ -23,7 +23,7 @@
   }
 
   .ui-auth-aside-decoration {
-    @apply pointer-events-none absolute -bottom-14 -right-14 h-44 w-44 rounded-full border border-(--app-border);
+    @apply pointer-events-none absolute -right-14 -bottom-14 h-44 w-44 rounded-full border border-(--app-border);
   }
 
   .ui-auth-content {

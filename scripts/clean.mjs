@@ -1,17 +1,17 @@
-import { execSync } from 'node:child_process'
-import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { execSync } from "node:child_process"
+import { existsSync, readdirSync, rmSync, statSync } from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
-const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const removableDirs = new Set([
-  'node_modules',
-  'dist',
-  'build',
-  '.turbo',
-  '.cache',
-  '.vite',
-  'coverage',
+  "node_modules",
+  "dist",
+  "build",
+  ".turbo",
+  ".cache",
+  ".vite",
+  "coverage",
 ])
 
 const removed = []
@@ -19,7 +19,7 @@ const removedTsBuildInfo = []
 
 function removeDir(target) {
   rmSync(target, { recursive: true, force: true })
-  removed.push(path.relative(rootDir, target) || '.')
+  removed.push(path.relative(rootDir, target) || ".")
 }
 
 function walk(dir) {
@@ -34,7 +34,7 @@ function walk(dir) {
         continue
       }
 
-      if (entry.name === '.git') {
+      if (entry.name === ".git") {
         continue
       }
 
@@ -42,7 +42,7 @@ function walk(dir) {
       continue
     }
 
-    if (entry.isFile() && entry.name.endsWith('.tsbuildinfo')) {
+    if (entry.isFile() && entry.name.endsWith(".tsbuildinfo")) {
       rmSync(fullPath, { force: true })
       removedTsBuildInfo.push(path.relative(rootDir, fullPath))
     }
@@ -63,12 +63,12 @@ if (removedTsBuildInfo.length > 0) {
   }
 }
 
-if (existsSync(path.join(rootDir, 'pnpm-lock.yaml'))) {
-  console.log('[clean] running pnpm store prune...')
-  execSync('pnpm store prune', {
+if (existsSync(path.join(rootDir, "pnpm-lock.yaml"))) {
+  console.log("[clean] running pnpm store prune...")
+  execSync("pnpm store prune", {
     cwd: rootDir,
-    stdio: 'inherit',
+    stdio: "inherit",
   })
 }
 
-console.log('[clean] done')
+console.log("[clean] done")
