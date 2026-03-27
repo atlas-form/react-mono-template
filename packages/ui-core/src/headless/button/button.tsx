@@ -1,38 +1,37 @@
 import { Slot } from "radix-ui"
 
+import { DEFAULT_MODE, type BaseMode } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { buttonVariants } from "./button.styles"
 import type {
   ButtonClassResolver,
+  ButtonColor,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
 } from "./button.types"
 
-function resolveButtonClassName({
+function resolveStyledClassName({
   className,
   variant,
+  color,
   size,
-  unstyled,
   classNameMode,
   classResolver,
 }: {
   className?: string
   variant: ButtonVariant
+  color: ButtonColor
   size: ButtonSize
-  unstyled: boolean
   classNameMode: "merge" | "replace"
   classResolver?: ButtonClassResolver
 }) {
-  if (unstyled) {
-    return className
-  }
-
-  const defaultClassName = buttonVariants({ variant, size })
+  const defaultClassName = buttonVariants({ variant, color, size })
 
   if (classResolver) {
     return classResolver({
       variant,
+      color,
       size,
       defaultClassName,
       className,
@@ -47,23 +46,43 @@ function resolveButtonClassName({
 }
 
 export function Button({
-  className,
-  variant = "default",
-  size = "default",
+  mode = DEFAULT_MODE,
   asChild = false,
-  unstyled = false,
-  classNameMode = "merge",
-  classResolver,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot.Root : "button"
+  const resolvedMode: BaseMode = mode
+
+  if (resolvedMode === "headless") {
+    const {
+      className,
+      variant: _variant,
+      color: _color,
+      size: _size,
+      classNameMode: _classNameMode,
+      classResolver: _classResolver,
+      ...rest
+    } = props
+    return <Comp className={className} {...rest} />
+  }
+
+  const {
+    className,
+    variant = "default",
+    color = "default",
+    size = "default",
+    classNameMode = "merge",
+    classResolver,
+    ...styledProps
+  } = props
   const resolvedVariant = (variant ?? "default") as ButtonVariant
+  const resolvedColor = (color ?? "default") as ButtonColor
   const resolvedSize = (size ?? "default") as ButtonSize
-  const resolvedClassName = resolveButtonClassName({
+  const resolvedClassName = resolveStyledClassName({
     className,
     variant: resolvedVariant,
+    color: resolvedColor,
     size: resolvedSize,
-    unstyled,
     classNameMode,
     classResolver,
   })
@@ -72,9 +91,10 @@ export function Button({
     <Comp
       data-slot="button"
       data-variant={resolvedVariant}
+      data-color={resolvedColor}
       data-size={resolvedSize}
       className={resolvedClassName}
-      {...props}
+      {...styledProps}
     />
   )
 }

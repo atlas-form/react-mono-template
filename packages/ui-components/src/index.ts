@@ -1,8 +1,8 @@
-export { Button } from "./components/button"
-export type { ButtonProps, ButtonTone } from "./components/button"
+export { Button } from "./components/stable/button"
+export type { ButtonProps, ButtonTone } from "./components/stable/button"
 
-export { Input, inputClassName } from "./components/input"
-export type { InputClassResolver, InputProps } from "./components/input"
+export { Input, inputClassName } from "./components/stable/input"
+export type { InputClassResolver, InputProps } from "./components/stable/input"
 
 export {
   Select,
@@ -15,7 +15,7 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "./components/select"
+} from "./components/stable/select"
 export type {
   SelectContentProps,
   SelectGroupProps,
@@ -28,4 +28,4 @@ export type {
   SelectTone,
   SelectTriggerProps,
   SelectValueProps,
-} from "./components/select"
+} from "./components/stable/select"

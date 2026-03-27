@@ -6,7 +6,7 @@ import useEmblaCarousel, {
 } from "embla-carousel-react"
 
 import { cn } from "../../lib/utils"
-import { Button } from "../button"
+import { Button, type StyledButtonProps } from "../button"
 import { ChevronLeftIcon, ChevronRightIcon } from "../../lib/icon-slots"
 
 type CarouselApi = UseEmblaCarouselType[1]
@@ -176,7 +176,7 @@ function CarouselPrevious({
   variant = "outline",
   size = "icon-sm",
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: StyledButtonProps) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
@@ -206,7 +206,7 @@ function CarouselNext({
   variant = "outline",
   size = "icon-sm",
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: StyledButtonProps) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (

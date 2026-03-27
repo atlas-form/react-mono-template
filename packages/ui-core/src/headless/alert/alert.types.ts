@@ -1,6 +1,7 @@
 import * as React from "react"
 import type { VariantProps } from "class-variance-authority"
 
+import type { BaseMode } from "../../lib/component-mode"
 import { alertVariants } from "./alert.styles"
 
 export type AlertVariantProps = VariantProps<typeof alertVariants>
@@ -19,25 +20,25 @@ export type AlertSlotClassResolver = (params: {
 
 export type AlertProps = React.ComponentProps<"div"> &
   AlertVariantProps & {
-    unstyled?: boolean
+    mode?: BaseMode
     classNameMode?: "merge" | "replace"
     classResolver?: AlertClassResolver
   }
 
 export type AlertTitleProps = React.ComponentProps<"div"> & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: "merge" | "replace"
   classResolver?: AlertSlotClassResolver
 }
 
 export type AlertDescriptionProps = React.ComponentProps<"div"> & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: "merge" | "replace"
   classResolver?: AlertSlotClassResolver
 }
 
 export type AlertActionProps = React.ComponentProps<"div"> & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: "merge" | "replace"
   classResolver?: AlertSlotClassResolver
 }

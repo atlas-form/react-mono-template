@@ -6,7 +6,7 @@ import { Slot } from "radix-ui"
 
 import { useIsMobile } from "../../hooks/use-mobile"
 import { cn } from "../../lib/utils"
-import { Button } from "../button"
+import { Button, type StyledButtonProps } from "../button"
 import { Input } from "../input"
 import { Separator } from "../separator"
 import {
@@ -254,7 +254,7 @@ function SidebarTrigger({
   className,
   onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: StyledButtonProps) {
   const { toggleSidebar } = useSidebar()
 
   return (

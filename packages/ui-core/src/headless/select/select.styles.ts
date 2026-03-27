@@ -9,7 +9,7 @@ export const selectTriggerVariantClassNames = {
   primary:
     "border-input bg-transparent text-foreground hover:bg-muted dark:bg-input/30 dark:hover:bg-input/50",
   destructive:
-    "border-transparent bg-destructive text-white hover:bg-(--destructive-hover) active:bg-(--destructive-active) disabled:bg-(--destructive-disabled)",
+    "border-transparent bg-destructive text-primary-foreground hover:bg-(--destructive-hover) active:bg-(--destructive-active) disabled:bg-(--destructive-disabled)",
 } as const
 
 export const selectTriggerIconClassName =
@@ -21,7 +21,7 @@ export const selectContentBaseClassName =
 export const selectContentVariantClassNames = {
   default: "",
   primary: "",
-  destructive: "bg-destructive text-white ring-destructive/30",
+  destructive: "bg-destructive text-primary-foreground ring-destructive/30",
 } as const
 
 export const selectContentPopperOffsetClassName =
@@ -40,7 +40,7 @@ export const selectItemVariantClassNames = {
   primary:
     "focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
   destructive:
-    "focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-destructive data-[state=checked]:text-white",
+    "focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-destructive data-[state=checked]:text-primary-foreground",
 } as const
 
 export const selectItemIndicatorContainerClassName =

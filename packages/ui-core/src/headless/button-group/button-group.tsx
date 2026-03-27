@@ -1,5 +1,7 @@
 import { Slot } from "radix-ui"
+import { Separator as SeparatorPrimitive } from "radix-ui"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { Separator } from "../separator"
 import {
@@ -16,26 +18,20 @@ import type {
   ButtonGroupTextProps,
 } from "./button-group.types"
 
-function resolveClassName({
+function resolveStyledClassName({
   className,
   defaultClassName,
-  unstyled,
   classNameMode,
   classResolver,
 }: {
   className?: string
   defaultClassName: string
-  unstyled: boolean
   classNameMode: "merge" | "replace"
   classResolver?: (params: {
     defaultClassName: string
     className?: string
   }) => string
 }) {
-  if (unstyled) {
-    return className
-  }
-
   if (classResolver) {
     return classResolver({ defaultClassName, className })
   }
@@ -47,16 +43,14 @@ function resolveClassName({
   return cn(defaultClassName, className)
 }
 
-function resolveButtonGroupClassName({
+function resolveStyledButtonGroupClassName({
   className,
   orientation,
-  unstyled,
   classNameMode,
   classResolver,
 }: {
   className?: string
   orientation: ButtonGroupOrientation
-  unstyled: boolean
   classNameMode: "merge" | "replace"
   classResolver?: ButtonGroupClassResolver
 }) {
@@ -64,10 +58,6 @@ function resolveButtonGroupClassName({
     buttonGroupBaseClassName,
     buttonGroupOrientationClassNames[orientation]
   )
-
-  if (unstyled) {
-    return className
-  }
 
   if (classResolver) {
     return classResolver({ orientation, defaultClassName, className })
@@ -83,22 +73,26 @@ function resolveButtonGroupClassName({
 function ButtonGroup({
   className,
   orientation = "horizontal",
-  unstyled = false,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: ButtonGroupProps) {
   const resolvedOrientation = orientation as ButtonGroupOrientation
 
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <div role="group" className={className} {...rest} />
+  }
+
   return (
     <div
       role="group"
       data-slot="button-group"
       data-orientation={resolvedOrientation}
-      className={resolveButtonGroupClassName({
+      className={resolveStyledButtonGroupClassName({
         className,
         orientation: resolvedOrientation,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -110,19 +104,23 @@ function ButtonGroup({
 function ButtonGroupText({
   className,
   asChild = false,
-  unstyled = false,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: ButtonGroupTextProps) {
   const Comp = asChild ? Slot.Root : "div"
 
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <Comp className={className} {...rest} />
+  }
+
   return (
     <Comp
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: buttonGroupTextClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -133,20 +131,30 @@ function ButtonGroupText({
 
 function ButtonGroupSeparator({
   className,
+  mode = DEFAULT_MODE,
   orientation = "vertical",
-  unstyled = false,
   classNameMode = "merge",
   classResolver,
   ...props
 }: ButtonGroupSeparatorProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SeparatorPrimitive.Root
+        orientation={orientation}
+        className={className}
+        {...rest}
+      />
+    )
+  }
+
   return (
     <Separator
       data-slot="button-group-separator"
       orientation={orientation}
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: buttonGroupSeparatorClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}

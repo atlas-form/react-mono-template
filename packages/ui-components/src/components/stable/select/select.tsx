@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import {
   Select as HeadlessSelect,
   SelectContent as HeadlessSelectContent,

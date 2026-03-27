@@ -1,22 +1,17 @@
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { inputClassName } from "./input.styles"
 import type { InputClassResolver, InputProps } from "./input.types"
 
-function resolveInputClassName({
+function resolveStyledInputClassName({
   className,
-  unstyled,
   classNameMode,
   classResolver,
 }: {
   className?: string
-  unstyled: boolean
   classNameMode: "merge" | "replace"
   classResolver?: InputClassResolver
 }) {
-  if (unstyled) {
-    return className
-  }
-
   if (classResolver) {
     return classResolver({
       defaultClassName: inputClassName,
@@ -32,16 +27,20 @@ function resolveInputClassName({
 }
 
 export function Input({
+  mode = DEFAULT_MODE,
   className,
   type,
-  unstyled = false,
   classNameMode = "merge",
   classResolver,
   ...props
 }: InputProps) {
-  const resolvedClassName = resolveInputClassName({
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <input type={type} className={className} {...rest} />
+  }
+
+  const resolvedClassName = resolveStyledInputClassName({
     className,
-    unstyled,
     classNameMode,
     classResolver,
   })

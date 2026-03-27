@@ -1,10 +1,7 @@
 import { Select as SelectPrimitive } from "radix-ui"
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from "../../lib/icon-slots"
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../../lib/icon-slots"
 
+import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import {
   selectContentBaseClassName,
@@ -37,23 +34,17 @@ import type {
   SelectValueProps,
 } from "./select.types"
 
-function resolveClassName({
+function resolveStyledClassName({
   className,
   defaultClassName,
-  unstyled,
   classNameMode,
   classResolver,
 }: {
   className?: string
   defaultClassName: string
-  unstyled?: boolean
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }) {
-  if (unstyled) {
-    return className
-  }
-
   if (classResolver) {
     return classResolver({ defaultClassName, className })
   }
@@ -71,18 +62,22 @@ export function Select({ ...props }: SelectProps) {
 
 export function SelectGroup({
   className,
-  unstyled,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectGroupProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <SelectPrimitive.Group className={className} {...rest} />
+  }
+
   return (
     <SelectPrimitive.Group
       data-slot="select-group"
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: selectGroupClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -97,18 +92,32 @@ export function SelectValue({ ...props }: SelectValueProps) {
 
 export function SelectTrigger({
   className,
+  mode = DEFAULT_MODE,
   size = "default",
   variant = "default",
   children,
   hideIndicator = false,
   indicator,
   indicatorClassName,
-  unstyled,
   classNameMode = "merge",
   classResolver,
   indicatorClassResolver,
   ...props
 }: SelectTriggerProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SelectPrimitive.Trigger className={className} {...rest}>
+        {children}
+        {!hideIndicator && (
+          <SelectPrimitive.Icon asChild>
+            {indicator ?? <ChevronDownIcon className={indicatorClassName} />}
+          </SelectPrimitive.Icon>
+        )}
+      </SelectPrimitive.Trigger>
+    )
+  }
+
   const defaultClassName = cn(
     selectTriggerClassName,
     selectTriggerVariantClassNames[variant]
@@ -121,18 +130,16 @@ export function SelectTrigger({
         size,
         variant,
       })
-    : resolveClassName({
+    : resolveStyledClassName({
         className,
         defaultClassName,
-        unstyled,
         classNameMode,
         classResolver: undefined,
       })
 
-  const resolvedIndicatorClassName = resolveClassName({
+  const resolvedIndicatorClassName = resolveStyledClassName({
     className: indicatorClassName,
     defaultClassName: selectTriggerIconClassName,
-    unstyled,
     classNameMode,
     classResolver: indicatorClassResolver,
   })
@@ -159,16 +166,36 @@ export function SelectTrigger({
 
 export function SelectContent({
   className,
+  mode = DEFAULT_MODE,
   children,
   position = "popper",
   align = "center",
   variant = "default",
   showScrollButtons = false,
-  unstyled,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectContentProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
+          className={className}
+          position={position}
+          align={align}
+          {...rest}
+        >
+          {showScrollButtons ? <SelectScrollUpButton mode="headless" /> : null}
+          <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
+          {showScrollButtons ? (
+            <SelectScrollDownButton mode="headless" />
+          ) : null}
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    )
+  }
+
   const defaultClassName = cn(
     selectContentBaseClassName,
     selectContentVariantClassNames[variant],
@@ -182,10 +209,9 @@ export function SelectContent({
         position,
         variant,
       })
-    : resolveClassName({
+    : resolveStyledClassName({
         className,
         defaultClassName,
-        unstyled,
         classNameMode,
         classResolver: undefined,
       })
@@ -216,18 +242,22 @@ export function SelectContent({
 
 export function SelectLabel({
   className,
-  unstyled,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectLabelProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <SelectPrimitive.Label className={className} {...rest} />
+  }
+
   return (
     <SelectPrimitive.Label
       data-slot="select-label"
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: selectLabelClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -238,17 +268,33 @@ export function SelectLabel({
 
 export function SelectItem({
   className,
+  mode = DEFAULT_MODE,
   variant = "default",
   children,
   hideIndicator = false,
   indicator,
   indicatorContainerClassName,
-  unstyled,
   classNameMode = "merge",
   classResolver,
   indicatorContainerClassResolver,
   ...props
 }: SelectItemProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SelectPrimitive.Item className={className} {...rest}>
+        {!hideIndicator && (
+          <span className={indicatorContainerClassName}>
+            <SelectPrimitive.ItemIndicator>
+              {indicator ?? <CheckIcon className="pointer-events-none" />}
+            </SelectPrimitive.ItemIndicator>
+          </span>
+        )}
+        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      </SelectPrimitive.Item>
+    )
+  }
+
   const defaultClassName = cn(
     selectItemClassName,
     selectItemVariantClassNames[variant]
@@ -258,10 +304,9 @@ export function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       data-variant={variant}
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -269,10 +314,9 @@ export function SelectItem({
     >
       {!hideIndicator && (
         <span
-          className={resolveClassName({
+          className={resolveStyledClassName({
             className: indicatorContainerClassName,
             defaultClassName: selectItemIndicatorContainerClassName,
-            unstyled,
             classNameMode,
             classResolver: indicatorContainerClassResolver,
           })}
@@ -289,18 +333,22 @@ export function SelectItem({
 
 export function SelectSeparator({
   className,
-  unstyled,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectSeparatorProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return <SelectPrimitive.Separator className={className} {...rest} />
+  }
+
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: selectSeparatorClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -312,18 +360,26 @@ export function SelectSeparator({
 export function SelectScrollUpButton({
   className,
   children,
-  unstyled,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectScrollUpButtonProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SelectPrimitive.ScrollUpButton className={className} {...rest}>
+        {children ?? <ChevronUpIcon />}
+      </SelectPrimitive.ScrollUpButton>
+    )
+  }
+
   return (
     <SelectPrimitive.ScrollUpButton
       data-slot="select-scroll-up-button"
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: selectScrollButtonClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}
@@ -337,18 +393,26 @@ export function SelectScrollUpButton({
 export function SelectScrollDownButton({
   className,
   children,
-  unstyled,
+  mode = DEFAULT_MODE,
   classNameMode = "merge",
   classResolver,
   ...props
 }: SelectScrollDownButtonProps) {
+  if (mode === "headless") {
+    const rest = { ...props }
+    return (
+      <SelectPrimitive.ScrollDownButton className={className} {...rest}>
+        {children ?? <ChevronDownIcon />}
+      </SelectPrimitive.ScrollDownButton>
+    )
+  }
+
   return (
     <SelectPrimitive.ScrollDownButton
       data-slot="select-scroll-down-button"
-      className={resolveClassName({
+      className={resolveStyledClassName({
         className,
         defaultClassName: selectScrollButtonClassName,
-        unstyled,
         classNameMode,
         classResolver,
       })}

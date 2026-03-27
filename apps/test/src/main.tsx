@@ -1,9 +1,8 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
-import "@workspace/ui-core/globals.css"
-import "@workspace/ui-theme/light.css"
-import "@workspace/ui-theme/dark.css"
+import "@workspace/ui-components/styles.css"
+import "@workspace/ui-theme/styles.css"
 import { App } from "./App.tsx"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 

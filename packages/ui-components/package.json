@@ -20,8 +20,11 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./src/styles/index.css",
-    "./button": "./src/components/button/index.ts",
-    "./input": "./src/components/input/index.ts",
-    "./select": "./src/components/select/index.ts"
+    "./button": "./src/components/stable/button/index.ts",
+    "./input": "./src/components/stable/input/index.ts",
+    "./select": "./src/components/stable/select/index.ts",
+    "./stable/button": "./src/components/stable/button/index.ts",
+    "./stable/input": "./src/components/stable/input/index.ts",
+    "./stable/select": "./src/components/stable/select/index.ts"
   }
 }

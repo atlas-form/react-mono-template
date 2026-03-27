@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import {
   Input as HeadlessInput,
   inputClassName,

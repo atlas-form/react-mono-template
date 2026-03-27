@@ -234,9 +234,9 @@ importers:
 
   apps/test:
     dependencies:
-      '@workspace/ui-core':
+      '@workspace/ui-components':
         specifier: workspace:*
-        version: link:../../packages/ui-core
+        version: link:../../packages/ui-components
       '@workspace/ui-theme':
         specifier: workspace:*
         version: link:../../packages/ui-theme

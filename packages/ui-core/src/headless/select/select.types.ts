@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Select as SelectPrimitive } from "radix-ui"
+import type { BaseMode } from "../../lib/component-mode"
 
 export type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>
 export type SelectClassNameMode = "merge" | "replace"
@@ -12,7 +13,7 @@ export type SelectClassResolver = (params: {
 export type SelectGroupProps = React.ComponentProps<
   typeof SelectPrimitive.Group
 > & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }
@@ -29,7 +30,7 @@ export type SelectTriggerProps = React.ComponentProps<
   hideIndicator?: boolean
   indicator?: React.ReactNode
   indicatorClassName?: string
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: (params: {
     defaultClassName: string
@@ -45,7 +46,7 @@ export type SelectContentProps = React.ComponentProps<
 > & {
   variant?: "default" | "primary" | "destructive"
   showScrollButtons?: boolean
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: (params: {
     defaultClassName: string
@@ -58,7 +59,7 @@ export type SelectContentProps = React.ComponentProps<
 export type SelectLabelProps = React.ComponentProps<
   typeof SelectPrimitive.Label
 > & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }
@@ -70,7 +71,7 @@ export type SelectItemProps = React.ComponentProps<
   hideIndicator?: boolean
   indicator?: React.ReactNode
   indicatorContainerClassName?: string
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
   indicatorContainerClassResolver?: SelectClassResolver
@@ -79,7 +80,7 @@ export type SelectItemProps = React.ComponentProps<
 export type SelectSeparatorProps = React.ComponentProps<
   typeof SelectPrimitive.Separator
 > & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }
@@ -87,7 +88,7 @@ export type SelectSeparatorProps = React.ComponentProps<
 export type SelectScrollUpButtonProps = React.ComponentProps<
   typeof SelectPrimitive.ScrollUpButton
 > & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }
@@ -95,7 +96,7 @@ export type SelectScrollUpButtonProps = React.ComponentProps<
 export type SelectScrollDownButtonProps = React.ComponentProps<
   typeof SelectPrimitive.ScrollDownButton
 > & {
-  unstyled?: boolean
+  mode?: BaseMode
   classNameMode?: SelectClassNameMode
   classResolver?: SelectClassResolver
 }

@@ -1,16 +1,48 @@
 html[data-theme="dark"],
 .dark {
   /* Core semantic tokens */
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.62 0.14 250);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --background: oklch(0.2 0.012 255);
+  --foreground: oklch(0.95 0.008 250);
+  --primary: oklch(0.69 0.15 258);
+  --primary-foreground: oklch(0.2 0.01 255);
+  --secondary: oklch(0.29 0.015 255);
+  --secondary-foreground: oklch(0.93 0.01 250);
+  --muted: oklch(0.26 0.012 255);
+  --muted-foreground: oklch(0.74 0.012 250);
+  --accent: oklch(0.31 0.02 255);
+  --accent-foreground: oklch(0.95 0.008 250);
+  --destructive: oklch(0.71 0.18 24);
+  --border: oklch(0.38 0.01 252 / 65%);
+}
+
+html[data-theme="dark"][data-theme-palette="github"],
+.dark[data-theme-palette="github"] {
+  --background: oklch(0.2 0.012 255);
+  --foreground: oklch(0.95 0.008 250);
+  --primary: oklch(0.69 0.15 258);
+  --primary-foreground: oklch(0.2 0.01 255);
+  --secondary: oklch(0.29 0.015 255);
+  --secondary-foreground: oklch(0.93 0.01 250);
+  --muted: oklch(0.26 0.012 255);
+  --muted-foreground: oklch(0.74 0.012 250);
+  --accent: oklch(0.31 0.02 255);
+  --accent-foreground: oklch(0.95 0.008 250);
+  --destructive: oklch(0.71 0.18 24);
+  --border: oklch(0.38 0.01 252 / 65%);
+}
+
+html[data-theme="dark"][data-theme-palette="antd"],
+.dark[data-theme-palette="antd"] {
+  --background: oklch(0.19 0.012 262);
+  --foreground: oklch(0.94 0.01 262);
+  --primary: oklch(0.67 0.2 262);
+  --primary-foreground: oklch(0.2 0.01 262);
+  --secondary: oklch(0.28 0.016 262);
+  --secondary-foreground: oklch(0.93 0.012 262);
+  --muted: oklch(0.25 0.013 262);
+  --muted-foreground: oklch(0.73 0.012 262);
+  --accent: oklch(0.3 0.028 262);
+  --accent-foreground: oklch(0.95 0.01 262);
+  --destructive: oklch(0.7 0.2 27);
+  --border: oklch(0.37 0.012 262 / 65%);
 }

@@ -1,53 +1,86 @@
-# @workspace/ui-components PROTOCOL
+# @workspace/ui-components 协议
 
-## Constitutional Position
+## 宪章定位
 
-`@workspace/ui-components` is the product-facing styled UI layer built on top of `@workspace/ui-core`.
+`@workspace/ui-components` 是构建在 `@workspace/ui-core` 之上的、面向产品的样式化 UI 层。
 
-This package is the default UI entry for app packages.
+这个包是所有应用包默认的 UI 入口。
 
-## Layer Contract
+## 强制组件分组
 
-- `@workspace/ui-core`: headless primitives, structure, behavior contracts.
-- `@workspace/ui-components`: visual language, theming, product-ready defaults.
+`src/components` 下的所有组件必须且只能归入以下一个分组：
 
-No product visual decisions belong in `ui-core`.
+- `src/components/stable/*`：标准化、可复用、面向应用的组件。
+- `src/components/labs/*`：探索性或特殊场景组件，尚未标准化。
 
-## Public Usage Rule
+不要把组件实现直接放在 `src/components/*` 根目录。
 
-Application code should import from `@workspace/ui-components` first.
+## 分组语义
 
-```tsx
-import "@workspace/ui-components/styles.css"
-import { Button } from "@workspace/ui-components"
-```
+### stable
 
-```tsx
-<Button tone="primary">Submit</Button>
-<Button tone="secondary">Secondary</Button>
-<Button tone="subtle">Cancel</Button>
-```
+当组件已可跨应用复用时，使用 `stable`。
 
-## Build Rule For New Components
+要求：
 
-Every new component in `ui-components` must follow this sequence:
+- API 稳定且已文档化。
+- 命名已最终确定。
+- 应用包可以安全导入使用。
 
-1. Start from `ui-core` primitives and contracts.
-2. Apply visual and product decisions in `ui-components` only.
-3. Export stable, app-consumable API from `ui-components`.
+### labs
 
-## App Policy
+`labs` 用于临时、实验性或领域特定组件。
 
-- Default: app packages use `@workspace/ui-components`.
-- Exception: app packages may use `@workspace/ui-core` directly only for special requirements.
-- If app code uses `ui-core` directly, it must be wrapped in app-level components and kept local to that app.
+规则：
 
-## AI Execution Rules
+- 当最终命名尚不明确时，名称可带场景前缀（例如：`payment-*`、`table-*`、`campaign-*`）。
+- Labs 组件允许快速演进。
+- 一旦使用方式与 API 稳定，应将组件迁移到 `stable`，并重命名为最终规范名称。
 
-For any AI agent modifying this package:
+## 分层契约
 
-1. Treat this protocol as mandatory.
-2. Do not move product styling into `ui-core`.
-3. Do not bypass `ui-components` as the default app entry.
-4. Keep API and visual conventions consistent with existing components.
-5. If protocol conflicts with convenience, protocol wins.
+- `@workspace/ui-core`：headless 原语、结构与行为契约。
+- `@workspace/ui-components`：视觉语言、产品默认值、可供应用消费的封装层。
+
+任何产品视觉决策都不应放在 `ui-core`。
+
+## 应用使用策略（严格）
+
+- 应用包必须从 `@workspace/ui-components` 消费产品组件。
+- 应用包不得在本地自行实现产品级可复用 UI 组件。
+- 新增共享 UI 需求应优先落在 `@workspace/ui-components`。
+
+例外策略：
+
+- 若应用存在一次性需求，可仅在该应用内以页面级组合方式实现。
+- 未迁移到 `ui-components` 前，不得将一次性应用代码提升为共享组件。
+
+## 公共导出策略
+
+- 根导出（`@workspace/ui-components`）应暴露 `stable` 组件。
+- 默认不从根导出 `labs` 组件。
+- 若某个 labs 组件必须临时被消费，应通过显式的 labs 子路径导出，并标注其临时性质。
+
+## 新组件构建规则
+
+每个新共享组件都必须遵循以下顺序：
+
+1. 从 `ui-core` 原语与契约出发。
+2. 在 `ui-components` 中实现视觉与产品行为。
+3. 选择初始分组：`labs` 或 `stable`。
+4. 在 `apps/test` 中新增或更新验证。
+5. 通过以下闸门：
+   - `pnpm --filter @workspace/ui-components typecheck`
+   - `pnpm --filter test lint`
+   - `pnpm --filter test build`
+6. 只有在 API 与行为验证稳定后，才能从 `labs` 晋升到 `stable`。
+
+## AI 执行规则
+
+对于任何修改该包的 AI 代理：
+
+1. 将本协议视为强制约束。
+2. 不要把产品样式迁移到 `ui-core`。
+3. 不要绕过 `ui-components` 这个默认应用入口。
+4. 对所有组件改动强制执行 `stable/labs` 分组。
+5. 若协议与便利性冲突，以协议为准。
