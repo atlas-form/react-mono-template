@@ -25,6 +25,7 @@ export type {
   SelectScrollDownButtonProps,
   SelectScrollUpButtonProps,
   SelectSeparatorProps,
+  SelectTone,
   SelectTriggerProps,
   SelectValueProps,
 } from "./components/select"

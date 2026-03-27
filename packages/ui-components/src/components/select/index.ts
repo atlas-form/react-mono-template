@@ -9,7 +9,7 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@workspace/ui-core/components/select"
+} from "./select"
 
 export type {
   SelectContentProps,
@@ -20,6 +20,7 @@ export type {
   SelectScrollDownButtonProps,
   SelectScrollUpButtonProps,
   SelectSeparatorProps,
+  SelectTone,
   SelectTriggerProps,
   SelectValueProps,
-} from "@workspace/ui-core/components/select"
+} from "./select"
