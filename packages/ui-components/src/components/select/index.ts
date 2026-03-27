@@ -1,9 +1,3 @@
-export { Button } from "./components/button"
-export type { ButtonProps, ButtonTone } from "./components/button"
-
-export { Input, inputClassName } from "./components/input"
-export type { InputClassResolver, InputProps } from "./components/input"
-
 export {
   Select,
   SelectContent,
@@ -15,7 +9,8 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "./components/select"
+} from "@workspace/ui-core/components/select"
+
 export type {
   SelectContentProps,
   SelectGroupProps,
@@ -27,4 +22,4 @@ export type {
   SelectSeparatorProps,
   SelectTriggerProps,
   SelectValueProps,
-} from "./components/select"
+} from "@workspace/ui-core/components/select"

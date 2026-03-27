@@ -20,6 +20,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./src/styles/index.css",
-    "./button": "./src/components/button/index.ts"
+    "./button": "./src/components/button/index.ts",
+    "./input": "./src/components/input/index.ts",
+    "./select": "./src/components/select/index.ts"
   }
 }

@@ -50,6 +50,13 @@ Use `@workspace/ui-components` for pre-designed, opinionated components.
 - `ui-core`: headless primitives.
 - `ui-components`: styled wrappers built on `ui-core`.
 
+## App consumption policy (important)
+
+- Default: application packages should consume `@workspace/ui-components`.
+- `@workspace/ui-core` is not the default app-facing layer.
+- Exception: direct app usage of `ui-core` is allowed only for special requirements.
+- In that exception case, keep it wrapped in app-local components instead of spreading raw headless usage.
+
 ## Structure convention
 
 Each component should use this layout:

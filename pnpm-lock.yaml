@@ -176,12 +176,12 @@ importers:
       '@workspace/ui-core':
         specifier: workspace:*
         version: link:../../packages/ui-core
+      '@workspace/ui-icon':
+        specifier: workspace:*
+        version: link:../../packages/ui-icon
       '@workspace/ui-theme':
         specifier: workspace:*
         version: link:../../packages/ui-theme
-      lucide-react:
-        specifier: 'catalog:'
-        version: 1.7.0(react@19.2.4)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -402,15 +402,15 @@ importers:
       '@fontsource-variable/geist':
         specifier: 'catalog:'
         version: 5.2.8
+      '@workspace/ui-icon':
+        specifier: workspace:*
+        version: link:../ui-icon
       class-variance-authority:
         specifier: 'catalog:'
         version: 0.7.1
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
-      lucide-react:
-        specifier: 'catalog:'
-        version: 1.7.0(react@19.2.4)
       radix-ui:
         specifier: 'catalog:'
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -472,6 +472,22 @@ importers:
       typescript-eslint:
         specifier: 'catalog:'
         version: 8.57.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
+
+  packages/ui-icon:
+    dependencies:
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.4)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.4
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/ui-theme: {}
 

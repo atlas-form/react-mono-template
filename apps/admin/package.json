@@ -14,8 +14,8 @@
   "dependencies": {
     "@workspace/services": "workspace:*",
     "@workspace/ui-core": "workspace:*",
+    "@workspace/ui-icon": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
-    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "zod": "catalog:"

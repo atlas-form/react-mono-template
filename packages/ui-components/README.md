@@ -2,6 +2,12 @@
 
 Styled component layer on top of `@workspace/ui-core`.
 
+## Package goal
+
+This package is the **default UI entry** for application packages.
+
+App code should consume `@workspace/ui-components` first.
+
 ## Position in the design system
 
 - `@workspace/ui-core`: headless primitives and behavior contracts.
@@ -27,3 +33,9 @@ import { Button } from "@workspace/ui-components"
 - Build behavior from `@workspace/ui-core` primitives.
 - Keep visual decisions here.
 - Do not put product styling back into `ui-core`.
+
+## App usage policy (important)
+
+- Default: app packages should use `@workspace/ui-components`.
+- Exception: app packages may use `@workspace/ui-core` directly only for special requirements.
+- If using `ui-core` directly in app code, wrap it in an app-level component and keep that decision local.

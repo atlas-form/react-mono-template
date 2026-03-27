@@ -1,5 +1,5 @@
 import { Select as SelectPrimitive } from "radix-ui"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { Icon } from "@workspace/ui-icon"
 
 import { cn } from "@workspace/ui-core/lib/utils"
 import {
@@ -144,7 +144,11 @@ export function SelectTrigger({
       {children}
       {!hideIndicator && (
         <SelectPrimitive.Icon asChild>
-          {indicator ?? <ChevronDownIcon className={resolvedIndicatorClassName} />}
+          {
+            indicator ?? (
+              <Icon name="arrow-down" className={resolvedIndicatorClassName} />
+            )
+          }
         </SelectPrimitive.Icon>
       )}
     </SelectPrimitive.Trigger>
@@ -272,7 +276,7 @@ export function SelectItem({
           })}
         >
           <SelectPrimitive.ItemIndicator>
-            {indicator ?? <CheckIcon className="pointer-events-none" />}
+            {indicator ?? <Icon name="check" className="pointer-events-none" />}
           </SelectPrimitive.ItemIndicator>
         </span>
       )}
@@ -323,7 +327,7 @@ export function SelectScrollUpButton({
       })}
       {...props}
     >
-      {children ?? <ChevronUpIcon />}
+      {children ?? <Icon name="arrow-up" />}
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -348,7 +352,7 @@ export function SelectScrollDownButton({
       })}
       {...props}
     >
-      {children ?? <ChevronDownIcon />}
+      {children ?? <Icon name="arrow-down" />}
     </SelectPrimitive.ScrollDownButton>
   )
 }
