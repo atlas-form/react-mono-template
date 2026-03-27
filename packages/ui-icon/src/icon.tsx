@@ -19,7 +19,13 @@ export function getIconProvider() {
   return currentProvider
 }
 
-export function Icon({ name, size = 16, className, provider }: IconProps) {
+export function Icon({
+  name,
+  size = 16,
+  className,
+  provider,
+  ...props
+}: IconProps) {
   const iconMap = providerMaps[provider ?? currentProvider]
   const Comp = iconMap[name]
 
@@ -27,5 +33,5 @@ export function Icon({ name, size = 16, className, provider }: IconProps) {
     return null
   }
 
-  return createElement(Comp, { size, className })
+  return createElement(Comp, { size, className, ...props })
 }

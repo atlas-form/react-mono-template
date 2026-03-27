@@ -6,13 +6,8 @@ import {
   type Locale,
 } from "react-day-picker"
 
-import { cn } from "@workspace/ui-core/lib/utils"
-import { Button, buttonVariants } from "@workspace/ui-core/headless/button"
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronDownIcon,
-} from "lucide-react"
+import { cn } from "../../lib/utils"
+import { Button, buttonVariants } from "../button"
 
 function Calendar({
   className,
@@ -23,9 +18,15 @@ function Calendar({
   locale,
   formatters,
   components,
+  renderChevron,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
+  renderChevron?: (params: {
+    orientation: "left" | "right" | "down"
+    className?: string
+    props: Record<string, unknown>
+  }) => React.ReactElement
 }) {
   const defaultClassNames = getDefaultClassNames()
 
@@ -147,24 +148,22 @@ function Calendar({
           )
         },
         Chevron: ({ className, orientation, ...props }) => {
-          if (orientation === "left") {
-            return (
-              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
-            )
+          const normalizedOrientation: "left" | "right" | "down" =
+            orientation === "left"
+              ? "left"
+              : orientation === "right"
+                ? "right"
+                : "down"
+
+          if (renderChevron) {
+            return renderChevron({
+              orientation: normalizedOrientation,
+              className: cn("size-4", className),
+              props: props as Record<string, unknown>,
+            })
           }
 
-          if (orientation === "right") {
-            return (
-              <ChevronRightIcon
-                className={cn("size-4", className)}
-                {...props}
-              />
-            )
-          }
-
-          return (
-            <ChevronDownIcon className={cn("size-4", className)} {...props} />
-          )
+          return <svg className={cn("size-4", className)} {...props} />
         },
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />

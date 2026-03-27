@@ -3,8 +3,8 @@
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 
-import { cn } from "@workspace/ui-core/lib/utils"
-import { MinusIcon } from "lucide-react"
+import { cn } from "../../lib/utils"
+import { MinusIcon } from "../../lib/icon-slots"
 
 function InputOTP({
   className,

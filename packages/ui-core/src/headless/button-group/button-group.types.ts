@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Separator } from "@workspace/ui-core/headless/separator"
+import { Separator } from "../separator"
 
 export type ButtonGroupOrientation = "horizontal" | "vertical"
 

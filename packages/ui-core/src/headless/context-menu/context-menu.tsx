@@ -1,8 +1,8 @@
 import * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui"
 
-import { cn } from "@workspace/ui-core/lib/utils"
-import { ChevronRightIcon, CheckIcon } from "lucide-react"
+import { cn } from "../../lib/utils"
+import { ChevronRightIcon, CheckIcon } from "../../lib/icon-slots"
 
 function ContextMenu({
   ...props

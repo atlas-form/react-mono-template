@@ -1,7 +1,7 @@
 import { Slot } from "radix-ui"
 
-import { cn } from "@workspace/ui-core/lib/utils"
-import { Separator } from "@workspace/ui-core/headless/separator"
+import { cn } from "../../lib/utils"
+import { Separator } from "../separator"
 import {
   buttonGroupBaseClassName,
   buttonGroupOrientationClassNames,

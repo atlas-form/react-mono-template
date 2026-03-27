@@ -3,19 +3,19 @@
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "../../lib/utils"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui-core/headless/dialog"
+} from "../dialog"
 import {
   InputGroup,
   InputGroupAddon,
-} from "@workspace/ui-core/headless/input-group"
-import { SearchIcon, CheckIcon } from "lucide-react"
+} from "../input-group"
+import { SearchIcon, CheckIcon } from "../../lib/icon-slots"
 
 function Command({
   className,

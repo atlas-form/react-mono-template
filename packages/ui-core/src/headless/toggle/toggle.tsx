@@ -4,7 +4,7 @@ import * as React from "react"
 import { type VariantProps } from "class-variance-authority"
 import { Toggle as TogglePrimitive } from "radix-ui"
 
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "../../lib/utils"
 import { toggleVariants } from "./toggle.styles"
 
 function Toggle({

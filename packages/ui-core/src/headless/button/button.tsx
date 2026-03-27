@@ -1,6 +1,6 @@
 import { Slot } from "radix-ui"
 
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "../../lib/utils"
 import { buttonVariants } from "./button.styles"
 import type {
   ButtonClassResolver,

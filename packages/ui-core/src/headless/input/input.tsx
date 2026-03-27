@@ -1,4 +1,4 @@
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "../../lib/utils"
 import { inputClassName } from "./input.styles"
 import type { InputClassResolver, InputProps } from "./input.types"
 

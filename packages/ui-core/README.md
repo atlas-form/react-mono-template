@@ -21,10 +21,14 @@ When creating a new component in `ui-core`, follow this order strictly:
 
 1. Generate baseline code with shadcn CLI first.
 2. Keep generated raw files in `src/components/<component>.tsx` (or generated layout by CLI).
-3. Create/refactor headless implementation in `src/headless/<component>/`.
-4. Follow existing `src/headless/button` pattern when implementing headless components.
-5. Add full controllability APIs (`unstyled`, `classNameMode`, `classResolver`) when needed.
-6. Export headless component through package `exports` and `index.ts`.
+3. Move raw file into headless workspace first: `src/headless/<component>/<component>.tsx` (raw can still be kept in `src/components/*` for reference).
+4. Split headless implementation into `*.tsx`, `*.styles.ts`, `*.types.ts`.
+5. Follow existing `src/headless/button` pattern when implementing headless components.
+6. Add full controllability APIs (`unstyled`, `classNameMode`, `classResolver`) when needed.
+7. Run lint gate first: `pnpm -C packages/ui-core lint`. Do not continue if failed.
+8. Run type gate: `pnpm -C packages/ui-core typecheck`.
+9. Enforce `index.ts` explicit export style to match `button` (no wildcard `export *` in public headless entry).
+10. Export headless component through package `exports` and `index.ts`.
 
 Do **not** start from scratch for standard components that exist in shadcn.
 
@@ -58,6 +62,18 @@ src/headless/component-name/
 
 Use `src/headless/button` as the reference sample for coding style and controllability API design.
 
+## Public Export Rule (Strict)
+
+Each `src/headless/<component>/index.ts` must use explicit exports like `button`:
+
+```ts
+export { Component } from "./component"
+export { componentStylesOrVariants } from "./component.styles"
+export type { ComponentProps, ComponentTypes } from "./component.types"
+```
+
+Do not use wildcard exports (`export *`) in public headless `index.ts`.
+
 ## Design boundaries
 
 - Put logic and primitive building blocks in `ui-core`.
@@ -84,10 +100,14 @@ Use `@workspace/ui-components` for pre-designed, opinionated components.
 
 - Generated via shadcn CLI first.
 - Raw file kept in `src/components/*`.
+- Raw moved/copied into `src/headless/<component>/<component>.tsx` before refactor.
 - Headless version implemented in `src/headless/*` using the sample pattern.
 - Supports external full style control when applicable.
 - Uses tokens from `globals.css` and `state.css`.
 - Keeps API stable and explicit through `index.ts` and package `exports`.
+- `pnpm -C packages/ui-core lint` passes.
+- `pnpm -C packages/ui-core typecheck` passes.
+- `index.ts` uses explicit `button`-style exports only.
 
 ## Styling inputs
 

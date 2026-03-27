@@ -3,9 +3,9 @@
 import * as React from "react"
 import { Dialog as SheetPrimitive } from "radix-ui"
 
-import { cn } from "@workspace/ui-core/lib/utils"
-import { Button } from "@workspace/ui-core/headless/button"
-import { XIcon } from "lucide-react"
+import { cn } from "../../lib/utils"
+import { Button } from "../button"
+import { XIcon } from "../../lib/icon-slots"
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />

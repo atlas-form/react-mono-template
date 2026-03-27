@@ -1,7 +1,11 @@
 import { Select as SelectPrimitive } from "radix-ui"
-import { Icon } from "@workspace/ui-icon"
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "../../lib/icon-slots"
 
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "../../lib/utils"
 import {
   selectContentBaseClassName,
   selectContentPopperOffsetClassName,
@@ -145,7 +149,7 @@ export function SelectTrigger({
       {!hideIndicator && (
         <SelectPrimitive.Icon asChild>
           {indicator ?? (
-            <Icon name="arrow-down" className={resolvedIndicatorClassName} />
+            <ChevronDownIcon className={resolvedIndicatorClassName} />
           )}
         </SelectPrimitive.Icon>
       )}
@@ -274,7 +278,7 @@ export function SelectItem({
           })}
         >
           <SelectPrimitive.ItemIndicator>
-            {indicator ?? <Icon name="check" className="pointer-events-none" />}
+            {indicator ?? <CheckIcon className="pointer-events-none" />}
           </SelectPrimitive.ItemIndicator>
         </span>
       )}
@@ -325,7 +329,7 @@ export function SelectScrollUpButton({
       })}
       {...props}
     >
-      {children ?? <Icon name="arrow-up" />}
+      {children ?? <ChevronUpIcon />}
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -350,7 +354,7 @@ export function SelectScrollDownButton({
       })}
       {...props}
     >
-      {children ?? <Icon name="arrow-down" />}
+      {children ?? <ChevronDownIcon />}
     </SelectPrimitive.ScrollDownButton>
   )
 }

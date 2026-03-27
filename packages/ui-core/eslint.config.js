@@ -24,4 +24,10 @@ export default defineConfig([
       },
     },
   },
+  {
+    files: ["src/lib/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ])
