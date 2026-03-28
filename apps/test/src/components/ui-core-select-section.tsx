@@ -12,6 +12,11 @@ type UiCoreSelectSectionProps = {
 }
 
 export function UiCoreSelectSection({ value, onChange }: UiCoreSelectSectionProps) {
+  const items = Array.from({ length: 40 }, (_, index) => ({
+    value: `option-${index + 1}`,
+    label: `Option ${index + 1}`,
+  }))
+
   return (
     <section className="space-y-3 rounded-xl border bg-card p-4">
       <h2 className="text-base font-medium">Default Select (ui-core)</h2>
@@ -23,9 +28,11 @@ export function UiCoreSelectSection({ value, onChange }: UiCoreSelectSectionProp
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="grayscale">Grayscale</SelectItem>
-          <SelectItem value="vivid">Vivid</SelectItem>
-          <SelectItem value="natural">Natural</SelectItem>
+          {items.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </section>

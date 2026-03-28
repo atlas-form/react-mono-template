@@ -110,7 +110,7 @@ function DefaultSelectIndicator({ className }: { className?: string }) {
     <span className={className}>
       <span className="flex flex-col items-center justify-center leading-none">
         <DefaultChevronUpIcon className="size-2.5" />
-        <DefaultChevronDownIcon className="size-2.5 -mt-0.5" />
+        <DefaultChevronDownIcon className="size-2.5 -mt-[0.3125rem]" />
       </span>
     </span>
   )
@@ -234,9 +234,9 @@ export function SelectContent({
   className,
   mode = DEFAULT_MODE,
   children,
-  position = "popper",
+  position = "item-aligned",
   align = "center",
-  showScrollButtons = false,
+  showScrollButtons = true,
   classNameMode = "merge",
   classResolver,
   ...props

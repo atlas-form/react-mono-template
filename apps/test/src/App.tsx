@@ -7,7 +7,7 @@ import { UiCoreSelectSection } from "@/components/ui-core-select-section"
 export function App() {
   const { theme, setTheme } = useTheme()
   const [locale, setLocale] = useState<Locale>("zh-CN")
-  const [selectValue, setSelectValue] = useState("grayscale")
+  const [selectValue, setSelectValue] = useState("option-1")
   const t = copy[locale]
 
   return (
