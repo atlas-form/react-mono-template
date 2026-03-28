@@ -1,12 +1,8 @@
 import { useState } from "react"
 import {
+  AppSelect,
   Button,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@workspace/ui-components"
 import { useTheme } from "@/components/theme-provider"
 
@@ -90,6 +86,7 @@ export function App() {
   const { theme, setTheme } = useTheme()
   const [locale, setLocale] = useState<Locale>("zh-CN")
   const [value, setValue] = useState("")
+  const [appleDemo, setAppleDemo] = useState("grayscale")
   const t = copy[locale]
 
   return (
@@ -99,35 +96,48 @@ export function App() {
         <p className="text-sm text-muted-foreground">{t.pageDesc}</p>
       </header>
 
+      <section className="space-y-3 rounded-xl border bg-card p-4">
+        <h2 className="text-base font-medium">Default Select</h2>
+        <p className="text-sm text-muted-foreground">
+          仅传 list，使用默认样式（不传任何自定义 style）。
+        </p>
+        <AppSelect
+          value={appleDemo}
+          onValueChange={setAppleDemo}
+          list={[
+            { label: "Grayscale", value: "grayscale" },
+            { label: "Vivid", value: "vivid" },
+            { label: "Natural", value: "natural" },
+          ]}
+        />
+      </section>
+
       <section className="grid gap-4 rounded-xl border bg-card p-4 sm:grid-cols-2">
         <label className="space-y-2 text-sm">
           <span className="text-muted-foreground">{t.languageLabel}</span>
-          <Select value={locale} onValueChange={(next) => setLocale(next as Locale)}>
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="zh-CN">中文</SelectItem>
-              <SelectItem value="en-US">English</SelectItem>
-            </SelectContent>
-          </Select>
+          <AppSelect
+            value={locale}
+            onValueChange={(next) => setLocale(next as Locale)}
+            list={[
+              { label: "中文", value: "zh-CN" },
+              { label: "English", value: "en-US" },
+            ]}
+            className="w-full"
+          />
         </label>
 
         <label className="space-y-2 text-sm">
           <span className="text-muted-foreground">{t.themeLabel}</span>
-          <Select
+          <AppSelect
             value={theme}
             onValueChange={(next) => setTheme(next as "light" | "dark" | "system")}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">{locale === "zh-CN" ? "浅色" : "Light"}</SelectItem>
-              <SelectItem value="dark">{locale === "zh-CN" ? "深色" : "Dark"}</SelectItem>
-              <SelectItem value="system">{locale === "zh-CN" ? "跟随系统" : "System"}</SelectItem>
-            </SelectContent>
-          </Select>
+            list={[
+              { label: locale === "zh-CN" ? "浅色" : "Light", value: "light" },
+              { label: locale === "zh-CN" ? "深色" : "Dark", value: "dark" },
+              { label: locale === "zh-CN" ? "跟随系统" : "System", value: "system" },
+            ]}
+            className="w-full"
+          />
         </label>
       </section>
 

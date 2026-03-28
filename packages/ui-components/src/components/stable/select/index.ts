@@ -1,4 +1,5 @@
 export {
+  AppSelect,
   Select,
   SelectContent,
   SelectGroup,
@@ -12,6 +13,10 @@ export {
 } from "./select"
 
 export type {
+  AppSelectAppearance,
+  AppSelectOption,
+  AppSelectProps,
+  AppSelectStyles,
   SelectContentProps,
   SelectGroupProps,
   SelectItemProps,
