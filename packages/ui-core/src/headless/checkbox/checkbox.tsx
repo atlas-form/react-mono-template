@@ -7,6 +7,21 @@ import { CheckIcon } from "../../lib/icon-slots"
 import { checkboxClassNames } from "./checkbox.styles"
 import type { CheckboxClassResolver, CheckboxProps } from "./checkbox.types"
 
+function DefaultCheckIcon() {
+  return (
+    <CheckIcon
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2.5 6.5L4.8 8.8L9.5 3.6" />
+    </CheckIcon>
+  )
+}
+
 function resolveStyledCheckboxClassName({
   className,
   defaultClassName,
@@ -46,7 +61,7 @@ function Checkbox({
     return (
       <CheckboxPrimitive.Root className={className} {...props}>
         <CheckboxPrimitive.Indicator className={indicatorClassName}>
-          <CheckIcon />
+          <DefaultCheckIcon />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
     )
@@ -72,7 +87,7 @@ function Checkbox({
           classResolver: indicatorClassResolver,
         })}
       >
-        <CheckIcon />
+        <DefaultCheckIcon />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

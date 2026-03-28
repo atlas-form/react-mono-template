@@ -1,17 +1,22 @@
 import { useState } from "react"
-import { Button } from "@workspace/ui-components"
 import { useTheme } from "@/components/theme-provider"
 import { copy, type Locale } from "@/copy"
-import { InputSection } from "@/components/input-section"
 import { TestHeader } from "@/components/test-header"
 import { UiCoreSelectSection } from "@/components/ui-core-select-section"
+import { UiCoreSwitchSection } from "@/components/ui-core-switch-section"
+import { UiCoreSliderSection } from "@/components/ui-core-slider-section"
+import { UiCoreTabsSection } from "@/components/ui-core-tabs-section"
+import { UiCoreCheckboxSection } from "@/components/ui-core-checkbox-section"
+import { UiCoreRadioGroupSection } from "@/components/ui-core-radio-group-section"
 
 export function App() {
   const { theme, setTheme } = useTheme()
   const [locale, setLocale] = useState<Locale>("zh-CN")
-  const [page, setPage] = useState<"select" | "input">("select")
-  const [inputValue, setInputValue] = useState("")
   const [selectValue, setSelectValue] = useState("option-1")
+  const [switchChecked, setSwitchChecked] = useState(true)
+  const [sliderValue, setSliderValue] = useState([40])
+  const [checkboxChecked, setCheckboxChecked] = useState(true)
+  const [radioValue, setRadioValue] = useState("system")
   const t = copy[locale]
 
   return (
@@ -23,26 +28,12 @@ export function App() {
         setTheme={setTheme}
         t={t}
       />
-      <section className="flex items-center gap-2">
-        <Button
-          variant={page === "select" ? "primary" : "outline"}
-          onClick={() => setPage("select")}
-        >
-          Select
-        </Button>
-        <Button
-          variant={page === "input" ? "primary" : "outline"}
-          onClick={() => setPage("input")}
-        >
-          Input
-        </Button>
-      </section>
-      {page === "select" ? (
-        <UiCoreSelectSection value={selectValue} onChange={setSelectValue} />
-      ) : (
-        <InputSection t={t} value={inputValue} onChange={setInputValue} />
-      )}
-
+      <UiCoreSelectSection value={selectValue} onChange={setSelectValue} />
+      <UiCoreSwitchSection checked={switchChecked} onChange={setSwitchChecked} />
+      <UiCoreSliderSection value={sliderValue} onChange={setSliderValue} />
+      <UiCoreTabsSection />
+      <UiCoreCheckboxSection checked={checkboxChecked} onChange={setCheckboxChecked} />
+      <UiCoreRadioGroupSection value={radioValue} onChange={setRadioValue} />
       <footer className="text-xs text-muted-foreground">{t.footerHint}</footer>
     </main>
   )

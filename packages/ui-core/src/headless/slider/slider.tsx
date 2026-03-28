@@ -96,6 +96,7 @@ function Slider({
       })}
       {...props}
     >
+      <span aria-hidden="true" className={sliderClassNames.slot4} />
       <SliderPrimitive.Track
         data-slot="slider-track"
         className={resolveStyledSliderClassName({
