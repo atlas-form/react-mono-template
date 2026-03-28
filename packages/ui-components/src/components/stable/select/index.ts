@@ -13,7 +13,6 @@ export {
 } from "./select"
 
 export type {
-  AppSelectAppearance,
   AppSelectOption,
   AppSelectProps,
   AppSelectStyles,

@@ -1,10 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui-core/components/select"
+import { AppSelect } from "@workspace/ui-components"
 
 type UiCoreSelectSectionProps = {
   value: string
@@ -19,22 +13,16 @@ export function UiCoreSelectSection({ value, onChange }: UiCoreSelectSectionProp
 
   return (
     <section className="space-y-3 rounded-xl border bg-card p-4">
-      <h2 className="text-base font-medium">Default Select (ui-core)</h2>
+      <h2 className="text-base font-medium">Default Select (ui-components)</h2>
       <p className="text-sm text-muted-foreground">
-        使用 @workspace/ui-core/components/select（headless 导出）直接验证 hover 状态。
+        使用 @workspace/ui-components 的 AppSelect 验证与 headless 是否一致。
       </p>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-[220px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {items.map((item) => (
-            <SelectItem key={item.value} value={item.value}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <AppSelect
+        value={value}
+        onValueChange={onChange}
+        className="w-[220px]"
+        list={items}
+      />
     </section>
   )
 }

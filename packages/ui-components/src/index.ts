@@ -18,7 +18,6 @@ export {
   SelectValue,
 } from "./components/stable/select"
 export type {
-  AppSelectAppearance,
   AppSelectOption,
   AppSelectProps,
   AppSelectStyles,
