@@ -24,6 +24,9 @@ type Copy = {
   buttonPrimary: string
   buttonSecondary: string
   buttonSubtle: string
+  buttonDefault: string
+  buttonGhost: string
+  buttonLink: string
   buttonDisabled: string
   inputTitle: string
   inputDesc: string
@@ -46,6 +49,9 @@ const copy: Record<Locale, Copy> = {
     buttonPrimary: "主按钮",
     buttonSecondary: "次按钮",
     buttonSubtle: "弱化按钮",
+    buttonDefault: "默认按钮",
+    buttonGhost: "幽灵按钮",
+    buttonLink: "链接按钮",
     buttonDisabled: "禁用按钮",
     inputTitle: "Input 组件",
     inputDesc: "验证输入框在不同文案长度下的显示与输入行为。",
@@ -67,6 +73,9 @@ const copy: Record<Locale, Copy> = {
     buttonPrimary: "Primary",
     buttonSecondary: "Secondary",
     buttonSubtle: "Subtle",
+    buttonDefault: "Default",
+    buttonGhost: "Ghost",
+    buttonLink: "Link",
     buttonDisabled: "Disabled",
     inputTitle: "Input Component",
     inputDesc: "Verify input behavior across different text lengths.",
@@ -126,10 +135,17 @@ export function App() {
         <h2 className="text-base font-medium">{t.basicTitle}</h2>
         <p className="text-sm text-muted-foreground">{t.basicDesc}</p>
         <div className="flex flex-wrap gap-3">
-          <Button tone="primary">{t.buttonPrimary}</Button>
-          <Button tone="secondary">{t.buttonSecondary}</Button>
-          <Button tone="subtle">{t.buttonSubtle}</Button>
-          <Button disabled>{t.buttonDisabled}</Button>
+          <Button variant="primary">{t.buttonPrimary}</Button>
+          <Button variant="secondary">{t.buttonSecondary}</Button>
+          <Button variant="outline">
+            {t.buttonSubtle}
+          </Button>
+          <Button>{t.buttonDefault}</Button>
+          <Button variant="ghost">{t.buttonGhost}</Button>
+          <Button variant="link">{t.buttonLink}</Button>
+          <Button variant="primary" disabled>
+            {t.buttonDisabled}
+          </Button>
         </div>
       </section>
 

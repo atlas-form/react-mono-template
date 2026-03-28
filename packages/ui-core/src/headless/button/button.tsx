@@ -5,7 +5,6 @@ import { cn } from "../../lib/utils"
 import { buttonVariants } from "./button.styles"
 import type {
   ButtonClassResolver,
-  ButtonColor,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
@@ -14,24 +13,21 @@ import type {
 function resolveStyledClassName({
   className,
   variant,
-  color,
   size,
   classNameMode,
   classResolver,
 }: {
   className?: string
   variant: ButtonVariant
-  color: ButtonColor
   size: ButtonSize
   classNameMode: "merge" | "replace"
   classResolver?: ButtonClassResolver
 }) {
-  const defaultClassName = buttonVariants({ variant, color, size })
+  const defaultClassName = buttonVariants({ variant, size })
 
   if (classResolver) {
     return classResolver({
       variant,
-      color,
       size,
       defaultClassName,
       className,
@@ -57,7 +53,6 @@ export function Button({
     const {
       className,
       variant: _variant,
-      color: _color,
       size: _size,
       classNameMode: _classNameMode,
       classResolver: _classResolver,
@@ -69,19 +64,16 @@ export function Button({
   const {
     className,
     variant = "default",
-    color = "default",
     size = "default",
     classNameMode = "merge",
     classResolver,
     ...styledProps
   } = props
   const resolvedVariant = (variant ?? "default") as ButtonVariant
-  const resolvedColor = (color ?? "default") as ButtonColor
   const resolvedSize = (size ?? "default") as ButtonSize
   const resolvedClassName = resolveStyledClassName({
     className,
     variant: resolvedVariant,
-    color: resolvedColor,
     size: resolvedSize,
     classNameMode,
     classResolver,
@@ -91,7 +83,6 @@ export function Button({
     <Comp
       data-slot="button"
       data-variant={resolvedVariant}
-      data-color={resolvedColor}
       data-size={resolvedSize}
       className={resolvedClassName}
       {...styledProps}

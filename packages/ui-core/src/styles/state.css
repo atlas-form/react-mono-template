@@ -3,6 +3,22 @@
     --_interactive-mix: black;
     --_disabled-surface: var(--background, #f7f8fb);
 
+    --surface-hover: color-mix(
+      in oklab,
+      var(--surface) 80%,
+      var(--_interactive-mix)
+    );
+    --surface-active: color-mix(
+      in oklab,
+      var(--surface) 76%,
+      var(--_interactive-mix)
+    );
+    --surface-disabled: color-mix(
+      in oklab,
+      var(--surface) 35%,
+      var(--_disabled-surface)
+    );
+
     --primary-hover: color-mix(
       in oklab,
       var(--primary) 80%,

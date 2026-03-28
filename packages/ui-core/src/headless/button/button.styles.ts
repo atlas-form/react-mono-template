@@ -6,22 +6,18 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--button-bg)] text-[var(--button-fg)] hover:bg-[var(--button-hover)] active:bg-[var(--button-active)] disabled:bg-[var(--button-disabled)]",
-        outline:
-          "border-[var(--button-bg)] bg-transparent text-[var(--button-bg)] hover:bg-[var(--button-soft)] hover:text-[var(--button-bg)] aria-expanded:bg-[var(--button-soft)] dark:border-[var(--button-bg)] dark:bg-transparent dark:hover:bg-[var(--button-soft)]",
-        ghost:
-          "text-[var(--button-bg)] hover:bg-[var(--button-soft)] hover:text-[var(--button-bg)] aria-expanded:bg-[var(--button-soft)] aria-expanded:text-[var(--button-bg)] dark:hover:bg-[var(--button-soft)]",
-        link: "h-auto p-0 text-[var(--button-bg)] underline-offset-4 hover:text-[var(--button-hover)] hover:underline active:text-[var(--button-active)]",
-      },
-      color: {
-        default:
-          "[--button-active:var(--primary-active,var(--primary))] [--button-bg:var(--primary)] [--button-disabled:var(--primary-disabled,var(--primary))] [--button-fg:var(--primary-foreground)] [--button-hover:var(--primary-hover,var(--primary))] [--button-soft:color-mix(in_oklab,var(--primary)_14%,transparent)]",
+          "bg-[var(--suface-component,var(--surface-component,var(--surface)))] text-[var(--surface-foreground,var(--foreground))] hover:bg-[var(--surface-hover,var(--suface-component,var(--surface-component,var(--surface))))] disabled:bg-[var(--surface-disabled,var(--suface-component,var(--surface-component,var(--surface))))]",
         primary:
-          "[--button-active:var(--primary-active,var(--primary))] [--button-bg:var(--primary)] [--button-disabled:var(--primary-disabled,var(--primary))] [--button-fg:var(--primary-foreground)] [--button-hover:var(--primary-hover,var(--primary))] [--button-soft:color-mix(in_oklab,var(--primary)_14%,transparent)]",
+          "bg-[var(--primary)] text-[var(--primary-foreground,var(--background))] hover:bg-[var(--primary-hover,var(--primary))] disabled:bg-[var(--primary-disabled,var(--primary))]",
         secondary:
-          "[--button-active:var(--secondary-active,var(--secondary))] [--button-bg:var(--secondary)] [--button-disabled:var(--secondary-disabled,var(--secondary))] [--button-fg:var(--secondary-foreground)] [--button-hover:var(--secondary-hover,var(--secondary))] [--button-soft:color-mix(in_oklab,var(--secondary)_28%,transparent)]",
+          "bg-[var(--secondary)] text-[var(--secondary-foreground,var(--foreground))] hover:bg-[var(--secondary-hover,var(--secondary))] disabled:bg-[var(--secondary-disabled,var(--secondary))]",
         destructive:
-          "[--button-active:var(--destructive-active,var(--destructive))] [--button-bg:var(--destructive)] [--button-disabled:var(--destructive-disabled,var(--destructive))] [--button-fg:var(--primary-foreground)] [--button-hover:var(--destructive-hover,var(--destructive))] [--button-soft:color-mix(in_oklab,var(--destructive)_16%,transparent)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "bg-[var(--destructive)] text-[var(--destructive-foreground,var(--primary-foreground,var(--background)))] hover:bg-[var(--destructive-hover,var(--destructive))] disabled:bg-[var(--destructive-disabled,var(--destructive))] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+        outline:
+          "border-[var(--primary-outline,var(--primary))] bg-[var(--suface-component,var(--surface-component,var(--surface)))] text-[var(--primary-outline,var(--primary))] hover:bg-[var(--surface-hover,var(--suface-component,var(--surface-component,var(--surface))))]",
+        ghost:
+          "bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--suface-component,var(--surface-component,var(--surface)))] hover:text-[var(--foreground)] aria-expanded:bg-[var(--suface-component,var(--surface-component,var(--surface)))] aria-expanded:text-[var(--foreground)]",
+        link: "h-auto bg-transparent p-0 text-[var(--foreground)] underline-offset-4 hover:text-[var(--foreground)] hover:underline active:text-[var(--foreground)]",
       },
       size: {
         default:
@@ -39,7 +35,6 @@ export const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      color: "default",
       size: "default",
     },
   }

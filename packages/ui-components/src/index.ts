@@ -1,5 +1,5 @@
 export { Button } from "./components/stable/button"
-export type { ButtonProps, ButtonTone } from "./components/stable/button"
+export type { ButtonProps } from "./components/stable/button"
 
 export { Input, inputClassName } from "./components/stable/input"
 export type { InputClassResolver, InputProps } from "./components/stable/input"

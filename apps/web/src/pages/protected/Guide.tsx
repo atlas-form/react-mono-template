@@ -34,16 +34,15 @@ export default function GuidePage() {
               <div className="flex flex-wrap items-center gap-4">
                 <Button
                   type="button"
-                  variant="default"
-                  color="destructive"
+                  variant="destructive"
                   size="lg"
                 >
                   {t("guide.buttons.danger")}
                 </Button>
-                <Button type="button" variant="default" size="lg">
+                <Button type="button" variant="primary" size="lg">
                   {t("guide.buttons.primary")}
                 </Button>
-                <Button type="button" variant="default" color="secondary" size="lg">
+                <Button type="button" variant="secondary" size="lg">
                   {t("guide.buttons.secondary")}
                 </Button>
                 <Button type="button" variant="outline" size="lg">

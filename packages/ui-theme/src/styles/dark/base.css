@@ -3,9 +3,13 @@ html[data-theme="dark"],
   /* Core semantic tokens */
   --background: oklch(0.2 0.012 255);
   --foreground: oklch(0.95 0.008 250);
+  --surface: color(display-p3 0.163 0.17 0.167);
+  --surface-foreground: color(display-p3 0.878 0.879 0.879);
+  --surface-component: color(display-p3 0.213 0.22 0.217);
   --primary: color(display-p3 0.142 0.343 0.791);
-  --primary-foreground: oklch(0.2 0.01 255);
-  --primary: color(display-p3 0.192 0.315 0.717);
+  --primary-outline: color(display-p3 0.1 0.55 1);
+  --primary-foreground: white;
+  --secondary: color(display-p3 0.22 0.25 0.29);
   --secondary-foreground: oklch(0.93 0.01 258);
   --muted: oklch(0.26 0.012 255);
   --muted-foreground: oklch(0.74 0.012 250);
