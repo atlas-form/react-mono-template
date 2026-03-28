@@ -44,6 +44,15 @@
 
 任何产品视觉决策都不应放在 `ui-core`。
 
+## 组件编写规范（强制）
+
+- `ui-components` 新增组件时，默认遵循并复用 `ui-core` 的默认 style 体系，不额外定义与 `ui-core` 相冲突的默认视觉基线。
+- `ui-components` 对外只暴露面向应用的组件 props，不得向外暴露 headless 选择或 headless 组合入口。
+- 应用包消费的组件必须始终是非 headless 的产品组件；应用不得直接基于 headless 原语拼装业务通用组件。
+- 若需要支持自定义风格，应在 `ui-components` 内部通过分层封装实现，不把 headless 能力直接下放到应用层。
+- 同一类型组件允许在 `ui-components` 内存在多个风格实现（例如多个 `button` 风格版本）。
+- 同一类型组件在 `stable` 中只能有一个默认实现；其它风格实现必须放在 `labs`。
+
 ## 应用使用策略（严格）
 
 - 应用包必须从 `@workspace/ui-components` 消费产品组件。

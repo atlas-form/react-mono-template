@@ -21,10 +21,20 @@
     ".": "./src/index.ts",
     "./styles.css": "./src/styles/index.css",
     "./button": "./src/components/stable/button/index.ts",
+    "./checkbox": "./src/components/stable/checkbox/index.ts",
+    "./radio-group": "./src/components/stable/radio-group/index.ts",
+    "./slider": "./src/components/stable/slider/index.ts",
+    "./switch": "./src/components/stable/switch/index.ts",
+    "./tabs": "./src/components/stable/tabs/index.ts",
     "./input": "./src/components/stable/input/index.ts",
     "./select": "./src/components/stable/select/index.ts",
     "./stable/button": "./src/components/stable/button/index.ts",
+    "./stable/checkbox": "./src/components/stable/checkbox/index.ts",
     "./stable/input": "./src/components/stable/input/index.ts",
-    "./stable/select": "./src/components/stable/select/index.ts"
+    "./stable/radio-group": "./src/components/stable/radio-group/index.ts",
+    "./stable/select": "./src/components/stable/select/index.ts",
+    "./stable/slider": "./src/components/stable/slider/index.ts",
+    "./stable/switch": "./src/components/stable/switch/index.ts",
+    "./stable/tabs": "./src/components/stable/tabs/index.ts"
   }
 }
