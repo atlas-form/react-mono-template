@@ -36,6 +36,8 @@ export function applyTheme(mode: ThemeMode): void {
   const root = document.documentElement
   const resolved = resolveTheme(mode)
 
+  root.classList.remove("light", "dark")
+  root.classList.add(resolved)
   root.setAttribute("data-theme", resolved)
   root.setAttribute("data-theme-mode", mode)
 }

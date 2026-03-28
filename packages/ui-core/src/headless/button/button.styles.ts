@@ -7,8 +7,6 @@ export const buttonVariants = cva(
       variant: {
         default:
           "bg-[var(--button-bg)] text-[var(--button-fg)] hover:bg-[var(--button-hover)] active:bg-[var(--button-active)] disabled:bg-[var(--button-disabled)]",
-        solid:
-          "bg-[var(--button-bg)] text-[var(--button-fg)] hover:bg-[var(--button-hover)] active:bg-[var(--button-active)] disabled:bg-[var(--button-disabled)]",
         outline:
           "border-[var(--button-bg)] bg-transparent text-[var(--button-bg)] hover:bg-[var(--button-soft)] hover:text-[var(--button-bg)] aria-expanded:bg-[var(--button-soft)] dark:border-[var(--button-bg)] dark:bg-transparent dark:hover:bg-[var(--button-soft)]",
         ghost:
