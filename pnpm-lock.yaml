@@ -237,6 +237,9 @@ importers:
       '@workspace/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@workspace/ui-core':
+        specifier: workspace:*
+        version: link:../../packages/ui-core
       '@workspace/ui-theme':
         specifier: workspace:*
         version: link:../../packages/ui-theme

@@ -26,6 +26,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@workspace/ui-core": ["../../packages/ui-core/src/index.ts"],
+      "@workspace/ui-core/*": ["../../packages/ui-core/src/*"],
       "@workspace/ui-components": ["../../packages/ui-components/src/index.ts"],
       "@workspace/ui-components/*": ["../../packages/ui-components/src/*"]
     }

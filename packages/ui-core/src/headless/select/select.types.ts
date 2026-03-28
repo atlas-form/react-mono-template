@@ -30,7 +30,6 @@ export type SelectTriggerProps = React.ComponentProps<
   typeof SelectPrimitive.Trigger
 > & {
   size?: "sm" | "default"
-  variant?: "default" | "primary" | "destructive"
   hideIndicator?: boolean
   indicator?: React.ReactNode
   indicatorClassName?: string
@@ -40,7 +39,6 @@ export type SelectTriggerProps = React.ComponentProps<
     defaultClassName: string
     className?: string
     size: "sm" | "default"
-    variant: "default" | "primary" | "destructive"
   }) => string
   indicatorClassResolver?: SelectClassResolver
 }
@@ -48,7 +46,6 @@ export type SelectTriggerProps = React.ComponentProps<
 export type SelectContentProps = React.ComponentProps<
   typeof SelectPrimitive.Content
 > & {
-  variant?: "default" | "primary" | "destructive"
   showScrollButtons?: boolean
   mode?: BaseMode
   classNameMode?: SelectClassNameMode
@@ -56,7 +53,6 @@ export type SelectContentProps = React.ComponentProps<
     defaultClassName: string
     className?: string
     position: React.ComponentProps<typeof SelectPrimitive.Content>["position"]
-    variant: "default" | "primary" | "destructive"
   }) => string
 }
 
@@ -71,7 +67,6 @@ export type SelectLabelProps = React.ComponentProps<
 export type SelectItemProps = React.ComponentProps<
   typeof SelectPrimitive.Item
 > & {
-  variant?: "default" | "primary" | "destructive"
   hideIndicator?: boolean
   indicator?: React.ReactNode
   indicatorContainerClassName?: string

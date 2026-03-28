@@ -22,26 +22,13 @@ import {
   type SelectValueProps as HeadlessSelectValueProps,
 } from "@workspace/ui-core/components/select"
 
-const toneToVariant = {
-  default: "default",
-  primary: "primary",
-  destructive: "destructive",
-} as const
-
-export type SelectTone = keyof typeof toneToVariant
 export type SelectProps = HeadlessSelectProps
 export type SelectGroupProps = HeadlessSelectGroupProps
 export type SelectValueProps = HeadlessSelectValueProps
-export type SelectTriggerProps = Omit<HeadlessSelectTriggerProps, "variant"> & {
-  tone?: SelectTone
-}
-export type SelectContentProps = Omit<HeadlessSelectContentProps, "variant"> & {
-  tone?: SelectTone
-}
+export type SelectTriggerProps = HeadlessSelectTriggerProps
+export type SelectContentProps = HeadlessSelectContentProps
 export type SelectLabelProps = HeadlessSelectLabelProps
-export type SelectItemProps = Omit<HeadlessSelectItemProps, "variant"> & {
-  tone?: SelectTone
-}
+export type SelectItemProps = HeadlessSelectItemProps
 export type SelectSeparatorProps = HeadlessSelectSeparatorProps
 export type SelectScrollUpButtonProps = HeadlessSelectScrollUpButtonProps
 export type SelectScrollDownButtonProps = HeadlessSelectScrollDownButtonProps
@@ -66,7 +53,6 @@ function mergeClassName(...parts: Array<string | undefined | false>) {
 export type AppSelectProps = Omit<SelectProps, "children"> & {
   list: AppSelectOption[]
   placeholder?: ReactNode
-  tone?: SelectTone
   appearance?: AppSelectAppearance
   className?: string
   contentClassName?: string
@@ -106,25 +92,23 @@ export function SelectValue(props: SelectValueProps) {
 }
 
 export function SelectTrigger({
-  tone = "default",
   ...props
 }: SelectTriggerProps) {
-  return <HeadlessSelectTrigger variant={toneToVariant[tone]} {...props} />
+  return <HeadlessSelectTrigger {...props} />
 }
 
 export function SelectContent({
-  tone = "default",
   ...props
 }: SelectContentProps) {
-  return <HeadlessSelectContent variant={toneToVariant[tone]} {...props} />
+  return <HeadlessSelectContent {...props} />
 }
 
 export function SelectLabel(props: SelectLabelProps) {
   return <HeadlessSelectLabel {...props} />
 }
 
-export function SelectItem({ tone = "default", ...props }: SelectItemProps) {
-  return <HeadlessSelectItem variant={toneToVariant[tone]} {...props} />
+export function SelectItem(props: SelectItemProps) {
+  return <HeadlessSelectItem {...props} />
 }
 
 export function SelectSeparator(props: SelectSeparatorProps) {
@@ -142,7 +126,6 @@ export function SelectScrollDownButton(props: SelectScrollDownButtonProps) {
 export function AppSelect({
   list,
   placeholder,
-  tone = "default",
   appearance = "default",
   className,
   contentClassName,
@@ -164,7 +147,6 @@ export function AppSelect({
   return (
     <Select {...props}>
       <SelectTrigger
-        tone={tone}
         className={mergeClassName(
           isApple &&
             "h-11 min-w-[12rem] rounded-xl border border-zinc-500 bg-zinc-800 py-2 pr-3 pl-4 text-2xl leading-none font-medium tracking-tight text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] data-[placeholder]:text-zinc-300",
@@ -177,7 +159,6 @@ export function AppSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent
-        tone={tone}
         className={mergeClassName(
           isApple &&
             "rounded-3xl border border-zinc-200 bg-zinc-950 p-1 text-zinc-100 shadow-xl",
@@ -188,7 +169,6 @@ export function AppSelect({
         {list.map((item) => (
           <SelectItem
             key={item.value}
-            tone={tone}
             value={item.value}
             disabled={item.disabled}
             className={mergeClassName(

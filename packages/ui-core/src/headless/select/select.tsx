@@ -1,22 +1,20 @@
 import { Select as SelectPrimitive } from "radix-ui"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../../lib/icon-slots"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import {
   selectContentBaseClassName,
   selectContentPopperOffsetClassName,
-  selectContentVariantClassNames,
   selectGroupClassName,
   selectItemClassName,
   selectItemIndicatorContainerClassName,
-  selectItemVariantClassNames,
+  selectItemStateClassName,
   selectLabelClassName,
   selectScrollButtonClassName,
   selectSeparatorClassName,
   selectTriggerClassName,
   selectTriggerIconClassName,
-  selectTriggerVariantClassNames,
+  selectTriggerSurfaceClassName,
   selectViewportClassName,
 } from "./select.styles"
 import type {
@@ -56,6 +54,68 @@ function resolveStyledClassName({
   return cn(defaultClassName, className)
 }
 
+function DefaultChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 5l3 3 3-3" />
+    </svg>
+  )
+}
+
+function DefaultChevronUpIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 7l3-3 3 3" />
+    </svg>
+  )
+}
+
+function DefaultCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2.5 6.5l2.2 2.2 4.8-5" />
+    </svg>
+  )
+}
+
+function DefaultSelectIndicator({ className }: { className?: string }) {
+  return (
+    <span className={className}>
+      <span className="flex flex-col items-center justify-center leading-none">
+        <DefaultChevronUpIcon className="size-2.5" />
+        <DefaultChevronDownIcon className="size-2.5 -mt-0.5" />
+      </span>
+    </span>
+  )
+}
+
 export function Select({ mode = DEFAULT_MODE, ...props }: SelectProps) {
   if (mode === "headless") {
     return <SelectPrimitive.Root {...props} />
@@ -90,7 +150,10 @@ export function SelectGroup({
   )
 }
 
-export function SelectValue({ mode = DEFAULT_MODE, ...props }: SelectValueProps) {
+export function SelectValue({
+  mode = DEFAULT_MODE,
+  ...props
+}: SelectValueProps) {
   if (mode === "headless") {
     return <SelectPrimitive.Value {...props} />
   }
@@ -102,7 +165,6 @@ export function SelectTrigger({
   className,
   mode = DEFAULT_MODE,
   size = "default",
-  variant = "default",
   children,
   hideIndicator = false,
   indicator,
@@ -119,7 +181,7 @@ export function SelectTrigger({
         {children}
         {!hideIndicator && (
           <SelectPrimitive.Icon asChild>
-            {indicator ?? <ChevronDownIcon className={indicatorClassName} />}
+            {indicator ?? <DefaultSelectIndicator className={indicatorClassName} />}
           </SelectPrimitive.Icon>
         )}
       </SelectPrimitive.Trigger>
@@ -128,7 +190,7 @@ export function SelectTrigger({
 
   const defaultClassName = cn(
     selectTriggerClassName,
-    selectTriggerVariantClassNames[variant]
+    selectTriggerSurfaceClassName
   )
 
   const resolvedClassName = classResolver
@@ -136,7 +198,6 @@ export function SelectTrigger({
         defaultClassName,
         className,
         size,
-        variant,
       })
     : resolveStyledClassName({
         className,
@@ -156,16 +217,13 @@ export function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
-      data-variant={variant}
       className={resolvedClassName}
       {...props}
     >
       {children}
       {!hideIndicator && (
         <SelectPrimitive.Icon asChild>
-          {indicator ?? (
-            <ChevronDownIcon className={resolvedIndicatorClassName} />
-          )}
+          {indicator ?? <DefaultSelectIndicator className={resolvedIndicatorClassName} />}
         </SelectPrimitive.Icon>
       )}
     </SelectPrimitive.Trigger>
@@ -178,7 +236,6 @@ export function SelectContent({
   children,
   position = "popper",
   align = "center",
-  variant = "default",
   showScrollButtons = false,
   classNameMode = "merge",
   classResolver,
@@ -206,7 +263,6 @@ export function SelectContent({
 
   const defaultClassName = cn(
     selectContentBaseClassName,
-    selectContentVariantClassNames[variant],
     position === "popper" && selectContentPopperOffsetClassName
   )
 
@@ -215,7 +271,6 @@ export function SelectContent({
         defaultClassName,
         className,
         position,
-        variant,
       })
     : resolveStyledClassName({
         className,
@@ -228,7 +283,6 @@ export function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         data-slot="select-content"
-        data-variant={variant}
         data-align-trigger={position === "item-aligned"}
         className={resolvedClassName}
         position={position}
@@ -277,7 +331,6 @@ export function SelectLabel({
 export function SelectItem({
   className,
   mode = DEFAULT_MODE,
-  variant = "default",
   children,
   hideIndicator = false,
   indicator,
@@ -294,7 +347,7 @@ export function SelectItem({
         {!hideIndicator && (
           <span className={indicatorContainerClassName}>
             <SelectPrimitive.ItemIndicator>
-              {indicator ?? <CheckIcon className="pointer-events-none" />}
+              {indicator ?? <DefaultCheckIcon className="pointer-events-none size-3.5" />}
             </SelectPrimitive.ItemIndicator>
           </span>
         )}
@@ -303,15 +356,11 @@ export function SelectItem({
     )
   }
 
-  const defaultClassName = cn(
-    selectItemClassName,
-    selectItemVariantClassNames[variant]
-  )
+  const defaultClassName = cn(selectItemClassName, selectItemStateClassName)
 
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
-      data-variant={variant}
       className={resolveStyledClassName({
         className,
         defaultClassName,
@@ -330,7 +379,7 @@ export function SelectItem({
           })}
         >
           <SelectPrimitive.ItemIndicator>
-            {indicator ?? <CheckIcon className="pointer-events-none" />}
+            {indicator ?? <DefaultCheckIcon className="pointer-events-none size-3.5" />}
           </SelectPrimitive.ItemIndicator>
         </span>
       )}
@@ -377,7 +426,7 @@ export function SelectScrollUpButton({
     const rest = { ...props }
     return (
       <SelectPrimitive.ScrollUpButton className={className} {...rest}>
-        {children ?? <ChevronUpIcon />}
+        {children ?? <DefaultChevronUpIcon className="size-4" />}
       </SelectPrimitive.ScrollUpButton>
     )
   }
@@ -393,7 +442,7 @@ export function SelectScrollUpButton({
       })}
       {...props}
     >
-      {children ?? <ChevronUpIcon />}
+      {children ?? <DefaultChevronUpIcon className="size-4" />}
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -410,7 +459,7 @@ export function SelectScrollDownButton({
     const rest = { ...props }
     return (
       <SelectPrimitive.ScrollDownButton className={className} {...rest}>
-        {children ?? <ChevronDownIcon />}
+        {children ?? <DefaultChevronDownIcon className="size-4" />}
       </SelectPrimitive.ScrollDownButton>
     )
   }
@@ -426,7 +475,7 @@ export function SelectScrollDownButton({
       })}
       {...props}
     >
-      {children ?? <ChevronDownIcon />}
+      {children ?? <DefaultChevronDownIcon className="size-4" />}
     </SelectPrimitive.ScrollDownButton>
   )
 }
