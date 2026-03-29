@@ -1,46 +1,46 @@
 import type { ComponentProps } from "react"
 import {
-  Popover as HeadlessPopover,
-  PopoverAnchor as HeadlessPopoverAnchor,
-  PopoverContent as HeadlessPopoverContent,
-  PopoverDescription as HeadlessPopoverDescription,
-  PopoverHeader as HeadlessPopoverHeader,
-  PopoverTitle as HeadlessPopoverTitle,
-  PopoverTrigger as HeadlessPopoverTrigger,
+  Popover as CorePopover,
+  PopoverAnchor as CorePopoverAnchor,
+  PopoverContent as CorePopoverContent,
+  PopoverDescription as CorePopoverDescription,
+  PopoverHeader as CorePopoverHeader,
+  PopoverTitle as CorePopoverTitle,
+  PopoverTrigger as CorePopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 
-export type PopoverProps = ComponentProps<typeof HeadlessPopover>
-export type PopoverTriggerProps = ComponentProps<typeof HeadlessPopoverTrigger>
-export type PopoverAnchorProps = ComponentProps<typeof HeadlessPopoverAnchor>
-export type PopoverContentProps = ComponentProps<typeof HeadlessPopoverContent>
-export type PopoverHeaderProps = ComponentProps<typeof HeadlessPopoverHeader>
-export type PopoverTitleProps = ComponentProps<typeof HeadlessPopoverTitle>
-export type PopoverDescriptionProps = ComponentProps<typeof HeadlessPopoverDescription>
+export type PopoverProps = ComponentProps<typeof CorePopover>
+export type PopoverTriggerProps = ComponentProps<typeof CorePopoverTrigger>
+export type PopoverAnchorProps = ComponentProps<typeof CorePopoverAnchor>
+export type PopoverContentProps = ComponentProps<typeof CorePopoverContent>
+export type PopoverHeaderProps = ComponentProps<typeof CorePopoverHeader>
+export type PopoverTitleProps = ComponentProps<typeof CorePopoverTitle>
+export type PopoverDescriptionProps = ComponentProps<typeof CorePopoverDescription>
 
 export function Popover(props: PopoverProps) {
-  return <HeadlessPopover {...props} />
+  return <CorePopover {...props} />
 }
 
 export function PopoverTrigger(props: PopoverTriggerProps) {
-  return <HeadlessPopoverTrigger {...props} />
+  return <CorePopoverTrigger {...props} />
 }
 
 export function PopoverAnchor(props: PopoverAnchorProps) {
-  return <HeadlessPopoverAnchor {...props} />
+  return <CorePopoverAnchor {...props} />
 }
 
 export function PopoverContent(props: PopoverContentProps) {
-  return <HeadlessPopoverContent {...props} />
+  return <CorePopoverContent {...props} />
 }
 
 export function PopoverHeader(props: PopoverHeaderProps) {
-  return <HeadlessPopoverHeader {...props} />
+  return <CorePopoverHeader {...props} />
 }
 
 export function PopoverTitle(props: PopoverTitleProps) {
-  return <HeadlessPopoverTitle {...props} />
+  return <CorePopoverTitle {...props} />
 }
 
 export function PopoverDescription(props: PopoverDescriptionProps) {
-  return <HeadlessPopoverDescription {...props} />
+  return <CorePopoverDescription {...props} />
 }

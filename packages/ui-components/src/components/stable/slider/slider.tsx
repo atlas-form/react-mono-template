@@ -1,10 +1,10 @@
 import {
-  Slider as HeadlessSlider,
-  type SliderProps as HeadlessSliderProps,
+  Slider as CoreSlider,
+  type SliderProps as CoreSliderProps,
 } from "@workspace/ui-core/components/slider"
 
-export type SliderProps = HeadlessSliderProps
+export type SliderProps = CoreSliderProps
 
 export function Slider(props: SliderProps) {
-  return <HeadlessSlider {...props} />
+  return <CoreSlider {...props} />
 }

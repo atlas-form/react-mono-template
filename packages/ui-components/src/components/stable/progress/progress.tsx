@@ -1,10 +1,10 @@
 import {
-  Progress as HeadlessProgress,
-  type ProgressProps as HeadlessProgressProps,
+  Progress as CoreProgress,
+  type ProgressProps as CoreProgressProps,
 } from "@workspace/ui-core/components/progress"
 
-export type ProgressProps = HeadlessProgressProps
+export type ProgressProps = CoreProgressProps
 
 export function Progress(props: ProgressProps) {
-  return <HeadlessProgress {...props} />
+  return <CoreProgress {...props} />
 }

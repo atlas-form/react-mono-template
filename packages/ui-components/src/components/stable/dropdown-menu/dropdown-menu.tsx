@@ -1,94 +1,94 @@
 import type { ComponentProps } from "react"
 import {
-  DropdownMenu as HeadlessDropdownMenu,
-  DropdownMenuCheckboxItem as HeadlessDropdownMenuCheckboxItem,
-  DropdownMenuContent as HeadlessDropdownMenuContent,
-  DropdownMenuGroup as HeadlessDropdownMenuGroup,
-  DropdownMenuItem as HeadlessDropdownMenuItem,
-  DropdownMenuLabel as HeadlessDropdownMenuLabel,
-  DropdownMenuPortal as HeadlessDropdownMenuPortal,
-  DropdownMenuRadioGroup as HeadlessDropdownMenuRadioGroup,
-  DropdownMenuRadioItem as HeadlessDropdownMenuRadioItem,
-  DropdownMenuSeparator as HeadlessDropdownMenuSeparator,
-  DropdownMenuShortcut as HeadlessDropdownMenuShortcut,
-  DropdownMenuSub as HeadlessDropdownMenuSub,
-  DropdownMenuSubContent as HeadlessDropdownMenuSubContent,
-  DropdownMenuSubTrigger as HeadlessDropdownMenuSubTrigger,
-  DropdownMenuTrigger as HeadlessDropdownMenuTrigger,
+  DropdownMenu as CoreDropdownMenu,
+  DropdownMenuCheckboxItem as CoreDropdownMenuCheckboxItem,
+  DropdownMenuContent as CoreDropdownMenuContent,
+  DropdownMenuGroup as CoreDropdownMenuGroup,
+  DropdownMenuItem as CoreDropdownMenuItem,
+  DropdownMenuLabel as CoreDropdownMenuLabel,
+  DropdownMenuPortal as CoreDropdownMenuPortal,
+  DropdownMenuRadioGroup as CoreDropdownMenuRadioGroup,
+  DropdownMenuRadioItem as CoreDropdownMenuRadioItem,
+  DropdownMenuSeparator as CoreDropdownMenuSeparator,
+  DropdownMenuShortcut as CoreDropdownMenuShortcut,
+  DropdownMenuSub as CoreDropdownMenuSub,
+  DropdownMenuSubContent as CoreDropdownMenuSubContent,
+  DropdownMenuSubTrigger as CoreDropdownMenuSubTrigger,
+  DropdownMenuTrigger as CoreDropdownMenuTrigger,
 } from "@workspace/ui-core/components/dropdown-menu"
 
-export type DropdownMenuProps = ComponentProps<typeof HeadlessDropdownMenu>
-export type DropdownMenuTriggerProps = ComponentProps<typeof HeadlessDropdownMenuTrigger>
-export type DropdownMenuPortalProps = ComponentProps<typeof HeadlessDropdownMenuPortal>
-export type DropdownMenuContentProps = ComponentProps<typeof HeadlessDropdownMenuContent>
-export type DropdownMenuGroupProps = ComponentProps<typeof HeadlessDropdownMenuGroup>
-export type DropdownMenuLabelProps = ComponentProps<typeof HeadlessDropdownMenuLabel>
-export type DropdownMenuItemProps = ComponentProps<typeof HeadlessDropdownMenuItem>
-export type DropdownMenuCheckboxItemProps = ComponentProps<typeof HeadlessDropdownMenuCheckboxItem>
-export type DropdownMenuRadioGroupProps = ComponentProps<typeof HeadlessDropdownMenuRadioGroup>
-export type DropdownMenuRadioItemProps = ComponentProps<typeof HeadlessDropdownMenuRadioItem>
-export type DropdownMenuSeparatorProps = ComponentProps<typeof HeadlessDropdownMenuSeparator>
-export type DropdownMenuShortcutProps = ComponentProps<typeof HeadlessDropdownMenuShortcut>
-export type DropdownMenuSubProps = ComponentProps<typeof HeadlessDropdownMenuSub>
-export type DropdownMenuSubTriggerProps = ComponentProps<typeof HeadlessDropdownMenuSubTrigger>
-export type DropdownMenuSubContentProps = ComponentProps<typeof HeadlessDropdownMenuSubContent>
+export type DropdownMenuProps = ComponentProps<typeof CoreDropdownMenu>
+export type DropdownMenuTriggerProps = ComponentProps<typeof CoreDropdownMenuTrigger>
+export type DropdownMenuPortalProps = ComponentProps<typeof CoreDropdownMenuPortal>
+export type DropdownMenuContentProps = ComponentProps<typeof CoreDropdownMenuContent>
+export type DropdownMenuGroupProps = ComponentProps<typeof CoreDropdownMenuGroup>
+export type DropdownMenuLabelProps = ComponentProps<typeof CoreDropdownMenuLabel>
+export type DropdownMenuItemProps = ComponentProps<typeof CoreDropdownMenuItem>
+export type DropdownMenuCheckboxItemProps = ComponentProps<typeof CoreDropdownMenuCheckboxItem>
+export type DropdownMenuRadioGroupProps = ComponentProps<typeof CoreDropdownMenuRadioGroup>
+export type DropdownMenuRadioItemProps = ComponentProps<typeof CoreDropdownMenuRadioItem>
+export type DropdownMenuSeparatorProps = ComponentProps<typeof CoreDropdownMenuSeparator>
+export type DropdownMenuShortcutProps = ComponentProps<typeof CoreDropdownMenuShortcut>
+export type DropdownMenuSubProps = ComponentProps<typeof CoreDropdownMenuSub>
+export type DropdownMenuSubTriggerProps = ComponentProps<typeof CoreDropdownMenuSubTrigger>
+export type DropdownMenuSubContentProps = ComponentProps<typeof CoreDropdownMenuSubContent>
 
 export function DropdownMenu(props: DropdownMenuProps) {
-  return <HeadlessDropdownMenu {...props} />
+  return <CoreDropdownMenu {...props} />
 }
 
 export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
-  return <HeadlessDropdownMenuTrigger {...props} />
+  return <CoreDropdownMenuTrigger {...props} />
 }
 
 export function DropdownMenuPortal(props: DropdownMenuPortalProps) {
-  return <HeadlessDropdownMenuPortal {...props} />
+  return <CoreDropdownMenuPortal {...props} />
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
-  return <HeadlessDropdownMenuContent {...props} />
+  return <CoreDropdownMenuContent {...props} />
 }
 
 export function DropdownMenuGroup(props: DropdownMenuGroupProps) {
-  return <HeadlessDropdownMenuGroup {...props} />
+  return <CoreDropdownMenuGroup {...props} />
 }
 
 export function DropdownMenuLabel(props: DropdownMenuLabelProps) {
-  return <HeadlessDropdownMenuLabel {...props} />
+  return <CoreDropdownMenuLabel {...props} />
 }
 
 export function DropdownMenuItem(props: DropdownMenuItemProps) {
-  return <HeadlessDropdownMenuItem {...props} />
+  return <CoreDropdownMenuItem {...props} />
 }
 
 export function DropdownMenuCheckboxItem(props: DropdownMenuCheckboxItemProps) {
-  return <HeadlessDropdownMenuCheckboxItem {...props} />
+  return <CoreDropdownMenuCheckboxItem {...props} />
 }
 
 export function DropdownMenuRadioGroup(props: DropdownMenuRadioGroupProps) {
-  return <HeadlessDropdownMenuRadioGroup {...props} />
+  return <CoreDropdownMenuRadioGroup {...props} />
 }
 
 export function DropdownMenuRadioItem(props: DropdownMenuRadioItemProps) {
-  return <HeadlessDropdownMenuRadioItem {...props} />
+  return <CoreDropdownMenuRadioItem {...props} />
 }
 
 export function DropdownMenuSeparator(props: DropdownMenuSeparatorProps) {
-  return <HeadlessDropdownMenuSeparator {...props} />
+  return <CoreDropdownMenuSeparator {...props} />
 }
 
 export function DropdownMenuShortcut(props: DropdownMenuShortcutProps) {
-  return <HeadlessDropdownMenuShortcut {...props} />
+  return <CoreDropdownMenuShortcut {...props} />
 }
 
 export function DropdownMenuSub(props: DropdownMenuSubProps) {
-  return <HeadlessDropdownMenuSub {...props} />
+  return <CoreDropdownMenuSub {...props} />
 }
 
 export function DropdownMenuSubTrigger(props: DropdownMenuSubTriggerProps) {
-  return <HeadlessDropdownMenuSubTrigger {...props} />
+  return <CoreDropdownMenuSubTrigger {...props} />
 }
 
 export function DropdownMenuSubContent(props: DropdownMenuSubContentProps) {
-  return <HeadlessDropdownMenuSubContent {...props} />
+  return <CoreDropdownMenuSubContent {...props} />
 }

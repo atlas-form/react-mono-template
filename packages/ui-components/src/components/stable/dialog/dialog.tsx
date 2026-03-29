@@ -1,64 +1,64 @@
 import type { ComponentProps } from "react"
 import {
-  Dialog as HeadlessDialog,
-  DialogClose as HeadlessDialogClose,
-  DialogContent as HeadlessDialogContent,
-  DialogDescription as HeadlessDialogDescription,
-  DialogFooter as HeadlessDialogFooter,
-  DialogHeader as HeadlessDialogHeader,
-  DialogOverlay as HeadlessDialogOverlay,
-  DialogPortal as HeadlessDialogPortal,
-  DialogTitle as HeadlessDialogTitle,
-  DialogTrigger as HeadlessDialogTrigger,
+  Dialog as CoreDialog,
+  DialogClose as CoreDialogClose,
+  DialogContent as CoreDialogContent,
+  DialogDescription as CoreDialogDescription,
+  DialogFooter as CoreDialogFooter,
+  DialogHeader as CoreDialogHeader,
+  DialogOverlay as CoreDialogOverlay,
+  DialogPortal as CoreDialogPortal,
+  DialogTitle as CoreDialogTitle,
+  DialogTrigger as CoreDialogTrigger,
 } from "@workspace/ui-core/components/dialog"
 
-export type DialogProps = ComponentProps<typeof HeadlessDialog>
-export type DialogTriggerProps = ComponentProps<typeof HeadlessDialogTrigger>
-export type DialogPortalProps = ComponentProps<typeof HeadlessDialogPortal>
-export type DialogOverlayProps = ComponentProps<typeof HeadlessDialogOverlay>
-export type DialogContentProps = ComponentProps<typeof HeadlessDialogContent>
-export type DialogHeaderProps = ComponentProps<typeof HeadlessDialogHeader>
-export type DialogFooterProps = ComponentProps<typeof HeadlessDialogFooter>
-export type DialogTitleProps = ComponentProps<typeof HeadlessDialogTitle>
-export type DialogDescriptionProps = ComponentProps<typeof HeadlessDialogDescription>
-export type DialogCloseProps = ComponentProps<typeof HeadlessDialogClose>
+export type DialogProps = ComponentProps<typeof CoreDialog>
+export type DialogTriggerProps = ComponentProps<typeof CoreDialogTrigger>
+export type DialogPortalProps = ComponentProps<typeof CoreDialogPortal>
+export type DialogOverlayProps = ComponentProps<typeof CoreDialogOverlay>
+export type DialogContentProps = ComponentProps<typeof CoreDialogContent>
+export type DialogHeaderProps = ComponentProps<typeof CoreDialogHeader>
+export type DialogFooterProps = ComponentProps<typeof CoreDialogFooter>
+export type DialogTitleProps = ComponentProps<typeof CoreDialogTitle>
+export type DialogDescriptionProps = ComponentProps<typeof CoreDialogDescription>
+export type DialogCloseProps = ComponentProps<typeof CoreDialogClose>
 
 export function Dialog(props: DialogProps) {
-  return <HeadlessDialog {...props} />
+  return <CoreDialog {...props} />
 }
 
 export function DialogTrigger(props: DialogTriggerProps) {
-  return <HeadlessDialogTrigger {...props} />
+  return <CoreDialogTrigger {...props} />
 }
 
 export function DialogPortal(props: DialogPortalProps) {
-  return <HeadlessDialogPortal {...props} />
+  return <CoreDialogPortal {...props} />
 }
 
 export function DialogOverlay(props: DialogOverlayProps) {
-  return <HeadlessDialogOverlay {...props} />
+  return <CoreDialogOverlay {...props} />
 }
 
 export function DialogContent(props: DialogContentProps) {
-  return <HeadlessDialogContent {...props} />
+  return <CoreDialogContent {...props} />
 }
 
 export function DialogHeader(props: DialogHeaderProps) {
-  return <HeadlessDialogHeader {...props} />
+  return <CoreDialogHeader {...props} />
 }
 
 export function DialogFooter(props: DialogFooterProps) {
-  return <HeadlessDialogFooter {...props} />
+  return <CoreDialogFooter {...props} />
 }
 
 export function DialogTitle(props: DialogTitleProps) {
-  return <HeadlessDialogTitle {...props} />
+  return <CoreDialogTitle {...props} />
 }
 
 export function DialogDescription(props: DialogDescriptionProps) {
-  return <HeadlessDialogDescription {...props} />
+  return <CoreDialogDescription {...props} />
 }
 
 export function DialogClose(props: DialogCloseProps) {
-  return <HeadlessDialogClose {...props} />
+  return <CoreDialogClose {...props} />
 }

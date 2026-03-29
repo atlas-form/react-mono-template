@@ -1,52 +1,52 @@
 import type { ComponentProps } from "react"
 import {
-  Table as HeadlessTable,
-  TableBody as HeadlessTableBody,
-  TableCaption as HeadlessTableCaption,
-  TableCell as HeadlessTableCell,
-  TableFooter as HeadlessTableFooter,
-  TableHead as HeadlessTableHead,
-  TableHeader as HeadlessTableHeader,
-  TableRow as HeadlessTableRow,
+  Table as CoreTable,
+  TableBody as CoreTableBody,
+  TableCaption as CoreTableCaption,
+  TableCell as CoreTableCell,
+  TableFooter as CoreTableFooter,
+  TableHead as CoreTableHead,
+  TableHeader as CoreTableHeader,
+  TableRow as CoreTableRow,
 } from "@workspace/ui-core/components/table"
 
-export type TableProps = ComponentProps<typeof HeadlessTable>
-export type TableHeaderProps = ComponentProps<typeof HeadlessTableHeader>
-export type TableBodyProps = ComponentProps<typeof HeadlessTableBody>
-export type TableFooterProps = ComponentProps<typeof HeadlessTableFooter>
-export type TableRowProps = ComponentProps<typeof HeadlessTableRow>
-export type TableHeadProps = ComponentProps<typeof HeadlessTableHead>
-export type TableCellProps = ComponentProps<typeof HeadlessTableCell>
-export type TableCaptionProps = ComponentProps<typeof HeadlessTableCaption>
+export type TableProps = ComponentProps<typeof CoreTable>
+export type TableHeaderProps = ComponentProps<typeof CoreTableHeader>
+export type TableBodyProps = ComponentProps<typeof CoreTableBody>
+export type TableFooterProps = ComponentProps<typeof CoreTableFooter>
+export type TableRowProps = ComponentProps<typeof CoreTableRow>
+export type TableHeadProps = ComponentProps<typeof CoreTableHead>
+export type TableCellProps = ComponentProps<typeof CoreTableCell>
+export type TableCaptionProps = ComponentProps<typeof CoreTableCaption>
 
 export function Table(props: TableProps) {
-  return <HeadlessTable {...props} />
+  return <CoreTable {...props} />
 }
 
 export function TableHeader(props: TableHeaderProps) {
-  return <HeadlessTableHeader {...props} />
+  return <CoreTableHeader {...props} />
 }
 
 export function TableBody(props: TableBodyProps) {
-  return <HeadlessTableBody {...props} />
+  return <CoreTableBody {...props} />
 }
 
 export function TableFooter(props: TableFooterProps) {
-  return <HeadlessTableFooter {...props} />
+  return <CoreTableFooter {...props} />
 }
 
 export function TableRow(props: TableRowProps) {
-  return <HeadlessTableRow {...props} />
+  return <CoreTableRow {...props} />
 }
 
 export function TableHead(props: TableHeadProps) {
-  return <HeadlessTableHead {...props} />
+  return <CoreTableHead {...props} />
 }
 
 export function TableCell(props: TableCellProps) {
-  return <HeadlessTableCell {...props} />
+  return <CoreTableCell {...props} />
 }
 
 export function TableCaption(props: TableCaptionProps) {
-  return <HeadlessTableCaption {...props} />
+  return <CoreTableCaption {...props} />
 }

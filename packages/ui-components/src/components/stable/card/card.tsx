@@ -1,46 +1,48 @@
 import type { ComponentProps } from "react"
 import {
-  Card as HeadlessCard,
-  CardAction as HeadlessCardAction,
-  CardContent as HeadlessCardContent,
-  CardDescription as HeadlessCardDescription,
-  CardFooter as HeadlessCardFooter,
-  CardHeader as HeadlessCardHeader,
-  CardTitle as HeadlessCardTitle,
+  Card as CoreCard,
+  CardAction as CoreCardAction,
+  CardContent as CoreCardContent,
+  CardDescription as CoreCardDescription,
+  CardFooter as CoreCardFooter,
+  CardHeader as CoreCardHeader,
+  CardTitle as CoreCardTitle,
 } from "@workspace/ui-core/components/card"
 
-export type CardProps = ComponentProps<typeof HeadlessCard>
-export type CardHeaderProps = ComponentProps<typeof HeadlessCardHeader>
-export type CardFooterProps = ComponentProps<typeof HeadlessCardFooter>
-export type CardTitleProps = ComponentProps<typeof HeadlessCardTitle>
-export type CardDescriptionProps = ComponentProps<typeof HeadlessCardDescription>
-export type CardActionProps = ComponentProps<typeof HeadlessCardAction>
-export type CardContentProps = ComponentProps<typeof HeadlessCardContent>
+export type CardProps = ComponentProps<typeof CoreCard>
+export type CardHeaderProps = ComponentProps<typeof CoreCardHeader>
+export type CardFooterProps = ComponentProps<typeof CoreCardFooter>
+export type CardTitleProps = ComponentProps<typeof CoreCardTitle>
+export type CardDescriptionProps = ComponentProps<
+  typeof CoreCardDescription
+>
+export type CardActionProps = ComponentProps<typeof CoreCardAction>
+export type CardContentProps = ComponentProps<typeof CoreCardContent>
 
 export function Card(props: CardProps) {
-  return <HeadlessCard {...props} />
+  return <CoreCard {...props} />
 }
 
 export function CardHeader(props: CardHeaderProps) {
-  return <HeadlessCardHeader {...props} />
+  return <CoreCardHeader {...props} />
 }
 
 export function CardFooter(props: CardFooterProps) {
-  return <HeadlessCardFooter {...props} />
+  return <CoreCardFooter {...props} />
 }
 
 export function CardTitle(props: CardTitleProps) {
-  return <HeadlessCardTitle {...props} />
+  return <CoreCardTitle {...props} />
 }
 
 export function CardDescription(props: CardDescriptionProps) {
-  return <HeadlessCardDescription {...props} />
+  return <CoreCardDescription {...props} />
 }
 
 export function CardAction(props: CardActionProps) {
-  return <HeadlessCardAction {...props} />
+  return <CoreCardAction {...props} />
 }
 
 export function CardContent(props: CardContentProps) {
-  return <HeadlessCardContent {...props} />
+  return <CoreCardContent {...props} />
 }

@@ -1,10 +1,10 @@
 import {
-  Checkbox as HeadlessCheckbox,
-  type CheckboxProps as HeadlessCheckboxProps,
+  Checkbox as CoreCheckbox,
+  type CheckboxProps as CoreCheckboxProps,
 } from "@workspace/ui-core/components/checkbox"
 
-export type CheckboxProps = HeadlessCheckboxProps
+export type CheckboxProps = CoreCheckboxProps
 
 export function Checkbox(props: CheckboxProps) {
-  return <HeadlessCheckbox {...props} />
+  return <CoreCheckbox {...props} />
 }

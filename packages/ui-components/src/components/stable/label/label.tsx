@@ -1,10 +1,10 @@
 import {
-  Label as HeadlessLabel,
-  type LabelProps as HeadlessLabelProps,
+  Label as CoreLabel,
+  type LabelProps as CoreLabelProps,
 } from "@workspace/ui-core/components/label"
 
-export type LabelProps = HeadlessLabelProps
+export type LabelProps = CoreLabelProps
 
 export function Label(props: LabelProps) {
-  return <HeadlessLabel {...props} />
+  return <CoreLabel {...props} />
 }

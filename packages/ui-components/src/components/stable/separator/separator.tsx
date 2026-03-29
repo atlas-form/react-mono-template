@@ -1,10 +1,10 @@
 import {
-  Separator as HeadlessSeparator,
-  type SeparatorProps as HeadlessSeparatorProps,
+  Separator as CoreSeparator,
+  type SeparatorProps as CoreSeparatorProps,
 } from "@workspace/ui-core/components/separator"
 
-export type SeparatorProps = HeadlessSeparatorProps
+export type SeparatorProps = CoreSeparatorProps
 
 export function Separator(props: SeparatorProps) {
-  return <HeadlessSeparator {...props} />
+  return <CoreSeparator {...props} />
 }

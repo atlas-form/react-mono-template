@@ -1,10 +1,10 @@
 import {
-  Switch as HeadlessSwitch,
-  type SwitchProps as HeadlessSwitchProps,
+  Switch as CoreSwitch,
+  type SwitchProps as CoreSwitchProps,
 } from "@workspace/ui-core/components/switch"
 
-export type SwitchProps = HeadlessSwitchProps
+export type SwitchProps = CoreSwitchProps
 
 export function Switch(props: SwitchProps) {
-  return <HeadlessSwitch {...props} />
+  return <CoreSwitch {...props} />
 }

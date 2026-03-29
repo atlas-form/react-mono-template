@@ -1,17 +1,17 @@
 import {
-  RadioGroup as HeadlessRadioGroup,
-  RadioGroupItem as HeadlessRadioGroupItem,
-  type RadioGroupItemProps as HeadlessRadioGroupItemProps,
-  type RadioGroupProps as HeadlessRadioGroupProps,
+  RadioGroup as CoreRadioGroup,
+  RadioGroupItem as CoreRadioGroupItem,
+  type RadioGroupItemProps as CoreRadioGroupItemProps,
+  type RadioGroupProps as CoreRadioGroupProps,
 } from "@workspace/ui-core/components/radio-group"
 
-export type RadioGroupProps = HeadlessRadioGroupProps
-export type RadioGroupItemProps = HeadlessRadioGroupItemProps
+export type RadioGroupProps = CoreRadioGroupProps
+export type RadioGroupItemProps = CoreRadioGroupItemProps
 
 export function RadioGroup(props: RadioGroupProps) {
-  return <HeadlessRadioGroup {...props} />
+  return <CoreRadioGroup {...props} />
 }
 
 export function RadioGroupItem(props: RadioGroupItemProps) {
-  return <HeadlessRadioGroupItem {...props} />
+  return <CoreRadioGroupItem {...props} />
 }

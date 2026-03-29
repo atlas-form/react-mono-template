@@ -1,28 +1,28 @@
 import type { ComponentProps } from "react"
 import {
-  Tooltip as HeadlessTooltip,
-  TooltipContent as HeadlessTooltipContent,
-  TooltipProvider as HeadlessTooltipProvider,
-  TooltipTrigger as HeadlessTooltipTrigger,
+  Tooltip as CoreTooltip,
+  TooltipContent as CoreTooltipContent,
+  TooltipProvider as CoreTooltipProvider,
+  TooltipTrigger as CoreTooltipTrigger,
 } from "@workspace/ui-core/components/tooltip"
 
-export type TooltipProviderProps = ComponentProps<typeof HeadlessTooltipProvider>
-export type TooltipProps = ComponentProps<typeof HeadlessTooltip>
-export type TooltipTriggerProps = ComponentProps<typeof HeadlessTooltipTrigger>
-export type TooltipContentProps = ComponentProps<typeof HeadlessTooltipContent>
+export type TooltipProviderProps = ComponentProps<typeof CoreTooltipProvider>
+export type TooltipProps = ComponentProps<typeof CoreTooltip>
+export type TooltipTriggerProps = ComponentProps<typeof CoreTooltipTrigger>
+export type TooltipContentProps = ComponentProps<typeof CoreTooltipContent>
 
 export function TooltipProvider(props: TooltipProviderProps) {
-  return <HeadlessTooltipProvider {...props} />
+  return <CoreTooltipProvider {...props} />
 }
 
 export function Tooltip(props: TooltipProps) {
-  return <HeadlessTooltip {...props} />
+  return <CoreTooltip {...props} />
 }
 
 export function TooltipTrigger(props: TooltipTriggerProps) {
-  return <HeadlessTooltipTrigger {...props} />
+  return <CoreTooltipTrigger {...props} />
 }
 
 export function TooltipContent(props: TooltipContentProps) {
-  return <HeadlessTooltipContent {...props} />
+  return <CoreTooltipContent {...props} />
 }

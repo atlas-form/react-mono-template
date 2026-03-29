@@ -1,10 +1,10 @@
 import {
-  Textarea as HeadlessTextarea,
-  type TextareaProps as HeadlessTextareaProps,
+  Textarea as CoreTextarea,
+  type TextareaProps as CoreTextareaProps,
 } from "@workspace/ui-core/components/textarea"
 
-export type TextareaProps = HeadlessTextareaProps
+export type TextareaProps = CoreTextareaProps
 
 export function Textarea(props: TextareaProps) {
-  return <HeadlessTextarea {...props} />
+  return <CoreTextarea {...props} />
 }

@@ -1,31 +1,31 @@
 import {
-  Tabs as HeadlessTabs,
-  TabsContent as HeadlessTabsContent,
-  TabsList as HeadlessTabsList,
-  TabsTrigger as HeadlessTabsTrigger,
-  type TabsContentProps as HeadlessTabsContentProps,
-  type TabsListProps as HeadlessTabsListProps,
-  type TabsProps as HeadlessTabsProps,
-  type TabsTriggerProps as HeadlessTabsTriggerProps,
+  Tabs as CoreTabs,
+  TabsContent as CoreTabsContent,
+  TabsList as CoreTabsList,
+  TabsTrigger as CoreTabsTrigger,
+  type TabsContentProps as CoreTabsContentProps,
+  type TabsListProps as CoreTabsListProps,
+  type TabsProps as CoreTabsProps,
+  type TabsTriggerProps as CoreTabsTriggerProps,
 } from "@workspace/ui-core/components/tabs"
 
-export type TabsProps = HeadlessTabsProps
-export type TabsListProps = HeadlessTabsListProps
-export type TabsTriggerProps = HeadlessTabsTriggerProps
-export type TabsContentProps = HeadlessTabsContentProps
+export type TabsProps = CoreTabsProps
+export type TabsListProps = CoreTabsListProps
+export type TabsTriggerProps = CoreTabsTriggerProps
+export type TabsContentProps = CoreTabsContentProps
 
 export function Tabs(props: TabsProps) {
-  return <HeadlessTabs {...props} />
+  return <CoreTabs {...props} />
 }
 
 export function TabsList(props: TabsListProps) {
-  return <HeadlessTabsList {...props} />
+  return <CoreTabsList {...props} />
 }
 
 export function TabsTrigger(props: TabsTriggerProps) {
-  return <HeadlessTabsTrigger {...props} />
+  return <CoreTabsTrigger {...props} />
 }
 
 export function TabsContent(props: TabsContentProps) {
-  return <HeadlessTabsContent {...props} />
+  return <CoreTabsContent {...props} />
 }

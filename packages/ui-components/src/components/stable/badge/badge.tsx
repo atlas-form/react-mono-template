@@ -1,10 +1,10 @@
 import {
-  Badge as HeadlessBadge,
-  type BadgeProps as HeadlessBadgeProps,
+  Badge as CoreBadge,
+  type BadgeProps as CoreBadgeProps,
 } from "@workspace/ui-core/components/badge"
 
-export type BadgeProps = HeadlessBadgeProps
+export type BadgeProps = CoreBadgeProps
 
 export function Badge(props: BadgeProps) {
-  return <HeadlessBadge {...props} />
+  return <CoreBadge {...props} />
 }

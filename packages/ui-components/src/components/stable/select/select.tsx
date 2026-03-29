@@ -1,11 +1,11 @@
 import type { ReactNode } from "react"
 import {
-  Select as HeadlessSelect,
-  SelectContent as HeadlessSelectContent,
-  SelectItem as HeadlessSelectItem,
-  SelectTrigger as HeadlessSelectTrigger,
-  SelectValue as HeadlessSelectValue,
-  type SelectProps as HeadlessSelectProps,
+  Select as CoreSelect,
+  SelectContent as CoreSelectContent,
+  SelectItem as CoreSelectItem,
+  SelectTrigger as CoreSelectTrigger,
+  SelectValue as CoreSelectValue,
+  type SelectProps as CoreSelectProps,
 } from "@workspace/ui-core/components/select"
 
 export type SelectOption = {
@@ -14,7 +14,7 @@ export type SelectOption = {
   disabled?: boolean
 }
 
-export type SelectProps = Omit<HeadlessSelectProps, "children"> & {
+export type SelectProps = Omit<CoreSelectProps, "children"> & {
   list: SelectOption[]
   placeholder?: ReactNode
 
@@ -34,31 +34,31 @@ export function Select({
   const selected = list.find((i) => i.value === value)
 
   return (
-    <HeadlessSelect value={value} {...props}>
-      <HeadlessSelectTrigger>
+    <CoreSelect value={value} {...props}>
+      <CoreSelectTrigger>
         {renderTrigger ? (
           renderTrigger(value as string | undefined, selected)
         ) : (
-          <HeadlessSelectValue placeholder={placeholder} />
+          <CoreSelectValue placeholder={placeholder} />
         )}
-      </HeadlessSelectTrigger>
+      </CoreSelectTrigger>
 
-      <HeadlessSelectContent>
+      <CoreSelectContent>
         {list.map((item) => {
           if (renderItem) {
             return renderItem(item)
           }
           return (
-            <HeadlessSelectItem
+            <CoreSelectItem
               key={item.value}
               value={item.value}
               disabled={item.disabled}
             >
               {item.label}
-            </HeadlessSelectItem>
+            </CoreSelectItem>
           )
         })}
-      </HeadlessSelectContent>
-    </HeadlessSelect>
+      </CoreSelectContent>
+    </CoreSelect>
   )
 }

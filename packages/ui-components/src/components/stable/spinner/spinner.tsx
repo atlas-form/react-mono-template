@@ -1,10 +1,10 @@
 import {
-  Spinner as HeadlessSpinner,
-  type SpinnerProps as HeadlessSpinnerProps,
+  Spinner as CoreSpinner,
+  type SpinnerProps as CoreSpinnerProps,
 } from "@workspace/ui-core/components/spinner"
 
-export type SpinnerProps = HeadlessSpinnerProps
+export type SpinnerProps = CoreSpinnerProps
 
 export function Spinner(props: SpinnerProps) {
-  return <HeadlessSpinner {...props} />
+  return <CoreSpinner {...props} />
 }

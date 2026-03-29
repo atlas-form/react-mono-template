@@ -1,15 +1,15 @@
 import {
-  Input as HeadlessInput,
+  Input as CoreInput,
   inputClassName,
-  type InputClassResolver as HeadlessInputClassResolver,
-  type InputProps as HeadlessInputProps,
+  type InputClassResolver as CoreInputClassResolver,
+  type InputProps as CoreInputProps,
 } from "@workspace/ui-core/components/input"
 
-export type InputClassResolver = HeadlessInputClassResolver
-export type InputProps = HeadlessInputProps
+export type InputClassResolver = CoreInputClassResolver
+export type InputProps = CoreInputProps
 
 export function Input(props: InputProps) {
-  return <HeadlessInput {...props} />
+  return <CoreInput {...props} />
 }
 
 export { inputClassName }
