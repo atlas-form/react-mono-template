@@ -1,95 +1,110 @@
 # @workspace/ui-components 协议
 
-## 宪章定位
+## 宪章
 
-`@workspace/ui-components` 是构建在 `@workspace/ui-core` 之上的、面向产品的样式化 UI 层。
+`@workspace/ui-components` 是构建在 `@workspace/ui-core` 之上的产品级 UI 层。
+所有应用包必须从本包消费共享 UI。
 
-这个包是所有应用包默认的 UI 入口。
+## 作用域
 
-## 强制组件分组
+- `@workspace/ui-core`：headless 原语与行为契约。不得因应用需求直接修改。
+- `@workspace/ui-components`：产品默认、固定 API、受控组合。它是应用侧唯一的共享 UI 入口。
 
-`src/components` 下的所有组件必须且只能归入以下一个分组：
+## 组件分组（强制）
 
-- `src/components/stable/*`：标准化、可复用、面向应用的组件。
-- `src/components/labs/*`：探索性或特殊场景组件，尚未标准化。
+`src/components` 下所有组件必须且只能归入一个分组：
 
-不要把组件实现直接放在 `src/components/*` 根目录。
+- `src/components/stable/*`：标准化、可复用、可用于生产的组件。
+- `src/components/labs/*`：实验性或领域性组件，尚未标准化。
 
-## 分组语义
+禁止将组件直接实现到 `src/components/*` 根目录。
 
-### stable
+## Fixed-Only 原则（强制）
 
-当组件已可跨应用复用时，使用 `stable`。
+`@workspace/ui-components` 必须实现 fixed-only 设计系统。
 
-要求：
+- 组件必须暴露确定性、显式的产品 API。
+- 组件禁止暴露 free/flex/customization 接口。
+- 组件禁止依赖应用层的样式决策。
 
-- API 稳定且已文档化。
-- 命名已最终确定。
-- 应用包可以安全导入使用。
+## API 约束（强制）
 
-### labs
+对 stable 组件：
 
-`labs` 用于临时、实验性或领域特定组件。
+- 必须使用显式、受控的 props。
+- 禁止暴露 `className`、`style`、自由形态 `...props` 透传。
+- 禁止暴露 `mode`、`asChild`、`classResolver`、`classNameMode` 或同类 headless 控制项。
+- 禁止向应用层暴露通用 slot/render 注入能力。
 
-规则：
+## 结构约束（强制）
 
-- 当最终命名尚不明确时，名称可带场景前缀（例如：`payment-*`、`table-*`、`campaign-*`）。
-- Labs 组件允许快速演进。
-- 一旦使用方式与 API 稳定，应将组件迁移到 `stable`，并重命名为最终规范名称。
+- 组件在有产品语义时必须通过显式结构化 props 表达（例如 `title`、`description`、`actions`）。
+- 禁止将会削弱产品一致性的任意组合能力作为默认应用层 API 暴露。
+- 对复杂组件，默认组合必须封装在 `ui-components` 内，并以受控 API 对外提供。
 
-## 分层契约
+## 实现风格规则
 
-- `@workspace/ui-core`：headless 原语、结构与行为契约。
-- `@workspace/ui-components`：视觉语言、产品默认值、可供应用消费的封装层。
+### 简单组件（Button 风格）
 
-任何产品视觉决策都不应放在 `ui-core`。
+简单组件（单一职责、低组合复杂度）必须遵循 Button 风格 API：
 
-## 组件编写规范（强制）
+- 仅允许显式白名单 props。
+- 禁止直接重导出 ui-core 全量 props。
+- 禁止向应用层开放样式覆盖入口。
 
-- `ui-components` 新增组件时，默认遵循并复用 `ui-core` 的默认 style 体系，不额外定义与 `ui-core` 相冲突的默认视觉基线。
-- `ui-components` 对外只暴露面向应用的组件 props，不得向外暴露 headless 选择或 headless 组合入口。
-- 应用包消费的组件必须始终是非 headless 的产品组件；应用不得直接基于 headless 原语拼装业务通用组件。
-- 若需要支持自定义风格，应在 `ui-components` 内部通过分层封装实现，不把 headless 能力直接下放到应用层。
-- 同一类型组件允许在 `ui-components` 内存在多个风格实现（例如多个 `button` 风格版本）。
-- 同一类型组件在 `stable` 中只能有一个默认实现；其它风格实现必须放在 `labs`。
+### 复杂组件（Select 风格）
 
-## 应用使用策略（严格）
+复杂组件（多结构/多交互状态）必须遵循 Select 风格封装：
 
-- 应用包必须从 `@workspace/ui-components` 消费产品组件。
-- 应用包不得在本地自行实现产品级可复用 UI 组件。
-- 新增共享 UI 需求应优先落在 `@workspace/ui-components`。
+- 在 `ui-components` 内提供默认产品封装。
+- 对外仅暴露受控、确定性的 API。
+- 禁止向应用层暴露结构改写与样式注入能力。
 
-例外策略：
+## 应用使用规则（强制）
 
-- 若应用存在一次性需求，可仅在该应用内以页面级组合方式实现。
-- 未迁移到 `ui-components` 前，不得将一次性应用代码提升为共享组件。
+应用必须：
 
-## 公共导出策略
+- 从 `@workspace/ui-components` 导入共享产品组件。
 
-- 根导出（`@workspace/ui-components`）应暴露 `stable` 组件。
-- 默认不从根导出 `labs` 组件。
-- 若某个 labs 组件必须临时被消费，应通过显式的 labs 子路径导出，并标注其临时性质。
+应用禁止：
 
-## 新组件构建规则
+- 从 `@workspace/ui-core` 导入共享产品 UI。
+- 通过包裹共享组件进行样式注入作为 workaround。
+- 通过任何扩展点覆盖共享组件样式。
 
-每个新共享组件都必须遵循以下顺序：
+当现有能力不足时：
 
-1. 从 `ui-core` 原语与契约出发。
-2. 在 `ui-components` 中实现视觉与产品行为。
-3. 选择初始分组：`labs` 或 `stable`。
-4. 在 `apps/test` 中新增或更新验证。
-5. 通过以下闸门：
+- 必须扩展或修改 `@workspace/ui-components`。
+- 禁止在应用层通过自定义绕过实现需求。
+
+## 导出策略
+
+- 根导出（`@workspace/ui-components`）必须导出 stable 组件。
+- 根导出默认禁止导出 labs 组件。
+- 若 labs 组件需要临时消费，必须使用显式 labs 子路径导出，并按临时能力管理。
+
+## 构建与晋升闸门
+
+每个新增共享组件必须遵循：
+
+1. 从 `ui-core` 原语/契约出发。
+2. 在 `ui-components` 实现产品行为与 fixed API。
+3. 选择分组：`labs` 或 `stable`。
+4. 在 `apps/test` 增加或更新验证。
+5. 通过闸门：
    - `pnpm --filter @workspace/ui-components typecheck`
    - `pnpm --filter test lint`
    - `pnpm --filter test build`
-6. 只有在 API 与行为验证稳定后，才能从 `labs` 晋升到 `stable`。
+6. 仅在 API 与行为稳定后，方可从 `labs` 晋升到 `stable`。
 
-## AI 执行规则
+## AI 执行规则（强制）
 
-对于任何修改该包的 AI 代理：
+任何修改本包的 AI 代理必须遵守：
 
-1. 将本协议视为强制约束。
-2. 不要把产品样式迁移到 `ui-core`。
-3. 不要绕过 `ui-components` 这个默认应用入口。
-4. 对所有组件改动强制执行 `stable/labs` 分组。
-5. 若协议与便利性冲突，以协议为准。
+1. 本协议是硬约束。
+2. 禁止将产品样式决策下放到 `ui-core`。
+3. 禁止绕过 `ui-components` 作为应用侧共享 UI 入口。
+4. 必须执行 stable/labs 分组约束。
+5. 必须优先 fixed-only 严格 API，而非便利性透传。
+6. 禁止新增面向应用层的可定制入口。
+7. 协议与便利性冲突时，以协议为准。
