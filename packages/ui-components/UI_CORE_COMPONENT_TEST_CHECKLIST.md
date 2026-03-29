@@ -39,21 +39,21 @@
 - [x] Radio Group (`ui-core/radio-group`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 - [x] Switch (`ui-core/switch`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 - [x] Tabs (`ui-core/tabs`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
-- [ ] Textarea (`ui-core/textarea`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Label (`ui-core/label`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Field (`ui-core/field`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Dialog (`ui-core/dialog`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Dropdown Menu (`ui-core/dropdown-menu`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Popover (`ui-core/popover`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Tooltip (`ui-core/tooltip`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Card (`ui-core/card`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Table (`ui-core/table`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Badge (`ui-core/badge`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Separator (`ui-core/separator`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Skeleton (`ui-core/skeleton`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Progress (`ui-core/progress`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Alert (`ui-core/alert`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Spinner (`ui-core/spinner`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
+- [x] Textarea (`ui-core/textarea`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Label (`ui-core/label`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Field (`ui-core/field`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Dialog (`ui-core/dialog`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Dropdown Menu (`ui-core/dropdown-menu`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Popover (`ui-core/popover`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Tooltip (`ui-core/tooltip`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Card (`ui-core/card`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Table (`ui-core/table`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Badge (`ui-core/badge`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Separator (`ui-core/separator`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Skeleton (`ui-core/skeleton`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Progress (`ui-core/progress`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Alert (`ui-core/alert`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Spinner (`ui-core/spinner`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 
 ## P1（高优先级：常见业务与导航交互）
 
