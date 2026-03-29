@@ -1,51 +1,11 @@
-import {
-  ArrowLeft,
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  CircleCheck,
-  Info,
-  Loader2,
-  Minus,
-  MoreHorizontal,
-  OctagonX,
-  PanelLeft,
-  Pencil,
-  Plus,
-  Search,
-  Trash2,
-  TriangleAlert,
-  X,
-} from "lucide-react"
+import type { SemanticIconName } from "../types"
 
-import type { IconMap } from "../types"
-
-export const lucideMap: IconMap = {
-  add: Plus,
-  edit: Pencil,
-  delete: Trash2,
-  "arrow-right": ArrowRight,
-  "arrow-left": ArrowLeft,
-  "arrow-down": ArrowDown,
-  "arrow-up": ArrowUp,
-  check: Check,
-  "chevron-right": ChevronRight,
-  "chevron-left": ChevronLeft,
-  "chevron-down": ChevronDown,
-  "chevron-up": ChevronUp,
-  "more-horizontal": MoreHorizontal,
-  x: X,
-  search: Search,
-  minus: Minus,
-  "loader-2": Loader2,
-  "panel-left": PanelLeft,
-  "circle-check": CircleCheck,
-  info: Info,
-  "triangle-alert": TriangleAlert,
-  "octagon-x": OctagonX,
+export const lucideSemanticAliases: Partial<
+  Record<SemanticIconName, readonly string[]>
+> = {
+  add: ["plus", "circle-plus"],
+  edit: ["square-pen", "pencil"],
+  delete: ["trash-2", "trash"],
+  "more-horizontal": ["more-horizontal", "ellipsis"],
+  "circle-check": ["circle-check", "circle-check-big"],
 }

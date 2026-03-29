@@ -2,21 +2,10 @@ import { createElement } from "react"
 import type { ComponentProps } from "react"
 import { DynamicIcon, iconNames } from "lucide-react/dynamic"
 
-import { heroiconsMap } from "./providers/heroicons"
-import { lucideMap } from "./providers/lucide"
-import type {
-  IconMap,
-  IconProps,
-  IconProvider,
-  SemanticIconName,
-} from "./types"
+import { buildResolvedSemanticMap } from "./auto-map"
+import { lucideSemanticAliases } from "./providers/lucide"
+import type { IconProps, SemanticIconName } from "./types"
 
-const providerMaps: Record<IconProvider, IconMap> = {
-  lucide: lucideMap,
-  heroicons: heroiconsMap,
-}
-
-let currentProvider: IconProvider = "lucide"
 type DynamicLucideName = ComponentProps<typeof DynamicIcon>["name"]
 const lucideIconNameSet = new Set<DynamicLucideName>(
   iconNames as DynamicLucideName[]
@@ -30,6 +19,12 @@ function normalizeIconName(name: string) {
     .toLowerCase()
 }
 
+const resolvedSemanticLucideMap = buildResolvedSemanticMap<SemanticIconName>({
+  aliases: lucideSemanticAliases,
+  isAvailable: (name) => lucideIconNameSet.has(name as DynamicLucideName),
+  normalize: normalizeIconName,
+})
+
 function resolveLucideName(name: string): DynamicLucideName | null {
   const normalized = normalizeIconName(name)
   if (!normalized) {
@@ -40,42 +35,29 @@ function resolveLucideName(name: string): DynamicLucideName | null {
     return normalized as DynamicLucideName
   }
 
+  const semanticName = normalized as SemanticIconName
+  const mappedName = resolvedSemanticLucideMap[semanticName]
+  if (mappedName && lucideIconNameSet.has(mappedName as DynamicLucideName)) {
+    return mappedName as DynamicLucideName
+  }
+
   return null
-}
-
-export function setIconProvider(provider: IconProvider) {
-  currentProvider = provider
-}
-
-export function getIconProvider() {
-  return currentProvider
 }
 
 export function Icon({
   name,
   size = 16,
   className,
-  provider,
   ...props
 }: IconProps) {
-  const selectedProvider = provider ?? currentProvider
-  const iconMap = providerMaps[selectedProvider]
-  const Comp = iconMap[name as SemanticIconName]
-
-  if (Comp) {
-    return createElement(Comp, { size, className, ...props })
-  }
-
-  if (selectedProvider === "lucide") {
-    const lucideName = resolveLucideName(name)
-    if (lucideName) {
-      return createElement(DynamicIcon, {
-        name: lucideName,
-        size,
-        className,
-        ...props,
-      })
-    }
+  const lucideName = resolveLucideName(name)
+  if (lucideName) {
+    return createElement(DynamicIcon, {
+      name: lucideName,
+      size,
+      className,
+      ...props,
+    })
   }
 
   return null
