@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Field as CoreField,
   FieldContent as CoreFieldContent,
@@ -12,53 +12,80 @@ import {
   FieldTitle as CoreFieldTitle,
 } from "@workspace/ui-core/components/field"
 
-export type FieldProps = ComponentProps<typeof CoreField>
-export type FieldSetProps = ComponentProps<typeof CoreFieldSet>
-export type FieldLegendProps = ComponentProps<typeof CoreFieldLegend>
-export type FieldGroupProps = ComponentProps<typeof CoreFieldGroup>
-export type FieldContentProps = ComponentProps<typeof CoreFieldContent>
-export type FieldLabelProps = ComponentProps<typeof CoreFieldLabel>
-export type FieldTitleProps = ComponentProps<typeof CoreFieldTitle>
-export type FieldDescriptionProps = ComponentProps<typeof CoreFieldDescription>
-export type FieldSeparatorProps = ComponentProps<typeof CoreFieldSeparator>
-export type FieldErrorProps = ComponentProps<typeof CoreFieldError>
-
-export function Field(props: FieldProps) {
-  return <CoreField {...props} />
+export interface FieldProps {
+  children: ReactNode
 }
 
-export function FieldSet(props: FieldSetProps) {
-  return <CoreFieldSet {...props} />
+export interface FieldSetProps {
+  children: ReactNode
 }
 
-export function FieldLegend(props: FieldLegendProps) {
-  return <CoreFieldLegend {...props} />
+export interface FieldLegendProps {
+  children: ReactNode
 }
 
-export function FieldGroup(props: FieldGroupProps) {
-  return <CoreFieldGroup {...props} />
+export interface FieldGroupProps {
+  children: ReactNode
 }
 
-export function FieldContent(props: FieldContentProps) {
-  return <CoreFieldContent {...props} />
+export interface FieldContentProps {
+  children: ReactNode
 }
 
-export function FieldLabel(props: FieldLabelProps) {
-  return <CoreFieldLabel {...props} />
+export interface FieldLabelProps {
+  children: ReactNode
 }
 
-export function FieldTitle(props: FieldTitleProps) {
-  return <CoreFieldTitle {...props} />
+export interface FieldTitleProps {
+  children: ReactNode
 }
 
-export function FieldDescription(props: FieldDescriptionProps) {
-  return <CoreFieldDescription {...props} />
+export interface FieldDescriptionProps {
+  children: ReactNode
 }
 
-export function FieldSeparator(props: FieldSeparatorProps) {
-  return <CoreFieldSeparator {...props} />
+export interface FieldSeparatorProps {}
+
+export interface FieldErrorProps {
+  children?: ReactNode
 }
 
-export function FieldError(props: FieldErrorProps) {
-  return <CoreFieldError {...props} />
+export function Field({ children }: FieldProps) {
+  return <CoreField>{children}</CoreField>
+}
+
+export function FieldSet({ children }: FieldSetProps) {
+  return <CoreFieldSet>{children}</CoreFieldSet>
+}
+
+export function FieldLegend({ children }: FieldLegendProps) {
+  return <CoreFieldLegend>{children}</CoreFieldLegend>
+}
+
+export function FieldGroup({ children }: FieldGroupProps) {
+  return <CoreFieldGroup>{children}</CoreFieldGroup>
+}
+
+export function FieldContent({ children }: FieldContentProps) {
+  return <CoreFieldContent>{children}</CoreFieldContent>
+}
+
+export function FieldLabel({ children }: FieldLabelProps) {
+  return <CoreFieldLabel>{children}</CoreFieldLabel>
+}
+
+export function FieldTitle({ children }: FieldTitleProps) {
+  return <CoreFieldTitle>{children}</CoreFieldTitle>
+}
+
+export function FieldDescription({ children }: FieldDescriptionProps) {
+  return <CoreFieldDescription>{children}</CoreFieldDescription>
+}
+
+export function FieldSeparator(_: FieldSeparatorProps) {
+  return <CoreFieldSeparator />
+}
+
+export function FieldError({ children }: FieldErrorProps) {
+  return <CoreFieldError>{children}</CoreFieldError>
 }

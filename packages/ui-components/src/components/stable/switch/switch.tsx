@@ -1,10 +1,24 @@
-import {
-  Switch as CoreSwitch,
-  type SwitchProps as CoreSwitchProps,
-} from "@workspace/ui-core/components/switch"
+import { Switch as CoreSwitch } from "@workspace/ui-core/components/switch"
 
-export type SwitchProps = CoreSwitchProps
+export interface SwitchProps {
+  checked: boolean
+  onCheckedChange?: (checked: boolean) => void
+  disabled?: boolean
+  size?: "sm" | "default"
+}
 
-export function Switch(props: SwitchProps) {
-  return <CoreSwitch {...props} />
+export function Switch({
+  checked,
+  onCheckedChange,
+  disabled = false,
+  size = "default",
+}: SwitchProps) {
+  return (
+    <CoreSwitch
+      checked={checked}
+      disabled={disabled}
+      size={size}
+      onCheckedChange={onCheckedChange}
+    />
+  )
 }

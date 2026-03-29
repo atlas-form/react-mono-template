@@ -1,15 +1,41 @@
-import {
-  Input as CoreInput,
-  inputClassName,
-  type InputClassResolver as CoreInputClassResolver,
-  type InputProps as CoreInputProps,
-} from "@workspace/ui-core/components/input"
+import type { ChangeEvent } from "react"
+import { Input as CoreInput } from "@workspace/ui-core/components/input"
 
-export type InputClassResolver = CoreInputClassResolver
-export type InputProps = CoreInputProps
+export type InputType =
+  | "text"
+  | "password"
+  | "email"
+  | "number"
+  | "search"
+  | "tel"
+  | "url"
 
-export function Input(props: InputProps) {
-  return <CoreInput {...props} />
+export interface InputProps {
+  value: string
+  onValueChange: (value: string) => void
+  placeholder?: string
+  disabled?: boolean
+  type?: InputType
 }
 
-export { inputClassName }
+export function Input({
+  value,
+  onValueChange,
+  placeholder,
+  disabled = false,
+  type = "text",
+}: InputProps) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onValueChange(event.target.value)
+  }
+
+  return (
+    <CoreInput
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder}
+      disabled={disabled}
+      type={type}
+    />
+  )
+}

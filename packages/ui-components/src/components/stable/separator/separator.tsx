@@ -1,10 +1,13 @@
-import {
-  Separator as CoreSeparator,
-  type SeparatorProps as CoreSeparatorProps,
-} from "@workspace/ui-core/components/separator"
+import { Separator as CoreSeparator } from "@workspace/ui-core/components/separator"
 
-export type SeparatorProps = CoreSeparatorProps
+export interface SeparatorProps {
+  orientation?: "horizontal" | "vertical"
+  decorative?: boolean
+}
 
-export function Separator(props: SeparatorProps) {
-  return <CoreSeparator {...props} />
+export function Separator({
+  orientation = "horizontal",
+  decorative = true,
+}: SeparatorProps) {
+  return <CoreSeparator orientation={orientation} decorative={decorative} />
 }

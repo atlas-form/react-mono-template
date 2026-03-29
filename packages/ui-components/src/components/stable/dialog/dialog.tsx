@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Dialog as CoreDialog,
   DialogClose as CoreDialogClose,
@@ -12,53 +12,86 @@ import {
   DialogTrigger as CoreDialogTrigger,
 } from "@workspace/ui-core/components/dialog"
 
-export type DialogProps = ComponentProps<typeof CoreDialog>
-export type DialogTriggerProps = ComponentProps<typeof CoreDialogTrigger>
-export type DialogPortalProps = ComponentProps<typeof CoreDialogPortal>
-export type DialogOverlayProps = ComponentProps<typeof CoreDialogOverlay>
-export type DialogContentProps = ComponentProps<typeof CoreDialogContent>
-export type DialogHeaderProps = ComponentProps<typeof CoreDialogHeader>
-export type DialogFooterProps = ComponentProps<typeof CoreDialogFooter>
-export type DialogTitleProps = ComponentProps<typeof CoreDialogTitle>
-export type DialogDescriptionProps = ComponentProps<typeof CoreDialogDescription>
-export type DialogCloseProps = ComponentProps<typeof CoreDialogClose>
-
-export function Dialog(props: DialogProps) {
-  return <CoreDialog {...props} />
+export interface DialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  children: ReactNode
 }
 
-export function DialogTrigger(props: DialogTriggerProps) {
-  return <CoreDialogTrigger {...props} />
+export interface DialogTriggerProps {
+  children: ReactNode
 }
 
-export function DialogPortal(props: DialogPortalProps) {
-  return <CoreDialogPortal {...props} />
+export interface DialogPortalProps {
+  children: ReactNode
 }
 
-export function DialogOverlay(props: DialogOverlayProps) {
-  return <CoreDialogOverlay {...props} />
+export interface DialogOverlayProps {}
+
+export interface DialogContentProps {
+  children: ReactNode
 }
 
-export function DialogContent(props: DialogContentProps) {
-  return <CoreDialogContent {...props} />
+export interface DialogHeaderProps {
+  children: ReactNode
 }
 
-export function DialogHeader(props: DialogHeaderProps) {
-  return <CoreDialogHeader {...props} />
+export interface DialogFooterProps {
+  children: ReactNode
 }
 
-export function DialogFooter(props: DialogFooterProps) {
-  return <CoreDialogFooter {...props} />
+export interface DialogTitleProps {
+  children: ReactNode
 }
 
-export function DialogTitle(props: DialogTitleProps) {
-  return <CoreDialogTitle {...props} />
+export interface DialogDescriptionProps {
+  children: ReactNode
 }
 
-export function DialogDescription(props: DialogDescriptionProps) {
-  return <CoreDialogDescription {...props} />
+export interface DialogCloseProps {
+  children: ReactNode
 }
 
-export function DialogClose(props: DialogCloseProps) {
-  return <CoreDialogClose {...props} />
+export function Dialog({ open, onOpenChange, children }: DialogProps) {
+  return (
+    <CoreDialog open={open} onOpenChange={onOpenChange}>
+      {children}
+    </CoreDialog>
+  )
+}
+
+export function DialogTrigger({ children }: DialogTriggerProps) {
+  return <CoreDialogTrigger>{children}</CoreDialogTrigger>
+}
+
+export function DialogPortal({ children }: DialogPortalProps) {
+  return <CoreDialogPortal>{children}</CoreDialogPortal>
+}
+
+export function DialogOverlay(_: DialogOverlayProps) {
+  return <CoreDialogOverlay />
+}
+
+export function DialogContent({ children }: DialogContentProps) {
+  return <CoreDialogContent>{children}</CoreDialogContent>
+}
+
+export function DialogHeader({ children }: DialogHeaderProps) {
+  return <CoreDialogHeader>{children}</CoreDialogHeader>
+}
+
+export function DialogFooter({ children }: DialogFooterProps) {
+  return <CoreDialogFooter>{children}</CoreDialogFooter>
+}
+
+export function DialogTitle({ children }: DialogTitleProps) {
+  return <CoreDialogTitle>{children}</CoreDialogTitle>
+}
+
+export function DialogDescription({ children }: DialogDescriptionProps) {
+  return <CoreDialogDescription>{children}</CoreDialogDescription>
+}
+
+export function DialogClose({ children }: DialogCloseProps) {
+  return <CoreDialogClose>{children}</CoreDialogClose>
 }

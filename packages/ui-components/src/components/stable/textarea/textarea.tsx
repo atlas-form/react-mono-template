@@ -1,10 +1,32 @@
-import {
-  Textarea as CoreTextarea,
-  type TextareaProps as CoreTextareaProps,
-} from "@workspace/ui-core/components/textarea"
+import type { ChangeEvent } from "react"
+import { Textarea as CoreTextarea } from "@workspace/ui-core/components/textarea"
 
-export type TextareaProps = CoreTextareaProps
+export interface TextareaProps {
+  value: string
+  onValueChange: (value: string) => void
+  placeholder?: string
+  disabled?: boolean
+  rows?: number
+}
 
-export function Textarea(props: TextareaProps) {
-  return <CoreTextarea {...props} />
+export function Textarea({
+  value,
+  onValueChange,
+  placeholder,
+  disabled = false,
+  rows = 4,
+}: TextareaProps) {
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onValueChange(event.target.value)
+  }
+
+  return (
+    <CoreTextarea
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder}
+      disabled={disabled}
+      rows={rows}
+    />
+  )
 }

@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Tooltip as CoreTooltip,
   TooltipContent as CoreTooltipContent,
@@ -6,23 +6,50 @@ import {
   TooltipTrigger as CoreTooltipTrigger,
 } from "@workspace/ui-core/components/tooltip"
 
-export type TooltipProviderProps = ComponentProps<typeof CoreTooltipProvider>
-export type TooltipProps = ComponentProps<typeof CoreTooltip>
-export type TooltipTriggerProps = ComponentProps<typeof CoreTooltipTrigger>
-export type TooltipContentProps = ComponentProps<typeof CoreTooltipContent>
-
-export function TooltipProvider(props: TooltipProviderProps) {
-  return <CoreTooltipProvider {...props} />
+export interface TooltipProviderProps {
+  children: ReactNode
+  delayDuration?: number
 }
 
-export function Tooltip(props: TooltipProps) {
-  return <CoreTooltip {...props} />
+export interface TooltipProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  children: ReactNode
 }
 
-export function TooltipTrigger(props: TooltipTriggerProps) {
-  return <CoreTooltipTrigger {...props} />
+export interface TooltipTriggerProps {
+  children: ReactNode
 }
 
-export function TooltipContent(props: TooltipContentProps) {
-  return <CoreTooltipContent {...props} />
+export type TooltipSide = "top" | "right" | "bottom" | "left"
+
+export interface TooltipContentProps {
+  children: ReactNode
+  side?: TooltipSide
+}
+
+export function TooltipProvider({
+  children,
+  delayDuration = 200,
+}: TooltipProviderProps) {
+  return <CoreTooltipProvider delayDuration={delayDuration}>{children}</CoreTooltipProvider>
+}
+
+export function Tooltip({ open, onOpenChange, children }: TooltipProps) {
+  return (
+    <CoreTooltip open={open} onOpenChange={onOpenChange}>
+      {children}
+    </CoreTooltip>
+  )
+}
+
+export function TooltipTrigger({ children }: TooltipTriggerProps) {
+  return <CoreTooltipTrigger>{children}</CoreTooltipTrigger>
+}
+
+export function TooltipContent({
+  children,
+  side = "top",
+}: TooltipContentProps) {
+  return <CoreTooltipContent side={side}>{children}</CoreTooltipContent>
 }

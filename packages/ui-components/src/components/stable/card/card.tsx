@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Card as CoreCard,
   CardAction as CoreCardAction,
@@ -9,40 +9,58 @@ import {
   CardTitle as CoreCardTitle,
 } from "@workspace/ui-core/components/card"
 
-export type CardProps = ComponentProps<typeof CoreCard>
-export type CardHeaderProps = ComponentProps<typeof CoreCardHeader>
-export type CardFooterProps = ComponentProps<typeof CoreCardFooter>
-export type CardTitleProps = ComponentProps<typeof CoreCardTitle>
-export type CardDescriptionProps = ComponentProps<
-  typeof CoreCardDescription
->
-export type CardActionProps = ComponentProps<typeof CoreCardAction>
-export type CardContentProps = ComponentProps<typeof CoreCardContent>
-
-export function Card(props: CardProps) {
-  return <CoreCard {...props} />
+export interface CardProps {
+  children: ReactNode
 }
 
-export function CardHeader(props: CardHeaderProps) {
-  return <CoreCardHeader {...props} />
+export interface CardHeaderProps {
+  children: ReactNode
 }
 
-export function CardFooter(props: CardFooterProps) {
-  return <CoreCardFooter {...props} />
+export interface CardFooterProps {
+  children: ReactNode
 }
 
-export function CardTitle(props: CardTitleProps) {
-  return <CoreCardTitle {...props} />
+export interface CardTitleProps {
+  children: ReactNode
 }
 
-export function CardDescription(props: CardDescriptionProps) {
-  return <CoreCardDescription {...props} />
+export interface CardDescriptionProps {
+  children: ReactNode
 }
 
-export function CardAction(props: CardActionProps) {
-  return <CoreCardAction {...props} />
+export interface CardActionProps {
+  children: ReactNode
 }
 
-export function CardContent(props: CardContentProps) {
-  return <CoreCardContent {...props} />
+export interface CardContentProps {
+  children: ReactNode
+}
+
+export function Card({ children }: CardProps) {
+  return <CoreCard>{children}</CoreCard>
+}
+
+export function CardHeader({ children }: CardHeaderProps) {
+  return <CoreCardHeader>{children}</CoreCardHeader>
+}
+
+export function CardFooter({ children }: CardFooterProps) {
+  return <CoreCardFooter>{children}</CoreCardFooter>
+}
+
+export function CardTitle({ children }: CardTitleProps) {
+  return <CoreCardTitle>{children}</CoreCardTitle>
+}
+
+export function CardDescription({ children }: CardDescriptionProps) {
+  return <CoreCardDescription>{children}</CoreCardDescription>
+}
+
+export function CardAction({ children }: CardActionProps) {
+  return <CoreCardAction>{children}</CoreCardAction>
+}
+
+export function CardContent({ children }: CardContentProps) {
+  return <CoreCardContent>{children}</CoreCardContent>
 }

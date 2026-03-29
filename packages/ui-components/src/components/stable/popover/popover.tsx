@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Popover as CorePopover,
   PopoverAnchor as CorePopoverAnchor,
@@ -9,38 +9,64 @@ import {
   PopoverTrigger as CorePopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 
-export type PopoverProps = ComponentProps<typeof CorePopover>
-export type PopoverTriggerProps = ComponentProps<typeof CorePopoverTrigger>
-export type PopoverAnchorProps = ComponentProps<typeof CorePopoverAnchor>
-export type PopoverContentProps = ComponentProps<typeof CorePopoverContent>
-export type PopoverHeaderProps = ComponentProps<typeof CorePopoverHeader>
-export type PopoverTitleProps = ComponentProps<typeof CorePopoverTitle>
-export type PopoverDescriptionProps = ComponentProps<typeof CorePopoverDescription>
-
-export function Popover(props: PopoverProps) {
-  return <CorePopover {...props} />
+export interface PopoverProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  children: ReactNode
 }
 
-export function PopoverTrigger(props: PopoverTriggerProps) {
-  return <CorePopoverTrigger {...props} />
+export interface PopoverTriggerProps {
+  children: ReactNode
 }
 
-export function PopoverAnchor(props: PopoverAnchorProps) {
-  return <CorePopoverAnchor {...props} />
+export interface PopoverAnchorProps {
+  children: ReactNode
 }
 
-export function PopoverContent(props: PopoverContentProps) {
-  return <CorePopoverContent {...props} />
+export interface PopoverContentProps {
+  children: ReactNode
 }
 
-export function PopoverHeader(props: PopoverHeaderProps) {
-  return <CorePopoverHeader {...props} />
+export interface PopoverHeaderProps {
+  children: ReactNode
 }
 
-export function PopoverTitle(props: PopoverTitleProps) {
-  return <CorePopoverTitle {...props} />
+export interface PopoverTitleProps {
+  children: ReactNode
 }
 
-export function PopoverDescription(props: PopoverDescriptionProps) {
-  return <CorePopoverDescription {...props} />
+export interface PopoverDescriptionProps {
+  children: ReactNode
+}
+
+export function Popover({ open, onOpenChange, children }: PopoverProps) {
+  return (
+    <CorePopover open={open} onOpenChange={onOpenChange}>
+      {children}
+    </CorePopover>
+  )
+}
+
+export function PopoverTrigger({ children }: PopoverTriggerProps) {
+  return <CorePopoverTrigger>{children}</CorePopoverTrigger>
+}
+
+export function PopoverAnchor({ children }: PopoverAnchorProps) {
+  return <CorePopoverAnchor>{children}</CorePopoverAnchor>
+}
+
+export function PopoverContent({ children }: PopoverContentProps) {
+  return <CorePopoverContent>{children}</CorePopoverContent>
+}
+
+export function PopoverHeader({ children }: PopoverHeaderProps) {
+  return <CorePopoverHeader>{children}</CorePopoverHeader>
+}
+
+export function PopoverTitle({ children }: PopoverTitleProps) {
+  return <CorePopoverTitle>{children}</CorePopoverTitle>
+}
+
+export function PopoverDescription({ children }: PopoverDescriptionProps) {
+  return <CorePopoverDescription>{children}</CorePopoverDescription>
 }

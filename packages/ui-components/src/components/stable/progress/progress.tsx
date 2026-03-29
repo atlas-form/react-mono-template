@@ -1,10 +1,10 @@
-import {
-  Progress as CoreProgress,
-  type ProgressProps as CoreProgressProps,
-} from "@workspace/ui-core/components/progress"
+import { Progress as CoreProgress } from "@workspace/ui-core/components/progress"
 
-export type ProgressProps = CoreProgressProps
+export interface ProgressProps {
+  value: number
+  max?: number
+}
 
-export function Progress(props: ProgressProps) {
-  return <CoreProgress {...props} />
+export function Progress({ value, max = 100 }: ProgressProps) {
+  return <CoreProgress value={value} max={max} />
 }

@@ -1,10 +1,17 @@
-import {
-  Spinner as CoreSpinner,
-  type SpinnerProps as CoreSpinnerProps,
-} from "@workspace/ui-core/components/spinner"
+import { Spinner as CoreSpinner } from "@workspace/ui-core/components/spinner"
 
-export type SpinnerProps = CoreSpinnerProps
+export type SpinnerSize = "sm" | "default" | "lg"
 
-export function Spinner(props: SpinnerProps) {
-  return <CoreSpinner {...props} />
+const SPINNER_SIZE_CLASSNAME: Record<SpinnerSize, string> = {
+  sm: "size-3",
+  default: "size-4",
+  lg: "size-5",
+}
+
+export interface SpinnerProps {
+  size?: SpinnerSize
+}
+
+export function Spinner({ size = "default" }: SpinnerProps) {
+  return <CoreSpinner className={SPINNER_SIZE_CLASSNAME[size]} />
 }

@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react"
+import type { ReactNode } from "react"
 import {
   Table as CoreTable,
   TableBody as CoreTableBody,
@@ -10,43 +10,66 @@ import {
   TableRow as CoreTableRow,
 } from "@workspace/ui-core/components/table"
 
-export type TableProps = ComponentProps<typeof CoreTable>
-export type TableHeaderProps = ComponentProps<typeof CoreTableHeader>
-export type TableBodyProps = ComponentProps<typeof CoreTableBody>
-export type TableFooterProps = ComponentProps<typeof CoreTableFooter>
-export type TableRowProps = ComponentProps<typeof CoreTableRow>
-export type TableHeadProps = ComponentProps<typeof CoreTableHead>
-export type TableCellProps = ComponentProps<typeof CoreTableCell>
-export type TableCaptionProps = ComponentProps<typeof CoreTableCaption>
-
-export function Table(props: TableProps) {
-  return <CoreTable {...props} />
+export interface TableProps {
+  children: ReactNode
 }
 
-export function TableHeader(props: TableHeaderProps) {
-  return <CoreTableHeader {...props} />
+export interface TableHeaderProps {
+  children: ReactNode
 }
 
-export function TableBody(props: TableBodyProps) {
-  return <CoreTableBody {...props} />
+export interface TableBodyProps {
+  children: ReactNode
 }
 
-export function TableFooter(props: TableFooterProps) {
-  return <CoreTableFooter {...props} />
+export interface TableFooterProps {
+  children: ReactNode
 }
 
-export function TableRow(props: TableRowProps) {
-  return <CoreTableRow {...props} />
+export interface TableRowProps {
+  children: ReactNode
 }
 
-export function TableHead(props: TableHeadProps) {
-  return <CoreTableHead {...props} />
+export interface TableHeadProps {
+  children: ReactNode
 }
 
-export function TableCell(props: TableCellProps) {
-  return <CoreTableCell {...props} />
+export interface TableCellProps {
+  children: ReactNode
 }
 
-export function TableCaption(props: TableCaptionProps) {
-  return <CoreTableCaption {...props} />
+export interface TableCaptionProps {
+  children: ReactNode
+}
+
+export function Table({ children }: TableProps) {
+  return <CoreTable>{children}</CoreTable>
+}
+
+export function TableHeader({ children }: TableHeaderProps) {
+  return <CoreTableHeader>{children}</CoreTableHeader>
+}
+
+export function TableBody({ children }: TableBodyProps) {
+  return <CoreTableBody>{children}</CoreTableBody>
+}
+
+export function TableFooter({ children }: TableFooterProps) {
+  return <CoreTableFooter>{children}</CoreTableFooter>
+}
+
+export function TableRow({ children }: TableRowProps) {
+  return <CoreTableRow>{children}</CoreTableRow>
+}
+
+export function TableHead({ children }: TableHeadProps) {
+  return <CoreTableHead>{children}</CoreTableHead>
+}
+
+export function TableCell({ children }: TableCellProps) {
+  return <CoreTableCell>{children}</CoreTableCell>
+}
+
+export function TableCaption({ children }: TableCaptionProps) {
+  return <CoreTableCaption>{children}</CoreTableCaption>
 }

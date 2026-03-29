@@ -1,10 +1,10 @@
-import {
-  Label as CoreLabel,
-  type LabelProps as CoreLabelProps,
-} from "@workspace/ui-core/components/label"
+import type { ReactNode } from "react"
+import { Label as CoreLabel } from "@workspace/ui-core/components/label"
 
-export type LabelProps = CoreLabelProps
+export interface LabelProps {
+  children: ReactNode
+}
 
-export function Label(props: LabelProps) {
-  return <CoreLabel {...props} />
+export function Label({ children }: LabelProps) {
+  return <CoreLabel>{children}</CoreLabel>
 }

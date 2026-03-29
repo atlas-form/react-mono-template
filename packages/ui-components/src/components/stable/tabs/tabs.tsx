@@ -1,31 +1,56 @@
+import type { ReactNode } from "react"
 import {
   Tabs as CoreTabs,
   TabsContent as CoreTabsContent,
   TabsList as CoreTabsList,
   TabsTrigger as CoreTabsTrigger,
-  type TabsContentProps as CoreTabsContentProps,
-  type TabsListProps as CoreTabsListProps,
-  type TabsProps as CoreTabsProps,
-  type TabsTriggerProps as CoreTabsTriggerProps,
 } from "@workspace/ui-core/components/tabs"
 
-export type TabsProps = CoreTabsProps
-export type TabsListProps = CoreTabsListProps
-export type TabsTriggerProps = CoreTabsTriggerProps
-export type TabsContentProps = CoreTabsContentProps
-
-export function Tabs(props: TabsProps) {
-  return <CoreTabs {...props} />
+export interface TabsProps {
+  value: string
+  onValueChange: (value: string) => void
+  children: ReactNode
 }
 
-export function TabsList(props: TabsListProps) {
-  return <CoreTabsList {...props} />
+export interface TabsListProps {
+  children: ReactNode
 }
 
-export function TabsTrigger(props: TabsTriggerProps) {
-  return <CoreTabsTrigger {...props} />
+export interface TabsTriggerProps {
+  value: string
+  disabled?: boolean
+  children: ReactNode
 }
 
-export function TabsContent(props: TabsContentProps) {
-  return <CoreTabsContent {...props} />
+export interface TabsContentProps {
+  value: string
+  children: ReactNode
+}
+
+export function Tabs({ value, onValueChange, children }: TabsProps) {
+  return (
+    <CoreTabs value={value} onValueChange={onValueChange}>
+      {children}
+    </CoreTabs>
+  )
+}
+
+export function TabsList({ children }: TabsListProps) {
+  return <CoreTabsList>{children}</CoreTabsList>
+}
+
+export function TabsTrigger({
+  value,
+  disabled = false,
+  children,
+}: TabsTriggerProps) {
+  return (
+    <CoreTabsTrigger value={value} disabled={disabled}>
+      {children}
+    </CoreTabsTrigger>
+  )
+}
+
+export function TabsContent({ value, children }: TabsContentProps) {
+  return <CoreTabsContent value={value}>{children}</CoreTabsContent>
 }
