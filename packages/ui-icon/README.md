@@ -24,9 +24,9 @@
 ## 使用建议
 
 - 业务侧统一传 `name` 字符串，不直接使用 `lucide-react` 组件。
-- 语义名和 lucide 名都可用：
+- 语义名和已登记的 lucide 名都可用：
   - 语义名：`add`、`delete`、`edit`
-  - lucide 名：`square-pen`、`panel-left`
+  - lucide 名：`square-pen`、`plus`、`trash-2`
 
 ## 给 AI 的工作约束
 
@@ -65,7 +65,7 @@ export function EditButtonIcon() {
     <>
       <Icon name="edit" className="size-4" />
       <Icon name="square-pen" className="size-4" />
-      <Icon name="SquarePen" className="size-4" />
+      <Icon name="plus" className="size-4" />
     </>
   )
 }

@@ -1,14 +1,15 @@
 import { createElement } from "react"
-import type { ComponentProps } from "react"
-import { DynamicIcon, iconNames } from "lucide-react/dynamic"
 
 import { buildResolvedSemanticMap } from "./auto-map"
-import { lucideSemanticAliases } from "./providers/lucide"
+import {
+  lucideComponentsByName,
+  lucideSemanticAliases,
+  type LucideIconName,
+} from "./providers/lucide"
 import type { IconProps, SemanticIconName } from "./types"
 
-type DynamicLucideName = ComponentProps<typeof DynamicIcon>["name"]
-const lucideIconNameSet = new Set<DynamicLucideName>(
-  iconNames as DynamicLucideName[]
+const lucideIconNameSet = new Set<LucideIconName>(
+  Object.keys(lucideComponentsByName) as LucideIconName[]
 )
 
 function normalizeIconName(name: string) {
@@ -21,24 +22,24 @@ function normalizeIconName(name: string) {
 
 const resolvedSemanticLucideMap = buildResolvedSemanticMap<SemanticIconName>({
   aliases: lucideSemanticAliases,
-  isAvailable: (name) => lucideIconNameSet.has(name as DynamicLucideName),
+  isAvailable: (name) => lucideIconNameSet.has(name as LucideIconName),
   normalize: normalizeIconName,
 })
 
-function resolveLucideName(name: string): DynamicLucideName | null {
+function resolveLucideName(name: string): LucideIconName | null {
   const normalized = normalizeIconName(name)
   if (!normalized) {
     return null
   }
 
-  if (lucideIconNameSet.has(normalized as DynamicLucideName)) {
-    return normalized as DynamicLucideName
+  if (lucideIconNameSet.has(normalized as LucideIconName)) {
+    return normalized as LucideIconName
   }
 
   const semanticName = normalized as SemanticIconName
   const mappedName = resolvedSemanticLucideMap[semanticName]
-  if (mappedName && lucideIconNameSet.has(mappedName as DynamicLucideName)) {
-    return mappedName as DynamicLucideName
+  if (mappedName && lucideIconNameSet.has(mappedName as LucideIconName)) {
+    return mappedName as LucideIconName
   }
 
   return null
@@ -52,12 +53,8 @@ export function Icon({
 }: IconProps) {
   const lucideName = resolveLucideName(name)
   if (lucideName) {
-    return createElement(DynamicIcon, {
-      name: lucideName,
-      size,
-      className,
-      ...props,
-    })
+    const Comp = lucideComponentsByName[lucideName]
+    return createElement(Comp, { size, className, ...props })
   }
 
   return null

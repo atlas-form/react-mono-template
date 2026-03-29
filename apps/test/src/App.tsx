@@ -1,11 +1,31 @@
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 
 import { DisplayControls, type AppLanguage } from "@/components/display-controls"
-import { FoundationDemo } from "./demos/foundation-demo"
-import { IconDemo } from "./demos/icon-demo"
-import { InteractionDemo } from "./demos/interaction-demo"
-import { LayoutDemo } from "./demos/layout-demo"
-import { OverlayDemo } from "./demos/overlay-demo"
+
+const FoundationDemo = lazy(async () => {
+  const mod = await import("./demos/foundation-demo")
+  return { default: mod.FoundationDemo }
+})
+
+const IconDemo = lazy(async () => {
+  const mod = await import("./demos/icon-demo")
+  return { default: mod.IconDemo }
+})
+
+const InteractionDemo = lazy(async () => {
+  const mod = await import("./demos/interaction-demo")
+  return { default: mod.InteractionDemo }
+})
+
+const OverlayDemo = lazy(async () => {
+  const mod = await import("./demos/overlay-demo")
+  return { default: mod.OverlayDemo }
+})
+
+const LayoutDemo = lazy(async () => {
+  const mod = await import("./demos/layout-demo")
+  return { default: mod.LayoutDemo }
+})
 
 const LANGUAGE_STORAGE_KEY = "test-language"
 
@@ -50,11 +70,13 @@ export function App() {
         <p className="text-sm text-muted-foreground">{subtitle}</p>
       </header>
 
-      <FoundationDemo />
-      <IconDemo />
-      <InteractionDemo />
-      <OverlayDemo />
-      <LayoutDemo />
+      <Suspense fallback={<p className="text-sm text-muted-foreground">Loading demos...</p>}>
+        <FoundationDemo />
+        <IconDemo />
+        <InteractionDemo />
+        <OverlayDemo />
+        <LayoutDemo />
+      </Suspense>
     </main>
   )
 }

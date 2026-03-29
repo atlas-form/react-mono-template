@@ -13,7 +13,7 @@ const semanticIcons = [
   "octagon-x",
 ] as const
 
-const lucideNameIcons = ["SquarePen", "panel-left", "chevrons-up-down"] as const
+const lucideNameIcons = ["plus", "square-pen", "trash-2"] as const
 const sizeSamples = [14, 20, 28] as const
 const strokeWidthSamples = [1, 2, 3] as const
 const semanticColorSamples = [
@@ -44,7 +44,7 @@ export function IconDemo() {
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">Lucide names (dynamic fallback)</p>
+          <p className="text-xs text-muted-foreground">Lucide names (static mapped set)</p>
           <div className="flex flex-wrap gap-3">
             {lucideNameIcons.map((name) => (
               <div
