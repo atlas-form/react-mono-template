@@ -1,28 +1,15 @@
 import { useState } from "react"
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@workspace/ui-components/stable/accordion"
-import { AlertDialog } from "@workspace/ui-components/stable/alert-dialog"
-import { AvatarStack } from "@workspace/ui-components/stable/avatar"
-import { Breadcrumb } from "@workspace/ui-components/stable/breadcrumb"
-import { ButtonGroup } from "@workspace/ui-components/stable/button-group"
-import { Calendar } from "@workspace/ui-components/stable/calendar"
-import { Combobox } from "@workspace/ui-components/stable/combobox"
-import { Command } from "@workspace/ui-components/stable/command"
-import { ContextMenu } from "@workspace/ui-components/stable/context-menu"
-import { Drawer } from "@workspace/ui-components/stable/drawer"
-import { InputGroup } from "@workspace/ui-components/stable/input-group"
-import { InputOTP } from "@workspace/ui-components/stable/input-otp"
-import { Menubar } from "@workspace/ui-components/stable/menubar"
-import { NavigationMenu } from "@workspace/ui-components/stable/navigation-menu"
-import { Pagination } from "@workspace/ui-components/stable/pagination"
-import { Sheet } from "@workspace/ui-components/stable/sheet"
-import { Toggle } from "@workspace/ui-components/stable/toggle"
-import { ToggleGroup } from "@workspace/ui-components/stable/toggle-group"
+import { AspectRatio } from "@workspace/ui-components/stable/aspect-ratio"
+import { Carousel } from "@workspace/ui-components/stable/carousel"
+import { Collapsible } from "@workspace/ui-components/stable/collapsible"
+import { HoverCard } from "@workspace/ui-components/stable/hover-card"
+import { Item } from "@workspace/ui-components/stable/item"
+import { Kbd } from "@workspace/ui-components/stable/kbd"
+import { NativeSelect } from "@workspace/ui-components/stable/native-select"
+import { Resizable } from "@workspace/ui-components/stable/resizable"
+import { ScrollArea } from "@workspace/ui-components/stable/scroll-area"
+import { Sidebar } from "@workspace/ui-components/stable/sidebar"
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -35,226 +22,127 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
-const FRAMEWORKS = [
-  { label: "React", value: "react" },
-  { label: "Vue", value: "vue" },
-  { label: "Svelte", value: "svelte" },
-  { label: "Solid", value: "solid" },
-]
-
 export function App() {
-  const [accordionValue, setAccordionValue] = useState("item-1")
-  const [comboboxValue, setComboboxValue] = useState<string | null>("react")
-  const [selectedCommand, setSelectedCommand] = useState("")
-
-  const [sheetOpen, setSheetOpen] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [alertOpen, setAlertOpen] = useState(false)
-
-  const [calendarDate, setCalendarDate] = useState<Date | undefined>(new Date())
-  const [page, setPage] = useState(1)
-
-  const [inputGroupValue, setInputGroupValue] = useState("")
-  const [otpValue, setOtpValue] = useState("")
-
-  const [togglePressed, setTogglePressed] = useState(false)
-  const [toggleGroupValue, setToggleGroupValue] = useState("center")
+  const [collapsibleOpen, setCollapsibleOpen] = useState(false)
+  const [selectedFramework, setSelectedFramework] = useState("react")
 
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-6xl flex-col gap-4 p-6" lang="zh-CN">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">UI Components P1 Test</h1>
+        <h1 className="text-2xl font-semibold">UI Components P2 Test</h1>
         <p className="text-sm text-muted-foreground">
-          本页验证 P1 组件的 ui-components 封装行为（非 ui-core 直出）。
+          本页仅验证 P2 组件封装：Collapsible / HoverCard / ScrollArea / Carousel / Sidebar /
+          Resizable / AspectRatio / NativeSelect / Item / Kbd。
         </p>
       </header>
 
-      <Section title="Accordion">
-        <Accordion
-          type="single"
-          value={accordionValue}
-          onValueChange={setAccordionValue}
-          collapsible
-        >
-          <AccordionItem value="item-1">
-            <AccordionTrigger>What is ui-components stable API?</AccordionTrigger>
-            <AccordionContent>
-              Stable components expose fixed, explicit props with predictable behavior.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger>How does it relate to ui-core?</AccordionTrigger>
-            <AccordionContent>
-              ui-components builds product-level wrappers on top of ui-core primitives.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3" disabled>
-            <AccordionTrigger>Disabled item</AccordionTrigger>
-            <AccordionContent>This item should not be interactive.</AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </Section>
-
-      <Section title="Combobox / Command">
+      <Section title="Collapsible + Hover Card">
         <div className="grid gap-4 md:grid-cols-2">
-          <Combobox
-            value={comboboxValue}
-            onValueChange={setComboboxValue}
-            options={FRAMEWORKS}
-            placeholder="Choose framework"
-          />
-
           <div className="space-y-2">
-            <Command
-              sections={[
-                {
-                  heading: "Suggestions",
-                  items: [
-                    { label: "Profile", value: "profile", shortcut: "⌘P" },
-                    { label: "Billing", value: "billing", shortcut: "⌘B" },
-                  ],
-                },
-                {
-                  heading: "Settings",
-                  items: [
-                    { label: "Theme", value: "theme" },
-                    { label: "Language", value: "language" },
-                  ],
-                },
-              ]}
-              onSelect={setSelectedCommand}
+            <Collapsible
+              open={collapsibleOpen}
+              onOpenChange={setCollapsibleOpen}
+              triggerLabel={collapsibleOpen ? "Hide Details" : "Show Details"}
+            >
+              <div className="rounded border p-3 text-sm text-muted-foreground">
+                Collapsible content is visible and controlled by ui-components fixed API.
+              </div>
+            </Collapsible>
+          </div>
+
+          <div className="flex items-center">
+            <HoverCard
+              triggerLabel={<span className="text-sm underline">Hover to preview</span>}
+              title="P2 Hover Card"
+              description="This content is rendered by the ui-components hover-card wrapper."
             />
-            <p className="text-xs text-muted-foreground">
-              selected command: {selectedCommand || "none"}
-            </p>
           </div>
         </div>
       </Section>
 
-      <Section title="Navigation Menu / Menubar / Context Menu">
-        <div className="grid gap-4 md:grid-cols-3">
-          <NavigationMenu
+      <Section title="Scroll Area + Carousel">
+        <div className="grid gap-8 md:grid-cols-2">
+          <ScrollArea
+            height={180}
             items={[
-              {
-                type: "group",
-                label: "Docs",
-                links: [
-                  { label: "Getting Started", href: "#" },
-                  { label: "Components", href: "#" },
-                ],
-              },
-              { type: "link", label: "API", href: "#" },
+              "Design token sync",
+              "A11y checklist",
+              "Cross-browser verification",
+              "Release note drafting",
+              "QA handoff",
+              "Monitoring setup",
             ]}
           />
 
-          <Menubar
-            menus={[
-              {
-                label: "File",
-                items: [{ label: "New Tab" }, { label: "Save" }],
-              },
-              {
-                label: "Edit",
-                items: [{ label: "Copy" }, { label: "Paste" }],
-              },
+          <div className="px-12">
+            <Carousel slides={["Slide 1", "Slide 2", "Slide 3"]} />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Sidebar + Resizable">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Sidebar
+            title="Workspace"
+            menu={[
+              { label: "Overview", href: "#", active: true },
+              { label: "Components", href: "#" },
+              { label: "Releases", href: "#" },
             ]}
-          />
+          >
+            <div className="text-sm text-muted-foreground">
+              Sidebar wrapper provides a fixed navigation shell for product screens.
+            </div>
+          </Sidebar>
 
-          <ContextMenu
-            trigger="Right click here"
-            items={[{ label: "Back" }, { label: "Forward" }, { label: "Reload" }]}
-          />
+          <div className="h-[320px] rounded-xl border p-2">
+            <Resizable
+              left={<div className="text-sm">Left panel</div>}
+              right={<div className="text-sm">Right panel</div>}
+            />
+          </div>
         </div>
       </Section>
 
-      <Section title="Sheet / Drawer / Alert Dialog">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Sheet
-            open={sheetOpen}
-            onOpenChange={setSheetOpen}
-            triggerLabel="Open Sheet"
-            title="Sheet Title"
-            description="Slide panel behavior test."
+      <Section title="Aspect Ratio + Native Select">
+        <div className="grid gap-4 md:grid-cols-2">
+          <AspectRatio
+            ratio={16 / 9}
+            src="https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=1200&q=80"
+            alt="Desk setup"
           />
-
-          <Drawer
-            open={drawerOpen}
-            onOpenChange={setDrawerOpen}
-            triggerLabel="Open Drawer"
-            title="Drawer Title"
-            description="Bottom drawer behavior test."
-          />
-
-          <AlertDialog
-            open={alertOpen}
-            onOpenChange={setAlertOpen}
-            triggerLabel="Open Alert"
-            title="Confirm action"
-            description="This action cannot be undone."
-          />
-        </div>
-      </Section>
-
-      <Section title="Calendar / Pagination / Breadcrumb">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Calendar value={calendarDate} onValueChange={setCalendarDate} />
 
           <div className="space-y-2">
-            <Pagination page={page} totalPages={5} onPageChange={setPage} />
-            <p className="text-xs text-muted-foreground">current page: {page}</p>
+            <NativeSelect
+              value={selectedFramework}
+              onValueChange={setSelectedFramework}
+              options={[
+                { label: "React", value: "react" },
+                { label: "Vue", value: "vue" },
+                { label: "Svelte", value: "svelte" },
+              ]}
+              placeholder="Select framework"
+            />
+            <p className="text-xs text-muted-foreground">selected: {selectedFramework}</p>
           </div>
-
-          <Breadcrumb
-            items={[
-              { label: "Home", href: "#" },
-              { label: "Library", href: "#" },
-              { label: "Data" },
-            ]}
-          />
         </div>
       </Section>
 
-      <Section title="Avatar / Input Group / Input OTP">
-        <div className="grid gap-4 md:grid-cols-3">
-          <AvatarStack
-            users={[
-              { src: "https://i.pravatar.cc/48?img=1", alt: "A", fallback: "A" },
-              { src: "https://i.pravatar.cc/48?img=2", alt: "B", fallback: "B" },
-            ]}
-            overflowCount={3}
+      <Section title="Item + Kbd">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Item
+            title="Save Changes"
+            description="Persist current form state to the server"
+            leading={<span>SV</span>}
+            trailing={<Kbd keys={["Ctrl", "S"]} />}
+            footer={<span className="text-xs text-muted-foreground">Last updated 2m ago</span>}
+            variant="outline"
           />
 
-          <InputGroup
-            value={inputGroupValue}
-            onValueChange={setInputGroupValue}
-            placeholder="username"
-            prefix="@"
-            actionLabel="Check"
-          />
-
-          <InputOTP value={otpValue} onValueChange={setOtpValue} length={6} />
-        </div>
-      </Section>
-
-      <Section title="Toggle / Toggle Group / Button Group">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Toggle
-            pressed={togglePressed}
-            onPressedChange={setTogglePressed}
-            label="Bold"
-          />
-
-          <ToggleGroup
-            value={toggleGroupValue}
-            onValueChange={setToggleGroupValue}
-            options={[
-              { value: "left", label: "Left" },
-              { value: "center", label: "Center" },
-              { value: "right", label: "Right" },
-            ]}
-          />
-
-          <ButtonGroup items={["View", "List", "Grid"]} />
+          <div className="flex items-center gap-3 rounded border p-3 text-sm">
+            Quick command:
+            <Kbd keys={["Ctrl", "K"]} />
+          </div>
         </div>
       </Section>
     </main>

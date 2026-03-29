@@ -302,3 +302,33 @@ export type { ToggleProps } from "./components/stable/toggle"
 
 export { ToggleGroup } from "./components/stable/toggle-group"
 export type { ToggleGroupOption, ToggleGroupProps } from "./components/stable/toggle-group"
+
+export { AspectRatio } from "./components/stable/aspect-ratio"
+export type { AspectRatioProps } from "./components/stable/aspect-ratio"
+
+export { Carousel } from "./components/stable/carousel"
+export type { CarouselOrientation, CarouselProps } from "./components/stable/carousel"
+
+export { Collapsible } from "./components/stable/collapsible"
+export type { CollapsibleProps } from "./components/stable/collapsible"
+
+export { HoverCard } from "./components/stable/hover-card"
+export type { HoverCardProps } from "./components/stable/hover-card"
+
+export { Item } from "./components/stable/item"
+export type { ItemProps, ItemSize, ItemVariant } from "./components/stable/item"
+
+export { Kbd } from "./components/stable/kbd"
+export type { KbdProps } from "./components/stable/kbd"
+
+export { NativeSelect } from "./components/stable/native-select"
+export type { NativeSelectOption, NativeSelectProps } from "./components/stable/native-select"
+
+export { Resizable } from "./components/stable/resizable"
+export type { ResizableDirection, ResizableProps } from "./components/stable/resizable"
+
+export { ScrollArea } from "./components/stable/scroll-area"
+export type { ScrollAreaProps } from "./components/stable/scroll-area"
+
+export { Sidebar } from "./components/stable/sidebar"
+export type { SidebarMenuEntry, SidebarProps } from "./components/stable/sidebar"

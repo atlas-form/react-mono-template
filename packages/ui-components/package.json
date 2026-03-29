@@ -101,6 +101,26 @@
     "./toggle": "./src/components/stable/toggle/index.ts",
     "./stable/toggle": "./src/components/stable/toggle/index.ts",
     "./toggle-group": "./src/components/stable/toggle-group/index.ts",
-    "./stable/toggle-group": "./src/components/stable/toggle-group/index.ts"
+    "./stable/toggle-group": "./src/components/stable/toggle-group/index.ts",
+    "./aspect-ratio": "./src/components/stable/aspect-ratio/index.ts",
+    "./stable/aspect-ratio": "./src/components/stable/aspect-ratio/index.ts",
+    "./carousel": "./src/components/stable/carousel/index.ts",
+    "./stable/carousel": "./src/components/stable/carousel/index.ts",
+    "./collapsible": "./src/components/stable/collapsible/index.ts",
+    "./stable/collapsible": "./src/components/stable/collapsible/index.ts",
+    "./hover-card": "./src/components/stable/hover-card/index.ts",
+    "./stable/hover-card": "./src/components/stable/hover-card/index.ts",
+    "./item": "./src/components/stable/item/index.ts",
+    "./stable/item": "./src/components/stable/item/index.ts",
+    "./kbd": "./src/components/stable/kbd/index.ts",
+    "./stable/kbd": "./src/components/stable/kbd/index.ts",
+    "./native-select": "./src/components/stable/native-select/index.ts",
+    "./stable/native-select": "./src/components/stable/native-select/index.ts",
+    "./resizable": "./src/components/stable/resizable/index.ts",
+    "./stable/resizable": "./src/components/stable/resizable/index.ts",
+    "./scroll-area": "./src/components/stable/scroll-area/index.ts",
+    "./stable/scroll-area": "./src/components/stable/scroll-area/index.ts",
+    "./sidebar": "./src/components/stable/sidebar/index.ts",
+    "./stable/sidebar": "./src/components/stable/sidebar/index.ts"
   }
 }

@@ -79,16 +79,16 @@
 
 ## P2（中优先级：布局增强与体验组件）
 
-- [ ] Collapsible (`ui-core/collapsible`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Hover Card (`ui-core/hover-card`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Scroll Area (`ui-core/scroll-area`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Carousel (`ui-core/carousel`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Sidebar (`ui-core/sidebar`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Resizable (`ui-core/resizable`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Aspect Ratio (`ui-core/aspect-ratio`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Native Select (`ui-core/native-select`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Item (`ui-core/item`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Kbd (`ui-core/kbd`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
+- [x] Collapsible (`ui-core/collapsible`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Hover Card (`ui-core/hover-card`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Scroll Area (`ui-core/scroll-area`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Carousel (`ui-core/carousel`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Sidebar (`ui-core/sidebar`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Resizable (`ui-core/resizable`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Aspect Ratio (`ui-core/aspect-ratio`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Native Select (`ui-core/native-select`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Item (`ui-core/item`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Kbd (`ui-core/kbd`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 
 ## P3（低优先级：特定场景/工具型）
 
