@@ -57,24 +57,24 @@
 
 ## P1（高优先级：常见业务与导航交互）
 
-- [ ] Accordion (`ui-core/accordion`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Combobox (`ui-core/combobox`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Command (`ui-core/command`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Navigation Menu (`ui-core/navigation-menu`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Menubar (`ui-core/menubar`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Context Menu (`ui-core/context-menu`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Sheet (`ui-core/sheet`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Drawer (`ui-core/drawer`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Alert Dialog (`ui-core/alert-dialog`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Calendar (`ui-core/calendar`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Pagination (`ui-core/pagination`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Breadcrumb (`ui-core/breadcrumb`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Avatar (`ui-core/avatar`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Input Group (`ui-core/input-group`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Input OTP (`ui-core/input-otp`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Toggle (`ui-core/toggle`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Toggle Group (`ui-core/toggle-group`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
-- [ ] Button Group (`ui-core/button-group`) | ui-core 测试通过 | ui-components: [ ] stable [ ] labs
+- [x] Accordion (`ui-core/accordion`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Combobox (`ui-core/combobox`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Command (`ui-core/command`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Navigation Menu (`ui-core/navigation-menu`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Menubar (`ui-core/menubar`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Context Menu (`ui-core/context-menu`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Sheet (`ui-core/sheet`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Drawer (`ui-core/drawer`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Alert Dialog (`ui-core/alert-dialog`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Calendar (`ui-core/calendar`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Pagination (`ui-core/pagination`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Breadcrumb (`ui-core/breadcrumb`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Avatar (`ui-core/avatar`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Input Group (`ui-core/input-group`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Input OTP (`ui-core/input-otp`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Toggle (`ui-core/toggle`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Toggle Group (`ui-core/toggle-group`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
+- [x] Button Group (`ui-core/button-group`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 - [x] Slider (`ui-core/slider`) | ui-core 测试通过 | ui-components: [x] stable [ ] labs
 
 ## P2（中优先级：布局增强与体验组件）
