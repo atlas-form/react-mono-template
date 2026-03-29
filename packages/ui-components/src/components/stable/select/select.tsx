@@ -1,11 +1,10 @@
 import type { ReactNode } from "react"
 import {
   Select as CoreSelect,
-  SelectContent as CoreSelectContent,
-  SelectItem as CoreSelectItem,
-  SelectTrigger as CoreSelectTrigger,
-  SelectValue as CoreSelectValue,
-  type SelectProps as CoreSelectProps,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@workspace/ui-core/components/select"
 
 export type SelectOption = {
@@ -14,51 +13,39 @@ export type SelectOption = {
   disabled?: boolean
 }
 
-export type SelectProps = Omit<CoreSelectProps, "children"> & {
-  list: SelectOption[]
-  placeholder?: ReactNode
+export interface SelectProps {
+  value: string
+  onValueChange: (value: string) => void
 
-  // ✅ 唯一扩展点（结构逃逸）
-  renderItem?: (item: SelectOption) => ReactNode
-  renderTrigger?: (value?: string, item?: SelectOption) => ReactNode
+  disabled?: boolean
+  list: SelectOption[]
+  placeholder?: string
 }
 
 export function Select({
+  value,
+  onValueChange,
+  disabled = false,
   list,
   placeholder,
-  renderItem,
-  renderTrigger,
-  value,
-  ...props
 }: SelectProps) {
-  const selected = list.find((i) => i.value === value)
-
   return (
-    <CoreSelect value={value} {...props}>
-      <CoreSelectTrigger>
-        {renderTrigger ? (
-          renderTrigger(value as string | undefined, selected)
-        ) : (
-          <CoreSelectValue placeholder={placeholder} />
-        )}
-      </CoreSelectTrigger>
+    <CoreSelect value={value} onValueChange={onValueChange} disabled={disabled}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
 
-      <CoreSelectContent>
-        {list.map((item) => {
-          if (renderItem) {
-            return renderItem(item)
-          }
-          return (
-            <CoreSelectItem
-              key={item.value}
-              value={item.value}
-              disabled={item.disabled}
-            >
-              {item.label}
-            </CoreSelectItem>
-          )
-        })}
-      </CoreSelectContent>
+      <SelectContent>
+        {list.map((item) => (
+          <SelectItem
+            key={item.value}
+            value={item.value}
+            disabled={item.disabled}
+          >
+            {item.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
     </CoreSelect>
   )
 }
