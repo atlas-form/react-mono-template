@@ -1,29 +1,3 @@
-export {
-  AppSelect,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "./select"
+export { Select } from "./select"
 
-export type {
-  AppSelectOption,
-  AppSelectProps,
-  AppSelectStyles,
-  SelectContentProps,
-  SelectGroupProps,
-  SelectItemProps,
-  SelectLabelProps,
-  SelectProps,
-  SelectScrollDownButtonProps,
-  SelectScrollUpButtonProps,
-  SelectSeparatorProps,
-  SelectTriggerProps,
-  SelectValueProps,
-} from "./select"
+export type { SelectProps } from "./select"
