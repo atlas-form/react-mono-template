@@ -29,7 +29,8 @@ export interface SidebarProps {
 export function Sidebar({ title, menu, children }: SidebarProps) {
   return (
     <CoreSidebarProvider>
-      <div className="flex min-h-[320px] w-full overflow-hidden rounded-xl border">
+      {" "}
+      <div className="dmin-h-80 flex w-full overflow-hidden rounded-xl border">
         <CoreSidebar collapsible="icon" variant="inset">
           <CoreSidebarHeader>
             <div className="px-2 text-sm font-semibold">{title}</div>

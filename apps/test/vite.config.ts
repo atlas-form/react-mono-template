@@ -11,6 +11,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@workspace/ui-icon": path.resolve(
+        __dirname,
+        "../../packages/ui-icon/src/index.ts"
+      ),
     },
   },
 })

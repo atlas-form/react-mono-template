@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import { DisplayControls, type AppLanguage } from "@/components/display-controls"
 import { FoundationDemo } from "./demos/foundation-demo"
+import { IconDemo } from "./demos/icon-demo"
 import { InteractionDemo } from "./demos/interaction-demo"
 import { LayoutDemo } from "./demos/layout-demo"
 import { OverlayDemo } from "./demos/overlay-demo"
@@ -50,6 +51,7 @@ export function App() {
       </header>
 
       <FoundationDemo />
+      <IconDemo />
       <InteractionDemo />
       <OverlayDemo />
       <LayoutDemo />
