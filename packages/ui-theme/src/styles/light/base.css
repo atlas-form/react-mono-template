@@ -5,6 +5,10 @@
   --surface: color(display-p3 0.925 0.925 0.925);
   --surface-foreground: oklch(0.27 0.02 256);
   --surface-component: color(display-p3 0.825 0.825 0.825);
+  --card: color(display-p3 0.925 0.925 0.925);
+  --card-foreground: oklch(0.27 0.02 256);
+  --popover: color(display-p3 0.925 0.925 0.925);
+  --popover-foreground: oklch(0.27 0.02 256);
   --primary: color(display-p3 0.142 0.343 0.791);
   --primary-outline: color(display-p3 0.151 0.394 0.652);
   --primary-foreground: oklch(0.99 0 0);

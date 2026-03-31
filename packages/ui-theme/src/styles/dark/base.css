@@ -6,6 +6,10 @@ html[data-theme="dark"],
   --surface: color(display-p3 0.163 0.17 0.167);
   --surface-foreground: color(display-p3 0.878 0.879 0.879);
   --surface-component: color(display-p3 0.213 0.22 0.217);
+  --card: color(display-p3 0.163 0.17 0.167);
+  --card-foreground: color(display-p3 0.878 0.879 0.879);
+  --popover: color(display-p3 0.163 0.17 0.167);
+  --popover-foreground: color(display-p3 0.878 0.879 0.879);
   --primary: color(display-p3 0.142 0.343 0.791);
   --primary-outline: color(display-p3 0.1 0.55 1);
   --primary-foreground: white;
