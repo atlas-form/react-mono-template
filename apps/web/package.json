@@ -20,8 +20,6 @@
     "@reduxjs/toolkit": "catalog:",
     "@tanstack/react-query": "catalog:",
     "i18next": "catalog:",
-    "i18next-browser-languagedetector": "catalog:",
-    "i18next-http-backend": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-easy-crop": "catalog:",
