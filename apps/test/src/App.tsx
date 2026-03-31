@@ -1,15 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from "react"
 
-import { DisplayControls, type AppLanguage } from "@/components/display-controls"
+import {
+  DisplayControls,
+  type AppLanguage,
+} from "@/components/display-controls"
 
 const FoundationDemo = lazy(async () => {
   const mod = await import("./demos/foundation-demo")
   return { default: mod.FoundationDemo }
-})
-
-const IconDemo = lazy(async () => {
-  const mod = await import("./demos/icon-demo")
-  return { default: mod.IconDemo }
 })
 
 const InteractionDemo = lazy(async () => {
@@ -70,9 +68,12 @@ export function App() {
         <p className="text-sm text-muted-foreground">{subtitle}</p>
       </header>
 
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Loading demos...</p>}>
+      <Suspense
+        fallback={
+          <p className="text-sm text-muted-foreground">Loading demos...</p>
+        }
+      >
         <FoundationDemo />
-        <IconDemo />
         <InteractionDemo />
         <OverlayDemo />
         <LayoutDemo />
