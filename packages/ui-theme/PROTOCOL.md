@@ -12,7 +12,7 @@
 - `ui-theme` 必须通过单一样式入口对外导出（`./styles.css`）。
 - `ui-core` 允许消费这些语义变量，并且必须维护一套最小可用的兜底主题变量。
 - `ui-core` 的兜底变量用于容错与可用性保障，不作为业务主题定制入口。
-- 当新增或修改语义变量时，必须先在 `ui-theme` 更新，再允许 `ui-core` 使用。
+- 当新增语义变量超出 `ui-core` 已约定语义集合时，必须在 `ui-components` 中重写/扩展组件实现来适配，禁止通过修改 `ui-core` 处理。
 - 应用包必须同时引入 `@workspace/ui-theme/styles.css` 与 `@workspace/ui-core/styles.css`。
 
 ## 依赖关系（强制）
