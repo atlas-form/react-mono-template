@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config"
 import { loadEnv } from "vite"
 import tailwindcss from "@tailwindcss/vite"
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import path from "node:path"
 
 export default defineConfig(({ mode }) => {

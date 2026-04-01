@@ -12,7 +12,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@atlas-art/ui-react": "^0.1.16",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "@workspace/services": "workspace:*",
@@ -39,7 +38,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react-swc": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-react-refresh": "catalog:",
