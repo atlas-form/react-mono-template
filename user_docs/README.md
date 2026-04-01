@@ -1,0 +1,28 @@
+# 用户文档
+
+这个目录放的是写给使用者看的文档。
+
+这里的目标不是教你写代码，而是帮助你更稳定地和 AI 协作，让 AI 按这个项目现有框架来回答问题和开发。
+
+## 建议阅读顺序
+
+1. [framework-thinking.md](./framework-thinking.md)
+   先理解这个框架为什么分成 `apps` 和 `packages`，以及为什么 AI 需要先判断落点。
+
+2. [web-app-guide.md](./web-app-guide.md)
+   了解当前主业务应用 `apps/web` 的用途、运行方式、环境变量和适用场景。
+
+3. [task-template.md](./task-template.md)
+   直接复制任务模板给 AI，用来提问题、提需求、报 Bug。
+
+4. [design-input-spec.md](./design-input-spec.md)
+   如果你要按设计稿开发，先看这份输入规范，避免信息不完整。
+
+5. [acceptance-checklist.md](./acceptance-checklist.md)
+   AI 完成后，用这份清单做验收。
+
+## 说明
+
+- 这里只保留中文版文档。
+- 根目录 [README.md](../README.md) 负责总入口说明。
+- AI 执行规则不在这里，而在 [ai_protocol/README.md](../ai_protocol/README.md)。

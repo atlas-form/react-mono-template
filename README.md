@@ -1,27 +1,155 @@
-# shadcn/ui monorepo template
+# How To Use AI
 
-This is a Vite monorepo template with shadcn/ui.
+这个仓库的 `README.md` 是给使用者看的，不是给 AI 看的。
 
-## Adding components
+如果你要让 AI 帮你分析、回答问题或开发代码，请先明确告诉 AI：
 
-To add components to your app, run the following command at the root of your `web` app:
+- 先阅读 [ai_protocol/README.md](./ai_protocol/README.md)
+- 必须按这个仓库现有的分层和规则工作
+- 不允许脱离仓库结构随意发挥
 
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
+如果你想先看给使用者准备的文档，请从这里开始：
+
+- [user_docs/README.md](./user_docs/README.md)
+
+## 推荐使用方式
+
+每次给 AI 发任务前，先带上这段前置说明：
+
+```text
+先阅读仓库根目录 ai_protocol/README.md，再开始回答和修改代码。
+你的判断、建议、实现和目录落点，都必须遵守其中映射到的协议文件。
+如果仓库已有明确规则，按现有规则执行，不要另起一套方案。
 ```
 
-This will place the ui components in the `packages/ui-core/src/components` directory.
+## 你给 AI 的需求最好包含
 
-## Using components
+- 目标：你要做什么
+- 位置：影响哪个 app、页面、组件或包
+- 结果：你希望最终界面或行为变成什么样
+- 验收：你希望怎么检查结果
 
-To use the components in your app, import them from the `ui-core` package.
+如果你已经理解这个框架，也可以补充：
 
-```tsx
-import { Button } from "@workspace/ui-core/components/button"
+- 偏好：你更希望优先改页面、共享组件、主题，还是服务层
+- 限制：哪些部分你暂时不想动
+
+## 怎么理解“位置”
+
+这个项目主要分成两个大分支：
+
+- `apps/*`
+  放最终应用，也就是你实际会打开、使用、看到页面的地方。
+
+- `packages/*`
+  放被多个应用复用的共享能力，也就是公共底层模块。
+
+如果你不知道该怎么描述位置，可以先按下面理解：
+
+### `apps/*` 是“应用层”
+
+适合描述这类需求：
+
+- 我要改某个页面
+- 我要加一个路由
+- 我要调整某个业务流程
+- 我要改登录页、首页、个人中心页
+
+当前你最常接触的是：
+
+- `apps/web`
+  主业务应用。页面、路由、布局、登录、业务交互，一般都在这里。
+
+- `apps/test`
+  组件测试和展示应用。不是业务页面，主要用于验证共享组件效果。
+
+### `packages/*` 是“共享层”
+
+适合描述这类需求：
+
+- 我要新增一个多个页面都能复用的组件
+- 我要调整全局主题颜色或主题模式
+- 我要修改通用 API 请求能力
+- 我要改公共服务能力，而不是某一个页面里的临时代码
+
+当前主要包括：
+
+- `packages/ui-components`
+  给业务页面直接使用的共享 UI 组件。
+
+- `packages/ui-core`
+  更底层的 headless 基础组件能力，一般不是业务页面直接改的第一选择。
+
+- `packages/ui-theme`
+  全局主题变量、light/dark 主题能力。
+
+- `packages/services`
+  通用服务层，例如 API、i18n、query、错误模型、URL 能力。
+
+## 用户不会判断位置也没关系
+
+如果你不知道需求应该落在 `apps` 还是 `packages`，可以直接这样告诉 AI：
+
+```text
+先阅读 ai_protocol/README.md。
+
+我不确定这个需求应该改 apps 还是 packages。
+请你先根据当前项目分层判断正确落点，再开始回答或修改。
 ```
 
-Global theme styles are exported from `ui-theme`:
+## 先看框架思想
 
-```tsx
-import "@workspace/ui-core/globals.css"
+如果你还不熟悉这个仓库为什么这样分层，先看这里：
+
+- [user_docs/framework-thinking.md](./user_docs/framework-thinking.md)
+
+这个文件不是教你写代码，而是帮助你理解：
+
+- 为什么项目要分成 `apps` 和 `packages`
+- 什么需求更适合改页面，什么需求更适合沉淀为共享能力
+- 为什么 AI 不能在业务页面里随便复制一份公共实现
+- 为什么这个框架要求先判断落点，再开始修改
+
+## 常见场景
+
+### 1. 先让 AI 回答问题
+
+```text
+先阅读 ai_protocol/README.md。
+
+我先不让你改代码。
+请先基于这个仓库当前结构，回答这个问题：
+……
 ```
+
+### 2. 先让 AI 安装和准备环境
+
+```text
+先阅读 ai_protocol/README.md。
+
+先不要改代码，先完成这个仓库的环境准备：
+1. 检查 Node 和 pnpm
+2. 安装依赖
+3. 告诉我需要哪些环境变量
+4. 告诉我怎么启动项目
+5. 汇报当前环境是否可用
+```
+
+### 3. 让 AI 开发具体需求
+
+```text
+先阅读 ai_protocol/README.md。
+
+我要改 apps/web 的登录页：
+1. 保持现有路由结构不变
+2. UI 风格沿用当前设计系统
+3. 不要新造一套共享组件
+4. 完成前执行对应协议要求的检查
+```
+
+## 说明
+
+- 根目录 `README.md` 只负责告诉你怎么使用 AI。
+- 写给使用者看的文档统一放在 `user_docs/` 目录。
+- AI 必须阅读的工程规则统一放在 `ai_protocol/README.md`。
+- 如果后续新增局部协议，只需要补充到 `ai_protocol/README.md`。
