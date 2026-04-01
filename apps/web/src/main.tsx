@@ -5,11 +5,11 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { store } from "./store"
 import "./index.css"
 import "@workspace/services/i18n"
+import { queryClient } from "@workspace/services/query/client"
 import { setAppApiBaseUrl, setPlatformBaseUrls } from "@workspace/services/url"
 import App from "./App"
 import { initTheme } from "@workspace/ui-theme"
 import { getEnv } from "@/config/env"
-import { queryClient } from "@/query/client"
 
 const rootElement = document.getElementById("root")
 if (!rootElement) throw new Error("Root element #root not found")

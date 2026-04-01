@@ -1,5 +1,3 @@
-import i18n from "@workspace/services/i18n"
-
 type AppErrorKind = "api" | "network" | "unknown"
 
 interface AppErrorOptions {
@@ -59,17 +57,6 @@ export function toAppError(input: unknown): AppError {
     kind: "unknown",
     cause: input,
   })
-}
-
-export function getAppErrorMessage(error: AppError): string {
-  if (typeof error.code === "number") {
-    const key = String(error.code)
-    if (i18n.exists(key, { ns: "error" })) {
-      return i18n.t(key, { ns: "error" })
-    }
-  }
-
-  return i18n.t("default", { ns: "error" })
 }
 
 function extractBackendErrorCode(payload: unknown): number | null {

@@ -9,7 +9,7 @@ import { publicRoutes } from "@/routes/publicRoutes"
 import { protectedRoutes } from "@/routes/protectedRoutes"
 import PageLoading from "@/components/system/PageLoading"
 import { meApi } from "./api"
-import { toAppError } from "@/errors/appError"
+import { toAppError } from "@workspace/services/errors/app-error"
 
 export default function App() {
   const isLogin = useSelector((state: RootState) => state.auth.isLogin)

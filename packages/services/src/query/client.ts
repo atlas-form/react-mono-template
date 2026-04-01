@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query"
-import { AppError } from "@/errors/appError"
+import { AppError } from "../errors/app-error"
 
 function shouldRetry(failureCount: number, error: unknown): boolean {
   if (failureCount >= 2) return false

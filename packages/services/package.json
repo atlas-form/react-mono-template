@@ -7,6 +7,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-query": "catalog:",
     "i18next": "catalog:",
     "i18next-browser-languagedetector": "catalog:",
     "i18next-http-backend": "catalog:",
@@ -19,8 +20,11 @@
     "./api/auth": "./src/api/auth.ts",
     "./api/base": "./src/api/base.ts",
     "./api/file": "./src/api/file.ts",
+    "./errors/app-error": "./src/errors/app-error.ts",
+    "./errors/error-message": "./src/errors/error-message.ts",
     "./http-client": "./src/http-client.ts",
     "./i18n": "./src/i18n.ts",
+    "./query/client": "./src/query/client.ts",
     "./url": "./src/url.ts"
   }
 }

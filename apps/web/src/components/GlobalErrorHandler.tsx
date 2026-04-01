@@ -1,10 +1,10 @@
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import {
-  getAppErrorMessage,
   toAppError,
   type AppError,
-} from "@/errors/appError"
+} from "@workspace/services/errors/app-error"
+import { getAppErrorMessage } from "@workspace/services/errors/error-message"
 
 export function showGlobalError(error: string | AppError | unknown) {
   const message =
