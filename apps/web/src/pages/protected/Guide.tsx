@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Button } from "@workspace/ui-core/components/button"
+import { Button } from "@workspace/ui-components/button"
 import {
   Card,
   CardContent,
@@ -51,20 +51,18 @@ export default function GuidePage() {
                 <Button type="button" variant="ghost" size="lg">
                   {t("guide.buttons.ghost")}
                 </Button>
-                <Button
+                <button
                   type="button"
-                  mode="headless"
                   className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors [clip-path:polygon(12%_0,100%_0,88%_100%,0_100%)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)]"
                 >
                   左斜按钮
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  mode="headless"
                   className="inline-flex h-9 items-center justify-center bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-foreground)] transition-colors [clip-path:polygon(0_0,88%_0,100%_100%,12%_100%)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)]"
                 >
                   右斜按钮
-                </Button>
+                </button>
               </div>
             </CardContent>
           </Card>

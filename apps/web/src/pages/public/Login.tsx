@@ -2,22 +2,16 @@ import { useDispatch } from "react-redux"
 import { useNavigate, useLocation } from "react-router"
 import { useTranslation } from "react-i18next"
 import { useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { meApi, loginApi } from "@/api"
 import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
 import { AppLink } from "@atlas-art/ui-react/adapters/react-router"
-import { Button } from "@workspace/ui-core/components/button"
-import { Input } from "@workspace/ui-core/components/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui-core/components/select"
+import { Button } from "@workspace/ui-components/button"
+import { Input } from "@workspace/ui-components/input"
+import { Select } from "@workspace/ui-components/select"
 import {
   FormField,
   FormFieldLabel,
@@ -37,7 +31,7 @@ export default function LoginPage() {
   const loginSchema = useMemo(() => createLoginSchema(t), [t])
   type LoginFormValues = z.infer<typeof loginSchema>
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
@@ -96,16 +90,15 @@ export default function LoginPage() {
               {t("login.title")}
             </Text>
             <Text variant="muted">{t("login.subtitle")}</Text>
-            <Select value={selectDemoValue} onValueChange={setSelectDemoValue}>
-              <SelectTrigger className="mt-2 w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="option-1">选项一</SelectItem>
-                <SelectItem value="option-2">选项二</SelectItem>
-                <SelectItem value="option-3">选项三</SelectItem>
-              </SelectContent>
-            </Select>
+            <Select
+              value={selectDemoValue}
+              onValueChange={setSelectDemoValue}
+              list={[
+                { value: "option-1", label: "选项一" },
+                { value: "option-2", label: "选项二" },
+                { value: "option-3", label: "选项三" },
+              ]}
+            />
           </Stack>
 
           <form onSubmit={handleLogin}>
@@ -114,12 +107,17 @@ export default function LoginPage() {
                 <FormFieldLabel htmlFor="login-identifier">
                   {t("login.form.identifier.label")}
                 </FormFieldLabel>
-                <Input
-                  id="login-identifier"
-                  type="text"
-                  placeholder={t("login.form.identifier.placeholder")}
-                  aria-invalid={Boolean(errors.identifier)}
-                  {...register("identifier")}
+                <Controller
+                  control={control}
+                  name="identifier"
+                  render={({ field }) => (
+                    <Input
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      type="text"
+                      placeholder={t("login.form.identifier.placeholder")}
+                    />
+                  )}
                 />
               </FormField>
 
@@ -127,21 +125,21 @@ export default function LoginPage() {
                 <FormFieldLabel htmlFor="login-password">
                   {t("login.form.password.label")}
                 </FormFieldLabel>
-                <Input
-                  id="login-password"
-                  type="password"
-                  placeholder={t("login.form.password.placeholder")}
-                  aria-invalid={Boolean(errors.password)}
-                  {...register("password")}
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <Input
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      type="password"
+                      placeholder={t("login.form.password.placeholder")}
+                    />
+                  )}
                 />
               </FormField>
 
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
                 {isSubmitting
                   ? t("login.form.submitting")
                   : t("login.form.submit")}

@@ -1,11 +1,5 @@
 import { useTranslation } from "react-i18next"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui-core/components/select"
+import { Select } from "@workspace/ui-components/select"
 
 const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },
@@ -26,17 +20,7 @@ export default function HeaderLanguageSwitcher() {
       onValueChange={(value) => {
         void i18n.changeLanguage(value)
       }}
-    >
-      <SelectTrigger className="ui-header-trigger">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent className="ui-header-menu ui-header-menu-sm">
-        {LANGUAGE_OPTIONS.map((item) => (
-          <SelectItem key={item.value} value={item.value}>
-            {item.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      list={LANGUAGE_OPTIONS}
+    />
   )
 }
