@@ -1,9 +1,9 @@
 import { QueryClient } from "@tanstack/react-query"
-import { AppError } from "../errors/app-error"
+import { RequestError } from "../errors/request-error"
 
 function shouldRetry(failureCount: number, error: unknown): boolean {
   if (failureCount >= 2) return false
-  if (!(error instanceof AppError)) return true
+  if (!(error instanceof RequestError)) return true
   if (error.kind !== "api") return true
   if (typeof error.status !== "number") return false
   return error.status >= 500

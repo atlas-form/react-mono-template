@@ -9,7 +9,7 @@ import { publicRoutes } from "@/routes/publicRoutes"
 import { protectedRoutes } from "@/routes/protectedRoutes"
 import PageLoading from "@/components/system/PageLoading"
 import { meApi } from "./api"
-import { toAppError } from "@workspace/services/errors/app-error"
+import { toRequestError } from "@workspace/services/errors/request-error"
 
 export default function App() {
   const isLogin = useSelector((state: RootState) => state.auth.isLogin)
@@ -32,7 +32,7 @@ export default function App() {
     if (!restoreQuery.isError) return
     console.warn(
       "🔁 Failed to restore session:",
-      toAppError(restoreQuery.error)
+      toRequestError(restoreQuery.error)
     )
     localStorage.removeItem("token")
     localStorage.removeItem("refreshToken")

@@ -1,7 +1,7 @@
 import i18n from "../i18n"
-import type { AppError } from "./app-error"
+import type { RequestError } from "./request-error"
 
-export function getAppErrorMessage(error: AppError): string {
+export function getRequestErrorMessage(error: RequestError): string {
   if (typeof error.code === "number") {
     const key = String(error.code)
     if (i18n.exists(key, { ns: "error" })) {

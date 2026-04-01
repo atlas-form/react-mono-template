@@ -1,21 +1,21 @@
-type AppErrorKind = "api" | "network" | "unknown"
+type RequestErrorKind = "api" | "network" | "unknown"
 
-interface AppErrorOptions {
-  kind: AppErrorKind
+interface RequestErrorOptions {
+  kind: RequestErrorKind
   code?: number | null
   status?: number
   cause?: unknown
 }
 
-export class AppError extends Error {
-  kind: AppErrorKind
+export class RequestError extends Error {
+  kind: RequestErrorKind
   code: number | null
   status?: number
   cause?: unknown
 
-  constructor(message: string, options: AppErrorOptions) {
+  constructor(message: string, options: RequestErrorOptions) {
     super(message)
-    this.name = "AppError"
+    this.name = "RequestError"
     this.kind = options.kind
     this.code = options.code ?? null
     this.status = options.status
@@ -30,15 +30,15 @@ interface HttpErrorLike {
   }
 }
 
-export function toAppError(input: unknown): AppError {
-  if (input instanceof AppError) return input
+export function toRequestError(input: unknown): RequestError {
+  if (input instanceof RequestError) return input
 
   const httpLike = input as HttpErrorLike | undefined
   const status = httpLike?.response?.status
   const code = extractBackendErrorCode(httpLike?.response?.data)
 
   if (typeof status === "number") {
-    return new AppError("API request failed", {
+    return new RequestError("API request failed", {
       kind: "api",
       code,
       status,
@@ -47,13 +47,13 @@ export function toAppError(input: unknown): AppError {
   }
 
   if (input instanceof TypeError || input instanceof DOMException) {
-    return new AppError("Network request failed", {
+    return new RequestError("Network request failed", {
       kind: "network",
       cause: input,
     })
   }
 
-  return new AppError("Unknown error", {
+  return new RequestError("Unknown error", {
     kind: "unknown",
     cause: input,
   })

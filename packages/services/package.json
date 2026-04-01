@@ -20,7 +20,7 @@
     "./api/auth": "./src/api/auth.ts",
     "./api/base": "./src/api/base.ts",
     "./api/file": "./src/api/file.ts",
-    "./errors/app-error": "./src/errors/app-error.ts",
+    "./errors/request-error": "./src/errors/request-error.ts",
     "./errors/error-message": "./src/errors/error-message.ts",
     "./http-client": "./src/http-client.ts",
     "./i18n": "./src/i18n.ts",
