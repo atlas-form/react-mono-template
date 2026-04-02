@@ -47,12 +47,12 @@ export default function ImageCropperModal({
   if (!open || typeof document === "undefined") return null
 
   return createPortal(
-    <div className="ui-modal-backdrop">
-      <div className="ui-modal-card">
-        <h3 className="ui-modal-title">{title}</h3>
-        <p className="ui-modal-desc">{description}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-xl rounded-2xl border border-(--app-border) bg-(--app-surface) p-6 shadow-[var(--ui-shadow-soft)]">
+        <h3 className="text-lg font-semibold text-(--app-text)">{title}</h3>
+        <p className="mt-2 text-sm text-(--app-muted-text)">{description}</p>
 
-        <div className="ui-modal-crop-area">
+        <div className="relative mt-5 h-80 overflow-hidden rounded-xl border border-(--app-border) bg-black/20">
           <Cropper
             image={imageUrl}
             crop={crop}
@@ -78,8 +78,10 @@ export default function ImageCropperModal({
           />
         </div>
 
-        <div className="ui-modal-section">
-          <label className="ui-modal-label">{zoomLabel}</label>
+        <div className="mt-5 space-y-2">
+          <label className="text-sm font-medium text-(--app-text)">
+            {zoomLabel}
+          </label>
           <input
             type="range"
             min={minZoom}
@@ -87,16 +89,16 @@ export default function ImageCropperModal({
             step={0.01}
             value={zoom}
             onChange={(e) => onZoomChange(Number(e.target.value))}
-            className="ui-modal-range"
+            className="w-full accent-[var(--primary)]"
           />
         </div>
 
-        <div className="ui-modal-actions">
+        <div className="mt-6 flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
             disabled={confirming}
-            className="ui-btn-muted"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-(--app-border) px-4 text-sm font-medium text-(--app-text) transition hover:bg-(--app-active-bg) disabled:cursor-not-allowed disabled:opacity-60"
           >
             {cancelLabel}
           </button>
@@ -104,7 +106,7 @@ export default function ImageCropperModal({
             type="button"
             onClick={onConfirm}
             disabled={confirming}
-            className="ui-btn-brand"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-[var(--primary)] px-4 text-sm font-medium text-[var(--primary-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {confirming ? confirmingLabel : confirmLabel}
           </button>

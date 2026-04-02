@@ -134,26 +134,30 @@ export default function S3UploadPanel() {
   }
 
   return (
-    <div className="ui-panel">
-      <div className="ui-tabs">
+    <div className="rounded-2xl border border-(--app-border) bg-(--app-surface) p-5 shadow-[var(--ui-shadow-soft)]">
+      <div className="flex flex-wrap gap-2">
         {(["image", "document"] as UploadKind[]).map((tab) => (
           <button
             key={tab}
             type="button"
             disabled={loading}
             onClick={() => setActiveTab(tab)}
-            className={`ui-tab-btn ${
-              activeTab === tab ? "ui-tab-btn-active" : "ui-tab-btn-inactive"
-            }`}
+            className={`inline-flex h-9 items-center justify-center rounded-lg border px-3 text-sm font-medium transition ${
+              activeTab === tab
+                ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--primary-foreground)]"
+                : "border-(--app-border) bg-transparent text-(--app-text) hover:bg-(--app-active-bg)"
+            } disabled:cursor-not-allowed disabled:opacity-60`}
           >
             {tab}
           </button>
         ))}
       </div>
 
-      <div className="ui-panel-stack">
+      <div className="mt-5 space-y-4">
         <div>
-          <label className="ui-upload-label">Upload {title}</label>
+          <label className="mb-2 block text-sm font-medium text-(--app-text)">
+            Upload {title}
+          </label>
           <input
             type="file"
             disabled={loading}
@@ -168,16 +172,16 @@ export default function S3UploadPanel() {
               void handleUpload(file)
               e.currentTarget.value = ""
             }}
-            className="ui-upload-input"
+            className="block w-full cursor-pointer rounded-lg border border-(--app-border) bg-transparent px-3 py-2 text-sm text-(--app-text) file:mr-3 file:rounded-md file:border-0 file:bg-[var(--primary)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--primary-foreground)] hover:file:opacity-90"
           />
         </div>
 
-        <div className="ui-actions-inline">
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             disabled={loading || !current?.uploadUrl}
             onClick={() => void handleAccessSign()}
-            className="ui-btn-indigo"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-(--app-border) px-4 text-sm font-medium text-(--app-text) transition hover:bg-(--app-active-bg) disabled:cursor-not-allowed disabled:opacity-60"
           >
             Get Access Sign
           </button>
@@ -185,31 +189,33 @@ export default function S3UploadPanel() {
             type="button"
             disabled={loading || !current?.uploadUrl}
             onClick={() => void handleDeleteSign()}
-            className="ui-btn-danger"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-[var(--destructive)] px-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Delete By Sign
           </button>
         </div>
 
-        {message ? <p className="ui-panel-note">{message}</p> : null}
+        {message ? (
+          <p className="text-sm text-(--app-muted-text)">{message}</p>
+        ) : null}
 
         {current?.key ? (
-          <div className="ui-code-card">
-            <p className="ui-break-all">
-              <span className="ui-text-strong">key:</span> {current.key}
+          <div className="rounded-xl border border-(--app-border) bg-black/10 p-4 text-sm text-(--app-text)">
+            <p className="break-all">
+              <span className="font-semibold">key:</span> {current.key}
             </p>
-            <p className="ui-break-all">
-              <span className="ui-text-strong">uploadUrl:</span>{" "}
+            <p className="break-all">
+              <span className="font-semibold">uploadUrl:</span>{" "}
               {current.uploadUrl}
             </p>
             {current.accessUrl ? (
-              <p className="ui-break-all">
-                <span className="ui-text-strong">accessUrl:</span>{" "}
+              <p className="break-all">
+                <span className="font-semibold">accessUrl:</span>{" "}
                 {current.accessUrl}
               </p>
             ) : null}
             <p>
-              <span className="ui-text-strong">deleted:</span>{" "}
+              <span className="font-semibold">deleted:</span>{" "}
               {current.deleted ? "yes" : "no"}
             </p>
           </div>

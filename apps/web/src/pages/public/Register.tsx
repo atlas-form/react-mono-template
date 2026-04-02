@@ -6,6 +6,21 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { registerApi } from "@/api"
 import { createRegisterSchema } from "@/forms/authSchemas"
+import { Button } from "@workspace/ui-components/button"
+
+const authShellClassName =
+  "relative mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--ui-radius-xl)] border border-(--app-border) bg-(--app-surface) shadow-[var(--ui-shadow-soft)] sm:grid-cols-2"
+const authAsideClassName =
+  "relative hidden flex-col justify-between border-r border-(--app-border) bg-[linear-gradient(155deg,var(--app-active-bg)_0%,var(--app-surface)_65%)] p-10 text-(--app-text) sm:flex"
+const authContentClassName = "p-8 sm:p-10"
+const authInputWrapperClassName = "space-y-2"
+const authLabelClassName = "text-sm font-medium text-(--app-text)"
+const authErrorClassName = "text-sm text-[var(--destructive)]"
+const authFooterClassName = "mt-6 text-sm text-(--app-muted-text)"
+const authLinkClassName =
+  "font-medium text-(--app-text) underline-offset-4 transition hover:underline"
+const authInputClassName =
+  "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 md:text-sm dark:bg-input/30"
 
 export default function RegisterPage() {
   const { t } = useTranslation()
@@ -43,120 +58,125 @@ export default function RegisterPage() {
   })
 
   return (
-    <div className="ui-auth-shell">
-      <section className="ui-auth-aside">
+    <div className={authShellClassName}>
+      <section className={authAsideClassName}>
         <div>
-          <p className="ui-auth-aside-brand">{t("register.brand")}</p>
-          <h1 className="ui-auth-aside-title">
+          <p className="text-xs tracking-[0.22em] text-(--app-muted-text)">
+            {t("register.brand")}
+          </p>
+          <h1 className="mt-4 text-4xl leading-tight font-semibold">
             {t("register.hero.titleLine1")}
             <br />
             {t("register.hero.titleLine2")}
           </h1>
         </div>
-        <div className="ui-auth-aside-desc">
+        <div className="space-y-3 text-sm text-(--app-muted-text)">
           <p>{t("register.hero.desc1")}</p>
           <p>{t("register.hero.desc2")}</p>
         </div>
-        <div className="ui-auth-aside-decoration" />
       </section>
 
-      <section className="ui-auth-content">
-        <div className="ui-auth-content-header">
-          <p className="ui-auth-content-kicker">{t("register.welcome")}</p>
-          <h2 className="ui-auth-content-title">{t("register.title")}</h2>
-          <p className="ui-auth-content-subtitle">{t("register.subtitle")}</p>
+      <section className={authContentClassName}>
+        <div className="space-y-3">
+          <p className="text-xs font-medium tracking-[0.16em] text-(--app-muted-text)">
+            {t("register.welcome")}
+          </p>
+          <h2 className="text-3xl font-semibold text-(--app-text)">
+            {t("register.title")}
+          </h2>
+          <p className="text-sm text-(--app-muted-text)">
+            {t("register.subtitle")}
+          </p>
         </div>
 
-        <form onSubmit={handleRegister} className="ui-form">
-          <label className="ui-field">
-            <span className="ui-field-label">
+        <form onSubmit={handleRegister} className="mt-8 space-y-5">
+          <label className={authInputWrapperClassName}>
+            <span className={authLabelClassName}>
               {t("register.form.username.label")}
             </span>
             <input
               type="text"
               placeholder={t("register.form.username.placeholder")}
               {...register("username")}
-              className="ui-input"
+              className={authInputClassName}
             />
             {errors.username && (
-              <p className="ui-error-text">{errors.username.message}</p>
+              <p className={authErrorClassName}>{errors.username.message}</p>
             )}
           </label>
 
-          <label className="ui-field">
-            <span className="ui-field-label">
+          <label className={authInputWrapperClassName}>
+            <span className={authLabelClassName}>
               {t("register.form.displayName.label")}
             </span>
             <input
               type="text"
               placeholder={t("register.form.displayName.placeholder")}
               {...register("displayName")}
-              className="ui-input"
+              className={authInputClassName}
             />
             {errors.displayName && (
-              <p className="ui-error-text">{errors.displayName.message}</p>
+              <p className={authErrorClassName}>{errors.displayName.message}</p>
             )}
           </label>
 
-          <label className="ui-field">
-            <span className="ui-field-label">
+          <label className={authInputWrapperClassName}>
+            <span className={authLabelClassName}>
               {t("register.form.email.label")}
             </span>
             <input
               type="email"
               placeholder={t("register.form.email.placeholder")}
               {...register("email")}
-              className="ui-input"
+              className={authInputClassName}
             />
             {errors.email && (
-              <p className="ui-error-text">{errors.email.message}</p>
+              <p className={authErrorClassName}>{errors.email.message}</p>
             )}
           </label>
 
-          <label className="ui-field">
-            <span className="ui-field-label">
+          <label className={authInputWrapperClassName}>
+            <span className={authLabelClassName}>
               {t("register.form.password.label")}
             </span>
             <input
               type="password"
               placeholder={t("register.form.password.placeholder")}
               {...register("password")}
-              className="ui-input"
+              className={authInputClassName}
             />
             {errors.password && (
-              <p className="ui-error-text">{errors.password.message}</p>
+              <p className={authErrorClassName}>{errors.password.message}</p>
             )}
           </label>
 
-          <label className="ui-field">
-            <span className="ui-field-label">
+          <label className={authInputWrapperClassName}>
+            <span className={authLabelClassName}>
               {t("register.form.confirmPassword.label")}
             </span>
             <input
               type="password"
               placeholder={t("register.form.confirmPassword.placeholder")}
               {...register("confirmPassword")}
-              className="ui-input"
+              className={authInputClassName}
             />
             {errors.confirmPassword && (
-              <p className="ui-error-text">{errors.confirmPassword.message}</p>
+              <p className={authErrorClassName}>
+                {errors.confirmPassword.message}
+              </p>
             )}
           </label>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="ui-btn-primary"
-          >
+          <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
             {isSubmitting
               ? t("register.form.submitting")
               : t("register.form.submit")}
-          </button>
+          </Button>
         </form>
 
-        <p className="ui-auth-footer">
+        <p className={authFooterClassName}>
           {t("register.footer.toLoginPrefix")}{" "}
-          <Link to="/login" className="ui-link-primary">
+          <Link to="/login" className={authLinkClassName}>
             {t("register.footer.toLoginAction")}
           </Link>
         </p>

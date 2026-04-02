@@ -12,6 +12,18 @@ import { Button } from "@workspace/ui-components/button"
 import { Input } from "@workspace/ui-components/input"
 import { Select } from "@workspace/ui-components/select"
 
+const authShellClassName =
+  "relative mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--ui-radius-xl)] border border-(--app-border) bg-(--app-surface) shadow-[var(--ui-shadow-soft)] sm:grid-cols-2"
+const authAsideClassName =
+  "relative hidden flex-col justify-between border-r border-(--app-border) bg-[linear-gradient(155deg,var(--app-active-bg)_0%,var(--app-surface)_65%)] p-10 text-(--app-text) sm:flex"
+const authContentClassName = "p-8 sm:p-10"
+const authInputWrapperClassName = "space-y-2"
+const authLabelClassName = "text-sm font-medium text-(--app-text)"
+const authErrorClassName = "text-sm text-[var(--destructive)]"
+const authFooterClassName = "text-sm text-(--app-muted-text)"
+const authLinkClassName =
+  "font-medium text-(--app-text) underline-offset-4 transition hover:underline"
+
 export default function LoginPage() {
   const { t } = useTranslation()
   const [selectDemoValue, setSelectDemoValue] = useState("option-1")
@@ -54,33 +66,38 @@ export default function LoginPage() {
   })
 
   return (
-    <div className="ui-auth-shell">
-      <section className="ui-auth-aside">
+    <div className={authShellClassName}>
+      <section className={authAsideClassName}>
         <div className="space-y-10">
           <div>
-            <p className="ui-auth-aside-brand">{t("login.brand")}</p>
-            <h1 className="ui-auth-aside-title">
+            <p className="text-xs tracking-[0.22em] text-(--app-muted-text)">
+              {t("login.brand")}
+            </p>
+            <h1 className="mt-4 text-4xl leading-tight font-semibold">
               {t("login.hero.titleLine1")}
               <br />
               {t("login.hero.titleLine2")}
             </h1>
           </div>
-          <div className="ui-auth-aside-desc">
+          <div className="space-y-3 text-sm text-(--app-muted-text)">
             <p>{t("login.hero.desc1")}</p>
             <p>{t("login.hero.desc2")}</p>
           </div>
         </div>
-        <div className="ui-auth-aside-decoration" />
       </section>
 
-      <section className="ui-auth-content">
+      <section className={authContentClassName}>
         <div className="space-y-8">
-          <div className="ui-auth-content-header">
-            <p className="ui-auth-content-kicker">{t("login.welcome")}</p>
-            <h2 className="ui-auth-content-title">
+          <div className="space-y-3">
+            <p className="text-xs font-medium tracking-[0.16em] text-(--app-muted-text)">
+              {t("login.welcome")}
+            </p>
+            <h2 className="text-3xl font-semibold text-(--app-text)">
               {t("login.title")}
             </h2>
-            <p className="ui-auth-content-subtitle">{t("login.subtitle")}</p>
+            <p className="text-sm text-(--app-muted-text)">
+              {t("login.subtitle")}
+            </p>
             <Select
               value={selectDemoValue}
               onValueChange={setSelectDemoValue}
@@ -93,9 +110,9 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleLogin}>
-            <div className="ui-form">
-              <label className="ui-field">
-                <span className="ui-field-label">
+            <div className="space-y-5">
+              <label className={authInputWrapperClassName}>
+                <span className={authLabelClassName}>
                   {t("login.form.identifier.label")}
                 </span>
                 <Controller
@@ -111,12 +128,12 @@ export default function LoginPage() {
                   )}
                 />
                 {errors.identifier && (
-                  <p className="ui-error-text">{errors.identifier.message}</p>
+                  <p className={authErrorClassName}>{errors.identifier.message}</p>
                 )}
               </label>
 
-              <label className="ui-field">
-                <span className="ui-field-label">
+              <label className={authInputWrapperClassName}>
+                <span className={authLabelClassName}>
                   {t("login.form.password.label")}
                 </span>
                 <Controller
@@ -132,7 +149,7 @@ export default function LoginPage() {
                   )}
                 />
                 {errors.password && (
-                  <p className="ui-error-text">{errors.password.message}</p>
+                  <p className={authErrorClassName}>{errors.password.message}</p>
                 )}
               </label>
 
@@ -144,16 +161,16 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <p className="ui-auth-footer">
+          <p className={authFooterClassName}>
             {t("login.footer.toRegisterPrefix")}{" "}
-            <Link to="/register" className="ui-link-primary">
+            <Link to="/register" className={authLinkClassName}>
               {t("login.footer.toRegisterAction")}
             </Link>
           </p>
 
-          <p className="ui-auth-footer">
+          <p className={authFooterClassName}>
             {t("login.footer.toGuidePrefix")}{" "}
-            <Link to="/guide" className="ui-link-primary">
+            <Link to="/guide" className={authLinkClassName}>
               {t("login.footer.toGuideAction")}
             </Link>
           </p>

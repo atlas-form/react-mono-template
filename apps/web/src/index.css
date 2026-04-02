@@ -1,15 +1,2 @@
 @import "@workspace/ui-components/styles.css";
 @import "@workspace/ui-theme/styles.css";
-@import "./styles/tokens/radius.css";
-@import "./styles/tokens/shadow.css";
-@import "./styles/tokens/typography.css";
-@import "./styles/recipes/auth.css";
-@import "./styles/recipes/header.css";
-@import "./styles/recipes/modal.css";
-@import "./styles/recipes/panel.css";
-@import "./styles/recipes/system.css";
-
-/* body {
-  background: var(--app-bg);
-  color: var(--app-text);
-} */

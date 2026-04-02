@@ -7,11 +7,13 @@ export default function PageLoading({
 }) {
   return (
     <div
-      className={`ui-page-loading ${
-        fullscreen ? "ui-page-loading-full" : "ui-page-loading-block"
+      className={`flex items-center justify-center ${
+        fullscreen ? "min-h-svh w-full" : "w-full py-12"
       }`}
     >
-      <span className="ui-page-loading-chip">{label}</span>
+      <span className="rounded-full border border-(--app-border) bg-(--app-surface) px-4 py-2 text-sm text-(--app-muted-text) shadow-[var(--ui-shadow-soft)]">
+        {label}
+      </span>
     </div>
   )
 }

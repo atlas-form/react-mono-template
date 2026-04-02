@@ -109,26 +109,28 @@ export default function HeaderMe() {
 
   return (
     <>
-      <div className="ui-header-dropdown-wrap" ref={menuRef}>
+      <div className="relative" ref={menuRef}>
         <button
           type="button"
           onClick={() => {
             setMenuOpen((prev) => !prev)
           }}
-          className="ui-header-profile-trigger"
+          className="inline-flex items-center gap-3 rounded-full border border-(--app-border) bg-(--app-surface) px-3 py-2 text-sm text-(--app-text) shadow-[var(--ui-shadow-soft)] transition hover:bg-(--app-active-bg)"
         >
           {avatarUrl ? (
             <img
               src={avatarUrl}
               alt={displayName}
-              className="ui-header-avatar-img"
+              className="size-9 rounded-full object-cover"
             />
           ) : (
-            <span className="ui-header-avatar-fallback">{avatarText}</span>
+            <span className="inline-flex size-9 items-center justify-center rounded-full bg-(--app-active-bg) font-semibold text-(--app-text)">
+              {avatarText}
+            </span>
           )}
-          <span className="ui-header-profile-name">{displayName}</span>
+          <span className="max-w-32 truncate font-medium">{displayName}</span>
           <svg
-            className={`ui-header-trigger-icon ${menuOpen ? "rotate-180" : ""}`}
+            className={`size-4 transition ${menuOpen ? "rotate-180" : ""}`}
             viewBox="0 0 20 20"
             fill="currentColor"
             aria-hidden="true"
@@ -142,12 +144,12 @@ export default function HeaderMe() {
         </button>
 
         {menuOpen && (
-          <div className="ui-header-menu ui-header-menu-md">
+          <div className="absolute right-0 z-20 mt-2 min-w-44 rounded-xl border border-(--app-border) bg-(--app-surface) p-1 shadow-[var(--ui-shadow-soft)]">
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              className="ui-hidden"
+              className="hidden"
               onChange={(e) => {
                 const file = e.currentTarget.files?.[0]
                 if (file) {
@@ -160,21 +162,21 @@ export default function HeaderMe() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={savingAvatar}
-              className="ui-header-item"
+              className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-(--app-text) transition hover:bg-(--app-active-bg) disabled:cursor-not-allowed disabled:opacity-60"
             >
               {t("header.me.uploadAvatar")}
             </button>
             <Link
               to="/about"
               onClick={() => setMenuOpen(false)}
-              className="ui-header-item"
+              className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-(--app-text) transition hover:bg-(--app-active-bg)"
             >
               {t("header.me.profile")}
             </Link>
             <Link
               to="/logout"
               onClick={() => setMenuOpen(false)}
-              className="ui-header-item ui-header-item-danger"
+              className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-[var(--destructive)] transition hover:bg-(--app-active-bg)"
             >
               {t("header.me.logout")}
             </Link>
