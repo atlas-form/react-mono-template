@@ -13,15 +13,18 @@
    了解当前主业务应用 `apps/web` 的用途、运行方式、环境变量和适用场景。
 
 3. [env-setup.md](./env-setup.md)
-   先看真实环境和 mock 环境怎么启动，以及它们分别需要什么。
+   先看本地 `dev` 和 `mock` 怎么启动，以及它们分别需要什么。
 
-4. [task-template.md](./task-template.md)
+4. [dev-checklist.md](./dev-checklist.md)
+   如果你这次不用 mock，而是要跑本地 `pnpm dev` 联调，先看这份清单。
+
+5. [task-template.md](./task-template.md)
    直接复制任务模板给 AI，用来提问题、提需求、报 Bug。
 
-5. [design-input-spec.md](./design-input-spec.md)
+6. [design-input-spec.md](./design-input-spec.md)
    如果你要按设计稿开发，先看这份输入规范，避免信息不完整。
 
-6. [acceptance-checklist.md](./acceptance-checklist.md)
+7. [acceptance-checklist.md](./acceptance-checklist.md)
    AI 完成后，用这份清单做验收。
 
 ## 说明

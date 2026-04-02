@@ -1,4 +1,4 @@
-# apps/web 协议（AI Required）
+# apps/web 协议（AI 必读）
 
 本协议是 `apps/web` 的最高优先级执行规则，面向所有 AI 开发助手。
 
@@ -40,7 +40,6 @@
 - `pages/`：页面组件；按 `public/` 与 `protected/` 分区。
 - `routes/`：路由定义；`routes/lazy/` 负责懒加载出口。
 - `store/`：Redux store 与 slice。
-- `styles/`：本地样式；`tokens/` 放本地 token，`recipes/` 放语义化样式配方。
 - `test/`：应用级测试与 MSW 配置。
 - `utils/`：纯工具函数。
 
@@ -79,8 +78,8 @@
 
 - 页面必须优先使用语义组件和语义样式（`ui-*` classes / `ui-components`）。
 - Tailwind 原子类仅用于布局；颜色、阴影、圆角等视觉语义必须来自 theme/token。
-- 新的可复用视觉模式先落到 `src/styles/recipes/*`，再被页面消费。
-- 禁止在页面里长期保留大段不可复用的样式字符串作为共享方案替代。
+- `apps/web` 不再维护本地 `src/styles/*` 目录，页面样式应直接消费 `@workspace/ui-theme` 与 `@workspace/ui-components` 提供的语义能力。
+- 页面私有样式允许以内联类名或局部组件结构表达，但不得重新引入第二套本地主题 token/recipe 体系。
 
 ## 9. 测试与门禁（强制）
 
@@ -99,7 +98,7 @@
 - 若未来新增业务 app，应优先继承 `web` 的启动方式、目录结构和分层思路。
 - 对 `web` 的工程级改进，应优先考虑其是否适合作为其他 app 的模板能力。
 
-## 11. 完成定义（Definition of Done）
+## 11. 完成定义
 
 仅当以下条件同时满足时，`apps/web` 改动才算完成：
 - 符合本协议第 2~10 节约束；

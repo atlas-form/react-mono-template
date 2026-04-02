@@ -1,4 +1,4 @@
-# How To Use AI
+# 如何使用 AI
 
 这个仓库的 `README.md` 是给使用者看的，不是给 AI 看的。
 
@@ -12,6 +12,61 @@
 
 - [user_docs/README.md](./user_docs/README.md)
 
+## 获取模板
+
+不要直接使用 `git clone`。
+
+更适合普通使用者的方式，是用 `npx` 下载一份模板副本：
+
+```bash
+npx degit atlas-form/react-mono-template my-project
+cd my-project
+pnpm install
+```
+
+这样做的好处是：
+
+- 不会继承这个模板仓库的 `.git` 历史
+- 不会默认保留模板仓库的 remote 地址
+- 你可以把它当成自己的新项目重新创建 git 仓库
+
+如果你的机器暂时不能使用 `npx`，再退回到 `git clone`：
+
+```bash
+git clone https://github.com/atlas-form/react-mono-template.git my-project
+cd my-project
+rm -rf .git
+git init
+pnpm install
+```
+
+这样也可以避免继续连接到模板仓库的 remote。
+
+如果你需要，可以在新目录里自己执行：
+
+```bash
+git add .
+git commit -m "init from template"
+```
+
+如果你不会执行这些命令，也可以直接把仓库地址和你的目标目录告诉 AI，让 AI 帮你完成：
+
+```text
+请先帮我把这个模板下载到本地并完成环境准备。
+
+模板地址：
+https://github.com/atlas-form/react-mono-template.git
+
+目标目录：
+my-project
+
+要求：
+1. 优先使用 npx 方式获取模板
+2. 如果当前环境不能使用 npx，再改用 git clone
+3. 不要保留模板仓库的 git remote
+4. 完成后继续帮我安装依赖，并告诉我 mock 和 dev 怎么启动
+```
+
 ## 推荐使用方式
 
 每次给 AI 发任务前，先带上这段前置说明：
@@ -21,6 +76,8 @@
 你的判断、建议、实现和目录落点，都必须遵守其中映射到的协议文件。
 如果仓库已有明确规则，按现有规则执行，不要另起一套方案。
 ```
+
+如果当前仓库还没有安装好环境，AI 的第一件事不是改代码，而是先完成环境准备。
 
 ## 你给 AI 的需求最好包含
 
@@ -130,7 +187,7 @@
 先不要改代码，先完成这个仓库的环境准备：
 1. 检查 Node 和 pnpm
 2. 安装依赖
-3. 告诉我真实环境和 mock 环境分别怎么启动
+3. 告诉我本地 dev 和 mock 分别怎么启动
 4. 告诉我需要哪些环境变量
 5. 汇报当前环境是否可用
 ```

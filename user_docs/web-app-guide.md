@@ -47,6 +47,14 @@ VITE_FILE_URL=/file
 
 如果你不确定当前仓库应该使用哪个环境变量文件，可以直接让 AI 先检查并说明。
 
+如果你要跑真实联调环境，通常还需要补这些 proxy 地址：
+
+```env
+VITE_WEB_API_PROXY=http://localhost:8000
+VITE_AUTH_PROXY=http://localhost:9000
+VITE_FILE_PROXY=http://localhost:9000
+```
+
 mock 模式默认使用根目录下的 `.env.mock`，并且只需要最小配置：
 
 ```env

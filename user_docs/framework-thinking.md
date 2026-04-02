@@ -1,4 +1,4 @@
-# Framework Thinking
+# 框架思路
 
 这个文件是给使用者看的。
 

@@ -1,4 +1,4 @@
-# apps 协议（AI Required）
+# apps 协议（AI 必读）
 
 本协议是 `apps/*` 目录的最高优先级执行规则，面向所有 AI 开发助手。
 
@@ -23,7 +23,6 @@
   - `src/config/env.ts` 的环境变量校验方式
   - `src/routes/*`、`src/layouts/*`、`src/pages/*` 的路由分层方式
   - `src/api/index.ts` 的 API 聚合方式
-  - `src/styles/*` 的 token / recipe 组织方式
 - 除非有明确理由，禁止新 app 自行设计一套新的目录规范或启动方式。
 
 ## 3. 共享与复用边界（强制）
@@ -61,7 +60,7 @@
 - 禁止绕过共享包直接在多个 app 中复制同一段服务逻辑或 UI 实现。
 - 禁止在没有协议说明的情况下创建结构明显不同的新 app。
 
-## 8. 完成定义（Definition of Done）
+## 8. 完成定义
 
 只有同时满足以下条件，新增或修改 app 才算完成：
 - 符合本协议的 app 创建与分层规则；
