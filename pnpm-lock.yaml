@@ -222,9 +222,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@atlas-art/ui-react':
-        specifier: ^0.1.16
-        version: 0.1.16(react-dom@19.2.4(react@19.2.4))(react-router@7.13.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       '@hookform/resolvers':
         specifier: 'catalog:'
         version: 5.2.2(react-hook-form@7.72.0(react@19.2.4))
@@ -234,6 +231,9 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.95.2(react@19.2.4)
+      '@workspace/mock':
+        specifier: workspace:*
+        version: link:../../packages/mock
       '@workspace/services':
         specifier: workspace:*
         version: link:../../packages/services
@@ -334,6 +334,16 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.1(@types/node@25.5.0)(jsdom@29.0.1(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@25.5.0)(typescript@5.9.3))(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+
+  packages/mock:
+    dependencies:
+      msw:
+        specifier: 'catalog:'
+        version: 2.12.14(@types/node@25.5.0)(typescript@5.9.3)
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/services:
     dependencies:
@@ -505,19 +515,6 @@ packages:
 
   '@asamuzakjp/nwsapi@2.3.9':
     resolution: {integrity: sha512-n8GuYSrI9bF7FFZ/SjhwevlHc8xaVlb/7HmHelnc/PZXBD2ZR49NnN9sMMuDdEGPeeRQ5d0hqlSlEpgCX3Wl0Q==}
-
-  '@atlas-art/ui-core@0.1.16':
-    resolution: {integrity: sha512-Ns04XVUKDR+FCv1pP8pCfNtVZXexYOplT6WB0kJUO2Iz28j8A5NLBNXrZjwxqqjHCR0D+QNAc1Ngrwdw99qlEg==}
-
-  '@atlas-art/ui-react@0.1.16':
-    resolution: {integrity: sha512-gi8P7+MUuG8oTQCIk04mFspwllZzuy5iqEbdqpVK2jCAjAvLovzprPKlop9GIgigVVENLvFqALSuUOe33YiRzQ==}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-      react-router: '>=7'
-    peerDependenciesMeta:
-      react-router:
-        optional: true
 
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
@@ -4670,21 +4667,6 @@ snapshots:
       lru-cache: 11.2.7
 
   '@asamuzakjp/nwsapi@2.3.9': {}
-
-  '@atlas-art/ui-core@0.1.16':
-    dependencies:
-      class-variance-authority: 0.7.1
-      clsx: 2.1.1
-      tailwind-merge: 3.5.0
-
-  '@atlas-art/ui-react@0.1.16(react-dom@19.2.4(react@19.2.4))(react-router@7.13.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@atlas-art/ui-core': 0.1.16
-      class-variance-authority: 0.7.1
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-    optionalDependencies:
-      react-router: 7.13.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@babel/code-frame@7.29.0':
     dependencies:

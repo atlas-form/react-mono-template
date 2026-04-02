@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode dev",
+    "mock": "vite --mode mock",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@workspace/mock": "workspace:*",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "@workspace/services": "workspace:*",

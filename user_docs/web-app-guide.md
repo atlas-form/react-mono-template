@@ -23,6 +23,18 @@ pnpm install
 pnpm dev
 ```
 
+如果你想在没有真实后端的情况下启动 mock 环境：
+
+```bash
+pnpm mock
+```
+
+mock 模式下不需要单独启动真实的 `auth`、`file` 或其他后端服务。
+
+更完整的说明请看：
+
+- [env-setup.md](./env-setup.md)
+
 ## 环境变量
 
 根据需要准备环境变量文件，并至少提供这些值：
@@ -34,6 +46,22 @@ VITE_FILE_URL=/file
 ```
 
 如果你不确定当前仓库应该使用哪个环境变量文件，可以直接让 AI 先检查并说明。
+
+mock 模式默认使用根目录下的 `.env.mock`，并且只需要最小配置：
+
+```env
+VITE_WEB_API_URL=/api
+VITE_AUTH_URL=/auth
+VITE_FILE_URL=/file
+VITE_ENABLE_MOCK=true
+```
+
+这意味着：
+
+- 不需要再配置真实 `auth` 服务地址
+- 不需要再配置真实 `file` 服务地址
+- 也不需要为 mock 再准备多组端口
+- 你只需要启动前端自己这一个开发端口
 
 ## 它适合承载什么需求
 

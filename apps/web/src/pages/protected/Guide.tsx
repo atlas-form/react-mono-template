@@ -3,11 +3,10 @@ import { Button } from "@workspace/ui-components/button"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  Stack,
-  Text,
-} from "@atlas-art/ui-react"
+} from "@workspace/ui-components/card"
 
 export default function GuidePage() {
   const { t } = useTranslation()
@@ -15,20 +14,20 @@ export default function GuidePage() {
   return (
     <div className="space-y-10 py-4">
       <section className="rounded-2xl border border-(--app-border) bg-(--app-surface) p-6">
-        <Stack gap="md">
-          <Text as="h1" variant="title">
+        <div className="space-y-3">
+          <h1 className="text-3xl font-semibold tracking-tight">
             {t("guide.title")}
-          </Text>
-          <Text variant="muted">{t("guide.subtitle")}</Text>
-        </Stack>
+          </h1>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.subtitle")}</p>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-(--app-border) bg-(--app-surface) p-6">
-        <Stack gap="lg">
-          <Card shadow="sm" padding="lg">
+        <div className="space-y-6">
+          <Card>
             <CardHeader>
               <CardTitle>{t("guide.buttons.title")}</CardTitle>
-              <Text variant="muted">{t("guide.buttons.subtitle")}</Text>
+              <CardDescription>{t("guide.buttons.subtitle")}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap items-center gap-4">
@@ -66,21 +65,21 @@ export default function GuidePage() {
               </div>
             </CardContent>
           </Card>
-        </Stack>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-(--app-border) bg-(--app-surface) p-6">
-        <Stack gap="md">
-          <Text as="h2" variant="title">
+        <div className="space-y-3">
+          <h2 className="text-2xl font-semibold tracking-tight">
             {t("guide.guide.title")}
-          </Text>
-          <Text variant="muted">{t("guide.guide.intro")}</Text>
-          <Text variant="muted">{t("guide.guide.step1")}</Text>
-          <Text variant="muted">{t("guide.guide.step2")}</Text>
-          <Text variant="muted">{t("guide.guide.step3")}</Text>
-          <Text variant="muted">{t("guide.guide.template")}</Text>
-          <Text variant="muted">{t("guide.guide.tip")}</Text>
-        </Stack>
+          </h2>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.intro")}</p>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.step1")}</p>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.step2")}</p>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.step3")}</p>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.template")}</p>
+          <p className="text-sm text-(--app-muted-text)">{t("guide.guide.tip")}</p>
+        </div>
       </section>
     </div>
   )

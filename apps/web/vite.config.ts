@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   const envDir =
     process.env.FRONTEND_ENV_DIR ?? path.resolve(__dirname, "../../")
   const env = loadEnv(mode, envDir, "")
+  const isMockMode = env.VITE_ENABLE_MOCK === "true"
 
   return {
     envDir,
@@ -56,31 +57,33 @@ export default defineConfig(({ mode }) => {
       css: true,
       server: {
         deps: {
-          inline: ["@atlas-art/ui-react", "@atlas-art/ui-core"],
+          inline: [],
         },
       },
     },
     server: {
-      proxy: {
-        "/api": {
-          target: env.VITE_WEB_API_PROXY,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
-          ws: false,
-        },
-        "/auth": {
-          target: env.VITE_AUTH_PROXY,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/auth/, ""),
-          ws: false,
-        },
-        "/file": {
-          target: env.VITE_FILE_PROXY,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/file/, ""),
-          ws: false,
-        },
-      },
+      proxy: isMockMode
+        ? undefined
+        : {
+            "/api": {
+              target: env.VITE_WEB_API_PROXY,
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/api/, ""),
+              ws: false,
+            },
+            "/auth": {
+              target: env.VITE_AUTH_PROXY,
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/auth/, ""),
+              ws: false,
+            },
+            "/file": {
+              target: env.VITE_FILE_PROXY,
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/file/, ""),
+              ws: false,
+            },
+          },
     },
   }
 })

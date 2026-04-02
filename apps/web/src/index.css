@@ -1,5 +1,4 @@
 @import "@workspace/ui-components/styles.css";
-@source "../node_modules/@atlas-art/ui-react/dist";
 @import "@workspace/ui-theme/styles.css";
 @import "./styles/tokens/radius.css";
 @import "./styles/tokens/shadow.css";

@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { useNavigate, useLocation } from "react-router"
+import { Link, useNavigate, useLocation } from "react-router"
 import { useTranslation } from "react-i18next"
 import { useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -8,19 +8,9 @@ import { z } from "zod"
 import { meApi, loginApi } from "@/api"
 import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
-import { AppLink } from "@atlas-art/ui-react/adapters/react-router"
 import { Button } from "@workspace/ui-components/button"
 import { Input } from "@workspace/ui-components/input"
 import { Select } from "@workspace/ui-components/select"
-import {
-  FormField,
-  FormFieldLabel,
-  SplitCard,
-  SplitCardAside,
-  SplitCardMain,
-  Stack,
-  Text,
-} from "@atlas-art/ui-react"
 
 export default function LoginPage() {
   const { t } = useTranslation()
@@ -64,32 +54,33 @@ export default function LoginPage() {
   })
 
   return (
-    <SplitCard>
-      <SplitCardAside>
-        <Stack gap="xl">
-          <Stack gap="sm">
-            <Text variant="brand">{t("login.brand")}</Text>
-            <Text as="h1" variant="lead">
+    <div className="ui-auth-shell">
+      <section className="ui-auth-aside">
+        <div className="space-y-10">
+          <div>
+            <p className="ui-auth-aside-brand">{t("login.brand")}</p>
+            <h1 className="ui-auth-aside-title">
               {t("login.hero.titleLine1")}
               <br />
               {t("login.hero.titleLine2")}
-            </Text>
-          </Stack>
-          <Stack gap="sm">
-            <Text variant="muted">{t("login.hero.desc1")}</Text>
-            <Text variant="muted">{t("login.hero.desc2")}</Text>
-          </Stack>
-        </Stack>
-      </SplitCardAside>
+            </h1>
+          </div>
+          <div className="ui-auth-aside-desc">
+            <p>{t("login.hero.desc1")}</p>
+            <p>{t("login.hero.desc2")}</p>
+          </div>
+        </div>
+        <div className="ui-auth-aside-decoration" />
+      </section>
 
-      <SplitCardMain>
-        <Stack gap="xl">
-          <Stack gap="sm">
-            <Text variant="kicker">{t("login.welcome")}</Text>
-            <Text as="h2" variant="title">
+      <section className="ui-auth-content">
+        <div className="space-y-8">
+          <div className="ui-auth-content-header">
+            <p className="ui-auth-content-kicker">{t("login.welcome")}</p>
+            <h2 className="ui-auth-content-title">
               {t("login.title")}
-            </Text>
-            <Text variant="muted">{t("login.subtitle")}</Text>
+            </h2>
+            <p className="ui-auth-content-subtitle">{t("login.subtitle")}</p>
             <Select
               value={selectDemoValue}
               onValueChange={setSelectDemoValue}
@@ -99,14 +90,14 @@ export default function LoginPage() {
                 { value: "option-3", label: "选项三" },
               ]}
             />
-          </Stack>
+          </div>
 
           <form onSubmit={handleLogin}>
-            <Stack gap="lg">
-              <FormField error={errors.identifier?.message}>
-                <FormFieldLabel htmlFor="login-identifier">
+            <div className="ui-form">
+              <label className="ui-field">
+                <span className="ui-field-label">
                   {t("login.form.identifier.label")}
-                </FormFieldLabel>
+                </span>
                 <Controller
                   control={control}
                   name="identifier"
@@ -119,12 +110,15 @@ export default function LoginPage() {
                     />
                   )}
                 />
-              </FormField>
+                {errors.identifier && (
+                  <p className="ui-error-text">{errors.identifier.message}</p>
+                )}
+              </label>
 
-              <FormField error={errors.password?.message}>
-                <FormFieldLabel htmlFor="login-password">
+              <label className="ui-field">
+                <span className="ui-field-label">
                   {t("login.form.password.label")}
-                </FormFieldLabel>
+                </span>
                 <Controller
                   control={control}
                   name="password"
@@ -137,31 +131,34 @@ export default function LoginPage() {
                     />
                   )}
                 />
-              </FormField>
+                {errors.password && (
+                  <p className="ui-error-text">{errors.password.message}</p>
+                )}
+              </label>
 
               <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
                 {isSubmitting
                   ? t("login.form.submitting")
                   : t("login.form.submit")}
               </Button>
-            </Stack>
+            </div>
           </form>
 
-          <Text variant="muted">
+          <p className="ui-auth-footer">
             {t("login.footer.toRegisterPrefix")}{" "}
-            <AppLink to="/register" variant="primary">
+            <Link to="/register" className="ui-link-primary">
               {t("login.footer.toRegisterAction")}
-            </AppLink>
-          </Text>
+            </Link>
+          </p>
 
-          <Text variant="muted">
+          <p className="ui-auth-footer">
             {t("login.footer.toGuidePrefix")}{" "}
-            <AppLink to="/guide" variant="primary">
+            <Link to="/guide" className="ui-link-primary">
               {t("login.footer.toGuideAction")}
-            </AppLink>
-          </Text>
-        </Stack>
-      </SplitCardMain>
-    </SplitCard>
+            </Link>
+          </p>
+        </div>
+      </section>
+    </div>
   )
 }

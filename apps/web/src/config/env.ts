@@ -4,6 +4,7 @@ const EnvSchema = z.object({
   VITE_WEB_API_URL: z.string().min(1, "VITE_WEB_API_URL is required"),
   VITE_AUTH_URL: z.string().min(1, "VITE_AUTH_URL is required"),
   VITE_FILE_URL: z.string().min(1, "VITE_FILE_URL is required"),
+  VITE_ENABLE_MOCK: z.enum(["true", "false"]).default("false"),
 })
 
 export type AppEnv = z.infer<typeof EnvSchema>
