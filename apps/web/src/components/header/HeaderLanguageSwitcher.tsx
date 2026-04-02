@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Select } from "@workspace/ui-components/select"
+import { Select } from "@workspace/ui-components/stable/select"
 
 const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },

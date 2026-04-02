@@ -6,11 +6,12 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { meApi, loginApi } from "@/api"
+import { showGlobalError } from "@/components/system/showGlobalError"
 import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
-import { Button } from "@workspace/ui-components/button"
-import { Input } from "@workspace/ui-components/input"
-import { Select } from "@workspace/ui-components/select"
+import { Button } from "@workspace/ui-components/stable/button"
+import { Input } from "@workspace/ui-components/stable/input"
+import { Select } from "@workspace/ui-components/stable/select"
 
 const authShellClassName =
   "relative mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--ui-radius-xl)] border border-(--app-border) bg-(--app-surface) shadow-[var(--ui-shadow-soft)] sm:grid-cols-2"
@@ -62,6 +63,7 @@ export default function LoginPage() {
       navigate(from, { replace: true })
     } catch (err) {
       console.error("Login failed:", err)
+      showGlobalError(err)
     }
   })
 

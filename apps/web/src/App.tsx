@@ -2,12 +2,12 @@ import { useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RouterProvider, createBrowserRouter, Navigate } from "react-router"
 import { useQuery } from "@tanstack/react-query"
-import { ToastContainer } from "react-toastify"
 import { loginSuccess } from "@/store/authSlice"
 import type { RootState } from "@/store"
 import { publicRoutes } from "@/routes/publicRoutes"
 import { protectedRoutes } from "@/routes/protectedRoutes"
 import PageLoading from "@/components/system/PageLoading"
+import { ToastProvider } from "@workspace/ui-components/stable/toast"
 import { meApi } from "./api"
 import { toRequestError } from "@workspace/services/errors/request-error"
 
@@ -57,7 +57,7 @@ export default function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <ToastContainer />
+      <ToastProvider position="top-center" />
     </>
   )
 }

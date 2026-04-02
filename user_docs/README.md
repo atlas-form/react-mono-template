@@ -10,7 +10,7 @@
    先理解这个框架为什么分成 `apps` 和 `packages`，以及为什么 AI 需要先判断落点。
 
 2. [web-app-guide.md](./web-app-guide.md)
-   了解当前主业务应用 `apps/web` 的用途、运行方式、环境变量和适用场景。
+   了解当前主业务应用 `apps/web` 的用途、运行方式、proxy 配置和适用场景。
 
 3. [env-setup.md](./env-setup.md)
    先看本地 `dev` 和 `mock` 怎么启动，以及它们分别需要什么。
@@ -32,3 +32,5 @@
 - 这里只保留中文版文档。
 - 根目录 [README.md](../README.md) 负责总入口说明。
 - AI 执行规则不在这里，而在 [ai_protocol/README.md](../ai_protocol/README.md)。
+- 当前共享 UI 默认按分类子路径消费，例如 `@workspace/ui-components/stable/button`。
+- 当前本地联调主要依赖 `VITE_*_PROXY` 和 `VITE_ENABLE_MOCK`，不再使用 `VITE_*_URL` 作为请求前缀拼接配置。

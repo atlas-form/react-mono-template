@@ -112,7 +112,8 @@ AI 在使用 mock 时必须明确汇报：
 
 - `packages/services`
   全局服务层。
-  放跨应用复用的 API 基础设施、i18n、query client、错误模型、URL 能力。
+  放跨应用复用的 API 基础设施、i18n、query client 和错误模型。
+  `group` 仅表示目标服务域，不表示路径前缀分组。
 
 - `packages/ui-theme`
   全局主题语义层。
@@ -125,6 +126,7 @@ AI 在使用 mock 时必须明确汇报：
 - `packages/ui-components`
   产品级共享组件层。
   基于 `ui-core` 封装成给应用直接使用的共享组件。
+  应用优先按分类路径导入，例如 `@workspace/ui-components/stable/button`。
 
 - `packages/mock`
   本地 mock 能力层。
@@ -174,6 +176,7 @@ apps/*
 - app 不应复制共享组件实现
 - app 不应直接承接本应进入共享层的服务逻辑
 - `ui-components` 是 app 使用共享 UI 的默认入口
+- app 使用 `ui-components` 时，应优先使用 `stable/*` 或 `labs/*` 分类子路径
 - `ui-core` 不是业务页面默认直连层
 - `services` 不能依赖 UI
 - `mock` 只负责模拟，不替代真实服务分层

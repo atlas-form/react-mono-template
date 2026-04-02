@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next"
-import { Button } from "@workspace/ui-components/button"
+import { Button } from "@workspace/ui-components/stable/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@workspace/ui-components/card"
+} from "@workspace/ui-components/stable/card"
 
 export default function GuidePage() {
   const { t } = useTranslation()

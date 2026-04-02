@@ -28,7 +28,6 @@
     "react-i18next": "catalog:",
     "react-redux": "catalog:",
     "react-router": "catalog:",
-    "react-toastify": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

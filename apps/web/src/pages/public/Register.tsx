@@ -5,8 +5,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { registerApi } from "@/api"
+import { showGlobalError } from "@/components/system/showGlobalError"
 import { createRegisterSchema } from "@/forms/authSchemas"
-import { Button } from "@workspace/ui-components/button"
+import { Button } from "@workspace/ui-components/stable/button"
 
 const authShellClassName =
   "relative mx-auto grid w-full max-w-5xl overflow-hidden rounded-[var(--ui-radius-xl)] border border-(--app-border) bg-(--app-surface) shadow-[var(--ui-shadow-soft)] sm:grid-cols-2"
@@ -54,6 +55,7 @@ export default function RegisterPage() {
       navigate("/login", { replace: true })
     } catch (err) {
       console.error("Register failed:", err)
+      showGlobalError(err)
     }
   })
 

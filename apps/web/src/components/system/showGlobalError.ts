@@ -1,5 +1,4 @@
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import { toast } from "@workspace/ui-components/stable/toast"
 import {
   toRequestError,
   type RequestError,
@@ -12,9 +11,5 @@ export function showGlobalError(error: string | RequestError | unknown) {
       ? error
       : getRequestErrorMessage(toRequestError(error))
 
-  toast.error(message, {
-    position: "top-center",
-    autoClose: 3000,
-    hideProgressBar: false,
-  })
+  toast.error(message)
 }

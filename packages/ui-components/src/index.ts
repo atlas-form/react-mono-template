@@ -227,6 +227,9 @@ export type { AlertProps, AlertVariant } from "./components/stable/alert"
 export { Spinner } from "./components/stable/spinner"
 export type { SpinnerProps } from "./components/stable/spinner"
 
+export { ToastProvider, toast } from "./components/stable/toast"
+export type { ToastProviderProps } from "./components/stable/toast"
+
 export { AlertDialog } from "./components/stable/alert-dialog"
 export type { AlertDialogProps } from "./components/stable/alert-dialog"
 

@@ -5,7 +5,7 @@ import {
   setThemeMode,
   type ThemeMode,
 } from "@workspace/ui-theme"
-import { Select } from "@workspace/ui-components/select"
+import { Select } from "@workspace/ui-components/stable/select"
 
 const THEME_OPTIONS: Array<{ value: ThemeMode; key: string }> = [
   { value: "system", key: "header.theme.system" },

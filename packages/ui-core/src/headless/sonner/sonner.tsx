@@ -14,10 +14,7 @@ import {
   Loader2Icon,
 } from "../../lib/icon-slots"
 import { sonnerClassNames } from "./sonner.styles"
-import type {
-  SonnerClassResolver,
-  SonnerToasterProps,
-} from "./sonner.types"
+import type { SonnerClassResolver, SonnerToasterProps } from "./sonner.types"
 
 function resolveStyledSonnerClassName({
   className,

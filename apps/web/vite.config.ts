@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
               return "vendor-react-core"
             }
 
-            if (id.includes("react-toastify")) return "vendor-toast"
+            if (id.includes("sonner")) return "vendor-toast"
             if (id.includes("@tanstack/react-query")) return "vendor-query"
             if (
               id.includes("i18next") ||
