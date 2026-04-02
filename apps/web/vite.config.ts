@@ -24,6 +24,14 @@ export default defineConfig(({ mode }) => {
           manualChunks(id) {
             if (!id.includes("node_modules")) return
 
+            if (
+              id.includes("/node_modules/react/") ||
+              id.includes("/node_modules/react-dom/") ||
+              id.includes("/node_modules/scheduler/")
+            ) {
+              return "vendor-react-core"
+            }
+
             if (id.includes("react-toastify")) return "vendor-toast"
             if (id.includes("@tanstack/react-query")) return "vendor-query"
             if (
@@ -42,8 +50,26 @@ export default defineConfig(({ mode }) => {
               return "vendor-redux"
             }
             if (id.includes("react-router")) return "vendor-router"
-            if (id.includes("react") || id.includes("scheduler"))
-              return "vendor-react"
+            if (
+              id.includes("@radix-ui/") ||
+              id.includes("@floating-ui/") ||
+              id.includes("@base-ui/") ||
+              id.includes("input-otp") ||
+              id.includes("cmdk") ||
+              id.includes("embla-carousel") ||
+              id.includes("vaul") ||
+              id.includes("lucide-react")
+            ) {
+              return "vendor-ui"
+            }
+            if (
+              id.includes("react-hook-form") ||
+              id.includes("@hookform/resolvers") ||
+              id.includes("zod")
+            ) {
+              return "vendor-forms"
+            }
+            if (id.includes("react")) return "vendor-react-ecosystem"
 
             return "vendor-misc"
           },
@@ -68,19 +94,16 @@ export default defineConfig(({ mode }) => {
             "/api": {
               target: env.VITE_WEB_API_PROXY,
               changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api/, ""),
               ws: false,
             },
             "/auth": {
               target: env.VITE_AUTH_PROXY,
               changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/auth/, ""),
               ws: false,
             },
             "/file": {
               target: env.VITE_FILE_PROXY,
               changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/file/, ""),
               ws: false,
             },
           },

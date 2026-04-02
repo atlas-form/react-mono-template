@@ -36,16 +36,11 @@
 
 本地 `dev` 联调至少要分清两类值：
 
-1. 前端内部访问路径
-2. dev 代理要转发到哪里
+1. dev 代理要转发到哪里
 
 常见最小示例：
 
 ```env
-VITE_WEB_API_URL=/api
-VITE_AUTH_URL=/auth
-VITE_FILE_URL=/file
-
 VITE_WEB_API_PROXY=http://localhost:8000
 VITE_AUTH_PROXY=http://localhost:9000
 VITE_FILE_PROXY=http://localhost:9000

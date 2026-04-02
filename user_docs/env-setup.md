@@ -45,13 +45,9 @@ pnpm dev
 
 本地 `dev` 联调通常需要你准备对应的环境变量和后端服务。
 
-本地 `dev` 除了应用内部 URL 以外，通常还需要提供 dev proxy 目标，例如：
+本地 `dev` 主要需要提供 dev proxy 目标，例如：
 
 ```env
-VITE_WEB_API_URL=/api
-VITE_AUTH_URL=/auth
-VITE_FILE_URL=/file
-
 VITE_WEB_API_PROXY=http://localhost:8000
 VITE_AUTH_PROXY=http://localhost:9000
 VITE_FILE_PROXY=http://localhost:9000
@@ -110,9 +106,6 @@ mock 模式默认使用根目录下的：
 当前最小配置是：
 
 ```env
-VITE_WEB_API_URL=/api
-VITE_AUTH_URL=/auth
-VITE_FILE_URL=/file
 VITE_ENABLE_MOCK=true
 ```
 

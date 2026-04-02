@@ -45,7 +45,7 @@ export const getAccessSignApi = async (
 ): Promise<DownloadSignResponse> => {
   return request<AccessSignQuery, DownloadSignResponse>({
     method: "GET",
-    url: "/sign/access",
+    url: "/file/sign/access",
     body: query,
     group: "file",
   })
@@ -56,7 +56,7 @@ export const getDeleteSignApi = async (
 ): Promise<DeleteSignResponse> => {
   return request<DeleteSignQuery, DeleteSignResponse>({
     method: "GET",
-    url: "/sign/delete",
+    url: "/file/sign/delete",
     body: query,
     group: "file",
   })
@@ -65,7 +65,7 @@ export const getDeleteSignApi = async (
 export const getUploadAvatarSignApi = async (): Promise<UploadSignResponse> => {
   return request<undefined, UploadSignResponse>({
     method: "GET",
-    url: "/sign/upload/avatar",
+    url: "/file/sign/upload/avatar",
     group: "file",
   })
 }
@@ -75,7 +75,7 @@ export const getUploadDocumentSignApi = async (
 ): Promise<UploadSignResponse> => {
   return request<UploadExtQuery, UploadSignResponse>({
     method: "GET",
-    url: "/sign/upload/document",
+    url: "/file/sign/upload/document",
     body: query,
     group: "file",
   })
@@ -86,7 +86,7 @@ export const getUploadImageSignApi = async (
 ): Promise<UploadSignResponse> => {
   return request<UploadExtQuery, UploadSignResponse>({
     method: "GET",
-    url: "/sign/upload/image",
+    url: "/file/sign/upload/image",
     body: query,
     group: "file",
   })

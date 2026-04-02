@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom/vitest"
 import { afterAll, afterEach, beforeAll } from "vitest"
-import { setAppApiBaseUrl, setPlatformBaseUrls } from "@workspace/services/url"
 import { server } from "./msw/server"
 
 const memoryStorage = (() => {
@@ -28,11 +27,6 @@ Object.defineProperty(globalThis, "localStorage", {
 })
 
 beforeAll(() => {
-  setAppApiBaseUrl("http://localhost:3100")
-  setPlatformBaseUrls({
-    auth: "http://localhost:3100/auth",
-    file: "http://localhost:3100/file",
-  })
   server.listen({ onUnhandledRequest: "error" })
 })
 

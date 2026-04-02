@@ -58,8 +58,9 @@
 ## 5. 配置规则（强制）
 
 - `import.meta.env` 的读取与校验只能放在 `src/config/env.ts`。
-- `main.tsx` 只接收已校验 env，并注入到 `@workspace/services/url`。
+- `main.tsx` 只负责应用启动、mock 开关与主题初始化，禁止再做请求 base URL 注入。
 - 业务代码（页面/组件）禁止直接读取 `import.meta.env`。
+- Vite proxy 只负责把请求转发到目标服务器，禁止通过 `rewrite` 裁剪业务路径前缀。
 
 ## 6. 路由与鉴权规则
 

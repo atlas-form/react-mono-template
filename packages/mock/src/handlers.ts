@@ -71,15 +71,15 @@ function createSignedUpload(
 }
 
 export const handlers = [
-  http.post("*/auth/auth/login", async () => {
+  http.post("*/auth/session/login", async () => {
     return success(authTokens)
   }),
 
-  http.post("*/auth/auth/register", async () => {
+  http.post("*/auth/session/register", async () => {
     return success(null)
   }),
 
-  http.post("*/auth/auth/refresh_token", async () => {
+  http.post("*/auth/session/refresh_token", async () => {
     return success({
       accessToken: authTokens.accessToken,
       refreshToken: authTokens.refreshToken,
