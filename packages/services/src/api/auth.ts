@@ -54,7 +54,7 @@ export const loginApi = async (
 ): Promise<LoginResponse> => {
   return request<LoginRequest, LoginResponse>({
     method: "POST",
-    url: "/auth/login",
+    url: "/auth/session/login",
     body: payload,
     group: "auth",
   })
@@ -63,7 +63,7 @@ export const loginApi = async (
 export const registerApi = async (payload: RegisterRequest): Promise<void> => {
   await request<RegisterRequest, unknown>({
     method: "POST",
-    url: "/auth/register",
+    url: "/auth/session/register",
     body: payload,
     group: "auth",
   })
@@ -72,7 +72,7 @@ export const registerApi = async (payload: RegisterRequest): Promise<void> => {
 export const meApi = async (): Promise<UserInfo> => {
   const response = await request<undefined, MeResponse>({
     method: "GET",
-    url: "/user/me",
+    url: "/auth/user/me",
     group: "auth",
   })
 
@@ -94,7 +94,7 @@ export const updatePasswordApi = async (
 ): Promise<void> => {
   await request<UpdatePasswordPayload, undefined>({
     method: "PUT",
-    url: "/user/password",
+    url: "/auth/user/password",
     body: payload,
     group: "auth",
   })
@@ -105,7 +105,7 @@ export const updateEmailApi = async (
 ): Promise<void> => {
   await request<UpdateEmailPayload, undefined>({
     method: "PUT",
-    url: "/user/email",
+    url: "/auth/user/email",
     body: payload,
     group: "auth",
   })
@@ -121,7 +121,7 @@ export const updateProfileApi = async (
 
   await request<UpdateProfileRequestBody, undefined>({
     method: "PUT",
-    url: "/user/profile",
+    url: "/auth/user/profile",
     body,
     group: "auth",
   })
@@ -130,7 +130,7 @@ export const updateProfileApi = async (
 export const verifyEmailApi = async (): Promise<void> => {
   await request<undefined, undefined>({
     method: "POST",
-    url: "/user/email/verify",
+    url: "/auth/user/email/verify",
     group: "auth",
   })
 }
