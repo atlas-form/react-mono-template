@@ -45,6 +45,10 @@ pnpm dev
 
 本地 `dev` 联调通常需要你准备对应的环境变量和后端服务。
 
+默认读取的环境文件是：
+
+- 根目录 `.env.development`
+
 本地 `dev` 主要需要提供 dev proxy 目标，例如：
 
 ```env

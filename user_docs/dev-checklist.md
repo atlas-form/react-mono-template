@@ -46,6 +46,8 @@ VITE_AUTH_PROXY=http://localhost:9000
 VITE_FILE_PROXY=http://localhost:9000
 ```
 
+这些值通常放在根目录 `.env.development`。
+
 你不一定非要用这些端口，但必须保证：
 
 - `VITE_WEB_API_PROXY` 指向可用的 API 服务

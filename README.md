@@ -19,10 +19,13 @@
 更适合普通使用者的方式，是用 `npx` 下载一份模板副本：
 
 ```bash
-npx degit atlas-form/react-mono-template my-project
-cd my-project
+npx degit atlas-form/react-mono-template your-project-name
+cd your-project-name
 pnpm install
 ```
+
+这里的 `your-project-name` 只是示例占位名。
+请把它替换成你自己想要的项目目录名，例如 `mall-admin`、`my-company-web`、`demo-app`。
 
 这样做的好处是：
 
@@ -33,8 +36,8 @@ pnpm install
 如果你的机器暂时不能使用 `npx`，再退回到 `git clone`：
 
 ```bash
-git clone https://github.com/atlas-form/react-mono-template.git my-project
-cd my-project
+git clone https://github.com/atlas-form/react-mono-template.git your-project-name
+cd your-project-name
 rm -rf .git
 git init
 pnpm install
@@ -58,7 +61,7 @@ git commit -m "init from template"
 https://github.com/atlas-form/react-mono-template.git
 
 目标目录：
-my-project
+请改成你自己的目录名，例如 mall-admin
 
 要求：
 1. 优先使用 npx 方式获取模板
@@ -134,6 +137,7 @@ my-project
 - `packages/ui-components`
   给业务页面直接使用的共享 UI 组件。
   应优先按分类路径导入，例如 `@workspace/ui-components/stable/button`。
+  通知能力也应通过产品语义入口使用，例如 `@workspace/ui-components/stable/toast`。
 
 - `packages/ui-core`
   更底层的 headless 基础组件能力，一般不是业务页面直接改的第一选择。
@@ -144,6 +148,21 @@ my-project
 - `packages/services`
   通用服务层，例如 API、i18n、query、错误模型。
   当前请求路径应在服务代码中显式完整定义，环境变量主要用于 dev proxy 与 mock 开关。
+
+## 环境文件约定
+
+当前仓库根目录使用标准 Vite 环境文件命名：
+
+- `.env.development`
+- `.env.mock`
+- `.env.production`
+
+其中：
+
+- `pnpm dev` 读取根目录 `.env.development`
+- `pnpm mock` 读取根目录 `.env.mock`
+- 本地联调主要配置 `VITE_*_PROXY`
+- 不再使用 `VITE_*_URL` 做请求前缀拼接
 
 ## 用户不会判断位置也没关系
 

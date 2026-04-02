@@ -63,6 +63,13 @@ pnpm lint
 pnpm typecheck
 ```
 
+环境文件约定：
+
+- `pnpm dev` 使用根目录 `.env.development`
+- `pnpm mock` 使用根目录 `.env.mock`
+- 本地联调只应依赖 `VITE_*_PROXY`
+- 不再使用 `VITE_*_URL` 作为请求前缀拼接配置
+
 ## mock 环境规则
 
 当需求不依赖真实后端时，AI 应优先评估是否可以直接使用 mock 环境完成开发和验证。
@@ -127,6 +134,7 @@ AI 在使用 mock 时必须明确汇报：
   产品级共享组件层。
   基于 `ui-core` 封装成给应用直接使用的共享组件。
   应用优先按分类路径导入，例如 `@workspace/ui-components/stable/button`。
+  若需要通知/消息能力，应通过 `@workspace/ui-components/stable/toast` 使用，而不是直接暴露第三方库名。
 
 - `packages/mock`
   本地 mock 能力层。
