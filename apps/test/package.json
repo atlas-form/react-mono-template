@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vite --mode dev --port 5175",
+    "dev": "vite --mode development --port 5175",
     "build": "tsc -b && vite build",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
