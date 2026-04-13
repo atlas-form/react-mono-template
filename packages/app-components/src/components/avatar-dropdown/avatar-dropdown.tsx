@@ -146,12 +146,12 @@ export function AvatarDropdown({
 
         {children ? (
           <>
-            <div className="p-0.5">{children}</div>
+            <div className="p-1">{children}</div>
             <Separator />
           </>
         ) : null}
 
-        <div className="p-0.5">
+        <div className="p-1">
           <DropdownMenuItem
             mode="headless"
             className={itemClassName()}
