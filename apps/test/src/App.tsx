@@ -25,6 +25,11 @@ const LayoutDemo = lazy(async () => {
   return { default: mod.LayoutDemo }
 })
 
+const DataDemo = lazy(async () => {
+  const mod = await import("./demos/data-demo")
+  return { default: mod.DataDemo }
+})
+
 const LANGUAGE_STORAGE_KEY = "test-language"
 
 function getInitialLanguage(): AppLanguage {
@@ -77,6 +82,7 @@ export function App() {
         <InteractionDemo />
         <OverlayDemo />
         <LayoutDemo />
+        <DataDemo />
       </Suspense>
     </main>
   )

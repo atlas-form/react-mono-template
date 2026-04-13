@@ -9,7 +9,9 @@
     "strict": true,
     "noEmit": true,
     "paths": {
-      "@workspace/ui-components/*": ["./src/*"]
+      "@workspace/ui-components": ["../ui-components/src/index.ts"],
+      "@workspace/ui-components/*": ["../ui-components/src/*"],
+      "@workspace/ui-data/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],

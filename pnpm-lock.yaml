@@ -161,12 +161,18 @@ importers:
 
   apps/test:
     dependencies:
+      '@workspace/mock':
+        specifier: workspace:*
+        version: link:../../packages/mock
       '@workspace/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
       '@workspace/ui-core':
         specifier: workspace:*
         version: link:../../packages/ui-core
+      '@workspace/ui-data':
+        specifier: workspace:*
+        version: link:../../packages/ui-data
       '@workspace/ui-theme':
         specifier: workspace:*
         version: link:../../packages/ui-theme
@@ -491,6 +497,22 @@ importers:
       typescript-eslint:
         specifier: 'catalog:'
         version: 8.57.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
+
+  packages/ui-data:
+    dependencies:
+      '@workspace/ui-components':
+        specifier: workspace:*
+        version: link:../ui-components
+      react:
+        specifier: 'catalog:'
+        version: 19.2.4
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/ui-theme: {}
 

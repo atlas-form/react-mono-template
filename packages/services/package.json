@@ -25,6 +25,9 @@
     "./http-client": "./src/http-client.ts",
     "./i18n": "./src/i18n.ts",
     "./query/client": "./src/query/client.ts",
+    "./query/create-resource-query": "./src/query/create-resource-query.ts",
+    "./query/keys": "./src/query/keys.ts",
+    "./query/types": "./src/query/types.ts",
     "./url": "./src/url.ts"
   }
 }

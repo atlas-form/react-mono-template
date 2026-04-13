@@ -15,6 +15,14 @@ interface MockFileRecord {
   kind: "avatar" | "image" | "document"
 }
 
+interface MockTableUser {
+  id: string
+  name: string
+  role: "Admin" | "Editor" | "Viewer"
+  status: "Active" | "Paused"
+  region: string
+}
+
 const authTokens = {
   accessToken: "test-access-token",
   refreshToken: "test-refresh-token",
@@ -31,6 +39,20 @@ let currentUser: MockUserState = {
 }
 
 const uploadedFiles = new Map<string, MockFileRecord>()
+const tableUsers: MockTableUser[] = [
+  { id: "u-001", name: "Alice Chen", role: "Admin", status: "Active", region: "Shanghai" },
+  { id: "u-002", name: "Brian Sun", role: "Editor", status: "Paused", region: "Beijing" },
+  { id: "u-003", name: "Cindy Zhou", role: "Viewer", status: "Active", region: "Shenzhen" },
+  { id: "u-004", name: "David Lin", role: "Editor", status: "Active", region: "Hangzhou" },
+  { id: "u-005", name: "Eva Wang", role: "Viewer", status: "Paused", region: "Guangzhou" },
+  { id: "u-006", name: "Frank He", role: "Admin", status: "Active", region: "Suzhou" },
+  { id: "u-007", name: "Grace Xu", role: "Editor", status: "Active", region: "Nanjing" },
+  { id: "u-008", name: "Henry Qian", role: "Viewer", status: "Paused", region: "Chengdu" },
+  { id: "u-009", name: "Ivy Luo", role: "Admin", status: "Active", region: "Wuhan" },
+  { id: "u-010", name: "Jason Yu", role: "Viewer", status: "Active", region: "Xiamen" },
+  { id: "u-011", name: "Kelly Tang", role: "Editor", status: "Paused", region: "Tianjin" },
+  { id: "u-012", name: "Leo Fang", role: "Viewer", status: "Active", region: "Ningbo" },
+]
 
 function success<T>(data: T) {
   return HttpResponse.json({
@@ -71,6 +93,23 @@ function createSignedUpload(
 }
 
 export const handlers = [
+  http.get("*/api/users", async ({ request }) => {
+    const url = new URL(request.url)
+    const page = Number(url.searchParams.get("page") ?? "1")
+    const pageSize = Number(url.searchParams.get("pageSize") ?? "10")
+    const safePage = Number.isFinite(page) && page > 0 ? page : 1
+    const safePageSize =
+      Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 10
+    const start = (safePage - 1) * safePageSize
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    return success({
+      items: tableUsers.slice(start, start + safePageSize),
+      total: tableUsers.length,
+    })
+  }),
+
   http.post("*/auth/session/login", async () => {
     return success(authTokens)
   }),

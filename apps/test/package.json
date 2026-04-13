@@ -12,8 +12,10 @@
     "preview": "vite preview --port 4175"
   },
   "dependencies": {
+    "@workspace/mock": "workspace:*",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-components": "workspace:*",
+    "@workspace/ui-data": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
