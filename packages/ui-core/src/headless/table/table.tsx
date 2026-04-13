@@ -1,7 +1,5 @@
 "use client"
 
-import * as React from "react"
-
 import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { tableClassNames } from "./table.styles"

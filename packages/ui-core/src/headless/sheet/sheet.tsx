@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

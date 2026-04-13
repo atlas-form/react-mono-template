@@ -29,7 +29,8 @@
 
 - `apps/*` 只放应用壳层代码，禁止把共享能力沉淀在某个 app 内部。
 - 可复用服务必须进入 `@workspace/services`。
-- 可复用 UI 必须进入 `@workspace/ui-components`。
+- 简单、基础、稳定的可复用 UI 必须进入 `@workspace/ui-components`。
+- 复合、装配、面向应用语义的可复用 UI 必须进入 `@workspace/app-components`。
 - 可复用主题 token 必须进入 `@workspace/ui-theme`。
 - 如果某段逻辑未来可能被第二个 app 复用，就不应先写死在某个 app 内。
 

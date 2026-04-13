@@ -129,10 +129,12 @@ export type { ComponentProps, ComponentTypes } from "./component.types"
 
 ## 样式化组件应放在哪里
 
-预设计（有明确视觉主张）的组件应放在 `@workspace/ui-components`。
+预设计（有明确视觉主张）的简单/稳定组件应放在 `@workspace/ui-components`。
+复合、装配、页面语义组件应放在 `@workspace/app-components`。
 
 - `ui-core`：headless 原语。
 - `ui-components`：基于 `ui-core` 构建的样式化封装。
+- `app-components`：基于 `ui-components` / `ui-core` 构建的复合装配层。
 
 ## 应用消费策略（重要）
 

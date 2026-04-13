@@ -332,6 +332,3 @@ export type { ResizableDirection, ResizableProps } from "./components/stable/res
 
 export { ScrollArea } from "./components/stable/scroll-area"
 export type { ScrollAreaProps } from "./components/stable/scroll-area"
-
-export { Sidebar } from "./components/stable/sidebar"
-export type { SidebarMenuEntry, SidebarProps } from "./components/stable/sidebar"

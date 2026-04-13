@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "paths": {
+      "@workspace/app-components/*": ["./src/*"],
+      "@workspace/ui-components": ["../ui-components/src/index.ts"],
+      "@workspace/ui-components/*": ["../ui-components/src/*"],
+      "@workspace/ui-core": ["../ui-core/src/index.ts"],
+      "@workspace/ui-core/*": ["../ui-core/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,4 +1,3 @@
-import * as React from "react"
 import { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

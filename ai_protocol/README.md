@@ -131,10 +131,14 @@ AI 在使用 mock 时必须明确汇报：
   放行为契约、无障碍接线、最小样式能力和底层原语。
 
 - `packages/ui-components`
-  产品级共享组件层。
-  基于 `ui-core` 封装成给应用直接使用的共享组件。
+  基础共享组件层。
+  基于 `ui-core` 封装成给应用直接使用的简单/稳定组件。
   应用优先按分类路径导入，例如 `@workspace/ui-components/stable/button`。
   若需要通知/消息能力，应通过 `@workspace/ui-components/stable/toast` 使用，而不是直接暴露第三方库名。
+
+- `packages/app-components`
+  应用级复合组件层。
+  放页面装配、布局语义、业务组合类组件，不要求稳定通用格式。
 
 - `packages/mock`
   本地 mock 能力层。
@@ -150,6 +154,7 @@ AI 在使用 mock 时必须明确汇报：
 - 主题变量和主题模式：`packages/ui-theme`
 - headless 原语和基础行为：`packages/ui-core`
 - 共享产品组件：`packages/ui-components`
+- 共享复合组件：`packages/app-components`
 - 本地 mock 能力：`packages/mock`
 
 如果一个需求会同时影响多层，AI 必须先按分层拆解，再分别实现。
@@ -160,9 +165,15 @@ AI 在使用 mock 时必须明确汇报：
 
 ```text
 apps/*
+  -> @workspace/app-components
   -> @workspace/ui-components
   -> @workspace/services
   -> @workspace/ui-theme
+
+@workspace/app-components
+  -> @workspace/ui-components
+  -> @workspace/ui-core
+  -> 不依赖 apps
 
 @workspace/ui-components
   -> @workspace/ui-core
@@ -182,8 +193,10 @@ apps/*
 这意味着：
 
 - app 不应复制共享组件实现
+- app 不应复制共享复合组件实现
 - app 不应直接承接本应进入共享层的服务逻辑
-- `ui-components` 是 app 使用共享 UI 的默认入口
+- `ui-components` 是 app 使用共享基础 UI 的默认入口
+- `app-components` 是 app 使用共享复合组件的入口
 - app 使用 `ui-components` 时，应优先使用 `stable/*` 或 `labs/*` 分类子路径
 - `ui-core` 不是业务页面默认直连层
 - `services` 不能依赖 UI
@@ -228,6 +241,9 @@ apps/*
 - 产品级共享组件层：
   [packages/ui-components/PROTOCOL.md](../packages/ui-components/PROTOCOL.md)
 
+- 应用级复合组件层：
+  [packages/app-components/PROTOCOL.md](../packages/app-components/PROTOCOL.md)
+
 - 本地 mock 能力层：
   [packages/mock/PROTOCOL.md](../packages/mock/PROTOCOL.md)
 
@@ -252,6 +268,9 @@ apps/*
   必读 `packages/ui-components/PROTOCOL.md`
   同时必读 `apps/test/PROTOCOL.md`
 
+- 新增或改造共享复合组件：
+  必读 `packages/app-components/PROTOCOL.md`
+
 - 新增或改造本地 mock 能力：
   必读 `packages/mock/PROTOCOL.md`
 
@@ -264,6 +283,7 @@ AI 在动手前必须先判断改动属于哪一层：
 - 共享主题 token：放 `packages/ui-theme`
 - headless 原语能力：放 `packages/ui-core`
 - 共享产品组件：放 `packages/ui-components`
+- 共享复合组件：放 `packages/app-components`
 - mock 接口与本地模拟能力：放 `packages/mock`
 - 组件验证：放 `apps/test`
 
