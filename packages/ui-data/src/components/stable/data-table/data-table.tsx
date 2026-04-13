@@ -1,5 +1,4 @@
 import {
-  Button,
   NativeSelect,
   Pagination,
   Spinner,
@@ -45,6 +44,9 @@ export interface DataTableProps<T> {
   emptyText?: ReactNode
   errorText?: ReactNode
   loadingText?: ReactNode
+  renderEmpty?: () => ReactNode
+  renderError?: (error: unknown, retry: () => void) => ReactNode
+  renderLoading?: () => ReactNode
   initialPage?: number
   initialPageSize?: number
   pageSizeOptions?: readonly number[]
@@ -61,6 +63,9 @@ export function DataTable<T>({
   emptyText = "No data available.",
   errorText = "Failed to load data.",
   loadingText = "Loading data...",
+  renderEmpty,
+  renderError,
+  renderLoading,
   initialPage = 1,
   initialPageSize = 10,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
@@ -124,6 +129,12 @@ export function DataTable<T>({
       .slice(1)
       .map((column) => <TableCell key={column.key}>{null}</TableCell>)
 
+  const loadingContent = renderLoading ? renderLoading() : loadingText
+  const emptyContent = renderEmpty ? renderEmpty() : emptyText
+  const errorContent = renderError
+    ? renderError(error, handleRetry)
+    : errorText
+
   return (
     <div>
       <div
@@ -176,16 +187,20 @@ export function DataTable<T>({
           {loading ? (
             <TableRow>
               <TableCell>
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "8px",
-                  }}
-                >
-                  <Spinner size="sm" />
-                  <span>{loadingText}</span>
-                </div>
+                {renderLoading ? (
+                  loadingContent
+                ) : (
+                  <div
+                    style={{
+                      alignItems: "center",
+                      display: "flex",
+                      gap: "8px",
+                    }}
+                  >
+                    <Spinner size="sm" />
+                    <span>{loadingContent}</span>
+                  </div>
+                )}
               </TableCell>
               {renderFillerCells()}
             </TableRow>
@@ -193,28 +208,14 @@ export function DataTable<T>({
 
           {!loading && error ? (
             <TableRow>
-              <TableCell>
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "12px",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>{errorText}</span>
-                  <Button variant="outline" size="sm" onClick={handleRetry}>
-                    Retry
-                  </Button>
-                </div>
-              </TableCell>
+              <TableCell>{errorContent}</TableCell>
               {renderFillerCells()}
             </TableRow>
           ) : null}
 
           {!loading && !error && !hasRows ? (
             <TableRow>
-              <TableCell>{emptyText}</TableCell>
+              <TableCell>{emptyContent}</TableCell>
               {renderFillerCells()}
             </TableRow>
           ) : null}
