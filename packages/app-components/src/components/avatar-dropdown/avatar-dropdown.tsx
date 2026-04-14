@@ -91,19 +91,19 @@ export function AvatarDropdown({
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="relative z-10 inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-[#121821] p-0.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)] outline-hidden transition hover:border-white/55 focus-visible:ring-2 focus-visible:ring-(--app-primary)"
+          className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-[#121821] p-0.5 outline-hidden transition hover:border-white/55 focus-visible:ring-2 focus-visible:ring-(--app-primary)"
           aria-label="Open account menu"
         >
-          <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
+          <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
             {avatarSrc ? (
               <img
                 src={avatarSrc}
                 alt={avatarAlt}
-                className="block h-8 w-8 rounded-full object-cover"
+                className="block h-6 w-6 rounded-full object-cover"
               />
             ) : null}
             {!avatarSrc ? (
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1c2431] text-[11px] font-semibold text-white">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1c2431] text-[10px] font-semibold text-white">
                 {avatarFallback}
               </span>
             ) : null}

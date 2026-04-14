@@ -74,9 +74,9 @@ export function Sidebar({
           variant="sidebar"
           className="[--sidebar:var(--surface)] [--sidebar-accent:var(--surface-hover)] [--sidebar-accent-foreground:var(--foreground)] [--sidebar-border:var(--border)] [--sidebar-foreground:var(--foreground)] bg-[var(--surface)]"
         >
-          <SidebarHeader className="p-2 group-data-[collapsible=icon]:p-0.5">
-            <div className="flex items-center gap-2 rounded-lg px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground group-data-[collapsible=icon]:size-6">
+          <SidebarHeader className="p-2">
+            <div className="flex items-center gap-2 rounded-lg px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
                 {typeof brandTitle === "string" ? brandTitle.charAt(0).toUpperCase() : "W"}
               </div>
               <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
@@ -94,7 +94,7 @@ export function Sidebar({
 
           <SidebarSeparator className="mx-0" />
 
-          <SidebarContent className="px-2 pb-2 group-data-[collapsible=icon]:px-0.5 group-data-[collapsible=icon]:pb-0.5">
+          <SidebarContent className="px-0 pb-2 group-data-[collapsible=icon]:px-0.5 group-data-[collapsible=icon]:pb-0.5">
             {sections.map((section) => (
               <SidebarGroup key={String(section.label)} className="py-1.5 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0.5">
                 <SidebarGroupLabel className="px-2 text-[11px] font-medium tracking-[0.08em] text-sidebar-foreground/60 uppercase group-data-[collapsible=icon]:hidden">
@@ -114,7 +114,7 @@ export function Sidebar({
         </CoreSidebar>
 
         <SidebarInset className="min-h-svh bg-transparent">
-          <div className="px-1 pb-4 sm:px-2">{children}</div>
+          <div className="px-2 pb-4">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
@@ -130,7 +130,7 @@ function SidebarNavRow({ item }: { item: SidebarNavEntry }) {
         <SidebarMenuButton
           isActive={item.active}
           tooltip={typeof item.label === "string" ? item.label : undefined}
-          className="h-8 gap-2 px-2 text-sm group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-6! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0!"
+          className="h-8 gap-2 px-1.5 text-sm hover:bg-[var(--surface-hover)] data-[active=true]:bg-[var(--surface-hover)] group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-6! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0!"
           onClick={item.onSelect}
         >
           {item.icon ? (
@@ -155,7 +155,7 @@ function SidebarNavRow({ item }: { item: SidebarNavEntry }) {
           <SidebarMenuButton
             isActive={item.active || hasActiveChild}
             tooltip={typeof item.label === "string" ? item.label : undefined}
-            className="h-8 gap-2 px-2 text-sm group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-6! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0!"
+            className="h-8 gap-2 px-1.5 text-sm hover:bg-[var(--surface-hover)] data-[active=true]:bg-[var(--surface-hover)] group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-6! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0!"
           >
             {item.icon ? (
               <span className="flex size-4 shrink-0 items-center justify-center text-sidebar-foreground/80 group-data-[collapsible=icon]:mx-auto [&_svg]:size-4 [&_svg]:shrink-0">
