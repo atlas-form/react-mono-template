@@ -90,10 +90,16 @@ export function DateTimeRangePicker({
 
     onValueChange?.({
       from: nextRange.from
-        ? mergeDateWithTime(nextRange.from, getTimeValue(value?.from, DEFAULT_START_TIME))
+        ? mergeDateWithTime(
+            nextRange.from,
+            getTimeValue(value?.from, DEFAULT_START_TIME)
+          )
         : undefined,
       to: nextRange.to
-        ? mergeDateWithTime(nextRange.to, getTimeValue(value?.to, DEFAULT_END_TIME))
+        ? mergeDateWithTime(
+            nextRange.to,
+            getTimeValue(value?.to, DEFAULT_END_TIME)
+          )
         : undefined,
     })
   }
@@ -107,7 +113,8 @@ export function DateTimeRangePicker({
     }
 
     onValueChange?.({
-      from: key === "from" ? mergeDateWithTime(currentDate, nextTime) : value?.from,
+      from:
+        key === "from" ? mergeDateWithTime(currentDate, nextTime) : value?.from,
       to: key === "to" ? mergeDateWithTime(currentDate, nextTime) : value?.to,
     })
   }
@@ -152,7 +159,7 @@ export function DateTimeRangePicker({
               selected={toCalendarRange(value)}
               onSelect={handleCalendarSelect}
               numberOfMonths={2}
-              showOutsideDays={false}
+              showOutsideDays={true}
               yearRange={yearRange}
             />
 
@@ -202,7 +209,10 @@ export function DateTimeRangePicker({
   )
 }
 
-function formatRangeLabel(value: DateTimeRangeValue | undefined, placeholder: string) {
+function formatRangeLabel(
+  value: DateTimeRangeValue | undefined,
+  placeholder: string
+) {
   if (!value?.from && !value?.to) {
     return placeholder
   }
@@ -254,7 +264,9 @@ function normalizeTimeValue(value: string) {
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
 }
 
-function toCalendarRange(value: DateTimeRangeValue | undefined): CalendarRangeSelection | undefined {
+function toCalendarRange(
+  value: DateTimeRangeValue | undefined
+): CalendarRangeSelection | undefined {
   if (!value?.from && !value?.to) {
     return undefined
   }

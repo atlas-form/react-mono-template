@@ -12,6 +12,10 @@ import { DemoSection } from "./shared"
 
 export function LayoutDemo() {
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const [dates, setDates] = useState<Date[] | undefined>([
+    new Date(),
+    new Date(new Date().setDate(new Date().getDate() + 2)),
+  ])
   const [open, setOpen] = useState(false)
   const [range, setRange] = useState({
     from: new Date(new Date().setHours(9, 0, 0, 0)),
@@ -21,7 +25,7 @@ export function LayoutDemo() {
   return (
     <>
       <DemoSection title="Collapsible / Calendar / Scroll Area / Date Time Range">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-4">
           <Collapsible
             open={open}
             onOpenChange={setOpen}
@@ -34,6 +38,8 @@ export function LayoutDemo() {
 
           <Calendar value={date} onValueChange={setDate} />
 
+          <Calendar mode="multiple" value={dates} onValueChange={setDates} />
+
           <ScrollArea
             height={220}
             items={Array.from({ length: 12 }, (_, i) => `Log event #${i + 1}`)}
@@ -42,6 +48,12 @@ export function LayoutDemo() {
 
         <div className="mt-4 max-w-xl">
           <DateTimeRangePicker value={range} onValueChange={(next) => setRange(next ?? {})} />
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Calendar Multiple">
+        <div className="max-w-sm rounded border p-4">
+          <Calendar mode="multiple" value={dates} onValueChange={setDates} />
         </div>
       </DemoSection>
 
