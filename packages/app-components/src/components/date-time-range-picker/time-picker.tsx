@@ -1,6 +1,6 @@
 import type { ChangeEvent, ChangeEventHandler } from "react"
 import { Input } from "@workspace/ui-core/components/input"
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "@workspace/ui-core/lib/utils.js"
 
 export interface TimePickerProps {
   label?: string

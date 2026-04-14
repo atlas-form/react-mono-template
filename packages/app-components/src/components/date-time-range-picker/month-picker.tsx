@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@workspace/ui-core/components/popover"
-import { cn } from "@workspace/ui-core/lib/utils"
+import { cn } from "@workspace/ui-core/lib/utils.js"
 
 export interface MonthPickerOption {
   value: string

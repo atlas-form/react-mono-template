@@ -1,6 +1,9 @@
 import { useState } from "react"
 
-import { DateTimeRangePicker } from "@workspace/app-components"
+import {
+  DateTimeRangePicker,
+  type DateTimeRangeValue,
+} from "@workspace/app-components"
 import { AspectRatio } from "@workspace/ui-components/stable/aspect-ratio"
 import { Calendar } from "@workspace/ui-components/stable/calendar"
 import { Carousel } from "@workspace/ui-components/stable/carousel"
@@ -17,7 +20,7 @@ export function LayoutDemo() {
     new Date(new Date().setDate(new Date().getDate() + 2)),
   ])
   const [open, setOpen] = useState(false)
-  const [range, setRange] = useState({
+  const [range, setRange] = useState<DateTimeRangeValue>({
     from: new Date(new Date().setHours(9, 0, 0, 0)),
     to: new Date(new Date().setHours(18, 30, 45, 0)),
   })
