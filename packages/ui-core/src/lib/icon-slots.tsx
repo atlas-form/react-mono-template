@@ -55,6 +55,25 @@ function createSlot(name: UiCoreIconSlotName) {
       return <Comp {...props} />
     }
 
+    if (name === "panel-left") {
+      return (
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          {...props}
+        >
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M9 4v16" />
+        </svg>
+      )
+    }
+
     return <svg aria-hidden="true" focusable="false" {...props} />
   }
 }

@@ -13,5 +13,4 @@ export type {
   SidebarProps,
   SidebarSection,
   SidebarSubEntry,
-  SidebarUserCard,
 } from "./components/sidebar"
