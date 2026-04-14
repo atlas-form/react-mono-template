@@ -14,3 +14,8 @@ export type {
   SidebarSection,
   SidebarSubEntry,
 } from "./components/sidebar"
+export { DateTimeRangePicker } from "./components/date-time-range-picker"
+export type {
+  DateTimeRangePickerProps,
+  DateTimeRangeValue,
+} from "./components/date-time-range-picker"

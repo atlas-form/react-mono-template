@@ -1,3 +1,8 @@
+import { useCallback, useState } from "react"
+import {
+  DateTimeRangePicker,
+  type DateTimeRangeValue,
+} from "@workspace/app-components"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import {
   Card,
@@ -14,6 +19,7 @@ interface CustomerRow {
   tier: "Enterprise" | "Growth" | "Starter"
   status: "Active" | "Paused"
   region: string
+  createdAt: Date
 }
 
 const tiers: CustomerRow["tier"][] = ["Enterprise", "Growth", "Starter"]
@@ -26,9 +32,47 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
   tier: tiers[index % tiers.length],
   status: statuses[index % statuses.length],
   region: regions[index % regions.length],
+  createdAt: new Date(2026, 0, 1 + index, 9 + (index % 8), (index * 7) % 60, 0),
 }))
 
 export default function DataTablePage() {
+  const [range, setRange] = useState<DateTimeRangeValue | undefined>(undefined)
+
+  const fetchData = useCallback(
+    async ({
+      page,
+      pageSize,
+      signal: _signal,
+    }: {
+      page: number
+      pageSize: number
+      signal: AbortSignal
+    }): Promise<DataTableFetchResult<CustomerRow>> => {
+      await new Promise((resolve) => setTimeout(resolve, 120))
+
+      const filteredRows = customerRows.filter((row) => {
+        if (range?.from && row.createdAt < range.from) {
+          return false
+        }
+
+        if (range?.to && row.createdAt > range.to) {
+          return false
+        }
+
+        return true
+      })
+
+      const start = (page - 1) * pageSize
+      const end = start + pageSize
+
+      return {
+        items: filteredRows.slice(start, end),
+        total: filteredRows.length,
+      }
+    },
+    [range]
+  )
+
   return (
     <div className="space-y-4">
       <Card>
@@ -43,6 +87,16 @@ export default function DataTablePage() {
 
       <Card>
         <CardContent>
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <DateTimeRangePicker
+              value={range}
+              onValueChange={setRange}
+              placeholder="Filter by created time"
+              className="w-full sm:w-auto sm:min-w-90"
+              triggerClassName="h-9"
+            />
+          </div>
+
           <DataTable<CustomerRow>
             caption="Customer directory"
             columns={[
@@ -75,26 +129,13 @@ export default function DataTablePage() {
                 header: "Region",
                 renderCell: (row: CustomerRow) => row.region,
               },
+              {
+                key: "createdAt",
+                header: "Created At",
+                renderCell: (row: CustomerRow) => formatDateTime(row.createdAt),
+              },
             ]}
-            fetchData={async ({
-              page,
-              pageSize,
-              signal: _signal,
-            }: {
-              page: number
-              pageSize: number
-              signal: AbortSignal
-            }): Promise<DataTableFetchResult<CustomerRow>> => {
-              const start = (page - 1) * pageSize
-              const end = start + pageSize
-
-              await new Promise((resolve) => setTimeout(resolve, 120))
-
-              return {
-                items: customerRows.slice(start, end),
-                total: customerRows.length,
-              }
-            }}
+            fetchData={fetchData}
             getRowId={(row: CustomerRow) => row.id}
             initialPageSize={10}
             pageSizeOptions={[10, 20, 50]}
@@ -106,4 +147,12 @@ export default function DataTablePage() {
       </Card>
     </div>
   )
+}
+
+function formatDateTime(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, "0")
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(
+    date.getHours()
+  )}:${pad(date.getMinutes())}`
 }
