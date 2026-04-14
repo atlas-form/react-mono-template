@@ -5,6 +5,7 @@ import PageLoading from "@/components/system/PageLoading"
 import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
 import {
   AccessPage,
+  DataTablePage,
   DashboardPage,
   MembersPage,
   OrdersPage,
@@ -39,6 +40,10 @@ export const protectedRoutes: RouteObject = {
     {
       path: "settings",
       element: withSuspense(<SettingsPage />),
+    },
+    {
+      path: "datatable",
+      element: withSuspense(<DataTablePage />),
     },
   ],
 }

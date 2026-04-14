@@ -1,4 +1,3 @@
-import * as React from "react"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

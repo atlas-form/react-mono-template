@@ -23,7 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@workspace/ui-data": ["../../packages/ui-data/src/index.ts"],
+      "@workspace/ui-data/*": ["../../packages/ui-data/src/*"]
     }
   },
   "include": ["src"]

@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   ShoppingCart,
   SquareTerminal,
+  TableProperties,
   Users,
 } from "lucide-react"
 import { AvatarDropdown, AvatarDropdownItem } from "@workspace/app-components"
@@ -65,6 +66,12 @@ const navItems: AdminNavItem[] = [
       { label: "审计开关", href: "/settings" },
       { label: "策略配置", href: "/settings" },
     ],
+  },
+  {
+    label: "DataTable",
+    path: "/datatable",
+    icon: <TableProperties />,
+    matcher: (pathname: string) => pathname.startsWith("/datatable"),
   },
 ]
 

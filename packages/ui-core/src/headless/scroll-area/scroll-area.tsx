@@ -1,4 +1,3 @@
-import * as React from "react"
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

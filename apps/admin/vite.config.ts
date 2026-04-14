@@ -16,6 +16,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "src"),
+        "@workspace/ui-data": path.resolve(
+          __dirname,
+          "../../packages/ui-data/src/index.ts"
+        ),
       },
     },
     build: {

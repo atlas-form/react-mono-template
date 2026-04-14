@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Menubar as MenubarPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

@@ -1,4 +1,3 @@
-import * as React from "react"
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"

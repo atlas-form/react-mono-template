@@ -1,4 +1,3 @@
-import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"
