@@ -14,12 +14,15 @@
   "dependencies": {
     "@workspace/app-components": "workspace:*",
     "@workspace/mock": "workspace:*",
+    "@workspace/services": "workspace:*",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-data": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
+    "i18next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-i18next": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

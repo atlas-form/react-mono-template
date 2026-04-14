@@ -1,14 +1,16 @@
-import { useMemo, useState, type ChangeEvent } from "react"
+import { useMemo, useState } from "react"
 import { CalendarDays, Clock3 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui-core/components/button"
-import { Calendar } from "@workspace/ui-core/components/calendar"
-import { Input } from "@workspace/ui-core/components/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
+import { DatePicker } from "./date-picker"
+import { normalizeLanguage, pad, type YearRange } from "./shared"
+import { TimePicker } from "./time-picker"
 
 export interface DateTimeRangeValue {
   from?: Date
@@ -21,6 +23,7 @@ export interface DateTimeRangePickerProps {
   placeholder?: string
   disabled?: boolean
   clearable?: boolean
+  yearRange?: YearRange
   className?: string
   triggerClassName?: string
   popoverContentClassName?: string
@@ -34,19 +37,49 @@ interface CalendarRangeSelection {
 const DEFAULT_START_TIME = "00:00:00"
 const DEFAULT_END_TIME = "23:59:59"
 
+const DATE_TIME_RANGE_COPY = {
+  en: {
+    placeholder: "Select date range",
+    rangeState: "Range",
+    emptyState: "Empty",
+    timeRangeTitle: "Time Range",
+    startLabel: "Start",
+    endLabel: "End",
+    precisionHint: "Precision is set to seconds.",
+    clearLabel: "Clear",
+  },
+  zhCN: {
+    placeholder: "选择日期时间范围",
+    rangeState: "已选择",
+    emptyState: "未选择",
+    timeRangeTitle: "时间范围",
+    startLabel: "开始",
+    endLabel: "结束",
+    precisionHint: "时间精度到秒。",
+    clearLabel: "清空",
+  },
+} as const
+
 export function DateTimeRangePicker({
   value,
   onValueChange,
-  placeholder = "Select date range",
+  placeholder,
   disabled = false,
   clearable = true,
+  yearRange,
   className,
   triggerClassName,
   popoverContentClassName,
 }: DateTimeRangePickerProps) {
   const [open, setOpen] = useState(false)
-
-  const displayValue = useMemo(() => formatRangeLabel(value, placeholder), [value, placeholder])
+  const { i18n } = useTranslation()
+  const language = normalizeLanguage(i18n.language)
+  const copy = DATE_TIME_RANGE_COPY[language]
+  const resolvedPlaceholder = placeholder ?? copy.placeholder
+  const displayValue = useMemo(
+    () => formatRangeLabel(value, resolvedPlaceholder),
+    [resolvedPlaceholder, value]
+  )
   const hasValue = Boolean(value?.from || value?.to)
 
   const handleCalendarSelect = (nextRange: DateTimeRangeValue | undefined) => {
@@ -65,27 +98,19 @@ export function DateTimeRangePicker({
     })
   }
 
-  const handleTimeChange =
-    (key: "from" | "to") =>
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const nextTime = normalizeTimeValue(event.target.value)
-      const currentDate = key === "from" ? value?.from : value?.to
+  const handleTimeChange = (key: "from" | "to") => (nextValue: string) => {
+    const nextTime = normalizeTimeValue(nextValue)
+    const currentDate = key === "from" ? value?.from : value?.to
 
-      if (!nextTime || !currentDate) {
-        return
-      }
-
-      onValueChange?.({
-        from:
-          key === "from"
-            ? mergeDateWithTime(currentDate, nextTime)
-            : value?.from,
-        to:
-          key === "to"
-            ? mergeDateWithTime(currentDate, nextTime)
-            : value?.to,
-      })
+    if (!nextTime || !currentDate) {
+      return
     }
+
+    onValueChange?.({
+      from: key === "from" ? mergeDateWithTime(currentDate, nextTime) : value?.from,
+      to: key === "to" ? mergeDateWithTime(currentDate, nextTime) : value?.to,
+    })
+  }
 
   const handleClear = () => {
     onValueChange?.(undefined)
@@ -111,7 +136,7 @@ export function DateTimeRangePicker({
               <span className="truncate">{displayValue}</span>
             </span>
             <span className="shrink-0 text-xs text-muted-foreground">
-              {hasValue ? "Range" : "Empty"}
+              {hasValue ? copy.rangeState : copy.emptyState}
             </span>
           </Button>
         </PopoverTrigger>
@@ -122,37 +147,38 @@ export function DateTimeRangePicker({
           className={cn("w-auto p-0", popoverContentClassName)}
         >
           <div className="flex flex-col md:flex-row">
-            <Calendar
+            <DatePicker
               mode="range"
               selected={toCalendarRange(value)}
               onSelect={handleCalendarSelect}
               numberOfMonths={2}
               showOutsideDays={false}
+              yearRange={yearRange}
             />
 
             <div className="border-t p-4 md:w-72 md:border-t-0 md:border-l">
               <div className="mb-4 flex items-center gap-2 text-sm font-medium">
                 <Clock3 className="size-4" />
-                <span>Time Range</span>
+                <span>{copy.timeRangeTitle}</span>
               </div>
 
               <div className="space-y-3">
-                <TimeField
-                  label="Start"
+                <TimePicker
+                  label={copy.startLabel}
                   value={getTimeValue(value?.from, DEFAULT_START_TIME)}
                   disabled={!value?.from}
-                  onChange={handleTimeChange("from")}
+                  onValueChange={handleTimeChange("from")}
                 />
-                <TimeField
-                  label="End"
+                <TimePicker
+                  label={copy.endLabel}
                   value={getTimeValue(value?.to, DEFAULT_END_TIME)}
                   disabled={!value?.to}
-                  onChange={handleTimeChange("to")}
+                  onValueChange={handleTimeChange("to")}
                 />
               </div>
 
               <div className="mt-4 rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
-                Precision is set to seconds.
+                {copy.precisionHint}
               </div>
 
               {clearable ? (
@@ -164,7 +190,7 @@ export function DateTimeRangePicker({
                     disabled={!hasValue}
                     onClick={handleClear}
                   >
-                    Clear
+                    {copy.clearLabel}
                   </Button>
                 </div>
               ) : null}
@@ -173,32 +199,6 @@ export function DateTimeRangePicker({
         </PopoverContent>
       </Popover>
     </div>
-  )
-}
-
-interface TimeFieldProps {
-  label: string
-  value: string
-  disabled: boolean
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void
-}
-
-function TimeField({ label, value, disabled, onChange }: TimeFieldProps) {
-  return (
-    <label className="grid gap-1.5">
-      <span className="text-sm font-medium">{label}</span>
-      <Input
-        type="time"
-        step={1}
-        value={value}
-        disabled={disabled}
-        onChange={onChange}
-        className={cn(
-          "w-full",
-          disabled && "cursor-not-allowed opacity-60"
-        )}
-      />
-    </label>
   )
 }
 
@@ -263,8 +263,4 @@ function toCalendarRange(value: DateTimeRangeValue | undefined): CalendarRangeSe
     from: value?.from,
     to: value?.to,
   }
-}
-
-function pad(value: number) {
-  return String(value).padStart(2, "0")
 }

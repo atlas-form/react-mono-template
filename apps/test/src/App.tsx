@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react"
+import i18n from "@workspace/services/i18n"
 
 import {
   DisplayControls,
@@ -34,13 +35,13 @@ const LANGUAGE_STORAGE_KEY = "test-language"
 
 function getInitialLanguage(): AppLanguage {
   const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
-  if (stored === "en" || stored === "zh-CN") {
+  if (stored === "en" || stored === "zhCN") {
     return stored
   }
 
-  const docLang = document.documentElement.lang
-  if (docLang === "zh-CN") {
-    return "zh-CN"
+  const currentLanguage = i18n.language
+  if (currentLanguage === "zhCN" || currentLanguage?.startsWith("zh")) {
+    return "zhCN"
   }
 
   return "en"
@@ -50,16 +51,16 @@ export function App() {
   const [language, setLanguage] = useState<AppLanguage>(getInitialLanguage)
 
   useEffect(() => {
-    document.documentElement.lang = language
+    document.documentElement.lang = language === "zhCN" ? "zh-CN" : "en"
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
   }, [language])
 
   const title =
-    language === "zh-CN"
+    language === "zhCN"
       ? "UI Components Stable 组件测试页"
       : "UI Components Stable Test Page"
   const subtitle =
-    language === "zh-CN"
+    language === "zhCN"
       ? "顶部可切换语言与主题。已接入所有 stable 组件（排除 Sidebar）。"
       : "Language and theme selectors are available above. All stable components are included except Sidebar."
 

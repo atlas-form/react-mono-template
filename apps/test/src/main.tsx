@@ -2,6 +2,7 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
 import { startMocking } from "@workspace/mock"
+import "@workspace/services/i18n"
 import "@workspace/ui-components/styles.css"
 import "@workspace/ui-theme/styles.css"
 import { App } from "./App.tsx"
