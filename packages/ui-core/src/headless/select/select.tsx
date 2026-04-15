@@ -1,6 +1,7 @@
 import { Select as SelectPrimitive } from "radix-ui"
 
 import { DEFAULT_MODE } from "../../lib/component-mode"
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../../lib/icon-slots"
 import { cn } from "../../lib/utils"
 import {
   selectContentBaseClassName,
@@ -54,63 +55,12 @@ function resolveStyledClassName({
   return cn(defaultClassName, className)
 }
 
-function DefaultChevronDownIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 5l3 3 3-3" />
-    </svg>
-  )
-}
-
-function DefaultChevronUpIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 7l3-3 3 3" />
-    </svg>
-  )
-}
-
-function DefaultCheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2.5 6.5l2.2 2.2 4.8-5" />
-    </svg>
-  )
-}
-
 function DefaultSelectIndicator({ className }: { className?: string }) {
   return (
     <span className={className}>
       <span className="flex flex-col items-center justify-center leading-none">
-        <DefaultChevronUpIcon className="size-2.5" />
-        <DefaultChevronDownIcon className="size-2.5 -mt-[0.3125rem]" />
+        <ChevronUpIcon className="size-2.5" />
+        <ChevronDownIcon className="size-2.5 -mt-[0.3125rem]" />
       </span>
     </span>
   )
@@ -347,7 +297,7 @@ export function SelectItem({
         {!hideIndicator && (
           <span className={indicatorContainerClassName}>
             <SelectPrimitive.ItemIndicator>
-              {indicator ?? <DefaultCheckIcon className="pointer-events-none size-3.5" />}
+              {indicator ?? <CheckIcon className="pointer-events-none size-3.5" />}
             </SelectPrimitive.ItemIndicator>
           </span>
         )}
@@ -379,7 +329,7 @@ export function SelectItem({
           })}
         >
           <SelectPrimitive.ItemIndicator>
-            {indicator ?? <DefaultCheckIcon className="pointer-events-none size-3.5" />}
+            {indicator ?? <CheckIcon className="pointer-events-none size-3.5" />}
           </SelectPrimitive.ItemIndicator>
         </span>
       )}
@@ -426,7 +376,7 @@ export function SelectScrollUpButton({
     const rest = { ...props }
     return (
       <SelectPrimitive.ScrollUpButton className={className} {...rest}>
-        {children ?? <DefaultChevronUpIcon className="size-4" />}
+        {children ?? <ChevronUpIcon className="size-4" />}
       </SelectPrimitive.ScrollUpButton>
     )
   }
@@ -442,7 +392,7 @@ export function SelectScrollUpButton({
       })}
       {...props}
     >
-      {children ?? <DefaultChevronUpIcon className="size-4" />}
+      {children ?? <ChevronUpIcon className="size-4" />}
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -459,7 +409,7 @@ export function SelectScrollDownButton({
     const rest = { ...props }
     return (
       <SelectPrimitive.ScrollDownButton className={className} {...rest}>
-        {children ?? <DefaultChevronDownIcon className="size-4" />}
+        {children ?? <ChevronDownIcon className="size-4" />}
       </SelectPrimitive.ScrollDownButton>
     )
   }
@@ -475,7 +425,7 @@ export function SelectScrollDownButton({
       })}
       {...props}
     >
-      {children ?? <DefaultChevronDownIcon className="size-4" />}
+      {children ?? <ChevronDownIcon className="size-4" />}
     </SelectPrimitive.ScrollDownButton>
   )
 }

@@ -7,18 +7,7 @@ import { checkboxClassNames } from "./checkbox.styles"
 import type { CheckboxClassResolver, CheckboxProps } from "./checkbox.types"
 
 function DefaultCheckIcon() {
-  return (
-    <CheckIcon
-      viewBox="0 0 12 12"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2.5 6.5L4.8 8.8L9.5 3.6" />
-    </CheckIcon>
-  )
+  return <CheckIcon className="size-3.5" />
 }
 
 function resolveStyledCheckboxClassName({

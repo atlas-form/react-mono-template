@@ -8,6 +8,13 @@ import {
   useDayPicker,
 } from "react-day-picker"
 
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+} from "../../lib/icon-slots"
 import { cn } from "../../lib/utils"
 import { Button } from "../button"
 import {
@@ -386,40 +393,25 @@ function DefaultCalendarChevron({
   className?: string
   props: Record<string, unknown>
 }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn("size-4", className)}
-      {...props}
-    >
-      {orientation === "left-double" ? (
-        <>
-          <path d="m17 18-6-6 6-6" />
-          <path d="m11 18-6-6 6-6" />
-        </>
-      ) : orientation === "right-double" ? (
-        <>
-          <path d="m7 18 6-6-6-6" />
-          <path d="m13 18 6-6-6-6" />
-        </>
-      ) : (
-        <path
-          d={
-            orientation === "left"
-              ? "m15 18-6-6 6-6"
-              : orientation === "right"
-                ? "m9 18 6-6-6-6"
-                : "m6 9 6 6 6-6"
-          }
-        />
-      )}
-    </svg>
-  )
+  const iconProps = { className: cn("size-4", className), ...props }
+
+  if (orientation === "left-double") {
+    return <ChevronsLeftIcon {...iconProps} />
+  }
+
+  if (orientation === "right-double") {
+    return <ChevronsRightIcon {...iconProps} />
+  }
+
+  if (orientation === "left") {
+    return <ChevronLeftIcon {...iconProps} />
+  }
+
+  if (orientation === "right") {
+    return <ChevronRightIcon {...iconProps} />
+  }
+
+  return <ChevronDownIcon {...iconProps} />
 }
 
 export { Calendar, CalendarDayButton }

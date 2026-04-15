@@ -7,6 +7,8 @@ import {
   type SVGProps,
 } from "react"
 
+import { defaultIconSlots } from "./icons/default-icons"
+
 export type UiCoreIconSlotProps = SVGProps<SVGSVGElement>
 
 export type UiCoreIconSlotName =
@@ -15,6 +17,8 @@ export type UiCoreIconSlotName =
   | "chevron-up"
   | "chevron-right"
   | "chevron-left"
+  | "chevrons-left"
+  | "chevrons-right"
   | "more-horizontal"
   | "x"
   | "search"
@@ -55,23 +59,10 @@ function createSlot(name: UiCoreIconSlotName) {
       return <Comp {...props} />
     }
 
-    if (name === "panel-left") {
-      return (
-        <svg
-          aria-hidden="true"
-          focusable="false"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          {...props}
-        >
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M9 4v16" />
-        </svg>
-      )
+    const Fallback = defaultIconSlots[name]
+
+    if (Fallback) {
+      return <Fallback {...props} />
     }
 
     return <svg aria-hidden="true" focusable="false" {...props} />
@@ -83,6 +74,8 @@ export const ChevronDownIcon = createSlot("chevron-down")
 export const ChevronUpIcon = createSlot("chevron-up")
 export const ChevronRightIcon = createSlot("chevron-right")
 export const ChevronLeftIcon = createSlot("chevron-left")
+export const ChevronsLeftIcon = createSlot("chevrons-left")
+export const ChevronsRightIcon = createSlot("chevrons-right")
 export const MoreHorizontalIcon = createSlot("more-horizontal")
 export const XIcon = createSlot("x")
 export const SearchIcon = createSlot("search")
