@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { Time, type TimeValue } from "@workspace/ui-core/components/time"
 import i18n from "@workspace/services/i18n"
 import {
   Calendar,
@@ -11,6 +10,8 @@ import {
   DateRangePicker,
   MultipleDatePicker,
   SingleDatePicker,
+  Time,
+  type TimeValue,
 } from "@workspace/ui-components"
 import {
   DisplayControls,
@@ -63,7 +64,7 @@ export function App() {
       <header className="space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
-            <p className="text-sm uppercase tracking-[0.24em] text-muted-foreground">
+            <p className="text-sm tracking-[0.24em] text-muted-foreground uppercase">
               UI Components
             </p>
             <h1 className="text-3xl font-semibold tracking-tight">
@@ -75,10 +76,7 @@ export function App() {
             </p>
           </div>
 
-          <DisplayControls
-            language={language}
-            onLanguageChange={setLanguage}
-          />
+          <DisplayControls language={language} onLanguageChange={setLanguage} />
         </div>
       </header>
 
@@ -172,34 +170,84 @@ export function App() {
           <CardHeader>
             <CardTitle>UI Core Time</CardTitle>
             <CardDescription>
-              Headless 原语，测试页里加了一层 Apple 风格样式。
+              `ui-components` Time，分别展示 `sm / md / lg` 三种大小。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="relative mx-auto w-fit overflow-hidden rounded-[10px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
-                <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[14px] font-semibold leading-none text-[var(--accent-foreground)]">
-                  <span className="w-[62px]" />
-                  <span className="flex w-4 items-center justify-center">:</span>
-                  <span className="w-[62px]" />
-                  <span className="flex w-4 items-center justify-center">:</span>
-                  <span className="w-[62px]" />
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
+                  Small
+                </p>
+                <div className="relative mx-auto w-fit overflow-hidden rounded-[10px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
+                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[12px] leading-none font-semibold text-[var(--accent-foreground)]">
+                    <span className="w-[58px]" />
+                    <span className="flex w-3 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[58px]" />
+                    <span className="flex w-3 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[58px]" />
+                  </div>
+                  <Time
+                    size="sm"
+                    value={timeValue}
+                    onValueChange={setTimeValue}
+                    ariaLabel="Small time"
+                  />
                 </div>
-                <Time
-                  mode="headless"
-                  value={timeValue}
-                  onValueChange={setTimeValue}
-                  aria-label="Apple style time"
-                  hourLabel="Hour"
-                  minuteLabel="Minute"
-                  secondLabel="Second"
-                  className="flex items-center justify-center gap-0"
-                  columnClassName="relative h-[95px] w-[58px] overflow-y-auto border-r border-[color-mix(in_oklab,var(--foreground)_8%,transparent)] bg-transparent px-0 py-0 snap-y snap-mandatory overscroll-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden focus:outline-none last:border-r-0"
-                  itemClassName="pointer-events-none relative z-10 flex h-[19px] snap-center items-center justify-center text-[11px] font-semibold tracking-0 text-[var(--muted-foreground)] transition-all duration-150 aria-selected:scale-100 aria-selected:text-[var(--accent-foreground)] aria-selected:[text-shadow:0_1px_1px_rgba(0,0,0,0.08)] [&:not([aria-selected='true'])]:scale-[0.98]"
-                  selectionClassName="inset-x-0 h-[17px] rounded-[5px] bg-[var(--surface-active)] shadow-[inset_0_1px_0_color-mix(in_oklab,white_12%,transparent)]"
-                  itemHeight={19}
-                  visibleRows={5}
-                />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
+                  Medium
+                </p>
+                <div className="relative mx-auto w-fit overflow-hidden rounded-[10px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
+                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[14px] leading-none font-semibold text-[var(--accent-foreground)]">
+                    <span className="w-[64px]" />
+                    <span className="flex w-4 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[64px]" />
+                    <span className="flex w-4 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[64px]" />
+                  </div>
+                  <Time
+                    size="md"
+                    value={timeValue}
+                    onValueChange={setTimeValue}
+                    ariaLabel="Medium time"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
+                  Large
+                </p>
+                <div className="relative mx-auto w-fit overflow-hidden rounded-[12px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
+                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[16px] leading-none font-semibold text-[var(--accent-foreground)]">
+                    <span className="w-[72px]" />
+                    <span className="flex w-4 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[72px]" />
+                    <span className="flex w-4 items-center justify-center">
+                      :
+                    </span>
+                    <span className="w-[72px]" />
+                  </div>
+                  <Time
+                    size="lg"
+                    value={timeValue}
+                    onValueChange={setTimeValue}
+                    ariaLabel="Large time"
+                  />
+                </div>
               </div>
 
               <p className="text-sm text-muted-foreground">

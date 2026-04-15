@@ -255,6 +255,9 @@ export type {
 export { Calendar } from "./components/stable/calendar"
 export type { CalendarProps } from "./components/stable/calendar"
 
+export { Time } from "./components/stable/time"
+export type { TimeProps, TimeSize, TimeValue } from "./components/stable/time"
+
 export { SingleDatePicker } from "./components/stable/single-date-picker"
 export type { SingleDatePickerProps } from "./components/stable/single-date-picker"
 
