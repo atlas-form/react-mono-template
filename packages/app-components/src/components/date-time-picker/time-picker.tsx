@@ -1,5 +1,6 @@
 import { useId, useState, type ChangeEventHandler } from "react"
 import { Clock3, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -8,6 +9,7 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Time, type TimeValue } from "@workspace/ui-components/stable/time"
+import { normalizeLanguage } from "./shared"
 
 export interface TimePickerProps {
   label?: string
@@ -19,18 +21,35 @@ export interface TimePickerProps {
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
+const TIME_PICKER_COPY = {
+  en: {
+    placeholder: "Select time",
+    clearLabel: "Clear time",
+    ariaLabel: "Time",
+  },
+  zhCN: {
+    placeholder: "选择时间",
+    clearLabel: "清除时间",
+    ariaLabel: "时间",
+  },
+} as const
+
 export function TimePicker({
   label,
   value,
-  placeholder = "选择时间",
+  placeholder,
   disabled = false,
   className,
   onValueChange,
   onChange,
 }: TimePickerProps) {
+  const { i18n } = useTranslation()
+  const language = normalizeLanguage(i18n.language)
+  const copy = TIME_PICKER_COPY[language]
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value)
+  const resolvedPlaceholder = placeholder ?? copy.placeholder
 
   const emitValueChange = (nextValue: string | null) => {
     onValueChange?.(nextValue)
@@ -62,11 +81,11 @@ export function TimePicker({
           aria-controls={triggerId}
           disabled={disabled}
         >
-          <span>{value || placeholder}</span>
+          <span>{value || resolvedPlaceholder}</span>
           {hasValue ? (
             <span
               role="button"
-              aria-label="Clear time"
+              aria-label={copy.clearLabel}
               tabIndex={-1}
               className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
               onMouseDown={(event) => {
@@ -97,7 +116,7 @@ export function TimePicker({
             value={parseTimeValue(value ?? "00:00:00")}
             onValueChange={handleValueChange}
             showSeconds={true}
-            ariaLabel={label ?? "Time"}
+            ariaLabel={label ?? copy.ariaLabel}
             size="md"
             disabled={disabled}
           />

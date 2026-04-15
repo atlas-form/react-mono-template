@@ -1,5 +1,6 @@
 import { useId, useState } from "react"
 import { CalendarDays, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -8,6 +9,7 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
+import { normalizeLanguage } from "./shared"
 
 type CalendarSingleValue = Date | undefined
 
@@ -20,6 +22,17 @@ export interface DatePickerProps {
   calendarProps?: Omit<CalendarProps, "mode" | "value" | "onValueChange">
 }
 
+const DATE_PICKER_COPY = {
+  en: {
+    placeholder: "Select date",
+    clearLabel: "Clear date",
+  },
+  zhCN: {
+    placeholder: "选择日期",
+    clearLabel: "清除日期",
+  },
+} as const
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
@@ -31,14 +44,18 @@ function formatDate(value: Date) {
 export function DatePicker({
   value,
   onValueChange,
-  placeholder = "选择日期",
+  placeholder,
   disabled = false,
   className,
   calendarProps,
 }: DatePickerProps) {
+  const { i18n } = useTranslation()
+  const language = normalizeLanguage(i18n.language)
+  const copy = DATE_PICKER_COPY[language]
   const [open, setOpen] = useState(false)
   const triggerId = useId()
-  const displayValue = value ? formatDate(value) : placeholder
+  const resolvedPlaceholder = placeholder ?? copy.placeholder
+  const displayValue = value ? formatDate(value) : resolvedPlaceholder
   const hasValue = Boolean(value)
 
   return (
@@ -61,7 +78,7 @@ export function DatePicker({
           {hasValue ? (
             <span
               role="button"
-              aria-label="Clear date"
+              aria-label={copy.clearLabel}
               tabIndex={-1}
               className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
               onMouseDown={(event) => {
@@ -94,7 +111,7 @@ export function DatePicker({
             onValueChange?.(nextValue instanceof Date ? nextValue : undefined)
             setOpen(false)
           }}
-          captionMode={calendarProps?.captionMode ?? "dropdown"}
+          captionMode={calendarProps?.captionMode ?? "label"}
           {...calendarProps}
         />
       </PopoverContent>

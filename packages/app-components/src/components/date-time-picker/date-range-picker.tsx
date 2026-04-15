@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from "react"
 import { CalendarRange, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -8,6 +9,7 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
+import { normalizeLanguage } from "./shared"
 
 export interface DateRangeValue {
   from: Date | undefined
@@ -32,6 +34,19 @@ export interface DateRangePickerProps {
   >
 }
 
+const DATE_RANGE_PICKER_COPY = {
+  en: {
+    placeholder: "Select date range",
+    endDate: "End date",
+    clearLabel: "Clear date range",
+  },
+  zhCN: {
+    placeholder: "选择日期范围",
+    endDate: "结束日期",
+    clearLabel: "清除日期范围",
+  },
+} as const
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
@@ -43,26 +58,30 @@ function formatDate(value: Date) {
 export function DateRangePicker({
   value,
   onValueChange,
-  placeholder = "选择日期范围",
+  placeholder,
   disabled = false,
   className,
   calendarProps,
 }: DateRangePickerProps) {
+  const { i18n } = useTranslation()
+  const language = normalizeLanguage(i18n.language)
+  const copy = DATE_RANGE_PICKER_COPY[language]
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value?.from || value?.to)
+  const resolvedPlaceholder = placeholder ?? copy.placeholder
 
   const label = useMemo(() => {
     if (!value?.from) {
-      return placeholder
+      return resolvedPlaceholder
     }
 
     if (!value.to) {
-      return `${formatDate(value.from)} - 结束日期`
+      return `${formatDate(value.from)} - ${copy.endDate}`
     }
 
     return `${formatDate(value.from)} - ${formatDate(value.to)}`
-  }, [placeholder, value])
+  }, [copy.endDate, resolvedPlaceholder, value])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -84,7 +103,7 @@ export function DateRangePicker({
           {hasValue ? (
             <span
               role="button"
-              aria-label="Clear date range"
+              aria-label={copy.clearLabel}
               tabIndex={-1}
               className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
               onMouseDown={(event) => {

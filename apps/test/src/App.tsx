@@ -7,11 +7,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Time,
-  type TimeValue,
 } from "@workspace/ui-components"
 import {
   DatePicker,
+  DateTimePicker,
   DateRangePicker,
   MultipleDatePicker,
   TimePicker,
@@ -41,19 +40,11 @@ function getInitialLanguage(): AppLanguage {
   return "en"
 }
 
-function formatTimePickerValue(value: TimeValue) {
-  return `${value.hour}:${value.minute}:${value.second ?? "00"}`
-}
-
 export function App() {
   const [language, setLanguage] = useState<AppLanguage>(getInitialLanguage)
   const [singleDate, setSingleDate] = useState<Date>()
   const [multipleDates, setMultipleDates] = useState<Date[] | undefined>()
-  const [timeValue, setTimeValue] = useState<TimeValue>({
-    hour: "08",
-    minute: "33",
-    second: "03",
-  })
+  const [dateTimeValue, setDateTimeValue] = useState<Date | null>(new Date())
   const [timePickerValue, setTimePickerValue] = useState<string | null>(
     "08:33:03"
   )
@@ -198,94 +189,23 @@ export function App() {
 
         <Card>
           <CardHeader>
-            <CardTitle>UI Core Time</CardTitle>
+            <CardTitle>DateTimePicker</CardTitle>
             <CardDescription>
-              `ui-components` Time，分别展示 `sm / md / lg` 三种大小。
+              使用 app-components 的日期时间选择器。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
-                  Small
-                </p>
-                <div className="relative mx-auto w-fit overflow-hidden rounded-[10px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
-                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[12px] leading-none font-semibold text-[var(--accent-foreground)]">
-                    <span className="w-[58px]" />
-                    <span className="flex w-3 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[58px]" />
-                    <span className="flex w-3 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[58px]" />
-                  </div>
-                  <Time
-                    size="sm"
-                    value={timeValue}
-                    onValueChange={setTimeValue}
-                    ariaLabel="Small time"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
-                  Medium
-                </p>
-                <div className="relative mx-auto w-fit overflow-hidden rounded-[10px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
-                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[14px] leading-none font-semibold text-[var(--accent-foreground)]">
-                    <span className="w-[64px]" />
-                    <span className="flex w-4 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[64px]" />
-                    <span className="flex w-4 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[64px]" />
-                  </div>
-                  <Time
-                    size="md"
-                    value={timeValue}
-                    onValueChange={setTimeValue}
-                    ariaLabel="Medium time"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
-                  Large
-                </p>
-                <div className="relative mx-auto w-fit overflow-hidden rounded-[12px] bg-[color-mix(in_oklab,var(--surface)_89%,var(--foreground)_11%)] p-0 shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
-                  <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center text-[16px] leading-none font-semibold text-[var(--accent-foreground)]">
-                    <span className="w-[72px]" />
-                    <span className="flex w-4 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[72px]" />
-                    <span className="flex w-4 items-center justify-center">
-                      :
-                    </span>
-                    <span className="w-[72px]" />
-                  </div>
-                  <Time
-                    size="lg"
-                    value={timeValue}
-                    onValueChange={setTimeValue}
-                    ariaLabel="Large time"
-                  />
-                </div>
-              </div>
-
+            <div className="space-y-3">
+              <DateTimePicker
+                value={dateTimeValue}
+                onValueChange={setDateTimeValue}
+                calendarProps={{ locale: language }}
+              />
               <p className="text-sm text-muted-foreground">
                 当前值：
-                {` ${timeValue.hour}:${timeValue.minute}:${timeValue.second ?? "00"}`}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                交互规则：只能上下滚动，中心高亮区域为当前选中值。
+                {dateTimeValue
+                  ? ` ${dateTimeValue.toLocaleString(dateLocale)}`
+                  : " null"}
               </p>
             </div>
           </CardContent>

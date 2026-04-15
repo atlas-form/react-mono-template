@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from "react"
 import { CalendarDays, Clock3, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -9,7 +10,7 @@ import {
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
 import { Time, type TimeValue } from "@workspace/ui-components/stable/time"
-import { pad } from "./shared"
+import { normalizeLanguage, pad } from "./shared"
 
 export interface DateTimePickerProps {
   value?: Date | null
@@ -26,6 +27,42 @@ const DEFAULT_TIME_VALUE: TimeValue = {
   second: "00",
 }
 
+const DATE_TIME_PICKER_PRESETS = [
+  { key: "now" },
+  { key: "today" },
+  { key: "yesterday" },
+  { key: "weekStart" },
+  { key: "monthStart" },
+  { key: "yearStart" },
+] as const
+
+const DATE_TIME_PICKER_COPY = {
+  en: {
+    placeholder: "Select date time",
+    clearLabel: "Clear date time",
+    timeTitle: "Time",
+    timeAria: "Date time picker time",
+    now: "Now",
+    today: "Today",
+    yesterday: "Yesterday",
+    weekStart: "Week Start",
+    monthStart: "Month Start",
+    yearStart: "Year Start",
+  },
+  zhCN: {
+    placeholder: "选择日期时间",
+    clearLabel: "清除日期时间",
+    timeTitle: "时间",
+    timeAria: "日期时间选择器时间",
+    now: "此刻",
+    today: "今天",
+    yesterday: "昨天",
+    weekStart: "本周",
+    monthStart: "月初",
+    yearStart: "年初",
+  },
+} as const
+
 function formatDateTime(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
@@ -37,15 +74,19 @@ function formatDateTime(value: Date) {
 export function DateTimePicker({
   value,
   onValueChange,
-  placeholder = "选择日期时间",
+  placeholder,
   disabled = false,
   className,
   calendarProps,
 }: DateTimePickerProps) {
+  const { i18n } = useTranslation()
+  const language = normalizeLanguage(i18n.language)
+  const copy = DATE_TIME_PICKER_COPY[language]
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value)
-  const displayValue = hasValue && value ? formatDateTime(value) : placeholder
+  const resolvedPlaceholder = placeholder ?? copy.placeholder
+  const displayValue = hasValue && value ? formatDateTime(value) : resolvedPlaceholder
   const timeValue = useMemo(
     () => (value ? toTimeValue(value) : DEFAULT_TIME_VALUE),
     [value]
@@ -79,6 +120,40 @@ export function DateTimePicker({
     onValueChange?.(baseDate)
   }
 
+  const setPresetDateTime = (
+    preset: (typeof DATE_TIME_PICKER_PRESETS)[number]["key"]
+  ) => {
+    const nextValue = new Date()
+
+    if (preset === "today") {
+      nextValue.setHours(0, 0, 0, 0)
+    }
+
+    if (preset === "yesterday") {
+      nextValue.setDate(nextValue.getDate() - 1)
+      nextValue.setHours(0, 0, 0, 0)
+    }
+
+    if (preset === "weekStart") {
+      const day = nextValue.getDay()
+      const diff = day === 0 ? 6 : day - 1
+      nextValue.setDate(nextValue.getDate() - diff)
+      nextValue.setHours(0, 0, 0, 0)
+    }
+
+    if (preset === "monthStart") {
+      nextValue.setDate(1)
+      nextValue.setHours(0, 0, 0, 0)
+    }
+
+    if (preset === "yearStart") {
+      nextValue.setMonth(0, 1)
+      nextValue.setHours(0, 0, 0, 0)
+    }
+
+    onValueChange?.(nextValue)
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -99,7 +174,7 @@ export function DateTimePicker({
           {hasValue ? (
             <span
               role="button"
-              aria-label="Clear date time"
+              aria-label={copy.clearLabel}
               tabIndex={-1}
               className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
               onMouseDown={(event) => {
@@ -128,28 +203,44 @@ export function DateTimePicker({
         align="start"
         className="w-auto p-0"
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col md:flex-row">
           <Calendar
             mode="single"
             value={value ?? undefined}
             onValueChange={handleDateChange}
-            captionMode={calendarProps?.captionMode ?? "dropdown"}
+            captionMode={calendarProps?.captionMode ?? "label"}
             {...calendarProps}
           />
-          <div className="border-t p-3">
+
+          <div className="border-t p-3 md:w-[240px] md:border-t-0 md:border-l">
             <div className="mb-2 flex items-center gap-2 text-sm font-medium">
               <Clock3 className="size-4" />
-              <span>Time</span>
+              <span>{copy.timeTitle}</span>
             </div>
             <div className="overflow-hidden rounded-[10px] border bg-background">
               <Time
                 value={timeValue}
                 onValueChange={handleTimeChange}
                 showSeconds={true}
-                ariaLabel="Date time picker time"
+                ariaLabel={copy.timeAria}
                 size="md"
                 disabled={disabled}
               />
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {DATE_TIME_PICKER_PRESETS.map((preset) => (
+                <Button
+                  key={preset.key}
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={disabled}
+                  onClick={() => setPresetDateTime(preset.key)}
+                >
+                  {copy[preset.key]}
+                </Button>
+              ))}
             </div>
           </div>
         </div>
