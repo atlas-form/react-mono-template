@@ -2,11 +2,20 @@ import * as React from "react"
 import {
   DayPicker,
   type DayButton,
+  type ClassNames,
+  type CustomComponents,
   type Locale,
 } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
 import { Button } from "../button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../select"
 import {
   calendarClassNames,
   getCalendarClassNames,
@@ -87,6 +96,7 @@ function Calendar({
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
+        Dropdown: (props) => <CalendarDropdown {...props} />,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -100,6 +110,86 @@ function Calendar({
       }}
       {...props}
     />
+  )
+}
+
+type CalendarDropdownOption = {
+  value: number
+  label: string
+  disabled: boolean
+}
+
+type CalendarDropdownProps = Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "onChange"
+> & {
+  classNames: ClassNames
+  components: CustomComponents
+  options?: CalendarDropdownOption[]
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>
+}
+
+function CalendarDropdown({
+  className,
+  classNames,
+  options,
+  value,
+  disabled,
+  onChange,
+  "aria-label": ariaLabel,
+}: CalendarDropdownProps) {
+  const selectedValue =
+    value === undefined ? undefined : String(value)
+
+  const selectedOption = options?.find(
+    (option) => String(option.value) === selectedValue
+  )
+
+  return (
+    <span
+      data-disabled={disabled}
+      className={classNames.dropdown_root}
+    >
+      <Select
+        value={selectedValue}
+        disabled={disabled}
+        onValueChange={(nextValue) => {
+          onChange?.({
+            target: { value: nextValue },
+            currentTarget: { value: nextValue },
+          } as React.ChangeEvent<HTMLSelectElement>)
+        }}
+      >
+        <SelectTrigger
+          aria-label={ariaLabel}
+          className={cn(
+            calendarClassNames.captionLabelDropdown,
+            "h-auto min-w-0 gap-1 border-0 bg-transparent px-2 py-1 shadow-none hover:bg-[var(--surface-hover)] focus-visible:border-ring",
+            className
+          )}
+          indicator={
+            <DefaultCalendarChevron
+              orientation="down"
+              className={classNames.chevron}
+              props={{}}
+            />
+          }
+        >
+          <SelectValue>{selectedOption?.label}</SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {options?.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={String(option.value)}
+              disabled={option.disabled}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </span>
   )
 }
 
