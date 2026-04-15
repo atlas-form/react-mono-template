@@ -79,9 +79,9 @@ export function DefaultChevronsRightIcon(props: UiCoreIconSlotProps) {
 export function DefaultMoreHorizontalIcon(props: UiCoreIconSlotProps) {
   return (
     <BaseIcon {...props}>
-      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-      <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none" />
-      <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+      <circle cx="18.5" cy="12" r="2" fill="currentColor" stroke="none" />
+      <circle cx="5.5" cy="12" r="2" fill="currentColor" stroke="none" />
     </BaseIcon>
   )
 }

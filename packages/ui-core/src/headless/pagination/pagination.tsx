@@ -5,6 +5,8 @@ import { Button } from "../button"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
   MoreHorizontalIcon,
 } from "../../lib/icon-slots"
 import { paginationClassNames } from "./pagination.styles"
@@ -40,13 +42,17 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean
+  disabled?: boolean
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
   React.ComponentProps<"a">
 
 function PaginationLink({
   className,
   isActive,
+  disabled = false,
   size = "icon",
+  onClick,
+  tabIndex,
   ...props
 }: PaginationLinkProps) {
   return (
@@ -58,8 +64,18 @@ function PaginationLink({
     >
       <a
         aria-current={isActive ? "page" : undefined}
+        aria-disabled={disabled || undefined}
         data-slot="pagination-link"
         data-active={isActive}
+        onClick={(event) => {
+          if (disabled) {
+            event.preventDefault()
+            return
+          }
+
+          onClick?.(event)
+        }}
+        tabIndex={disabled ? -1 : tabIndex}
         {...props}
       />
     </Button>
@@ -83,6 +99,23 @@ function PaginationPrevious({
   )
 }
 
+function PaginationPreviousMore({
+  className,
+  text: _text = "Previous pages",
+  ...props
+}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  return (
+    <PaginationLink
+      aria-label="Go back several pages"
+      size="icon"
+      className={cn(className)}
+      {...props}
+    >
+      <ChevronsLeftIcon data-icon="inline-start" />
+    </PaginationLink>
+  )
+}
+
 function PaginationNext({
   className,
   text: _text = "Next",
@@ -96,6 +129,23 @@ function PaginationNext({
       {...props}
     >
       <ChevronRightIcon data-icon="inline-end" />
+    </PaginationLink>
+  )
+}
+
+function PaginationNextMore({
+  className,
+  text: _text = "Next pages",
+  ...props
+}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  return (
+    <PaginationLink
+      aria-label="Go forward several pages"
+      size="icon"
+      className={cn(className)}
+      {...props}
+    >
+      <ChevronsRightIcon data-icon="inline-end" />
     </PaginationLink>
   )
 }
@@ -123,6 +173,8 @@ export {
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
+  PaginationNextMore,
   PaginationNext,
+  PaginationPreviousMore,
   PaginationPrevious,
 }
