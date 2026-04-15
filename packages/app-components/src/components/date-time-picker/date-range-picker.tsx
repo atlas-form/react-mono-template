@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from "react"
+import { CalendarRange, X } from "lucide-react"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -33,6 +34,7 @@ export interface DateRangePickerProps {
 
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).format(value)
@@ -48,6 +50,7 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
+  const hasValue = Boolean(value?.from || value?.to)
 
   const label = useMemo(() => {
     if (!value?.from) {
@@ -68,8 +71,8 @@ export function DateRangePicker({
           type="button"
           variant="outline"
           className={cn(
-            "w-full justify-between text-left font-normal",
-            !value?.from && "text-muted-foreground",
+            "min-w-[220px] w-fit justify-between gap-2 text-left font-normal",
+            !hasValue && "text-muted-foreground",
             className
           )}
           aria-haspopup="dialog"
@@ -78,7 +81,28 @@ export function DateRangePicker({
           disabled={disabled}
         >
           <span>{label}</span>
-          <span className="text-xs text-muted-foreground">Range</span>
+          {hasValue ? (
+            <span
+              role="button"
+              aria-label="Clear date range"
+              tabIndex={-1}
+              className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
+              onMouseDown={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+              }}
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                onValueChange?.(undefined)
+                setOpen(false)
+              }}
+            >
+              <X className="size-4" />
+            </span>
+          ) : (
+            <CalendarRange className="size-4 shrink-0 text-muted-foreground" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -96,7 +120,14 @@ export function DateRangePicker({
               : undefined
 
             onValueChange?.(resolvedValue)
-            if (resolvedValue?.from && resolvedValue.to) {
+
+            const isCompletingExistingRange =
+              Boolean(value?.from) &&
+              !value?.to &&
+              Boolean(resolvedValue?.from) &&
+              Boolean(resolvedValue?.to)
+
+            if (isCompletingExistingRange) {
               setOpen(false)
             }
           }}

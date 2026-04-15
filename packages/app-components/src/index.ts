@@ -15,11 +15,13 @@ export type {
   SidebarSubEntry,
 } from "./components/sidebar"
 export { DatePicker } from "./components/date-time-picker"
+export { DateTimePicker } from "./components/date-time-picker"
 export { DateRangePicker } from "./components/date-time-picker"
 export { MultipleDatePicker } from "./components/date-time-picker"
 export { TimePicker } from "./components/date-time-picker"
 export type {
   DatePickerProps,
+  DateTimePickerProps,
   DateRangePickerProps,
   DateRangeValue,
 } from "./components/date-time-picker"

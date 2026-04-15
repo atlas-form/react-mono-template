@@ -1,4 +1,5 @@
 import { useId, useState } from "react"
+import { CalendarDays, X } from "lucide-react"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -37,8 +38,8 @@ export function DatePicker({
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
-
-  const label = value ? formatDate(value) : placeholder
+  const displayValue = value ? formatDate(value) : placeholder
+  const hasValue = Boolean(value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,8 +48,8 @@ export function DatePicker({
           type="button"
           variant="outline"
           className={cn(
-            "w-full justify-between text-left font-normal",
-            !value && "text-muted-foreground",
+            "min-w-[140px] w-fit justify-between gap-2 text-left font-normal",
+            !hasValue && "text-muted-foreground",
             className
           )}
           aria-haspopup="dialog"
@@ -56,8 +57,29 @@ export function DatePicker({
           aria-controls={triggerId}
           disabled={disabled}
         >
-          <span>{label}</span>
-          <span className="text-xs text-muted-foreground">Date</span>
+          <span>{displayValue}</span>
+          {hasValue ? (
+            <span
+              role="button"
+              aria-label="Clear date"
+              tabIndex={-1}
+              className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
+              onMouseDown={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+              }}
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                onValueChange?.(undefined)
+                setOpen(false)
+              }}
+            >
+              <X className="size-4" />
+            </span>
+          ) : (
+            <CalendarDays className="size-4 shrink-0 text-muted-foreground" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
