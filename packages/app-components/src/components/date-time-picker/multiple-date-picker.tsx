@@ -1,4 +1,4 @@
-import { useId, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -6,39 +6,55 @@ import {
   PopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
-import { Calendar, type CalendarProps } from "../calendar"
+import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
 
-type CalendarSingleValue = Date | undefined
+type CalendarMultipleValue = Date[] | undefined
 
-export interface SingleDatePickerProps {
-  value?: CalendarSingleValue
-  onValueChange?: (value: CalendarSingleValue) => void
+export interface MultipleDatePickerProps {
+  value?: CalendarMultipleValue
+  onValueChange?: (value: CalendarMultipleValue) => void
   placeholder?: string
   disabled?: boolean
   className?: string
-  calendarProps?: Omit<CalendarProps, "mode" | "value" | "onValueChange">
+  calendarProps?: Omit<
+    CalendarProps,
+    "mode" | "value" | "onValueChange" | "numberOfMonths"
+  >
 }
 
-function formatDate(value: Date) {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(value)
+function formatDateList(values: Date[]) {
+  return values
+    .map((value) =>
+      new Intl.DateTimeFormat("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+      }).format(value)
+    )
+    .join(", ")
 }
 
-export function SingleDatePicker({
+export function MultipleDatePicker({
   value,
   onValueChange,
-  placeholder = "选择日期",
+  placeholder = "选择多个日期",
   disabled = false,
   className,
   calendarProps,
-}: SingleDatePickerProps) {
+}: MultipleDatePickerProps) {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
 
-  const label = value ? formatDate(value) : placeholder
+  const label = useMemo(() => {
+    if (!value?.length) {
+      return placeholder
+    }
+
+    if (value.length <= 3) {
+      return formatDateList(value)
+    }
+
+    return `已选择 ${value.length} 天`
+  }, [placeholder, value])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +64,7 @@ export function SingleDatePicker({
           variant="outline"
           className={cn(
             "w-full justify-between text-left font-normal",
-            !value && "text-muted-foreground",
+            !value?.length && "text-muted-foreground",
             className
           )}
           aria-haspopup="dialog"
@@ -57,7 +73,7 @@ export function SingleDatePicker({
           disabled={disabled}
         >
           <span>{label}</span>
-          <span className="text-xs text-muted-foreground">Single</span>
+          <span className="text-xs text-muted-foreground">Multi</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -66,11 +82,10 @@ export function SingleDatePicker({
         className="w-auto p-0"
       >
         <Calendar
-          mode="single"
+          mode="multiple"
           value={value}
           onValueChange={(nextValue) => {
-            onValueChange?.(nextValue instanceof Date ? nextValue : undefined)
-            setOpen(false)
+            onValueChange?.(Array.isArray(nextValue) ? nextValue : undefined)
           }}
           {...calendarProps}
         />

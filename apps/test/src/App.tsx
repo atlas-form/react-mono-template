@@ -7,12 +7,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  DateRangePicker,
-  MultipleDatePicker,
-  SingleDatePicker,
   Time,
   type TimeValue,
 } from "@workspace/ui-components"
+import {
+  DatePicker,
+  DateRangePicker,
+  MultipleDatePicker,
+} from "@workspace/app-components"
 import {
   DisplayControls,
   type AppLanguage,
@@ -100,12 +102,12 @@ export function App() {
 
         <Card>
           <CardHeader>
-            <CardTitle>SingleDatePicker</CardTitle>
+            <CardTitle>DatePicker</CardTitle>
             <CardDescription>点击触发弹层，选择单个日期。</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <SingleDatePicker
+              <DatePicker
                 value={singleDate}
                 onValueChange={setSingleDate}
                 calendarProps={{ locale: language }}

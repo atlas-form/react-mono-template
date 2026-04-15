@@ -1,8 +1,4 @@
-import { useCallback, useState } from "react"
-import {
-  DateTimeRangePicker,
-  type DateTimeRangeValue,
-} from "@workspace/app-components"
+import { useCallback } from "react"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import {
   Card,
@@ -36,8 +32,6 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
 }))
 
 export default function DataTablePage() {
-  const [range, setRange] = useState<DateTimeRangeValue | undefined>(undefined)
-
   const fetchData = useCallback(
     async ({
       page,
@@ -50,27 +44,15 @@ export default function DataTablePage() {
     }): Promise<DataTableFetchResult<CustomerRow>> => {
       await new Promise((resolve) => setTimeout(resolve, 120))
 
-      const filteredRows = customerRows.filter((row) => {
-        if (range?.from && row.createdAt < range.from) {
-          return false
-        }
-
-        if (range?.to && row.createdAt > range.to) {
-          return false
-        }
-
-        return true
-      })
-
       const start = (page - 1) * pageSize
       const end = start + pageSize
 
       return {
-        items: filteredRows.slice(start, end),
-        total: filteredRows.length,
+        items: customerRows.slice(start, end),
+        total: customerRows.length,
       }
     },
-    [range]
+    []
   )
 
   return (
@@ -87,16 +69,6 @@ export default function DataTablePage() {
 
       <Card>
         <CardContent>
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <DateTimeRangePicker
-              value={range}
-              onValueChange={setRange}
-              placeholder="Filter by created time"
-              className="w-full sm:w-auto sm:min-w-90"
-              triggerClassName="h-9"
-            />
-          </div>
-
           <DataTable<CustomerRow>
             caption="Customer directory"
             columns={[

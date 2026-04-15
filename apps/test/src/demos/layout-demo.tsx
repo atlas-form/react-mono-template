@@ -1,9 +1,5 @@
 import { useState } from "react"
 
-import {
-  DateTimeRangePicker,
-  type DateTimeRangeValue,
-} from "@workspace/app-components"
 import { AspectRatio } from "@workspace/ui-components/stable/aspect-ratio"
 import { Calendar } from "@workspace/ui-components/stable/calendar"
 import { Carousel } from "@workspace/ui-components/stable/carousel"
@@ -20,14 +16,10 @@ export function LayoutDemo() {
     new Date(new Date().setDate(new Date().getDate() + 2)),
   ])
   const [open, setOpen] = useState(false)
-  const [range, setRange] = useState<DateTimeRangeValue>({
-    from: new Date(new Date().setHours(9, 0, 0, 0)),
-    to: new Date(new Date().setHours(18, 30, 45, 0)),
-  })
 
   return (
     <>
-      <DemoSection title="Collapsible / Calendar / Scroll Area / Date Time Range">
+      <DemoSection title="Collapsible / Calendar / Scroll Area">
         <div className="grid gap-4 md:grid-cols-4">
           <Collapsible
             open={open}
@@ -58,10 +50,6 @@ export function LayoutDemo() {
             height={220}
             items={Array.from({ length: 12 }, (_, i) => `Log event #${i + 1}`)}
           />
-        </div>
-
-        <div className="mt-4 max-w-xl">
-          <DateTimeRangePicker value={range} onValueChange={(next) => setRange(next ?? {})} />
         </div>
       </DemoSection>
 

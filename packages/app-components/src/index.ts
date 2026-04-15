@@ -14,23 +14,17 @@ export type {
   SidebarSection,
   SidebarSubEntry,
 } from "./components/sidebar"
-export { DateTimeRangePicker } from "./components/date-time-range-picker"
-export { DatePicker } from "./components/date-time-range-picker"
-export { MonthPicker } from "./components/date-time-range-picker"
-export { TimePicker } from "./components/date-time-range-picker"
-export { YearPicker } from "./components/date-time-range-picker"
+export { DatePicker } from "./components/date-time-picker"
+export { DateRangePicker } from "./components/date-time-picker"
+export { MultipleDatePicker } from "./components/date-time-picker"
+export { TimePicker } from "./components/date-time-picker"
 export type {
   DatePickerProps,
-  DateTimeRangePickerProps,
-  DateTimeRangeValue,
-} from "./components/date-time-range-picker"
+  DateRangePickerProps,
+  DateRangeValue,
+} from "./components/date-time-picker"
 export type {
-  MonthPickerOption,
-  MonthPickerProps,
-} from "./components/date-time-range-picker"
-export type { TimePickerProps } from "./components/date-time-range-picker"
-export type {
-  YearPickerOption,
-  YearPickerProps,
-} from "./components/date-time-range-picker"
-export type { YearRange } from "./components/date-time-range-picker"
+  MultipleDatePickerProps,
+} from "./components/date-time-picker"
+export type { TimePickerProps } from "./components/date-time-picker"
+export type { YearRange } from "./components/date-time-picker"

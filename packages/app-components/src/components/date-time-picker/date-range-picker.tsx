@@ -6,13 +6,22 @@ import {
   PopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
-import { Calendar, type CalendarProps } from "../calendar"
+import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
 
-type CalendarMultipleValue = Date[] | undefined
+export interface DateRangeValue {
+  from: Date | undefined
+  to?: Date | undefined
+}
 
-export interface MultipleDatePickerProps {
-  value?: CalendarMultipleValue
-  onValueChange?: (value: CalendarMultipleValue) => void
+function isDateRangeValue(
+  value: unknown
+): value is DateRangeValue {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+export interface DateRangePickerProps {
+  value?: DateRangeValue
+  onValueChange?: (value: DateRangeValue | undefined) => void
   placeholder?: string
   disabled?: boolean
   className?: string
@@ -22,38 +31,34 @@ export interface MultipleDatePickerProps {
   >
 }
 
-function formatDateList(values: Date[]) {
-  return values
-    .map((value) =>
-      new Intl.DateTimeFormat("zh-CN", {
-        month: "2-digit",
-        day: "2-digit",
-      }).format(value)
-    )
-    .join(", ")
+function formatDate(value: Date) {
+  return new Intl.DateTimeFormat("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value)
 }
 
-export function MultipleDatePicker({
+export function DateRangePicker({
   value,
   onValueChange,
-  placeholder = "选择多个日期",
+  placeholder = "选择日期范围",
   disabled = false,
   className,
   calendarProps,
-}: MultipleDatePickerProps) {
+}: DateRangePickerProps) {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
 
   const label = useMemo(() => {
-    if (!value?.length) {
+    if (!value?.from) {
       return placeholder
     }
 
-    if (value.length <= 3) {
-      return formatDateList(value)
+    if (!value.to) {
+      return `${formatDate(value.from)} - 结束日期`
     }
 
-    return `已选择 ${value.length} 天`
+    return `${formatDate(value.from)} - ${formatDate(value.to)}`
   }, [placeholder, value])
 
   return (
@@ -64,7 +69,7 @@ export function MultipleDatePicker({
           variant="outline"
           className={cn(
             "w-full justify-between text-left font-normal",
-            !value?.length && "text-muted-foreground",
+            !value?.from && "text-muted-foreground",
             className
           )}
           aria-haspopup="dialog"
@@ -73,7 +78,7 @@ export function MultipleDatePicker({
           disabled={disabled}
         >
           <span>{label}</span>
-          <span className="text-xs text-muted-foreground">Multi</span>
+          <span className="text-xs text-muted-foreground">Range</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -82,10 +87,18 @@ export function MultipleDatePicker({
         className="w-auto p-0"
       >
         <Calendar
-          mode="multiple"
+          mode="range"
+          numberOfMonths={2}
           value={value}
           onValueChange={(nextValue) => {
-            onValueChange?.(Array.isArray(nextValue) ? nextValue : undefined)
+            const resolvedValue = isDateRangeValue(nextValue)
+              ? nextValue
+              : undefined
+
+            onValueChange?.(resolvedValue)
+            if (resolvedValue?.from && resolvedValue.to) {
+              setOpen(false)
+            }
           }}
           {...calendarProps}
         />
