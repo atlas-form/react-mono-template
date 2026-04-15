@@ -9,14 +9,14 @@ type DayPickerProps = ComponentProps<typeof DayPicker>
 export const calendarClassNames = {
   root: "w-fit",
   container:
-    "group/calendar bg-background p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
+    "group/calendar bg-background p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] [--month-width:calc(var(--cell-size)*7+0.5rem)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
   months: "relative flex flex-col gap-4 md:flex-row",
-  month: "flex w-full flex-col gap-4",
+  month: "flex w-(--month-width) min-w-(--month-width) flex-col gap-4",
   nav: "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
   navButton:
     "size-(--cell-size) bg-transparent p-0 select-none hover:bg-[var(--surface-hover)] aria-expanded:bg-transparent aria-disabled:opacity-50",
   monthCaption:
-    "flex h-(--cell-size) w-full items-center justify-center px-[calc(var(--cell-size)*2+0.25rem)]",
+    "flex h-(--cell-size) w-full min-w-(--month-width) items-center justify-center px-[calc(var(--cell-size)*2+0.25rem)]",
   dropdowns:
     "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
   dropdownRoot: "relative rounded-(--cell-radius)",

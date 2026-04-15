@@ -30,6 +30,19 @@ import {
   getCalendarRootClassName,
 } from "./calendar.styles"
 
+function formatCalendarMonth(
+  date: Date,
+  localeCode: string | undefined,
+  options?: { includeYear?: boolean }
+) {
+  const isEnglish = localeCode?.startsWith("en") ?? false
+
+  return date.toLocaleString(localeCode, {
+    month: isEnglish ? "short" : "long",
+    ...(options?.includeYear ? { year: "numeric" } : {}),
+  })
+}
+
 function Calendar({
   className,
   classNames,
@@ -57,7 +70,11 @@ function Calendar({
       locale={locale}
       formatters={{
         formatMonthDropdown: (date) =>
-          date.toLocaleString(locale?.code, { month: "short" }),
+          formatCalendarMonth(date, locale?.code),
+        formatCaption: (date) =>
+          formatCalendarMonth(date, locale?.code, {
+            includeYear: true,
+          }),
         ...formatters,
       }}
       classNames={getCalendarClassNames({
