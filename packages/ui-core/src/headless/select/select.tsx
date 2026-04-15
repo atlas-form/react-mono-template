@@ -60,7 +60,7 @@ function DefaultSelectIndicator({ className }: { className?: string }) {
     <span className={className}>
       <span className="flex flex-col items-center justify-center leading-none">
         <ChevronUpIcon className="size-2.5" />
-        <ChevronDownIcon className="size-2.5 -mt-[0.3125rem]" />
+        <ChevronDownIcon className="-mt-1.25 size-2.5" />
       </span>
     </span>
   )
@@ -131,7 +131,9 @@ export function SelectTrigger({
         {children}
         {!hideIndicator && (
           <SelectPrimitive.Icon asChild>
-            {indicator ?? <DefaultSelectIndicator className={indicatorClassName} />}
+            {indicator ?? (
+              <DefaultSelectIndicator className={indicatorClassName} />
+            )}
           </SelectPrimitive.Icon>
         )}
       </SelectPrimitive.Trigger>
@@ -173,7 +175,9 @@ export function SelectTrigger({
       {children}
       {!hideIndicator && (
         <SelectPrimitive.Icon asChild>
-          {indicator ?? <DefaultSelectIndicator className={resolvedIndicatorClassName} />}
+          {indicator ?? (
+            <DefaultSelectIndicator className={resolvedIndicatorClassName} />
+          )}
         </SelectPrimitive.Icon>
       )}
     </SelectPrimitive.Trigger>
@@ -297,7 +301,9 @@ export function SelectItem({
         {!hideIndicator && (
           <span className={indicatorContainerClassName}>
             <SelectPrimitive.ItemIndicator>
-              {indicator ?? <CheckIcon className="pointer-events-none size-3.5" />}
+              {indicator ?? (
+                <CheckIcon className="pointer-events-none size-3.5" />
+              )}
             </SelectPrimitive.ItemIndicator>
           </span>
         )}
@@ -329,7 +335,9 @@ export function SelectItem({
           })}
         >
           <SelectPrimitive.ItemIndicator>
-            {indicator ?? <CheckIcon className="pointer-events-none size-3.5" />}
+            {indicator ?? (
+              <CheckIcon className="pointer-events-none size-3.5" />
+            )}
           </SelectPrimitive.ItemIndicator>
         </span>
       )}

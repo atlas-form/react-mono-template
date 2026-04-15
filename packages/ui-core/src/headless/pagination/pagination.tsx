@@ -7,6 +7,7 @@ import {
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "../../lib/icon-slots"
+import { paginationClassNames } from "./pagination.styles"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -14,7 +15,7 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       role="navigation"
       aria-label="pagination"
       data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
+      className={cn(paginationClassNames.slot1, className)}
       {...props}
     />
   )
@@ -27,7 +28,7 @@ function PaginationContent({
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex items-center gap-0.5", className)}
+      className={cn(paginationClassNames.slot2, className)}
       {...props}
     />
   )
@@ -53,7 +54,7 @@ function PaginationLink({
       asChild
       variant={isActive ? "outline" : "ghost"}
       size={size}
-      className={cn(className)}
+      className={cn(paginationClassNames.slot3, className)}
     >
       <a
         aria-current={isActive ? "page" : undefined}
@@ -107,14 +108,11 @@ function PaginationEllipsis({
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn(
-        "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
+      className={cn(paginationClassNames.slot4, className)}
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More pages</span>
+      <span className={paginationClassNames.slot5}>More pages</span>
     </span>
   )
 }
