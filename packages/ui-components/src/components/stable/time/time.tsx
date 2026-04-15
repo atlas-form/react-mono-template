@@ -104,7 +104,7 @@ export function Time({
       minuteLabel="Minutes"
       secondLabel="Seconds"
       aria-label={ariaLabel}
-      className="flex items-center justify-center gap-0"
+      className="flex items-center justify-center gap-0 overflow-hidden rounded-[min(var(--radius-xl),1.25rem)] bg-[var(--surface)]"
       columnClassName={sizeClasses.columnClassName}
       itemClassName={sizeClasses.itemClassName}
       selectionClassName={sizeClasses.selectionClassName}

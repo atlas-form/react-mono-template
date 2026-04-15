@@ -91,7 +91,6 @@ export function App() {
             <div className="flex justify-center">
               <Calendar
                 locale={language}
-                captionMode="dropdown"
                 startMonth={new Date(2020, 0, 1)}
                 endMonth={new Date(2030, 11, 1)}
               />
@@ -170,7 +169,9 @@ export function App() {
         <Card>
           <CardHeader>
             <CardTitle>TimePicker</CardTitle>
-            <CardDescription>使用 app-components 的时间选择器。</CardDescription>
+            <CardDescription>
+              使用 app-components 的时间选择器。
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
