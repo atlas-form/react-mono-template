@@ -16,7 +16,7 @@ export const calendarClassNames = {
   navButton:
     "size-(--cell-size) bg-transparent p-0 select-none hover:bg-[var(--surface-hover)] aria-expanded:bg-transparent aria-disabled:opacity-50",
   monthCaption:
-    "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+    "flex h-(--cell-size) w-full items-center justify-center px-[calc(var(--cell-size)*2+0.25rem)]",
   dropdowns:
     "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-sm font-medium",
   dropdownRoot: "relative rounded-(--cell-radius)",

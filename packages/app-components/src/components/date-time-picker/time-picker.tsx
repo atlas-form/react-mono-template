@@ -1,58 +1,120 @@
-import type { ChangeEventHandler } from "react"
+import { useId, useState, type ChangeEventHandler } from "react"
+import { Clock3, X } from "lucide-react"
+import { Button } from "@workspace/ui-core/components/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Time, type TimeValue } from "@workspace/ui-components/stable/time"
 
 export interface TimePickerProps {
   label?: string
-  value: string
+  value: string | null
+  placeholder?: string
   disabled?: boolean
   className?: string
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: string | null) => void
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
 export function TimePicker({
   label,
   value,
+  placeholder = "选择时间",
   disabled = false,
   className,
   onValueChange,
   onChange,
 }: TimePickerProps) {
-  const handleValueChange = (nextValue: TimeValue) => {
-    const normalizedValue = formatTimeValue(nextValue)
+  const [open, setOpen] = useState(false)
+  const triggerId = useId()
+  const hasValue = Boolean(value)
 
-    onValueChange?.(normalizedValue)
+  const emitValueChange = (nextValue: string | null) => {
+    onValueChange?.(nextValue)
     onChange?.({
-      target: { value: normalizedValue },
-      currentTarget: { value: normalizedValue },
+      target: { value: nextValue ?? "" },
+      currentTarget: { value: nextValue ?? "" },
     } as React.ChangeEvent<HTMLInputElement>)
   }
 
-  const input = value ? (
-    <div className={cn("w-full overflow-hidden rounded-[10px] border")}>
-      <Time
-        value={parseTimeValue(value)}
-        onValueChange={handleValueChange}
-        showSeconds={true}
-        ariaLabel={label ?? "Time"}
-        size="md"
-        disabled={disabled}
-      />
-    </div>
-  ) : (
-    <div className="w-full" />
+  const handleValueChange = (nextValue: TimeValue) => {
+    emitValueChange(formatTimeValue(nextValue))
+  }
+
+  const picker = (
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          className={cn(
+            "min-w-[120px] w-fit justify-between gap-2 text-left font-normal",
+            !hasValue && "text-muted-foreground"
+          )}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-controls={triggerId}
+          disabled={disabled}
+        >
+          <span>{value || placeholder}</span>
+          {hasValue ? (
+            <span
+              role="button"
+              aria-label="Clear time"
+              tabIndex={-1}
+              className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
+              onMouseDown={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+              }}
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                emitValueChange(null)
+                setOpen(false)
+              }}
+            >
+              <X className="size-4" />
+            </span>
+          ) : (
+            <Clock3 className="size-4 shrink-0 text-muted-foreground" />
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        id={triggerId}
+        align="start"
+        className="w-auto border-0 bg-transparent p-0 shadow-none"
+      >
+        <div className="overflow-hidden rounded-[10px] border bg-background">
+          <Time
+            value={parseTimeValue(value ?? "00:00:00")}
+            onValueChange={handleValueChange}
+            showSeconds={true}
+            ariaLabel={label ?? "Time"}
+            size="md"
+            disabled={disabled}
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 
   if (!label) {
-    return <div className={className}>{input}</div>
+    return <div className={className}>{picker}</div>
   }
 
   return (
-    <label className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid gap-1.5", className)}>
       <span className="text-sm font-medium">{label}</span>
-      {input}
-    </label>
+      {picker}
+    </div>
   )
 }
 

@@ -14,6 +14,7 @@ import {
   DatePicker,
   DateRangePicker,
   MultipleDatePicker,
+  TimePicker,
 } from "@workspace/app-components"
 import {
   DisplayControls,
@@ -40,6 +41,10 @@ function getInitialLanguage(): AppLanguage {
   return "en"
 }
 
+function formatTimePickerValue(value: TimeValue) {
+  return `${value.hour}:${value.minute}:${value.second ?? "00"}`
+}
+
 export function App() {
   const [language, setLanguage] = useState<AppLanguage>(getInitialLanguage)
   const [singleDate, setSingleDate] = useState<Date>()
@@ -49,6 +54,9 @@ export function App() {
     minute: "33",
     second: "03",
   })
+  const [timePickerValue, setTimePickerValue] = useState<string | null>(
+    "08:33:03"
+  )
   const [range, setRange] = useState<{
     from: Date | undefined
     to?: Date | undefined
@@ -163,6 +171,26 @@ export function App() {
                       range.to?.toLocaleDateString(dateLocale) ?? "-"
                     }`
                   : " -"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>TimePicker</CardTitle>
+            <CardDescription>使用 app-components 的时间选择器。</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <TimePicker
+                label="Time"
+                value={timePickerValue}
+                onValueChange={setTimePickerValue}
+              />
+              <p className="text-sm text-muted-foreground">
+                当前值：
+                {timePickerValue ? ` ${timePickerValue}` : " null"}
               </p>
             </div>
           </CardContent>

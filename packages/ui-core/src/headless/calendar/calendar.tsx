@@ -5,6 +5,7 @@ import {
   type ClassNames,
   type CustomComponents,
   type Locale,
+  useDayPicker,
 } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
@@ -97,6 +98,13 @@ function Calendar({
           <CalendarDayButton locale={locale} {...props} />
         ),
         Dropdown: (props) => <CalendarDropdown {...props} />,
+        Nav: (props) => (
+          <CalendarNav
+            {...props}
+            buttonVariant={buttonVariant}
+            renderChevron={renderChevron}
+          />
+        ),
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -231,22 +239,153 @@ function CalendarDayButton({
   )
 }
 
+function CalendarNav({
+  className,
+  previousMonth,
+  nextMonth,
+  onPreviousClick,
+  onNextClick,
+  buttonVariant,
+  renderChevron,
+  ...props
+}: React.ComponentProps<NonNullable<CustomComponents["Nav"]>> & {
+  buttonVariant: React.ComponentProps<typeof Button>["variant"]
+  renderChevron?: (params: {
+    orientation: "left" | "right" | "down"
+    className?: string
+    props: Record<string, unknown>
+  }) => React.ReactElement
+}) {
+  const { classNames, dayPickerProps, goToMonth, months } = useDayPicker()
+  const currentMonth = months[0]?.date ?? new Date()
+  const previousYearMonth = shiftMonth(currentMonth, -12)
+  const nextYearMonth = shiftMonth(currentMonth, 12)
+  const startMonth = normalizeMonthBoundary(dayPickerProps.startMonth)
+  const endMonth = normalizeMonthBoundary(dayPickerProps.endMonth)
+  const canGoToPreviousYear =
+    previousMonth !== undefined &&
+    (startMonth === undefined || previousYearMonth >= startMonth)
+  const canGoToNextYear =
+    nextMonth !== undefined &&
+    (endMonth === undefined || nextYearMonth <= endMonth)
+
+  return (
+    <nav
+      {...props}
+      className={cn(classNames.nav, className)}
+    >
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant={buttonVariant}
+          className={classNames.button_previous}
+          disabled={!canGoToPreviousYear}
+          aria-label="Go to previous year"
+          onClick={() => {
+            if (!canGoToPreviousYear) {
+              return
+            }
+
+            goToMonth(previousYearMonth)
+          }}
+        >
+          <DefaultCalendarChevron
+            orientation="left-double"
+            props={{}}
+          />
+        </Button>
+        <Button
+          type="button"
+          variant={buttonVariant}
+          className={classNames.button_previous}
+          disabled={!previousMonth}
+          aria-label="Go to previous month"
+          onClick={onPreviousClick}
+        >
+          {renderChevron
+            ? renderChevron({
+                orientation: "left",
+                className: classNames.chevron,
+                props: {},
+              })
+            : (
+                <DefaultCalendarChevron
+                  orientation="left"
+                  className={classNames.chevron}
+                  props={{}}
+                />
+              )}
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-1">
+        <Button
+          type="button"
+          variant={buttonVariant}
+          className={classNames.button_next}
+          disabled={!nextMonth}
+          aria-label="Go to next month"
+          onClick={onNextClick}
+        >
+          {renderChevron
+            ? renderChevron({
+                orientation: "right",
+                className: classNames.chevron,
+                props: {},
+              })
+            : (
+                <DefaultCalendarChevron
+                  orientation="right"
+                  className={classNames.chevron}
+                  props={{}}
+                />
+              )}
+        </Button>
+        <Button
+          type="button"
+          variant={buttonVariant}
+          className={classNames.button_next}
+          disabled={!canGoToNextYear}
+          aria-label="Go to next year"
+          onClick={() => {
+            if (!canGoToNextYear) {
+              return
+            }
+
+            goToMonth(nextYearMonth)
+          }}
+        >
+          <DefaultCalendarChevron
+            orientation="right-double"
+            props={{}}
+          />
+        </Button>
+      </div>
+    </nav>
+  )
+}
+
+function shiftMonth(month: Date, months: number) {
+  return new Date(month.getFullYear(), month.getMonth() + months, 1)
+}
+
+function normalizeMonthBoundary(month: Date | undefined) {
+  if (!month) {
+    return undefined
+  }
+
+  return new Date(month.getFullYear(), month.getMonth(), 1)
+}
+
 function DefaultCalendarChevron({
   orientation,
   className,
   props,
 }: {
-  orientation: "left" | "right" | "down"
+  orientation: "left" | "right" | "down" | "left-double" | "right-double"
   className?: string
   props: Record<string, unknown>
 }) {
-  const chevronPath =
-    orientation === "left"
-      ? "m15 18-6-6 6-6"
-      : orientation === "right"
-        ? "m9 18 6-6-6-6"
-        : "m6 9 6 6 6-6"
-
   return (
     <svg
       viewBox="0 0 24 24"
@@ -258,7 +397,27 @@ function DefaultCalendarChevron({
       className={cn("size-4", className)}
       {...props}
     >
-      <path d={chevronPath} />
+      {orientation === "left-double" ? (
+        <>
+          <path d="m17 18-6-6 6-6" />
+          <path d="m11 18-6-6 6-6" />
+        </>
+      ) : orientation === "right-double" ? (
+        <>
+          <path d="m7 18 6-6-6-6" />
+          <path d="m13 18 6-6-6-6" />
+        </>
+      ) : (
+        <path
+          d={
+            orientation === "left"
+              ? "m15 18-6-6 6-6"
+              : orientation === "right"
+                ? "m9 18 6-6-6-6"
+                : "m6 9 6 6 6-6"
+          }
+        />
+      )}
     </svg>
   )
 }
