@@ -1,5 +1,3 @@
-import { enUS, zhCN as zhCNLocale, type Locale } from "date-fns/locale"
-
 export interface YearRange {
   from: number
   to: number
@@ -24,18 +22,6 @@ export function normalizeLanguage(language: string | undefined): PickerLanguage 
   }
 
   return "en"
-}
-
-export function getCalendarLocale(language: PickerLanguage): Locale {
-  const baseLocale = language === "zhCN" ? zhCNLocale : enUS
-
-  return {
-    ...baseLocale,
-    options: {
-      ...baseLocale.options,
-      weekStartsOn: 0,
-    },
-  }
 }
 
 export function pad(value: number) {

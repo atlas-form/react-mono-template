@@ -2,7 +2,6 @@ import type { ComponentProps } from "react"
 import { useTranslation } from "react-i18next"
 import { Calendar } from "@workspace/ui-components/stable/calendar"
 import {
-  getCalendarLocale,
   getDefaultYearRange,
   normalizeLanguage,
   type YearRange,
@@ -30,8 +29,7 @@ export function DatePicker({
   ...props
 }: DatePickerProps) {
   const { i18n } = useTranslation()
-  const language = normalizeLanguage(i18n.language)
-  const locale = getCalendarLocale(language)
+  const locale = normalizeLanguage(i18n.language)
   const resolvedYearRange = yearRange ?? getDefaultYearRange()
 
   return (

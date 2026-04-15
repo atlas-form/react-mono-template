@@ -1,69 +1,131 @@
-import type { ComponentProps } from "react"
+import { enUS, zhCN as zhCNLocale } from "date-fns/locale"
 import { Calendar as CoreCalendar } from "@workspace/ui-core/components/calendar"
 
-type CoreCalendarProps = ComponentProps<typeof CoreCalendar>
-type CalendarRangeValue = {
-  from: Date | undefined
-  to?: Date | undefined
+export type CalendarMode = "single" | "multiple" | "range"
+
+export interface CalendarDateRange {
+  from?: Date
+  to?: Date
 }
 
-interface CalendarBaseProps {
+export interface CalendarDisabled {
+  before?: Date
+  after?: Date
+  dates?: Date[]
+  daysOfWeek?: Array<0 | 1 | 2 | 3 | 4 | 5 | 6>
+}
+
+export type CalendarValue = Date | Date[] | CalendarDateRange | undefined
+export type CalendarLocale = "en" | "zhCN"
+export type CalendarCaptionMode = "label" | "dropdown"
+
+export interface CalendarProps {
+  mode?: CalendarMode
+  value?: CalendarValue
+  onValueChange?: (value: CalendarValue | undefined) => void
   required?: boolean
-  defaultMonth?: CoreCalendarProps["defaultMonth"]
-  month?: CoreCalendarProps["month"]
-  onMonthChange?: CoreCalendarProps["onMonthChange"]
-  numberOfMonths?: CoreCalendarProps["numberOfMonths"]
-  showOutsideDays?: CoreCalendarProps["showOutsideDays"]
-  locale?: CoreCalendarProps["locale"]
-  weekStartsOn?: CoreCalendarProps["weekStartsOn"]
-  startMonth?: CoreCalendarProps["startMonth"]
-  endMonth?: CoreCalendarProps["endMonth"]
-  disabled?: CoreCalendarProps["disabled"]
+  defaultMonth?: Date
+  month?: Date
+  onMonthChange?: (month: Date) => void
+  numberOfMonths?: number
+  showOutsideDays?: boolean
+  locale?: CalendarLocale
+  captionMode?: CalendarCaptionMode
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+  startMonth?: Date
+  endMonth?: Date
+  disabled?: boolean | CalendarDisabled
 }
 
-export interface CalendarSingleProps extends CalendarBaseProps {
-  mode?: "single"
-  value?: Date
-  onValueChange?: (date: Date | undefined) => void
+function resolveDisabled(
+  disabled: CalendarProps["disabled"]
+): unknown {
+  if (disabled === undefined || typeof disabled === "boolean") {
+    return disabled
+  }
+
+  const matchers: unknown[] = []
+
+  if (disabled.before) {
+    matchers.push({ before: disabled.before })
+  }
+
+  if (disabled.after) {
+    matchers.push({ after: disabled.after })
+  }
+
+  if (disabled.dates?.length) {
+    matchers.push(...disabled.dates)
+  }
+
+  if (disabled.daysOfWeek?.length) {
+    matchers.push({ dayOfWeek: disabled.daysOfWeek })
+  }
+
+  return matchers.length > 0 ? matchers : undefined
 }
 
-export interface CalendarMultipleProps extends CalendarBaseProps {
-  mode: "multiple"
-  value?: Date[]
-  onValueChange?: (dates: Date[] | undefined) => void
+function resolveLocale(locale: CalendarLocale | undefined) {
+  if (locale === "zhCN") {
+    return zhCNLocale
+  }
+
+  return enUS
 }
 
-export interface CalendarRangeProps extends CalendarBaseProps {
-  mode: "range"
-  value?: CalendarRangeValue
-  onValueChange?: (range: CalendarRangeValue | undefined) => void
-}
+function resolveSelected(
+  mode: CalendarMode,
+  value: CalendarValue
+): Date | Date[] | CalendarDateRange | undefined {
+  if (mode === "multiple") {
+    return Array.isArray(value) ? value : undefined
+  }
 
-export type CalendarProps =
-  | CalendarSingleProps
-  | CalendarMultipleProps
-  | CalendarRangeProps
+  if (mode === "range") {
+    if (value && !Array.isArray(value) && !(value instanceof Date)) {
+      return value
+    }
+
+    return undefined
+  }
+
+  return value instanceof Date ? value : undefined
+}
 
 export function Calendar({
   mode = "single",
-  required,
   value,
   onValueChange,
-  ...props
+  required = false,
+  defaultMonth,
+  month,
+  onMonthChange,
+  numberOfMonths = 1,
+  showOutsideDays = true,
+  locale = "en",
+  captionMode = "label",
+  weekStartsOn,
+  startMonth,
+  endMonth,
+  disabled,
 }: CalendarProps) {
-  const resolvedSelected = value
-  const resolvedOnSelect = onValueChange
-
   return (
     <CoreCalendar
       mode={mode}
       required={required}
-      selected={resolvedSelected as any}
-      onSelect={resolvedOnSelect as any}
-      {...(props as Omit<
-        CoreCalendarProps,
-        "mode" | "required" | "selected" | "onSelect" | "renderChevron"
-      >)}
+      selected={resolveSelected(mode, value) as never}
+      onSelect={onValueChange as never}
+      defaultMonth={defaultMonth}
+      month={month}
+      onMonthChange={onMonthChange}
+      numberOfMonths={numberOfMonths}
+      showOutsideDays={showOutsideDays}
+      captionLayout={captionMode}
+      locale={resolveLocale(locale)}
+      weekStartsOn={weekStartsOn}
+      startMonth={startMonth}
+      endMonth={endMonth}
+      disabled={resolveDisabled(disabled) as never}
     />
   )
 }

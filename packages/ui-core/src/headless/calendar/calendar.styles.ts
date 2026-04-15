@@ -13,7 +13,8 @@ export const calendarClassNames = {
   months: "relative flex flex-col gap-4 md:flex-row",
   month: "flex w-full flex-col gap-4",
   nav: "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
-  navButton: "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+  navButton:
+    "size-(--cell-size) bg-transparent p-0 select-none hover:bg-[var(--surface-hover)] aria-expanded:bg-transparent aria-disabled:opacity-50",
   monthCaption:
     "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
   dropdowns:

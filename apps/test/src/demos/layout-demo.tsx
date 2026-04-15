@@ -39,9 +39,20 @@ export function LayoutDemo() {
             </div>
           </Collapsible>
 
-          <Calendar value={date} onValueChange={setDate} />
+          <Calendar
+            value={date}
+            onValueChange={(nextValue) => {
+              setDate(nextValue instanceof Date ? nextValue : undefined)
+            }}
+          />
 
-          <Calendar mode="multiple" value={dates} onValueChange={setDates} />
+          <Calendar
+            mode="multiple"
+            value={dates}
+            onValueChange={(nextValue) => {
+              setDates(Array.isArray(nextValue) ? nextValue : undefined)
+            }}
+          />
 
           <ScrollArea
             height={220}
@@ -56,7 +67,13 @@ export function LayoutDemo() {
 
       <DemoSection title="Calendar Multiple">
         <div className="max-w-sm rounded border p-4">
-          <Calendar mode="multiple" value={dates} onValueChange={setDates} />
+          <Calendar
+            mode="multiple"
+            value={dates}
+            onValueChange={(nextValue) => {
+              setDates(Array.isArray(nextValue) ? nextValue : undefined)
+            }}
+          />
         </div>
       </DemoSection>
 
