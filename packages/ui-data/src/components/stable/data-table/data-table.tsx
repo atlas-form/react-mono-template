@@ -120,7 +120,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
   refreshLabel?: string
 }
 
-const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50] as const
+const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
 
 function createQueryState<TQuery extends object>(initialQuery?: TQuery) {
   return { ...(initialQuery ?? {}) } as TQuery
@@ -138,7 +138,8 @@ function asDateRangeValue(value: unknown) {
   return value as DateRangeValue
 }
 
-function resolveTableHeight(height: number | string) {
+function resolveTableHeight(height?: number | string) {
+  if (height === undefined) return undefined
   return typeof height === "number" ? `${height}px` : height
 }
 
@@ -161,13 +162,13 @@ export function DataTable<T, TQuery extends object = object>({
   renderError,
   renderLoading,
   initialPage = 1,
-  initialPageSize = 10,
+  initialPageSize = 15,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   onError,
   initialQuery,
   queryFields = [],
   queryLegend = "Query",
-  height = 640,
+  height,
   refreshLabel = "Refresh data",
 }: DataTableProps<T, TQuery>) {
   const [rows, setRows] = useState<T[]>([])
@@ -317,7 +318,7 @@ export function DataTable<T, TQuery extends object = object>({
 
   return (
     <div
-      className="flex min-h-0 flex-col gap-3"
+      className="flex h-full min-h-0 min-w-0 w-full flex-col gap-3"
       data-slot="data-table"
       style={{ height: resolveTableHeight(height) }}
     >
@@ -382,11 +383,11 @@ export function DataTable<T, TQuery extends object = object>({
         )}
       </div>
 
-      <div className="min-h-0 flex-1" data-slot="data-table-body">
-        <div className="h-full overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-hidden" data-slot="data-table-body">
+        <div className="h-full overflow-auto">
           <Table containerClassName="overflow-visible">
             {caption ? <TableCaption>{caption}</TableCaption> : null}
-            <TableHeader className="sticky top-0 z-10 bg-background">
+            <TableHeader className="sticky top-0 z-10 bg-[var(--surface)]">
             <TableRow>
               {columns.map((column) => (
                 <TableHead key={column.key}>{column.header}</TableHead>
@@ -448,15 +449,14 @@ export function DataTable<T, TQuery extends object = object>({
       </div>
 
       <div
-        className="flex shrink-0 items-center justify-between gap-3 overflow-x-auto"
+        className="relative mt-2 overflow-x-auto px-4 py-2"
         data-slot="data-table-tail"
       >
-        <div className="flex shrink-0 items-center gap-3 text-sm">
-          <span>
-            <strong>Total:</strong> {total}
-          </span>
+        <div className="flex min-w-max items-center text-sm">
           <div className="flex shrink-0 items-center gap-2">
-            <span>Rows per page</span>
+            <span>
+              <strong>Total:</strong> {total}
+            </span>
             <NativeSelect
               value={String(pageSize)}
               onValueChange={(value: string) => {
@@ -472,12 +472,14 @@ export function DataTable<T, TQuery extends object = object>({
           </div>
         </div>
 
-        <div className="shrink-0">
-          <Pagination
-            page={Math.min(page, totalPages)}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+        <div className="pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 items-center">
+          <div className="pointer-events-auto shrink-0">
+            <Pagination
+              page={Math.min(page, totalPages)}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          </div>
         </div>
       </div>
     </div>

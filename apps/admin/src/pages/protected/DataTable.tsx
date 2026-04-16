@@ -76,7 +76,7 @@ export default function DataTablePage() {
   )
 
   return (
-    <div className="space-y-4">
+    <div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <DataTable<CustomerRow, CustomerTableQuery>
         caption="Customer directory"
         columns={[
@@ -117,8 +117,8 @@ export default function DataTablePage() {
         ]}
         fetchData={fetchData}
         getRowId={(row: CustomerRow) => row.id}
-        height={620}
-        initialPageSize={10}
+        height="100%"
+        initialPageSize={15}
         initialQuery={{
           keyword: "",
           status: "",
@@ -148,7 +148,7 @@ export default function DataTablePage() {
           },
         ]}
         queryLegend="Customer Query"
-        pageSizeOptions={[10, 20, 50]}
+        pageSizeOptions={[10, 15, 30, 50]}
         emptyText="No customers found."
         loadingText="Loading customers..."
         errorText="Unable to load customers."
