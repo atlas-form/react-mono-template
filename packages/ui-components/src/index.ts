@@ -335,3 +335,6 @@ export type { ResizableDirection, ResizableProps } from "./components/stable/res
 
 export { ScrollArea } from "./components/stable/scroll-area"
 export type { ScrollAreaProps } from "./components/stable/scroll-area"
+
+export { Tree, TreeView } from "./components/stable/tree"
+export type { TreeNode, TreeProps, TreeViewProps } from "./components/stable/tree"
