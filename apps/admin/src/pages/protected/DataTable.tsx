@@ -15,6 +15,10 @@ interface CustomerRow {
 const tiers: CustomerRow["tier"][] = ["Enterprise", "Growth", "Starter"]
 const statuses: CustomerRow["status"][] = ["Active", "Paused"]
 const regions = ["North China", "East China", "South China", "West China"]
+const owners = ["Alice", "Bob", "Cathy", "David"]
+const channels = ["Direct", "Partner", "Online", "Field"]
+const industries = ["Retail", "Finance", "Education", "Manufacturing"]
+const segments = ["Strategic", "Enterprise", "Growth", "SMB"]
 
 const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
   id: `C-${String(index + 1001)}`,
@@ -81,6 +85,13 @@ export default function DataTablePage() {
         caption="Customer directory"
         columns={[
           {
+            key: "seq",
+            header: "#",
+            width: 64,
+            sticky: "left",
+            renderCell: (_row: CustomerRow, rowIndex: number) => rowIndex + 1,
+          },
+          {
             key: "id",
             header: "ID",
             renderCell: (row: CustomerRow) => row.id,
@@ -113,6 +124,87 @@ export default function DataTablePage() {
             key: "createdAt",
             header: "Created At",
             renderCell: (row: CustomerRow) => formatDateTime(row.createdAt),
+          },
+          {
+            key: "owner",
+            header: "Owner",
+            renderCell: (row: CustomerRow) =>
+              owners[Number(row.id.slice(-1)) % owners.length],
+          },
+          {
+            key: "channel",
+            header: "Channel",
+            renderCell: (row: CustomerRow) =>
+              channels[Number(row.id.slice(-2)) % channels.length],
+          },
+          {
+            key: "industry",
+            header: "Industry",
+            renderCell: (row: CustomerRow) =>
+              industries[Number(row.id.slice(-1)) % industries.length],
+          },
+          {
+            key: "segment",
+            header: "Segment",
+            renderCell: (row: CustomerRow) =>
+              segments[Number(row.id.slice(-2)) % segments.length],
+          },
+          {
+            key: "city",
+            header: "City",
+            renderCell: (row: CustomerRow) => row.region.replace(" China", ""),
+          },
+          {
+            key: "renewal",
+            header: "Renewal",
+            renderCell: (row: CustomerRow) =>
+              formatDateTime(addDays(row.createdAt, 90)).slice(0, 10),
+          },
+          {
+            key: "contractValue",
+            header: "Contract",
+            renderCell: (row: CustomerRow) =>
+              `$${(Number(row.id.slice(-2)) * 1200).toLocaleString()}`,
+          },
+          {
+            key: "users",
+            header: "Users",
+            renderCell: (row: CustomerRow) => Number(row.id.slice(-2)) + 12,
+          },
+          {
+            key: "storage",
+            header: "Storage",
+            renderCell: (row: CustomerRow) => `${Number(row.id.slice(-2)) % 80} GB`,
+          },
+          {
+            key: "health",
+            header: "Health",
+            renderCell: (row: CustomerRow) =>
+              ["Great", "Good", "Watch", "Risk"][Number(row.id.slice(-1)) % 4],
+          },
+          {
+            key: "lastActive",
+            header: "Last Active",
+            width: 140,
+            renderCell: (row: CustomerRow) =>
+              formatDateTime(addDays(row.createdAt, 7)).slice(5, 16),
+          },
+          {
+            key: "plan",
+            header: "Plan",
+            renderCell: (row: CustomerRow) =>
+              row.tier === "Enterprise" ? "Annual" : "Monthly",
+          },
+          {
+            key: "source",
+            header: "Source",
+            renderCell: (row: CustomerRow) =>
+              ["Expo", "Referral", "Ads", "SEO"][Number(row.id.slice(-1)) % 4],
+          },
+          {
+            key: "score",
+            header: "Score",
+            renderCell: (row: CustomerRow) => 60 + (Number(row.id.slice(-2)) % 40),
           },
         ]}
         fetchData={fetchData}
@@ -174,5 +266,11 @@ function startOfDay(date: Date) {
 function endOfDay(date: Date) {
   const value = new Date(date)
   value.setHours(23, 59, 59, 999)
+  return value
+}
+
+function addDays(date: Date, days: number) {
+  const value = new Date(date)
+  value.setDate(value.getDate() + days)
   return value
 }

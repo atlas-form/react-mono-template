@@ -31,6 +31,8 @@ export interface DataTableColumn<T> {
   key: string
   header: ReactNode
   renderCell: (row: T, rowIndex: number) => ReactNode
+  width?: number | string
+  sticky?: "left"
 }
 
 export interface DataTableSelectOption {
@@ -141,6 +143,21 @@ function asDateRangeValue(value: unknown) {
 function resolveTableHeight(height?: number | string) {
   if (height === undefined) return undefined
   return typeof height === "number" ? `${height}px` : height
+}
+
+function resolveColumnMinWidth(column: DataTableColumn<object>) {
+  if (column.width === undefined) return undefined
+
+  return typeof column.width === "number" ? `${column.width}px` : column.width
+}
+
+function getStickyColumnStyles<T>(column: DataTableColumn<T>) {
+  if (column.sticky !== "left") return undefined
+
+  return {
+    left: 0,
+    position: "sticky" as const,
+  }
 }
 
 function getQueryFieldWidth(field: DataTableQueryField<object>) {
@@ -318,7 +335,7 @@ export function DataTable<T, TQuery extends object = object>({
 
   return (
     <div
-      className="flex h-full min-h-0 min-w-0 w-full flex-col gap-3"
+      className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden flex-col gap-3"
       data-slot="data-table"
       style={{ height: resolveTableHeight(height) }}
     >
@@ -385,64 +402,93 @@ export function DataTable<T, TQuery extends object = object>({
 
       <div className="min-h-0 flex-1 overflow-hidden" data-slot="data-table-body">
         <div className="h-full overflow-auto">
-          <Table containerClassName="overflow-visible">
+          <Table
+            className="min-w-full w-max"
+            containerClassName="overflow-visible"
+          >
             {caption ? <TableCaption>{caption}</TableCaption> : null}
-            <TableHeader className="sticky top-0 z-10 bg-[var(--surface)]">
-            <TableRow>
-              {columns.map((column) => (
-                <TableHead key={column.key}>{column.header}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
+            <TableHeader>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableHead
+                    key={column.key}
+                    className={column.sticky === "left"
+                      ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                      : "sticky top-0 z-10 bg-[var(--surface)]"}
+                    style={
+                      {
+                        ...getStickyColumnStyles(column),
+                        minWidth: resolveColumnMinWidth(
+                          column as DataTableColumn<object>
+                        ),
+                      }
+                    }
+                  >
+                    {column.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
 
             <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell>
-                  {renderLoading ? (
-                    loadingContent
-                  ) : (
-                    <div
-                      style={{
-                        alignItems: "center",
-                        display: "flex",
-                        gap: "8px",
-                      }}
-                    >
-                      <Spinner size="sm" />
-                      <span>{loadingContent}</span>
-                    </div>
-                  )}
-                </TableCell>
-                {renderFillerCells()}
-              </TableRow>
-            ) : null}
+              {loading ? (
+                <TableRow>
+                  <TableCell>
+                    {renderLoading ? (
+                      loadingContent
+                    ) : (
+                      <div
+                        style={{
+                          alignItems: "center",
+                          display: "flex",
+                          gap: "8px",
+                        }}
+                      >
+                        <Spinner size="sm" />
+                        <span>{loadingContent}</span>
+                      </div>
+                    )}
+                  </TableCell>
+                  {renderFillerCells()}
+                </TableRow>
+              ) : null}
 
-            {!loading && error ? (
-              <TableRow>
-                <TableCell>{errorContent}</TableCell>
-                {renderFillerCells()}
-              </TableRow>
-            ) : null}
+              {!loading && error ? (
+                <TableRow>
+                  <TableCell>{errorContent}</TableCell>
+                  {renderFillerCells()}
+                </TableRow>
+              ) : null}
 
-            {!loading && !error && !hasRows ? (
-              <TableRow>
-                <TableCell>{emptyContent}</TableCell>
-                {renderFillerCells()}
-              </TableRow>
-            ) : null}
+              {!loading && !error && !hasRows ? (
+                <TableRow>
+                  <TableCell>{emptyContent}</TableCell>
+                  {renderFillerCells()}
+                </TableRow>
+              ) : null}
 
-            {!loading && !error
-              ? rows.map((row: T, rowIndex: number) => (
-                  <TableRow key={getRowId(row, rowIndex)}>
-                    {columns.map((column) => (
-                      <TableCell key={column.key}>
+              {!loading && !error
+                ? rows.map((row: T, rowIndex: number) => (
+                    <TableRow key={getRowId(row, rowIndex)}>
+                      {columns.map((column) => (
+                      <TableCell
+                        key={column.key}
+                        className={column.sticky === "left"
+                          ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                          : undefined}
+                        style={{
+                          ...getStickyColumnStyles(column),
+                          minWidth: resolveColumnMinWidth(
+                            column as DataTableColumn<object>
+                          ),
+                        }}
+                      >
                         <Fragment>{column.renderCell(row, rowIndex)}</Fragment>
                       </TableCell>
                     ))}
-                  </TableRow>
-                ))
-              : null}
+                    </TableRow>
+                  ))
+                : null}
             </TableBody>
           </Table>
         </div>

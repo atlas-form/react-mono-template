@@ -117,7 +117,7 @@ export default function AppLayout() {
 
   return (
     <div className="h-screen overflow-hidden bg-(--app-bg) text-(--app-text)">
-      <div className="mx-auto flex h-full max-w-400 flex-col overflow-hidden pt-1 pb-2">
+      <div className="mx-auto flex h-full max-w-400 min-w-0 flex-col overflow-hidden pt-1 pb-2">
         <Sidebar
           brandEyebrow="Workspace"
           brandTitle="Admin"
