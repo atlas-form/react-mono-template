@@ -29,8 +29,6 @@
       "@workspace/app-components/*": ["../../packages/app-components/src/*"],
       "@workspace/ui-icon": ["../../packages/ui-icon/src/index.ts"],
       "@workspace/ui-icon/*": ["../../packages/ui-icon/src/*"],
-      "@workspace/ui-core": ["../../packages/ui-core/src/index.ts"],
-      "@workspace/ui-core/*": ["../../packages/ui-core/src/*"],
       "@workspace/ui-components": ["../../packages/ui-components/src/index.ts"],
       "@workspace/ui-components/*": ["../../packages/ui-components/src/*"]
     }

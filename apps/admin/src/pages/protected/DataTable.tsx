@@ -1,6 +1,5 @@
 import { useCallback } from "react"
 import { Badge } from "@workspace/ui-components/stable/badge"
-import { Card, CardContent } from "@workspace/ui-components/stable/card"
 import { DataTable, type DataTableFetchResult } from "@workspace/ui-data"
 import type { DateRangeValue } from "@workspace/app-components"
 
@@ -78,88 +77,82 @@ export default function DataTablePage() {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardContent>
-          <DataTable<CustomerRow, CustomerTableQuery>
-            caption="Customer directory"
-            columns={[
-              {
-                key: "id",
-                header: "ID",
-                renderCell: (row: CustomerRow) => row.id,
-              },
-              {
-                key: "name",
-                header: "Name",
-                renderCell: (row: CustomerRow) => row.name,
-              },
-              {
-                key: "tier",
-                header: "Tier",
-                renderCell: (row: CustomerRow) => row.tier,
-              },
-              {
-                key: "status",
-                header: "Status",
-                renderCell: (row: CustomerRow) => (
-                  <Badge
-                    variant={row.status === "Active" ? "default" : "secondary"}
-                  >
-                    {row.status}
-                  </Badge>
-                ),
-              },
-              {
-                key: "region",
-                header: "Region",
-                renderCell: (row: CustomerRow) => row.region,
-              },
-              {
-                key: "createdAt",
-                header: "Created At",
-                renderCell: (row: CustomerRow) => formatDateTime(row.createdAt),
-              },
-            ]}
-            fetchData={fetchData}
-            getRowId={(row: CustomerRow) => row.id}
-            initialPageSize={10}
-            initialQuery={{
-              keyword: "",
-              status: "",
-              createdAt: undefined,
-            }}
-            queryFields={[
-              {
-                key: "keyword",
-                type: "text",
-                label: "Keyword",
-                placeholder: "Search by customer ID or name",
-              },
-              {
-                key: "status",
-                type: "select",
-                label: "Status",
-                placeholder: "All status",
-                options: [
-                  { label: "Active", value: "Active" },
-                  { label: "Paused", value: "Paused" },
-                ],
-              },
-              {
-                key: "createdAt",
-                type: "date-range",
-                label: "Created At",
-                description: "Filter customers by creation date range.",
-              },
-            ]}
-            queryLegend="Customer Query"
-            pageSizeOptions={[10, 20, 50]}
-            emptyText="No customers found."
-            loadingText="Loading customers..."
-            errorText="Unable to load customers."
-          />
-        </CardContent>
-      </Card>
+      <DataTable<CustomerRow, CustomerTableQuery>
+        caption="Customer directory"
+        columns={[
+          {
+            key: "id",
+            header: "ID",
+            renderCell: (row: CustomerRow) => row.id,
+          },
+          {
+            key: "name",
+            header: "Name",
+            renderCell: (row: CustomerRow) => row.name,
+          },
+          {
+            key: "tier",
+            header: "Tier",
+            renderCell: (row: CustomerRow) => row.tier,
+          },
+          {
+            key: "status",
+            header: "Status",
+            renderCell: (row: CustomerRow) => (
+              <Badge variant={row.status === "Active" ? "default" : "secondary"}>
+                {row.status}
+              </Badge>
+            ),
+          },
+          {
+            key: "region",
+            header: "Region",
+            renderCell: (row: CustomerRow) => row.region,
+          },
+          {
+            key: "createdAt",
+            header: "Created At",
+            renderCell: (row: CustomerRow) => formatDateTime(row.createdAt),
+          },
+        ]}
+        fetchData={fetchData}
+        getRowId={(row: CustomerRow) => row.id}
+        height={620}
+        initialPageSize={10}
+        initialQuery={{
+          keyword: "",
+          status: "",
+          createdAt: undefined,
+        }}
+        queryFields={[
+          {
+            key: "keyword",
+            type: "text",
+            label: "Keyword",
+            placeholder: "Search by customer ID or name",
+          },
+          {
+            key: "status",
+            type: "select",
+            label: "Status",
+            placeholder: "All status",
+            options: [
+              { label: "Active", value: "Active" },
+              { label: "Paused", value: "Paused" },
+            ],
+          },
+          {
+            key: "createdAt",
+            type: "date-range",
+            label: "Created At",
+          },
+        ]}
+        queryLegend="Customer Query"
+        pageSizeOptions={[10, 20, 50]}
+        emptyText="No customers found."
+        loadingText="Loading customers..."
+        errorText="Unable to load customers."
+      />
     </div>
   )
 }

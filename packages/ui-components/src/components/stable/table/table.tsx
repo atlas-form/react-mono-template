@@ -1,4 +1,3 @@
-import type { ReactNode } from "react"
 import {
   Table as CoreTable,
   TableBody as CoreTableBody,
@@ -9,67 +8,60 @@ import {
   TableHeader as CoreTableHeader,
   TableRow as CoreTableRow,
 } from "@workspace/ui-core/components/table"
+import type {
+  TableBodyProps as CoreTableBodyProps,
+  TableCaptionProps as CoreTableCaptionProps,
+  TableCellProps as CoreTableCellProps,
+  TableHeadProps as CoreTableHeadProps,
+  TableHeaderProps as CoreTableHeaderProps,
+  TableProps as CoreTableProps,
+  TableRowProps as CoreTableRowProps,
+} from "@workspace/ui-core/components/table"
 
-export interface TableProps {
-  children: ReactNode
+export type TableProps = CoreTableProps
+
+export type TableHeaderProps = CoreTableHeaderProps
+
+export type TableBodyProps = CoreTableBodyProps
+
+export type TableFooterProps = React.ComponentProps<typeof CoreTableFooter>
+
+export type TableRowProps = CoreTableRowProps
+
+export type TableHeadProps = CoreTableHeadProps
+
+export type TableCellProps = CoreTableCellProps
+
+export type TableCaptionProps = CoreTableCaptionProps
+
+export function Table(props: TableProps) {
+  return <CoreTable {...props} />
 }
 
-export interface TableHeaderProps {
-  children: ReactNode
+export function TableHeader(props: TableHeaderProps) {
+  return <CoreTableHeader {...props} />
 }
 
-export interface TableBodyProps {
-  children: ReactNode
+export function TableBody(props: TableBodyProps) {
+  return <CoreTableBody {...props} />
 }
 
-export interface TableFooterProps {
-  children: ReactNode
+export function TableFooter(props: TableFooterProps) {
+  return <CoreTableFooter {...props} />
 }
 
-export interface TableRowProps {
-  children: ReactNode
+export function TableRow(props: TableRowProps) {
+  return <CoreTableRow {...props} />
 }
 
-export interface TableHeadProps {
-  children: ReactNode
+export function TableHead(props: TableHeadProps) {
+  return <CoreTableHead {...props} />
 }
 
-export interface TableCellProps {
-  children: ReactNode
+export function TableCell(props: TableCellProps) {
+  return <CoreTableCell {...props} />
 }
 
-export interface TableCaptionProps {
-  children: ReactNode
-}
-
-export function Table({ children }: TableProps) {
-  return <CoreTable>{children}</CoreTable>
-}
-
-export function TableHeader({ children }: TableHeaderProps) {
-  return <CoreTableHeader>{children}</CoreTableHeader>
-}
-
-export function TableBody({ children }: TableBodyProps) {
-  return <CoreTableBody>{children}</CoreTableBody>
-}
-
-export function TableFooter({ children }: TableFooterProps) {
-  return <CoreTableFooter>{children}</CoreTableFooter>
-}
-
-export function TableRow({ children }: TableRowProps) {
-  return <CoreTableRow>{children}</CoreTableRow>
-}
-
-export function TableHead({ children }: TableHeadProps) {
-  return <CoreTableHead>{children}</CoreTableHead>
-}
-
-export function TableCell({ children }: TableCellProps) {
-  return <CoreTableCell>{children}</CoreTableCell>
-}
-
-export function TableCaption({ children }: TableCaptionProps) {
-  return <CoreTableCaption>{children}</CoreTableCaption>
+export function TableCaption(props: TableCaptionProps) {
+  return <CoreTableCaption {...props} />
 }

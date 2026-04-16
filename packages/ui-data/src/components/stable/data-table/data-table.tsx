@@ -1,12 +1,5 @@
 import {
   Button,
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
   Input,
   NativeSelect,
   Pagination,
@@ -25,7 +18,6 @@ import {
   useEffect,
   useMemo,
   useState,
-  type ComponentProps,
   type Key,
   type ReactNode,
 } from "react"
@@ -124,8 +116,8 @@ export interface DataTableProps<T, TQuery extends object = object> {
   initialQuery?: TQuery
   queryFields?: readonly DataTableQueryField<TQuery>[]
   queryLegend?: ReactNode
-  querySubmitText?: ReactNode
-  queryResetText?: ReactNode
+  height?: number | string
+  refreshLabel?: string
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50] as const
@@ -146,6 +138,17 @@ function asDateRangeValue(value: unknown) {
   return value as DateRangeValue
 }
 
+function resolveTableHeight(height: number | string) {
+  return typeof height === "number" ? `${height}px` : height
+}
+
+function getQueryFieldWidth(field: DataTableQueryField<object>) {
+  if (field.type === "text") return 320
+  if (field.type === "date-range") return 240
+  if (field.type === "select") return 180
+  return 220
+}
+
 export function DataTable<T, TQuery extends object = object>({
   columns,
   fetchData,
@@ -164,8 +167,8 @@ export function DataTable<T, TQuery extends object = object>({
   initialQuery,
   queryFields = [],
   queryLegend = "Query",
-  querySubmitText = "Search",
-  queryResetText = "Reset",
+  height = 640,
+  refreshLabel = "Refresh data",
 }: DataTableProps<T, TQuery>) {
   const [rows, setRows] = useState<T[]>([])
   const [page, setPage] = useState(initialPage)
@@ -175,9 +178,6 @@ export function DataTable<T, TQuery extends object = object>({
   const [error, setError] = useState<unknown>(null)
   const [reloadToken, setReloadToken] = useState(0)
   const [draftQuery, setDraftQuery] = useState<TQuery>(() =>
-    createQueryState(initialQuery)
-  )
-  const [appliedQuery, setAppliedQuery] = useState<TQuery>(() =>
     createQueryState(initialQuery)
   )
 
@@ -202,7 +202,7 @@ export function DataTable<T, TQuery extends object = object>({
           page,
           pageSize,
           signal: controller.signal,
-          query: appliedQuery,
+          query: draftQuery,
         })
 
         if (controller.signal.aborted) return
@@ -222,7 +222,7 @@ export function DataTable<T, TQuery extends object = object>({
     })()
 
     return () => controller.abort()
-  }, [appliedQuery, fetchData, onError, page, pageSize, reloadToken])
+  }, [draftQuery, fetchData, onError, page, pageSize, reloadToken])
 
   const handleRetry = () => {
     setReloadToken((current: number) => current + 1)
@@ -232,25 +232,11 @@ export function DataTable<T, TQuery extends object = object>({
     key: K,
     value: TQuery[K]
   ) => {
+    setPage(1)
     setDraftQuery((current) => ({
       ...current,
       [key]: value,
     }))
-  }
-
-  const handleSubmitQuery: NonNullable<ComponentProps<"form">["onSubmit"]> = (
-    event
-  ) => {
-    event.preventDefault()
-    setPage(1)
-    setAppliedQuery({ ...draftQuery })
-  }
-
-  const handleResetQuery = () => {
-    const nextQuery = createQueryState(initialQuery)
-    setPage(1)
-    setDraftQuery(nextQuery)
-    setAppliedQuery(nextQuery)
   }
 
   const renderFillerCells = () =>
@@ -284,18 +270,27 @@ export function DataTable<T, TQuery extends object = object>({
     }
 
     if (field.type === "select") {
+      const options = field.placeholder
+        ? [
+            {
+              label: field.placeholder,
+              value: "",
+            },
+            ...field.options,
+          ]
+        : field.options
+
       return (
         <NativeSelect
           value={asStringValue(value)}
           onValueChange={(nextValue) =>
             setValue(nextValue as TQuery[keyof TQuery & string])
           }
-          options={field.options.map((option) => ({
+          options={options.map((option) => ({
             label: option.label,
             value: option.value,
             disabled: option.disabled,
           }))}
-          placeholder={field.placeholder}
           disabled={disabled}
         />
       )
@@ -321,52 +316,77 @@ export function DataTable<T, TQuery extends object = object>({
   }
 
   return (
-    <div className="flex flex-col gap-4" data-slot="data-table">
-      <div data-slot="data-table-header">
+    <div
+      className="flex min-h-0 flex-col gap-3"
+      data-slot="data-table"
+      style={{ height: resolveTableHeight(height) }}
+    >
+      <div className="shrink-0" data-slot="data-table-header">
         {hasQueryFields ? (
-          <form onSubmit={handleSubmitQuery}>
-            <FieldSet>
-              <FieldLegend>{queryLegend}</FieldLegend>
-              <FieldGroup>
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {queryFields.map((field) => (
-                    <Field key={field.key}>
-                      <FieldLabel>{field.label}</FieldLabel>
-                      <FieldContent>
-                        {renderQueryFieldControl(field)}
-                        {field.description ? (
-                          <FieldDescription>
-                            {field.description}
-                          </FieldDescription>
-                        ) : null}
-                      </FieldContent>
-                    </Field>
-                  ))}
-                </div>
-              </FieldGroup>
+          <div className="flex flex-col gap-2 overflow-hidden">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-lg font-semibold">{queryLegend}</div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                disabled={loading}
+                onClick={handleRetry}
+              >
+                <span aria-hidden="true" className="text-base leading-none">
+                  ↻
+                </span>
+                <span className="sr-only">{refreshLabel}</span>
+              </Button>
+            </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <Button type="submit" disabled={loading}>
-                  {querySubmitText}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={loading}
-                  onClick={handleResetQuery}
+            <div
+              className="flex max-h-[112px] flex-wrap items-start gap-x-3 gap-y-2 overflow-hidden"
+              data-slot="data-table-query-fields"
+            >
+              {queryFields.map((field) => (
+                <label
+                  key={field.key}
+                  className="flex min-w-[180px] flex-col gap-1"
+                  style={{
+                    width: `min(100%, ${getQueryFieldWidth(
+                      field as DataTableQueryField<object>
+                    )}px)`,
+                  }}
                 >
-                  {queryResetText}
-                </Button>
-              </div>
-            </FieldSet>
-          </form>
-        ) : null}
+                  {renderQueryFieldControl(field)}
+                  {field.description ? (
+                    <span className="text-xs leading-4 text-muted-foreground">
+                      {field.description}
+                    </span>
+                  ) : null}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              disabled={loading}
+              onClick={handleRetry}
+            >
+              <span aria-hidden="true" className="text-base leading-none">
+                ↻
+              </span>
+              <span className="sr-only">{refreshLabel}</span>
+            </Button>
+          </div>
+        )}
       </div>
 
-      <div data-slot="data-table-body">
-        <Table>
-          {caption ? <TableCaption>{caption}</TableCaption> : null}
-          <TableHeader>
+      <div className="min-h-0 flex-1" data-slot="data-table-body">
+        <div className="h-full overflow-y-auto">
+          <Table containerClassName="overflow-visible">
+            {caption ? <TableCaption>{caption}</TableCaption> : null}
+            <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow>
               {columns.map((column) => (
                 <TableHead key={column.key}>{column.header}</TableHead>
@@ -374,7 +394,7 @@ export function DataTable<T, TQuery extends object = object>({
             </TableRow>
           </TableHeader>
 
-          <TableBody>
+            <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell>
@@ -422,19 +442,20 @@ export function DataTable<T, TQuery extends object = object>({
                   </TableRow>
                 ))
               : null}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <div
-        className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+        className="flex shrink-0 items-center justify-between gap-3 overflow-x-auto"
         data-slot="data-table-tail"
       >
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+        <div className="flex shrink-0 items-center gap-3 text-sm">
           <span>
             <strong>Total:</strong> {total}
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <span>Rows per page</span>
             <NativeSelect
               value={String(pageSize)}
@@ -451,11 +472,13 @@ export function DataTable<T, TQuery extends object = object>({
           </div>
         </div>
 
-        <Pagination
-          page={Math.min(page, totalPages)}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+        <div className="shrink-0">
+          <Pagination
+            page={Math.min(page, totalPages)}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       </div>
     </div>
   )
