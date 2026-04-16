@@ -4,6 +4,7 @@ import {
   TooltipContent as CoreTooltipContent,
   TooltipProvider as CoreTooltipProvider,
   TooltipTrigger as CoreTooltipTrigger,
+  type TooltipTriggerProps as CoreTooltipTriggerProps,
 } from "@workspace/ui-core/components/tooltip"
 
 export interface TooltipProviderProps {
@@ -17,7 +18,7 @@ export interface TooltipProps {
   children: ReactNode
 }
 
-export interface TooltipTriggerProps {
+export type TooltipTriggerProps = CoreTooltipTriggerProps & {
   children: ReactNode
 }
 
@@ -43,8 +44,8 @@ export function Tooltip({ open, onOpenChange, children }: TooltipProps) {
   )
 }
 
-export function TooltipTrigger({ children }: TooltipTriggerProps) {
-  return <CoreTooltipTrigger>{children}</CoreTooltipTrigger>
+export function TooltipTrigger({ children, ...props }: TooltipTriggerProps) {
+  return <CoreTooltipTrigger {...props}>{children}</CoreTooltipTrigger>
 }
 
 export function TooltipContent({

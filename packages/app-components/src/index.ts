@@ -22,6 +22,8 @@ export { TimePicker } from "./components/date-time-picker"
 export { DataTable } from "./components/data-table"
 export type {
   DataTableBulkDeleteConfig,
+  DataTableBulkUpdateConfig,
+  DataTableBulkUpdateField,
   DataTableBuiltInQueryField,
   DataTableColumn,
   DataTableFetchParams,

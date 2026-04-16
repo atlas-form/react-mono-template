@@ -2,6 +2,8 @@ export { DataTable } from "./data-table"
 
 export type {
   DataTableBulkDeleteConfig,
+  DataTableBulkUpdateConfig,
+  DataTableBulkUpdateField,
   DataTableBuiltInQueryField,
   DataTableColumn,
   DataTableFetchParams,

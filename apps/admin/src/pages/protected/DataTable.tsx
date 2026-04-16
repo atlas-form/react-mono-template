@@ -253,6 +253,40 @@ export default function DataTablePage() {
             await new Promise((resolve) => setTimeout(resolve, 200))
           },
         }}
+        bulkUpdate={{
+          fields: [
+            {
+              key: "status",
+              label: t("datatable.fields.status", "Status"),
+              type: "select",
+              options: [
+                {
+                  label: t("datatable.options.status.active", "Active"),
+                  value: "Active",
+                },
+                {
+                  label: t("datatable.options.status.paused", "Paused"),
+                  value: "Paused",
+                },
+              ],
+            },
+            {
+              key: "region",
+              label: t("datatable.fields.region", "Region"),
+              type: "select",
+              options: regions.map((region) => ({
+                label: region,
+                value: region,
+              })),
+            },
+          ],
+          onSubmit: async ({ fieldKey, selectedRowKeys, value }) => {
+            void fieldKey
+            void selectedRowKeys
+            void value
+            await new Promise((resolve) => setTimeout(resolve, 200))
+          },
+        }}
         initialPageSize={15}
         initialQuery={{
           keyword: "",
@@ -262,13 +296,13 @@ export default function DataTablePage() {
           {
             key: "keyword",
             type: "search",
-            label: "Keyword",
-            placeholder: "Search customers",
+            label: t("datatable.fields.keyword", "Keyword"),
+            placeholder: t("datatable.searchPlaceholder", "Search customers"),
           },
           {
             key: "createdAt",
             type: "date-range",
-            label: "Created At",
+            label: t("datatable.fields.createdAt", "Created At"),
           },
         ]}
         pageSizeOptions={[10, 15, 30, 50]}
@@ -366,6 +400,30 @@ function buildDataTableLocaleText(
     errorText: t("datatable.errorText", "数据加载失败"),
     loadingText: t("datatable.loadingText", "正在加载数据..."),
     refreshLabel: t("datatable.refreshLabel", "刷新数据"),
-    totalLabel: t("datatable.totalLabel", "Total"),
+    resetLabel: t("datatable.resetLabel", "重置筛选"),
+    totalLabel: t("datatable.totalLabel", "总数"),
+    sortAscendingLabel: t("datatable.sortAscendingLabel", "升序排序"),
+    sortDescendingLabel: t("datatable.sortDescendingLabel", "降序排序"),
+    clearSortLabel: t("datatable.clearSortLabel", "清除排序"),
+    bulkDeleteLabel: (count) =>
+      t("datatable.bulkDeleteLabel", {
+        count,
+        defaultValue: "Delete Selected ({{count}})",
+      }),
+    bulkUpdateLabel: (count) =>
+      t("datatable.bulkUpdateLabel", {
+        count,
+        defaultValue: "Bulk Update ({{count}})",
+      }),
+    bulkUpdateTitle: t("datatable.bulkUpdateTitle", "批量修改"),
+    bulkUpdateDescription: (count) =>
+      t("datatable.bulkUpdateDescriptionWithCount", {
+        count,
+        defaultValue: "对 {{count}} 条已选数据应用相同的值。",
+      }),
+    bulkUpdateFieldLabel: t("datatable.bulkUpdateFieldLabel", "字段"),
+    bulkUpdateValueLabel: t("datatable.bulkUpdateValueLabel", "值"),
+    bulkUpdateCancelLabel: t("datatable.bulkUpdateCancelLabel", "取消"),
+    bulkUpdateApplyLabel: t("datatable.bulkUpdateApplyLabel", "应用"),
   }
 }

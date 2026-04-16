@@ -2,6 +2,12 @@ import {
   AdvancedSelect,
   Button,
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Input,
   Pagination,
   SearchInput,
@@ -13,6 +19,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@workspace/ui-components"
 import { RefreshCw, RotateCcw } from "lucide-react"
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type Key, type ReactNode } from "react"
@@ -130,6 +140,14 @@ export interface DataTableLocaleText {
   sortAscendingLabel?: string
   sortDescendingLabel?: string
   clearSortLabel?: string
+  bulkDeleteLabel?: (count: number) => ReactNode
+  bulkUpdateLabel?: (count: number) => ReactNode
+  bulkUpdateTitle?: ReactNode
+  bulkUpdateDescription?: (count: number) => ReactNode
+  bulkUpdateFieldLabel?: ReactNode
+  bulkUpdateValueLabel?: ReactNode
+  bulkUpdateCancelLabel?: ReactNode
+  bulkUpdateApplyLabel?: ReactNode
 }
 
 export interface DataTableHeaderActionsContext<T> {
@@ -141,6 +159,65 @@ export interface DataTableHeaderActionsContext<T> {
 export interface DataTableBulkDeleteConfig<T> {
   label?: ReactNode
   onDelete: (context: DataTableHeaderActionsContext<T>) => Promise<void> | void
+  columnWidth?: number
+  selectedRowKeys?: readonly Key[]
+  onSelectedRowKeysChange?: (keys: Key[], rows: T[]) => void
+}
+
+export interface DataTableBulkUpdateFieldBase {
+  key: string
+  label: ReactNode
+  description?: ReactNode
+  disabled?: boolean
+}
+
+export interface DataTableBulkUpdateTextField
+  extends DataTableBulkUpdateFieldBase {
+  type: "text"
+  placeholder?: string
+  inputType?: "text" | "search" | "email" | "number" | "tel" | "url"
+}
+
+export interface DataTableBulkUpdateSelectField
+  extends DataTableBulkUpdateFieldBase {
+  type: "select"
+  placeholder?: string
+  options: readonly DataTableSelectOption[]
+}
+
+export interface DataTableBulkUpdateCustomField<T>
+  extends DataTableBulkUpdateFieldBase {
+  type: "custom"
+  renderControl: (
+    value: unknown,
+    setValue: (value: unknown) => void,
+    context: {
+      disabled: boolean
+      selectedRowKeys: Key[]
+      selectedRows: T[]
+    }
+  ) => ReactNode
+}
+
+export type DataTableBulkUpdateField<T> =
+  | DataTableBulkUpdateTextField
+  | DataTableBulkUpdateSelectField
+  | DataTableBulkUpdateCustomField<T>
+
+export interface DataTableBulkUpdateSubmitContext<T>
+  extends DataTableHeaderActionsContext<T> {
+  fieldKey: string
+  value: unknown
+}
+
+export interface DataTableBulkUpdateConfig<T> {
+  label?: ReactNode
+  title?: ReactNode
+  description?: ReactNode
+  fields: readonly DataTableBulkUpdateField<T>[]
+  onSubmit: (
+    context: DataTableBulkUpdateSubmitContext<T>
+  ) => Promise<void> | void
   columnWidth?: number
   selectedRowKeys?: readonly Key[]
   onSelectedRowKeysChange?: (keys: Key[], rows: T[]) => void
@@ -171,6 +248,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
     | ReactNode
     | ((context: DataTableHeaderActionsContext<T>) => ReactNode)
   bulkDelete?: false | DataTableBulkDeleteConfig<T>
+  bulkUpdate?: false | DataTableBulkUpdateConfig<T>
   height?: number | string
   refreshLabel?: string
   resetLabel?: string
@@ -289,6 +367,7 @@ export function DataTable<T, TQuery extends object = object>({
   queryFields = [],
   headerActions,
   bulkDelete = false,
+  bulkUpdate = false,
   height,
   refreshLabel = "Refresh data",
   resetLabel = "Reset filters",
@@ -306,18 +385,24 @@ export function DataTable<T, TQuery extends object = object>({
   const [sort, setSort] = useState<DataTableSortState | null>(initialSort)
   const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>([])
   const [deleting, setDeleting] = useState(false)
+  const [bulkUpdateDialogOpen, setBulkUpdateDialogOpen] = useState(false)
+  const [bulkUpdateFieldKey, setBulkUpdateFieldKey] = useState("")
+  const [bulkUpdateValue, setBulkUpdateValue] = useState<unknown>("")
+  const [updating, setUpdating] = useState(false)
   const [draftQuery, setDraftQuery] = useState<TQuery>(() =>
     createQueryState(initialQuery)
   )
   const headerCellRefs = useRef<Array<HTMLTableCellElement | null>>([])
-  const rowSelectionEnabled = bulkDelete !== false
+  const selectionConfig =
+    bulkDelete !== false ? bulkDelete : bulkUpdate !== false ? bulkUpdate : false
+  const rowSelectionEnabled = selectionConfig !== false
   const selectionColumnWidth =
-    bulkDelete !== false
-      ? bulkDelete.columnWidth ?? DEFAULT_SELECTION_COLUMN_WIDTH
+    selectionConfig !== false
+      ? selectionConfig.columnWidth ?? DEFAULT_SELECTION_COLUMN_WIDTH
       : DEFAULT_SELECTION_COLUMN_WIDTH
   const selectedRowKeys =
-    bulkDelete !== false && bulkDelete.selectedRowKeys
-      ? [...bulkDelete.selectedRowKeys]
+    selectionConfig !== false && selectionConfig.selectedRowKeys
+      ? [...selectionConfig.selectedRowKeys]
     : internalSelectedRowKeys
 
   const safePageSizeOptions = useMemo(() => {
@@ -344,6 +429,29 @@ export function DataTable<T, TQuery extends object = object>({
   const resolvedSortDescendingLabel =
     localeText?.sortDescendingLabel ?? "Sort descending"
   const resolvedClearSortLabel = localeText?.clearSortLabel ?? "Clear sort"
+  const resolvedBulkDeleteLabel =
+    localeText?.bulkDeleteLabel ??
+    ((count: number) => `Delete Selected (${count})`)
+  const resolvedBulkUpdateLabel =
+    localeText?.bulkUpdateLabel ??
+    ((count: number) => `Bulk Update (${count})`)
+  const resolvedBulkUpdateTitle = localeText?.bulkUpdateTitle ?? "Bulk Update"
+  const resolvedBulkUpdateDescription =
+    localeText?.bulkUpdateDescription ??
+    ((count: number) => `Apply the same value to ${count} selected row(s).`)
+  const resolvedBulkUpdateFieldLabel =
+    localeText?.bulkUpdateFieldLabel ?? "Field"
+  const resolvedBulkUpdateValueLabel =
+    localeText?.bulkUpdateValueLabel ?? "Value"
+  const resolvedBulkUpdateCancelLabel =
+    localeText?.bulkUpdateCancelLabel ?? "Cancel"
+  const resolvedBulkUpdateApplyLabel =
+    localeText?.bulkUpdateApplyLabel ?? "Apply"
+  const bulkUpdateFields = bulkUpdate !== false ? bulkUpdate.fields : []
+  const availableBulkUpdateFields = useMemo(
+    () => bulkUpdateFields.filter((field) => field.disabled !== true),
+    [bulkUpdateFields]
+  )
 
   useLayoutEffect(() => {
     const updateWidths = () => {
@@ -473,7 +581,7 @@ export function DataTable<T, TQuery extends object = object>({
   }
 
   const updateSelectedRowKeys = (nextKeys: Key[]) => {
-    if (bulkDelete === false || !bulkDelete.selectedRowKeys) {
+    if (selectionConfig === false || !selectionConfig.selectedRowKeys) {
       setInternalSelectedRowKeys(nextKeys)
     }
 
@@ -481,8 +589,8 @@ export function DataTable<T, TQuery extends object = object>({
       nextKeys.includes(getRowId(row, rowIndex))
     )
 
-    if (bulkDelete !== false) {
-      bulkDelete.onSelectedRowKeysChange?.(nextKeys, selectedRows)
+    if (selectionConfig !== false) {
+      selectionConfig.onSelectedRowKeysChange?.(nextKeys, selectedRows)
     }
   }
 
@@ -493,6 +601,52 @@ export function DataTable<T, TQuery extends object = object>({
   const handleResetQuery = () => {
     setPage(1)
     setDraftQuery(createQueryState(initialQuery))
+  }
+
+  const activeBulkUpdateField = useMemo(
+    () =>
+      availableBulkUpdateFields.find((field) => field.key === bulkUpdateFieldKey) ??
+      availableBulkUpdateFields[0] ??
+      null,
+    [availableBulkUpdateFields, bulkUpdateFieldKey]
+  )
+
+  const handleOpenBulkUpdate = () => {
+    if (bulkUpdate === false || selectedRowKeys.length === 0) return
+
+    const defaultField = availableBulkUpdateFields[0] ?? null
+    setBulkUpdateFieldKey(defaultField?.key ?? "")
+    setBulkUpdateValue("")
+    setBulkUpdateDialogOpen(true)
+  }
+
+  const handleBulkUpdateSubmit = async () => {
+    if (
+      bulkUpdate === false ||
+      activeBulkUpdateField === null ||
+      updating ||
+      selectedRowKeys.length === 0
+    ) {
+      return
+    }
+
+    setUpdating(true)
+
+    try {
+      await bulkUpdate.onSubmit({
+        clearSelection,
+        fieldKey: activeBulkUpdateField.key,
+        selectedRowKeys,
+        selectedRows,
+        value: bulkUpdateValue,
+      })
+      setBulkUpdateDialogOpen(false)
+      setBulkUpdateValue("")
+      clearSelection()
+      handleRetry()
+    } finally {
+      setUpdating(false)
+    }
   }
 
   const updateDraftQueryValue = <K extends keyof TQuery>(
@@ -708,12 +862,51 @@ export function DataTable<T, TQuery extends object = object>({
     })
   }
 
+  const renderBulkUpdateControl = () => {
+    if (activeBulkUpdateField === null) return null
+
+    if (activeBulkUpdateField.type === "text") {
+      return (
+        <Input
+          value={typeof bulkUpdateValue === "string" ? bulkUpdateValue : ""}
+          onValueChange={setBulkUpdateValue}
+          placeholder={activeBulkUpdateField.placeholder}
+          disabled={updating}
+          type={activeBulkUpdateField.inputType}
+        />
+      )
+    }
+
+    if (activeBulkUpdateField.type === "select") {
+      return (
+        <AdvancedSelect
+          value={typeof bulkUpdateValue === "string" ? bulkUpdateValue : ""}
+          onValueChange={setBulkUpdateValue}
+          list={activeBulkUpdateField.options.map((option) => ({
+            label: option.label,
+            value: option.value,
+            disabled: option.disabled,
+          }))}
+          placeholder={activeBulkUpdateField.placeholder}
+          disabled={updating}
+        />
+      )
+    }
+
+    return activeBulkUpdateField.renderControl(bulkUpdateValue, setBulkUpdateValue, {
+      disabled: updating,
+      selectedRowKeys,
+      selectedRows,
+    })
+  }
+
   return (
-    <div
-      className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-xl flex-col"
-      data-slot="data-table"
-      style={{ height: resolveTableHeight(height) }}
-    >
+    <TooltipProvider>
+      <div
+        className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-xl flex-col"
+        data-slot="data-table"
+        style={{ height: resolveTableHeight(height) }}
+      >
       <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
         {hasQueryFields ? (
           <div className="flex min-w-0 items-start gap-6 overflow-hidden">
@@ -738,26 +931,36 @@ export function DataTable<T, TQuery extends object = object>({
               ) : null}
 
               <div className="flex shrink-0 items-center gap-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  disabled={loading}
-                  onClick={handleResetQuery}
-                >
-                  <RotateCcw aria-hidden="true" className="size-4.5" />
-                  <span className="sr-only">{resolvedResetLabel}</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  disabled={loading}
-                  onClick={handleRetry}
-                >
-                  <RefreshCw aria-hidden="true" className="size-4.5" />
-                  <span className="sr-only">{resolvedRefreshLabel}</span>
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      disabled={loading}
+                      onClick={handleResetQuery}
+                    >
+                      <RotateCcw aria-hidden="true" className="size-4.5" />
+                      <span className="sr-only">{resolvedResetLabel}</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{resolvedResetLabel}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      disabled={loading}
+                      onClick={handleRetry}
+                    >
+                      <RefreshCw aria-hidden="true" className="size-4.5" />
+                      <span className="sr-only">{resolvedRefreshLabel}</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
+                </Tooltip>
               </div>
 
               {trailingQueryFields.map((field) => (
@@ -780,7 +983,7 @@ export function DataTable<T, TQuery extends object = object>({
               ))}
             </div>
 
-            {bulkDelete !== false || resolvedHeaderActions ? (
+            {bulkDelete !== false || bulkUpdate !== false || resolvedHeaderActions ? (
               <div className="flex shrink-0 items-center gap-2">
                 {bulkDelete !== false && rowSelectionEnabled ? (
                   <Button
@@ -791,7 +994,19 @@ export function DataTable<T, TQuery extends object = object>({
                       void handleBulkDelete()
                     }}
                   >
-                    {bulkDelete.label ?? `Delete Selected (${selectedRowKeys.length})`}
+                    {bulkDelete.label ??
+                      resolvedBulkDeleteLabel(selectedRowKeys.length)}
+                  </Button>
+                ) : null}
+                {bulkUpdate !== false ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={selectedRowKeys.length === 0}
+                    onClick={handleOpenBulkUpdate}
+                  >
+                    {bulkUpdate.label ??
+                      resolvedBulkUpdateLabel(selectedRowKeys.length)}
                   </Button>
                 ) : null}
                 {resolvedHeaderActions}
@@ -801,18 +1016,23 @@ export function DataTable<T, TQuery extends object = object>({
         ) : (
           <div className="flex items-center justify-between gap-3">
             <div className="flex shrink-0 items-center gap-3">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={loading}
-                onClick={handleRetry}
-              >
-                <RefreshCw aria-hidden="true" className="size-4.5" />
-                <span className="sr-only">{resolvedRefreshLabel}</span>
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    disabled={loading}
+                    onClick={handleRetry}
+                  >
+                    <RefreshCw aria-hidden="true" className="size-4.5" />
+                    <span className="sr-only">{resolvedRefreshLabel}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
+              </Tooltip>
             </div>
-            {bulkDelete !== false || resolvedHeaderActions ? (
+            {bulkDelete !== false || bulkUpdate !== false || resolvedHeaderActions ? (
               <div className="flex min-w-0 items-center justify-end gap-2">
                 {bulkDelete !== false && rowSelectionEnabled ? (
                   <Button
@@ -823,7 +1043,19 @@ export function DataTable<T, TQuery extends object = object>({
                       void handleBulkDelete()
                     }}
                   >
-                    {bulkDelete.label ?? `Delete Selected (${selectedRowKeys.length})`}
+                    {bulkDelete.label ??
+                      resolvedBulkDeleteLabel(selectedRowKeys.length)}
+                  </Button>
+                ) : null}
+                {bulkUpdate !== false ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={selectedRowKeys.length === 0}
+                    onClick={handleOpenBulkUpdate}
+                  >
+                    {bulkUpdate.label ??
+                      resolvedBulkUpdateLabel(selectedRowKeys.length)}
                   </Button>
                 ) : null}
                 {resolvedHeaderActions}
@@ -1064,6 +1296,73 @@ export function DataTable<T, TQuery extends object = object>({
           </div>
         </div>
       </div>
-    </div>
+
+      {bulkUpdate !== false ? (
+        <Dialog open={bulkUpdateDialogOpen} onOpenChange={setBulkUpdateDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{bulkUpdate.title ?? resolvedBulkUpdateTitle}</DialogTitle>
+              <DialogDescription>
+                {bulkUpdate.description ??
+                  resolvedBulkUpdateDescription(selectedRowKeys.length)}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium">
+                  {resolvedBulkUpdateFieldLabel}
+                </span>
+                <AdvancedSelect
+                  value={activeBulkUpdateField?.key ?? ""}
+                  onValueChange={(value) => {
+                    setBulkUpdateFieldKey(value)
+                    setBulkUpdateValue("")
+                  }}
+                  list={availableBulkUpdateFields.map((field) => ({
+                    label: field.label,
+                    value: field.key,
+                  }))}
+                  disabled={updating}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-medium">
+                  {resolvedBulkUpdateValueLabel}
+                </span>
+                {renderBulkUpdateControl()}
+                {activeBulkUpdateField?.description ? (
+                  <span className="text-xs text-muted-foreground">
+                    {activeBulkUpdateField.description}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={updating}
+                onClick={() => setBulkUpdateDialogOpen(false)}
+              >
+                {resolvedBulkUpdateCancelLabel}
+              </Button>
+              <Button
+                type="button"
+                disabled={activeBulkUpdateField === null || updating}
+                onClick={() => {
+                  void handleBulkUpdateSubmit()
+                }}
+              >
+                {resolvedBulkUpdateApplyLabel}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : null}
+      </div>
+    </TooltipProvider>
   )
 }
