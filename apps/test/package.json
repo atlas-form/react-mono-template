@@ -17,7 +17,6 @@
     "@workspace/services": "workspace:*",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-components": "workspace:*",
-    "@workspace/ui-data": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "i18next": "catalog:",
     "react": "catalog:",

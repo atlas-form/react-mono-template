@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import {
   DataTable,
+  type DateRangeValue,
   type DataTableFetchResult,
   type DataTableLocaleText,
   type DataTableSortState,
-} from "@workspace/ui-data"
-import type { DateRangeValue } from "@workspace/app-components"
+} from "@workspace/app-components"
 
 interface CustomerRow {
   id: string
@@ -280,16 +280,6 @@ export default function DataTablePage() {
               { label: "Name", value: "name" },
               { label: "Region", value: "region" },
               { label: "Owner", value: "owner" },
-            ],
-          },
-          {
-            key: "status",
-            type: "select",
-            label: "Status",
-            placeholder: "All status",
-            options: [
-              { label: "Active", value: "Active" },
-              { label: "Paused", value: "Paused" },
             ],
           },
           {

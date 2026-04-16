@@ -17,10 +17,6 @@ export default defineConfig(({ mode }) => {
       extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
       alias: {
         "@": path.resolve(__dirname, "src"),
-        "@workspace/ui-data": path.resolve(
-          __dirname,
-          "../../packages/ui-data/src/index.ts"
-        ),
       },
     },
     build: {

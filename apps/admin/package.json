@@ -16,7 +16,6 @@
     "@workspace/app-components": "workspace:*",
     "@workspace/mock": "workspace:*",
     "@workspace/ui-components": "workspace:*",
-    "@workspace/ui-data": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "@workspace/services": "workspace:*",
     "@hookform/resolvers": "catalog:",

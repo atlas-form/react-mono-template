@@ -19,6 +19,19 @@ export { DateTimePicker } from "./components/date-time-picker"
 export { DateRangePicker } from "./components/date-time-picker"
 export { MultipleDatePicker } from "./components/date-time-picker"
 export { TimePicker } from "./components/date-time-picker"
+export { DataTable } from "./components/data-table"
+export type {
+  DataTableBuiltInQueryField,
+  DataTableColumn,
+  DataTableFetchParams,
+  DataTableFetchResult,
+  DataTableLocaleText,
+  DataTableProps,
+  DataTableQueryField,
+  DataTableSelectOption,
+  DataTableSortDirection,
+  DataTableSortState,
+} from "./components/data-table"
 export type {
   DatePickerProps,
   DateTimePickerProps,

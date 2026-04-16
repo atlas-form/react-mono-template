@@ -1,5 +1,5 @@
 import { Badge } from "@workspace/ui-components/stable/badge"
-import { DataTable, type DataTableFetchResult } from "@workspace/ui-data"
+import { DataTable, type DataTableFetchResult } from "@workspace/app-components"
 
 import { DemoSection } from "./shared"
 
