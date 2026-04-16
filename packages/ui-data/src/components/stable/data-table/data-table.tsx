@@ -16,7 +16,9 @@ import { DateRangePicker, type DateRangeValue } from "@workspace/app-components"
 import {
   Fragment,
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
   type Key,
   type ReactNode,
@@ -32,7 +34,7 @@ export interface DataTableColumn<T> {
   header: ReactNode
   renderCell: (row: T, rowIndex: number) => ReactNode
   width?: number | string
-  sticky?: "left"
+  sticky?: "left" | "right"
 }
 
 export interface DataTableSelectOption {
@@ -100,6 +102,8 @@ export interface DataTableFetchParams<TQuery = object> {
 
 export interface DataTableProps<T, TQuery extends object = object> {
   columns: readonly DataTableColumn<T>[]
+  fixedLeftColumns?: number
+  fixedRightColumns?: number
   fetchData: (
     params: DataTableFetchParams<TQuery>
   ) => Promise<DataTableFetchResult<T>>
@@ -123,6 +127,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
+const DEFAULT_STICKY_COLUMN_WIDTH = 160
 
 function createQueryState<TQuery extends object>(initialQuery?: TQuery) {
   return { ...(initialQuery ?? {}) } as TQuery
@@ -151,12 +156,52 @@ function resolveColumnMinWidth(column: DataTableColumn<object>) {
   return typeof column.width === "number" ? `${column.width}px` : column.width
 }
 
-function getStickyColumnStyles<T>(column: DataTableColumn<T>) {
-  if (column.sticky !== "left") return undefined
+function resolveColumnPixelWidth(column: DataTableColumn<object>) {
+  if (typeof column.width === "number") return column.width
+  if (typeof column.width !== "string") return undefined
+
+  const matched = /^(\d+(?:\.\d+)?)px$/.exec(column.width.trim())
+  return matched ? Number(matched[1]) : undefined
+}
+
+function isLeftStickyColumn<T>(
+  column: DataTableColumn<T>,
+  columnIndex: number,
+  fixedLeftColumns: number
+) {
+  return column.sticky === "left" || columnIndex < fixedLeftColumns
+}
+
+function isRightStickyColumn<T>(
+  column: DataTableColumn<T>,
+  columnIndex: number,
+  columnCount: number,
+  fixedLeftColumns: number,
+  fixedRightColumns: number
+) {
+  if (column.sticky === "left" || columnIndex < fixedLeftColumns) {
+    return false
+  }
+
+  return (
+    column.sticky === "right" ||
+    (fixedRightColumns > 0 && columnIndex >= columnCount - fixedRightColumns)
+  )
+}
+
+function getStickyColumnStyles({
+  leftOffset,
+  rightOffset,
+}: {
+  leftOffset?: number
+  rightOffset?: number
+}) {
+  if (leftOffset === undefined && rightOffset === undefined) return undefined
 
   return {
-    left: 0,
+    ...(leftOffset !== undefined ? { left: `${leftOffset}px` } : null),
     position: "sticky" as const,
+    ...(rightOffset !== undefined ? { right: `${rightOffset}px` } : null),
   }
 }
 
@@ -169,6 +214,8 @@ function getQueryFieldWidth(field: DataTableQueryField<object>) {
 
 export function DataTable<T, TQuery extends object = object>({
   columns,
+  fixedLeftColumns = 0,
+  fixedRightColumns = 0,
   fetchData,
   getRowId,
   caption,
@@ -195,9 +242,11 @@ export function DataTable<T, TQuery extends object = object>({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<unknown>(null)
   const [reloadToken, setReloadToken] = useState(0)
+  const [measuredColumnWidths, setMeasuredColumnWidths] = useState<number[]>([])
   const [draftQuery, setDraftQuery] = useState<TQuery>(() =>
     createQueryState(initialQuery)
   )
+  const headerCellRefs = useRef<Array<HTMLTableCellElement | null>>([])
 
   const safePageSizeOptions = useMemo(() => {
     const values = new Set<number>([...pageSizeOptions, initialPageSize])
@@ -207,6 +256,88 @@ export function DataTable<T, TQuery extends object = object>({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const hasRows = rows.length > 0
   const hasQueryFields = queryFields.length > 0
+
+  useLayoutEffect(() => {
+    const updateWidths = () => {
+      setMeasuredColumnWidths(
+        columns.map((_, columnIndex) => {
+          const cell = headerCellRefs.current[columnIndex]
+          return cell?.getBoundingClientRect().width ?? 0
+        })
+      )
+    }
+
+    updateWidths()
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateWidths)
+
+      return () => {
+        window.removeEventListener("resize", updateWidths)
+      }
+    }
+
+    const observer = new ResizeObserver(() => {
+      updateWidths()
+    })
+
+    headerCellRefs.current.forEach((cell) => {
+      if (cell) observer.observe(cell)
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [columns])
+
+  const stickyLeftOffsets = useMemo(() => {
+    let currentLeft = 0
+
+    return columns.map((column, columnIndex) => {
+      if (!isLeftStickyColumn(column, columnIndex, fixedLeftColumns)) {
+        return undefined
+      }
+
+      const leftOffset = currentLeft
+      const columnWidth =
+        measuredColumnWidths[columnIndex] ||
+        resolveColumnPixelWidth(column as DataTableColumn<object>) ||
+        DEFAULT_STICKY_COLUMN_WIDTH
+      currentLeft += columnWidth
+
+      return leftOffset
+    })
+  }, [columns, fixedLeftColumns, measuredColumnWidths])
+
+  const stickyRightOffsets = useMemo(() => {
+    let currentRight = 0
+    const offsets = Array<number | undefined>(columns.length).fill(undefined)
+
+    for (let columnIndex = columns.length - 1; columnIndex >= 0; columnIndex -= 1) {
+      const column = columns[columnIndex]
+
+      if (
+        !isRightStickyColumn(
+          column,
+          columnIndex,
+          columns.length,
+          fixedLeftColumns,
+          fixedRightColumns
+        )
+      ) {
+        continue
+      }
+
+      const columnWidth =
+        measuredColumnWidths[columnIndex] ||
+        resolveColumnPixelWidth(column as DataTableColumn<object>) ||
+        DEFAULT_STICKY_COLUMN_WIDTH
+      offsets[columnIndex] = currentRight
+      currentRight += columnWidth
+    }
+
+    return offsets
+  }, [columns, fixedLeftColumns, fixedRightColumns, measuredColumnWidths])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -409,24 +540,36 @@ export function DataTable<T, TQuery extends object = object>({
             {caption ? <TableCaption>{caption}</TableCaption> : null}
             <TableHeader>
               <TableRow>
-                {columns.map((column) => (
-                  <TableHead
-                    key={column.key}
-                    className={column.sticky === "left"
-                      ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
-                      : "sticky top-0 z-10 bg-[var(--surface)]"}
-                    style={
-                      {
-                        ...getStickyColumnStyles(column),
+                {columns.map((column, columnIndex) => {
+                  const leftOffset = stickyLeftOffsets[columnIndex]
+                  const rightOffset = stickyRightOffsets[columnIndex]
+                  const isStickyLeft = leftOffset !== undefined
+                  const isStickyRight = rightOffset !== undefined
+
+                  return (
+                    <TableHead
+                      key={column.key}
+                      ref={(element) => {
+                        headerCellRefs.current[columnIndex] = element
+                      }}
+                      className={
+                        isStickyLeft
+                          ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                          : isStickyRight
+                            ? "sticky top-0 right-0 z-20 bg-[var(--surface)] shadow-[inset_1px_0_0_var(--border)]"
+                          : "sticky top-0 z-10 bg-[var(--surface)]"
+                      }
+                      style={{
+                        ...getStickyColumnStyles({ leftOffset, rightOffset }),
                         minWidth: resolveColumnMinWidth(
                           column as DataTableColumn<object>
                         ),
-                      }
-                    }
-                  >
-                    {column.header}
-                  </TableHead>
-                ))}
+                      }}
+                    >
+                      {column.header}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             </TableHeader>
 
@@ -470,22 +613,29 @@ export function DataTable<T, TQuery extends object = object>({
               {!loading && !error
                 ? rows.map((row: T, rowIndex: number) => (
                     <TableRow key={getRowId(row, rowIndex)}>
-                      {columns.map((column) => (
-                      <TableCell
-                        key={column.key}
-                        className={column.sticky === "left"
-                          ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
-                          : undefined}
-                        style={{
-                          ...getStickyColumnStyles(column),
-                          minWidth: resolveColumnMinWidth(
-                            column as DataTableColumn<object>
-                          ),
-                        }}
-                      >
-                        <Fragment>{column.renderCell(row, rowIndex)}</Fragment>
-                      </TableCell>
-                    ))}
+                      {columns.map((column, columnIndex) => (
+                        <TableCell
+                          key={column.key}
+                          className={
+                            stickyLeftOffsets[columnIndex] !== undefined
+                              ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                              : stickyRightOffsets[columnIndex] !== undefined
+                                ? "sticky right-0 z-10 bg-[var(--background)] shadow-[inset_1px_0_0_var(--border)]"
+                              : undefined
+                          }
+                          style={{
+                            ...getStickyColumnStyles({
+                              leftOffset: stickyLeftOffsets[columnIndex],
+                              rightOffset: stickyRightOffsets[columnIndex],
+                            }),
+                            minWidth: resolveColumnMinWidth(
+                              column as DataTableColumn<object>
+                            ),
+                          }}
+                        >
+                          <Fragment>{column.renderCell(row, rowIndex)}</Fragment>
+                        </TableCell>
+                      ))}
                     </TableRow>
                   ))
                 : null}

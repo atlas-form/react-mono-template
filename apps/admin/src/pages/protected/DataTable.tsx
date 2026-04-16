@@ -83,12 +83,13 @@ export default function DataTablePage() {
     <div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <DataTable<CustomerRow, CustomerTableQuery>
         caption="Customer directory"
+        // fixedLeftColumns={2}
+        // fixedRightColumns={3}
         columns={[
           {
             key: "seq",
             header: "#",
-            width: 64,
-            sticky: "left",
+            width: 48,
             renderCell: (_row: CustomerRow, rowIndex: number) => rowIndex + 1,
           },
           {
@@ -110,7 +111,9 @@ export default function DataTablePage() {
             key: "status",
             header: "Status",
             renderCell: (row: CustomerRow) => (
-              <Badge variant={row.status === "Active" ? "default" : "secondary"}>
+              <Badge
+                variant={row.status === "Active" ? "default" : "secondary"}
+              >
                 {row.status}
               </Badge>
             ),
@@ -174,7 +177,8 @@ export default function DataTablePage() {
           {
             key: "storage",
             header: "Storage",
-            renderCell: (row: CustomerRow) => `${Number(row.id.slice(-2)) % 80} GB`,
+            renderCell: (row: CustomerRow) =>
+              `${Number(row.id.slice(-2)) % 80} GB`,
           },
           {
             key: "health",
@@ -204,7 +208,8 @@ export default function DataTablePage() {
           {
             key: "score",
             header: "Score",
-            renderCell: (row: CustomerRow) => 60 + (Number(row.id.slice(-2)) % 40),
+            renderCell: (row: CustomerRow) =>
+              60 + (Number(row.id.slice(-2)) % 40),
           },
         ]}
         fetchData={fetchData}
