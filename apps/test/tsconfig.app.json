@@ -27,6 +27,7 @@
       "@/*": ["./src/*"],
       "@workspace/app-components": ["../../packages/app-components/src/index.ts"],
       "@workspace/app-components/*": ["../../packages/app-components/src/*"],
+      "@workspace/shared-i18n": ["../../packages/shared-i18n/src/index.ts"],
       "@workspace/ui-icon": ["../../packages/ui-icon/src/index.ts"],
       "@workspace/ui-icon/*": ["../../packages/ui-icon/src/*"],
       "@workspace/ui-components": ["../../packages/ui-components/src/index.ts"],

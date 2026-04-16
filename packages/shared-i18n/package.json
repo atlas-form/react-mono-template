@@ -1,0 +1,15 @@
+{
+  "name": "@workspace/shared-i18n",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

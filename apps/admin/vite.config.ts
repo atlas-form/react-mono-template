@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => {
       extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
       alias: {
         "@": path.resolve(__dirname, "src"),
+        "@workspace/shared-i18n": path.resolve(
+          __dirname,
+          "../../packages/shared-i18n/src/index.ts"
+        ),
       },
     },
     build: {

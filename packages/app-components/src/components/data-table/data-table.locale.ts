@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import type { PickerLanguage } from "../date-time-picker/shared"
+import type { SupportedLanguage } from "@workspace/shared-i18n"
 
 export interface DataTableCopy {
   emptyText: string
@@ -22,7 +22,7 @@ export interface DataTableCopy {
   bulkUpdateApplyLabel: string
 }
 
-const DATA_TABLE_COPY: Record<PickerLanguage, DataTableCopy> = {
+const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
   en: {
     emptyText: "No data available.",
     errorText: "Failed to load data.",
@@ -65,6 +65,6 @@ const DATA_TABLE_COPY: Record<PickerLanguage, DataTableCopy> = {
   },
 }
 
-export function getDataTableCopy(language: PickerLanguage) {
+export function getDataTableCopy(language: SupportedLanguage) {
   return DATA_TABLE_COPY[language]
 }

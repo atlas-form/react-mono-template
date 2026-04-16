@@ -12,6 +12,10 @@ export default defineConfig({
     extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@workspace/shared-i18n": path.resolve(
+        __dirname,
+        "../../packages/shared-i18n/src/index.ts"
+      ),
       "@workspace/ui-icon": path.resolve(
         __dirname,
         "../../packages/ui-icon/src/index.ts"

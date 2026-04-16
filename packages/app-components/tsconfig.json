@@ -10,6 +10,7 @@
     "noEmit": true,
     "paths": {
       "@workspace/app-components/*": ["./src/*"],
+      "@workspace/shared-i18n": ["../shared-i18n/src/index.ts"],
       "@workspace/ui-components": ["../ui-components/src/index.ts"],
       "@workspace/ui-components/*": ["../ui-components/src/*"],
       "@workspace/ui-core": ["../ui-core/src/index.ts"],
