@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui-components/stable/badge"
+import { Button } from "@workspace/ui-components"
 import {
   DataTable,
   type DateRangeValue,
@@ -37,8 +38,6 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
 
 interface CustomerTableQuery {
   keyword: string
-  searchField: "" | "id" | "name" | "region" | "owner"
-  status: "" | CustomerRow["status"]
   createdAt?: DateRangeValue
 }
 
@@ -64,16 +63,7 @@ export default function DataTablePage() {
       const filteredRows = customerRows.filter((row) => {
         const keyword = query.keyword.trim().toLowerCase()
         const owner = owners[Number(row.id.slice(-1)) % owners.length]
-        const searchCandidates =
-          query.searchField === ""
-            ? [row.id, row.name, row.region, owner]
-            : query.searchField === "id"
-              ? [row.id]
-              : query.searchField === "name"
-                ? [row.name]
-                : query.searchField === "region"
-                  ? [row.region]
-                  : [owner]
+        const searchCandidates = [row.id, row.name, row.region, owner]
 
         const matchesKeyword =
           keyword.length === 0 ||
@@ -81,15 +71,13 @@ export default function DataTablePage() {
             candidate.toLowerCase().includes(keyword)
           )
 
-        const matchesStatus = query.status === "" || row.status === query.status
-
         const from = query.createdAt?.from
         const to = query.createdAt?.to
         const matchesCreatedAt =
           (!from || row.createdAt >= startOfDay(from)) &&
           (!to || row.createdAt <= endOfDay(to))
 
-        return matchesKeyword && matchesStatus && matchesCreatedAt
+        return matchesKeyword && matchesCreatedAt
       })
 
       const sortedRows = [...filteredRows].sort((left, right) => {
@@ -260,11 +248,19 @@ export default function DataTablePage() {
         fetchData={fetchData}
         getRowId={(row: CustomerRow) => row.id}
         height="100%"
+        headerActions={
+          <>
+            <Button type="button" variant="outline">
+              Add
+            </Button>
+            <Button type="button" variant="outline">
+              Delete
+            </Button>
+          </>
+        }
         initialPageSize={15}
         initialQuery={{
           keyword: "",
-          searchField: "",
-          status: "",
           createdAt: undefined,
         }}
         queryFields={[
@@ -273,14 +269,6 @@ export default function DataTablePage() {
             type: "search",
             label: "Keyword",
             placeholder: "Search customers",
-            fieldKey: "searchField",
-            fieldPlaceholder: "All fields",
-            fieldOptions: [
-              { label: "ID", value: "id" },
-              { label: "Name", value: "name" },
-              { label: "Region", value: "region" },
-              { label: "Owner", value: "owner" },
-            ],
           },
           {
             key: "createdAt",

@@ -152,6 +152,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
   onError?: (error: unknown) => void
   initialQuery?: TQuery
   queryFields?: readonly DataTableQueryField<TQuery>[]
+  headerActions?: ReactNode
   height?: number | string
   refreshLabel?: string
   resetLabel?: string
@@ -240,7 +241,7 @@ function getStickyColumnStyles({
 
 function getQueryFieldWidth(field: DataTableQueryField<object>) {
   if (field.type === "search") {
-    return field.fieldOptions?.length ? 460 : 320
+    return field.fieldOptions?.length ? 380 : 280
   }
   if (field.type === "text") return 320
   if (field.type === "date-range") return 240
@@ -267,6 +268,7 @@ export function DataTable<T, TQuery extends object = object>({
   onError,
   initialQuery,
   queryFields = [],
+  headerActions,
   height,
   refreshLabel = "Refresh data",
   resetLabel = "Reset filters",
@@ -295,6 +297,11 @@ export function DataTable<T, TQuery extends object = object>({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const hasRows = rows.length > 0
   const hasQueryFields = queryFields.length > 0
+  const leadingSearchField =
+    queryFields.find((field) => field.type === "search") ?? null
+  const trailingQueryFields = leadingSearchField
+    ? queryFields.filter((field) => field !== leadingSearchField)
+    : queryFields
   const resolvedEmptyText = localeText?.emptyText ?? emptyText
   const resolvedErrorText = localeText?.errorText ?? errorText
   const resolvedLoadingText = localeText?.loadingText ?? loadingText
@@ -614,11 +621,50 @@ export function DataTable<T, TQuery extends object = object>({
       <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
         {hasQueryFields ? (
           <div className="flex min-w-0 items-start gap-6 overflow-hidden">
-            <div
-              className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto"
-              data-slot="data-table-query-fields"
-            >
-              {queryFields.map((field) => (
+            <div className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto">
+              {leadingSearchField ? (
+                <label
+                  key={leadingSearchField.key}
+                  className="flex min-w-[180px] shrink-0 flex-col gap-1"
+                  style={{
+                    width: `min(100%, ${getQueryFieldWidth(
+                      leadingSearchField as DataTableQueryField<object>
+                    )}px)`,
+                  }}
+                >
+                  {renderQueryFieldControl(leadingSearchField)}
+                  {leadingSearchField.description ? (
+                    <span className="text-xs leading-4 text-muted-foreground">
+                      {leadingSearchField.description}
+                    </span>
+                  ) : null}
+                </label>
+              ) : null}
+
+              <div className="flex shrink-0 items-center gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={loading}
+                  onClick={handleResetQuery}
+                >
+                  <RotateCcw aria-hidden="true" className="size-4.5" />
+                  <span className="sr-only">{resolvedResetLabel}</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={loading}
+                  onClick={handleRetry}
+                >
+                  <RefreshCw aria-hidden="true" className="size-4.5" />
+                  <span className="sr-only">{resolvedRefreshLabel}</span>
+                </Button>
+              </div>
+
+              {trailingQueryFields.map((field) => (
                 <label
                   key={field.key}
                   className="flex min-w-[180px] shrink-0 flex-col gap-1"
@@ -638,17 +684,15 @@ export function DataTable<T, TQuery extends object = object>({
               ))}
             </div>
 
+            {headerActions ? (
+              <div className="flex shrink-0 items-center gap-2">
+                {headerActions}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3">
             <div className="flex shrink-0 items-center gap-3">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={loading}
-                onClick={handleResetQuery}
-              >
-                <RotateCcw aria-hidden="true" className="size-4.5" />
-                <span className="sr-only">{resolvedResetLabel}</span>
-              </Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -660,19 +704,11 @@ export function DataTable<T, TQuery extends object = object>({
                 <span className="sr-only">{resolvedRefreshLabel}</span>
               </Button>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-end">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              disabled={loading}
-              onClick={handleRetry}
-            >
-              <RefreshCw aria-hidden="true" className="size-4.5" />
-              <span className="sr-only">{resolvedRefreshLabel}</span>
-            </Button>
+            {headerActions ? (
+              <div className="flex min-w-0 items-center justify-end gap-2">
+                {headerActions}
+              </div>
+            ) : null}
           </div>
         )}
       </div>
