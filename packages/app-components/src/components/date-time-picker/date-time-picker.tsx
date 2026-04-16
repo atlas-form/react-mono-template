@@ -1,6 +1,10 @@
 import { useId, useMemo, useState } from "react"
 import { CalendarDays, Clock3, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import {
+  getDateTimePickerCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -10,7 +14,7 @@ import {
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
 import { Time, type TimeValue } from "@workspace/ui-components/stable/time"
-import { normalizeLanguage, pad } from "./shared"
+import { pad } from "./shared"
 
 export interface DateTimePickerProps {
   value?: Date | null
@@ -36,33 +40,6 @@ const DATE_TIME_PICKER_PRESETS = [
   { key: "yearStart" },
 ] as const
 
-const DATE_TIME_PICKER_COPY = {
-  en: {
-    placeholder: "Select date time",
-    clearLabel: "Clear date time",
-    timeTitle: "Time",
-    timeAria: "Date time picker time",
-    now: "Now",
-    today: "Today",
-    yesterday: "Yesterday",
-    weekStart: "Week Start",
-    monthStart: "Month Start",
-    yearStart: "Year Start",
-  },
-  zhCN: {
-    placeholder: "选择日期时间",
-    clearLabel: "清除日期时间",
-    timeTitle: "时间",
-    timeAria: "日期时间选择器时间",
-    now: "此刻",
-    today: "今天",
-    yesterday: "昨天",
-    weekStart: "本周",
-    monthStart: "月初",
-    yearStart: "年初",
-  },
-} as const
-
 function formatDateTime(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
@@ -81,7 +58,7 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
-  const copy = DATE_TIME_PICKER_COPY[language]
+  const copy = getDateTimePickerCopy(language)
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value)
@@ -206,6 +183,7 @@ export function DateTimePicker({
         <div className="flex flex-col md:flex-row">
           <Calendar
             mode="single"
+            locale={language}
             value={value ?? undefined}
             onValueChange={handleDateChange}
             captionMode={calendarProps?.captionMode ?? "label"}

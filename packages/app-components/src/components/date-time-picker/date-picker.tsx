@@ -1,6 +1,10 @@
 import { useId, useState } from "react"
 import { CalendarDays, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import {
+  getDatePickerCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -9,7 +13,6 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
-import { normalizeLanguage } from "./shared"
 
 type CalendarSingleValue = Date | undefined
 
@@ -21,17 +24,6 @@ export interface DatePickerProps {
   className?: string
   calendarProps?: Omit<CalendarProps, "mode" | "value" | "onValueChange">
 }
-
-const DATE_PICKER_COPY = {
-  en: {
-    placeholder: "Select date",
-    clearLabel: "Clear date",
-  },
-  zhCN: {
-    placeholder: "选择日期",
-    clearLabel: "清除日期",
-  },
-} as const
 
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
@@ -51,7 +43,7 @@ export function DatePicker({
 }: DatePickerProps) {
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
-  const copy = DATE_PICKER_COPY[language]
+  const copy = getDatePickerCopy(language)
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const resolvedPlaceholder = placeholder ?? copy.placeholder
@@ -107,6 +99,7 @@ export function DatePicker({
         <Calendar
           mode="single"
           value={value}
+          locale={language}
           onValueChange={(nextValue) => {
             onValueChange?.(nextValue instanceof Date ? nextValue : undefined)
             setOpen(false)

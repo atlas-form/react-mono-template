@@ -1,6 +1,10 @@
 import { useId, useMemo, useState } from "react"
 import { CalendarRange, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import {
+  getDateRangePickerCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -9,7 +13,6 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
-import { normalizeLanguage } from "./shared"
 
 export interface DateRangeValue {
   from: Date | undefined
@@ -34,19 +37,6 @@ export interface DateRangePickerProps {
   >
 }
 
-const DATE_RANGE_PICKER_COPY = {
-  en: {
-    placeholder: "Select date range",
-    endDate: "End date",
-    clearLabel: "Clear date range",
-  },
-  zhCN: {
-    placeholder: "选择日期范围",
-    endDate: "结束日期",
-    clearLabel: "清除日期范围",
-  },
-} as const
-
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
@@ -65,7 +55,7 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
-  const copy = DATE_RANGE_PICKER_COPY[language]
+  const copy = getDateRangePickerCopy(language)
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value?.from || value?.to)
@@ -132,6 +122,7 @@ export function DateRangePicker({
         <Calendar
           mode="range"
           numberOfMonths={2}
+          locale={language}
           value={value}
           onValueChange={(nextValue) => {
             const resolvedValue = isDateRangeValue(nextValue)

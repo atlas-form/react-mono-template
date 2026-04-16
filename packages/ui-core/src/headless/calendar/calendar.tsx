@@ -1,5 +1,9 @@
 import * as React from "react"
 import {
+  getCalendarCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
+import {
   DayPicker,
   type DayButton,
   type ClassNames,
@@ -62,6 +66,9 @@ function Calendar({
     props: Record<string, unknown>
   }) => React.ReactElement
 }) {
+  const localeLanguage = normalizeLanguage(locale?.code)
+  const copy = getCalendarCopy(localeLanguage)
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -126,6 +133,7 @@ function Calendar({
           <CalendarNav
             {...props}
             buttonVariant={buttonVariant}
+            copy={copy}
             renderChevron={renderChevron}
           />
         ),
@@ -270,10 +278,12 @@ function CalendarNav({
   onPreviousClick,
   onNextClick,
   buttonVariant,
+  copy,
   renderChevron,
   ...props
 }: React.ComponentProps<NonNullable<CustomComponents["Nav"]>> & {
   buttonVariant: React.ComponentProps<typeof Button>["variant"]
+  copy: ReturnType<typeof getCalendarCopy>
   renderChevron?: (params: {
     orientation: "left" | "right" | "down"
     className?: string
@@ -304,7 +314,7 @@ function CalendarNav({
           variant={buttonVariant}
           className={classNames.button_previous}
           disabled={!canGoToPreviousYear}
-          aria-label="Go to previous year"
+          aria-label={copy.previousYearLabel}
           onClick={() => {
             if (!canGoToPreviousYear) {
               return
@@ -323,7 +333,7 @@ function CalendarNav({
           variant={buttonVariant}
           className={classNames.button_previous}
           disabled={!previousMonth}
-          aria-label="Go to previous month"
+          aria-label={copy.previousMonthLabel}
           onClick={onPreviousClick}
         >
           {renderChevron
@@ -348,7 +358,7 @@ function CalendarNav({
           variant={buttonVariant}
           className={classNames.button_next}
           disabled={!nextMonth}
-          aria-label="Go to next month"
+          aria-label={copy.nextMonthLabel}
           onClick={onNextClick}
         >
           {renderChevron
@@ -370,7 +380,7 @@ function CalendarNav({
           variant={buttonVariant}
           className={classNames.button_next}
           disabled={!canGoToNextYear}
-          aria-label="Go to next year"
+          aria-label={copy.nextYearLabel}
           onClick={() => {
             if (!canGoToNextYear) {
               return

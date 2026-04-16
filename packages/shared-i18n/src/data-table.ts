@@ -1,6 +1,4 @@
-import type { ReactNode } from "react"
-
-import type { SupportedLanguage } from "@workspace/shared-i18n"
+import type { SupportedLanguage } from "./index"
 
 export interface DataTableCopy {
   emptyText: string
@@ -12,10 +10,10 @@ export interface DataTableCopy {
   sortAscendingLabel: string
   sortDescendingLabel: string
   clearSortLabel: string
-  bulkDeleteLabel: (count: number) => ReactNode
-  bulkUpdateLabel: (count: number) => ReactNode
+  bulkDeleteLabel: (count: number) => string
+  bulkUpdateLabel: (count: number) => string
   bulkUpdateTitle: string
-  bulkUpdateDescription: (count: number) => ReactNode
+  bulkUpdateDescription: (count: number) => string
   bulkUpdateFieldLabel: string
   bulkUpdateValueLabel: string
   bulkUpdateCancelLabel: string

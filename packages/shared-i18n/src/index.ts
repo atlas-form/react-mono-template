@@ -11,3 +11,22 @@ export function normalizeLanguage(
 
   return "en"
 }
+
+export { getDataTableCopy } from "./data-table"
+export type { DataTableCopy } from "./data-table"
+export {
+  getCalendarCopy,
+  getDatePickerCopy,
+  getDateRangePickerCopy,
+  getDateTimePickerCopy,
+  getMultipleDatePickerCopy,
+  getTimePickerCopy,
+} from "./date-time-picker"
+export type {
+  CalendarCopy,
+  DatePickerCopy,
+  DateRangePickerCopy,
+  DateTimePickerCopy,
+  MultipleDatePickerCopy,
+  TimePickerCopy,
+} from "./date-time-picker"

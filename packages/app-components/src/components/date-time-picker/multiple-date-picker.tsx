@@ -1,5 +1,9 @@
 import { useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
+import {
+  getMultipleDatePickerCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -8,7 +12,6 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Calendar, type CalendarProps } from "@workspace/ui-components/stable/calendar"
-import { normalizeLanguage } from "./shared"
 
 type CalendarMultipleValue = Date[] | undefined
 
@@ -23,17 +26,6 @@ export interface MultipleDatePickerProps {
     "mode" | "value" | "onValueChange" | "numberOfMonths"
   >
 }
-
-const MULTIPLE_DATE_PICKER_COPY = {
-  en: {
-    placeholder: "Select multiple dates",
-    selectedDays: (count: number) => `${count} days selected`,
-  },
-  zhCN: {
-    placeholder: "选择多个日期",
-    selectedDays: (count: number) => `已选择 ${count} 天`,
-  },
-} as const
 
 function formatDateList(values: Date[]) {
   return values
@@ -56,7 +48,7 @@ export function MultipleDatePicker({
 }: MultipleDatePickerProps) {
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
-  const copy = MULTIPLE_DATE_PICKER_COPY[language]
+  const copy = getMultipleDatePickerCopy(language)
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const resolvedPlaceholder = placeholder ?? copy.placeholder
@@ -100,6 +92,7 @@ export function MultipleDatePicker({
       >
         <Calendar
           mode="multiple"
+          locale={language}
           value={value}
           onValueChange={(nextValue) => {
             onValueChange?.(Array.isArray(nextValue) ? nextValue : undefined)

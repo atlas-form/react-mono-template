@@ -1,6 +1,10 @@
 import { useId, useState, type ChangeEventHandler } from "react"
 import { Clock3, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import {
+  getTimePickerCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,
@@ -9,7 +13,6 @@ import {
 } from "@workspace/ui-core/components/popover"
 import { cn } from "@workspace/ui-core/lib/utils.js"
 import { Time, type TimeValue } from "@workspace/ui-components/stable/time"
-import { normalizeLanguage } from "./shared"
 
 export interface TimePickerProps {
   label?: string
@@ -20,19 +23,6 @@ export interface TimePickerProps {
   onValueChange?: (value: string | null) => void
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
-
-const TIME_PICKER_COPY = {
-  en: {
-    placeholder: "Select time",
-    clearLabel: "Clear time",
-    ariaLabel: "Time",
-  },
-  zhCN: {
-    placeholder: "选择时间",
-    clearLabel: "清除时间",
-    ariaLabel: "时间",
-  },
-} as const
 
 export function TimePicker({
   label,
@@ -45,7 +35,7 @@ export function TimePicker({
 }: TimePickerProps) {
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
-  const copy = TIME_PICKER_COPY[language]
+  const copy = getTimePickerCopy(language)
   const [open, setOpen] = useState(false)
   const triggerId = useId()
   const hasValue = Boolean(value)

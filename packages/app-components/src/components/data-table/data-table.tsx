@@ -24,13 +24,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@workspace/ui-components"
-import { normalizeLanguage } from "@workspace/shared-i18n"
+import {
+  getDataTableCopy,
+  normalizeLanguage,
+} from "@workspace/shared-i18n"
 import { RefreshCw, RotateCcw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type Key, type ReactNode } from "react"
 
 import { DateRangePicker, type DateRangeValue } from "../date-time-picker"
-import { getDataTableCopy } from "./data-table.locale"
 
 export interface DataTableFetchResult<T> {
   items: T[]
