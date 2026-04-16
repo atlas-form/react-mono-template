@@ -5,7 +5,6 @@ import {
   DataTable,
   type DateRangeValue,
   type DataTableFetchResult,
-  type DataTableLocaleText,
   type DataTableSortState,
 } from "@workspace/app-components"
 
@@ -105,7 +104,6 @@ export default function DataTablePage() {
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <DataTable<CustomerRow, CustomerTableQuery>
-        localeText={buildDataTableLocaleText(t)}
         // fixedLeftColumns={1}
         // fixedRightColumns={2}
         columns={[
@@ -390,40 +388,4 @@ function compareSortValues(left: string | number, right: string | number) {
   }
 
   return String(left).localeCompare(String(right), "en")
-}
-
-function buildDataTableLocaleText(
-  t: ReturnType<typeof useTranslation>["t"]
-): DataTableLocaleText {
-  return {
-    emptyText: t("datatable.emptyText", "暂无数据"),
-    errorText: t("datatable.errorText", "数据加载失败"),
-    loadingText: t("datatable.loadingText", "正在加载数据..."),
-    refreshLabel: t("datatable.refreshLabel", "刷新数据"),
-    resetLabel: t("datatable.resetLabel", "重置筛选"),
-    totalLabel: t("datatable.totalLabel", "总数"),
-    sortAscendingLabel: t("datatable.sortAscendingLabel", "升序排序"),
-    sortDescendingLabel: t("datatable.sortDescendingLabel", "降序排序"),
-    clearSortLabel: t("datatable.clearSortLabel", "清除排序"),
-    bulkDeleteLabel: (count) =>
-      t("datatable.bulkDeleteLabel", {
-        count,
-        defaultValue: "Delete Selected ({{count}})",
-      }),
-    bulkUpdateLabel: (count) =>
-      t("datatable.bulkUpdateLabel", {
-        count,
-        defaultValue: "Bulk Update ({{count}})",
-      }),
-    bulkUpdateTitle: t("datatable.bulkUpdateTitle", "批量修改"),
-    bulkUpdateDescription: (count) =>
-      t("datatable.bulkUpdateDescriptionWithCount", {
-        count,
-        defaultValue: "对 {{count}} 条已选数据应用相同的值。",
-      }),
-    bulkUpdateFieldLabel: t("datatable.bulkUpdateFieldLabel", "字段"),
-    bulkUpdateValueLabel: t("datatable.bulkUpdateValueLabel", "值"),
-    bulkUpdateCancelLabel: t("datatable.bulkUpdateCancelLabel", "取消"),
-    bulkUpdateApplyLabel: t("datatable.bulkUpdateApplyLabel", "应用"),
-  }
 }
