@@ -96,7 +96,9 @@ export default function AppLayout() {
           href: item.path,
           active: item.matcher(location.pathname),
           icon: item.icon,
-          onSelect: item.subItems?.length ? undefined : () => navigate(item.path),
+          onSelect: item.subItems?.length
+            ? undefined
+            : () => navigate(item.path),
           subItems: item.subItems?.map((subItem) => ({
             ...subItem,
             active: location.pathname === subItem.href,
@@ -162,7 +164,7 @@ export default function AppLayout() {
               </AvatarDropdown>,
             ]}
           />
-          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden rounded-[var(--ui-radius-xl)] border border-[var(--border)]">
+          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden rounded-(--ui-radius-xl) border border-border">
             <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
               <Outlet />
             </div>
