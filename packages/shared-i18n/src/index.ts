@@ -12,21 +12,17 @@ export function normalizeLanguage(
   return "en"
 }
 
+export { getCalendarCopy } from "./calendar"
+export type { CalendarCopy } from "./calendar"
 export { getDataTableCopy } from "./data-table"
 export type { DataTableCopy } from "./data-table"
-export {
-  getCalendarCopy,
-  getDatePickerCopy,
-  getDateRangePickerCopy,
-  getDateTimePickerCopy,
-  getMultipleDatePickerCopy,
-  getTimePickerCopy,
-} from "./date-time-picker"
-export type {
-  CalendarCopy,
-  DatePickerCopy,
-  DateRangePickerCopy,
-  DateTimePickerCopy,
-  MultipleDatePickerCopy,
-  TimePickerCopy,
-} from "./date-time-picker"
+export { getDatePickerCopy } from "./date-picker"
+export type { DatePickerCopy } from "./date-picker"
+export { getDateRangePickerCopy } from "./date-range-picker"
+export type { DateRangePickerCopy } from "./date-range-picker"
+export { getDateTimePickerCopy } from "./date-time-picker"
+export type { DateTimePickerCopy } from "./date-time-picker"
+export { getMultipleDatePickerCopy } from "./multiple-date-picker"
+export type { MultipleDatePickerCopy } from "./multiple-date-picker"
+export { getTimePickerCopy } from "./time-picker"
+export type { TimePickerCopy } from "./time-picker"
