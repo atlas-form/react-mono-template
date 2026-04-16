@@ -20,6 +20,9 @@ export type {
 export { Input } from "./components/stable/input"
 export type { InputProps } from "./components/stable/input"
 
+export { SearchInput } from "./components/stable/search-input"
+export type { SearchInputProps } from "./components/stable/search-input"
+
 export { Checkbox } from "./components/stable/checkbox"
 export type { CheckboxProps } from "./components/stable/checkbox"
 
@@ -45,6 +48,12 @@ export type {
 
 export { Select } from "./components/stable/select"
 export type { SelectProps } from "./components/stable/select"
+
+export { AdvancedSelect } from "./components/stable/advanced-select"
+export type {
+  AdvancedSelectOption,
+  AdvancedSelectProps,
+} from "./components/stable/advanced-select"
 
 export { Textarea } from "./components/stable/textarea"
 export type { TextareaProps } from "./components/stable/textarea"

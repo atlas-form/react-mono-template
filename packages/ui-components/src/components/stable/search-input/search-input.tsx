@@ -1,0 +1,102 @@
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react"
+import { Input as CoreInput } from "@workspace/ui-core/components/input"
+
+export interface SearchInputProps {
+  value: string
+  onValueChange: (value: string) => void
+  placeholder?: string
+  disabled?: boolean
+  updateStrategy?: "immediate" | "blur-enter"
+}
+
+export function SearchInput({
+  value,
+  onValueChange,
+  placeholder,
+  disabled = false,
+  updateStrategy = "immediate",
+}: SearchInputProps) {
+  const [draftValue, setDraftValue] = useState(value)
+
+  useEffect(() => {
+    setDraftValue(value)
+  }, [value])
+
+  const commitValue = (nextValue: string) => {
+    if (nextValue !== value) {
+      onValueChange(nextValue)
+    }
+  }
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value
+
+    if (updateStrategy === "immediate") {
+      onValueChange(nextValue)
+      return
+    }
+
+    setDraftValue(nextValue)
+  }
+
+  const handleBlur = () => {
+    if (updateStrategy === "blur-enter") {
+      commitValue(draftValue)
+    }
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (updateStrategy !== "blur-enter") return
+
+    if (event.key === "Enter") {
+      event.preventDefault()
+      commitValue(draftValue)
+      return
+    }
+
+    if (event.key === "Escape") {
+      setDraftValue(value)
+    }
+  }
+
+  return (
+    <div className="relative w-full">
+      <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground">
+        <SearchIcon className="size-4" />
+      </span>
+
+      <CoreInput
+        value={updateStrategy === "immediate" ? value : draftValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+        type="search"
+        className="pl-9"
+      />
+    </div>
+  )
+}
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <circle cx="7" cy="7" r="4.5" />
+      <path d="M10.5 10.5L14 14" />
+    </svg>
+  )
+}

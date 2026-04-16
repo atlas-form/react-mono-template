@@ -1,8 +1,10 @@
 import { useCallback } from "react"
+import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import {
   DataTable,
   type DataTableFetchResult,
+  type DataTableLocaleText,
   type DataTableSortState,
 } from "@workspace/ui-data"
 import type { DateRangeValue } from "@workspace/app-components"
@@ -35,11 +37,13 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
 
 interface CustomerTableQuery {
   keyword: string
+  searchField: "" | "id" | "name" | "region" | "owner"
   status: "" | CustomerRow["status"]
   createdAt?: DateRangeValue
 }
 
 export default function DataTablePage() {
+  const { t } = useTranslation()
   const fetchData = useCallback(
     async ({
       page,
@@ -58,10 +62,24 @@ export default function DataTablePage() {
       await new Promise((resolve) => setTimeout(resolve, 120))
 
       const filteredRows = customerRows.filter((row) => {
+        const keyword = query.keyword.trim().toLowerCase()
+        const owner = owners[Number(row.id.slice(-1)) % owners.length]
+        const searchCandidates =
+          query.searchField === ""
+            ? [row.id, row.name, row.region, owner]
+            : query.searchField === "id"
+              ? [row.id]
+              : query.searchField === "name"
+                ? [row.name]
+                : query.searchField === "region"
+                  ? [row.region]
+                  : [owner]
+
         const matchesKeyword =
-          query.keyword.trim().length === 0 ||
-          row.id.toLowerCase().includes(query.keyword.trim().toLowerCase()) ||
-          row.name.toLowerCase().includes(query.keyword.trim().toLowerCase())
+          keyword.length === 0 ||
+          searchCandidates.some((candidate) =>
+            candidate.toLowerCase().includes(keyword)
+          )
 
         const matchesStatus = query.status === "" || row.status === query.status
 
@@ -100,9 +118,9 @@ export default function DataTablePage() {
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <DataTable<CustomerRow, CustomerTableQuery>
-        caption="Customer directory"
-        // fixedLeftColumns={2}
-        // fixedRightColumns={3}
+        localeText={buildDataTableLocaleText(t)}
+        fixedLeftColumns={1}
+        fixedRightColumns={2}
         columns={[
           {
             key: "seq",
@@ -131,7 +149,7 @@ export default function DataTablePage() {
           {
             key: "status",
             header: "Status",
-            sortable: true,
+            sortable: false,
             renderCell: (row: CustomerRow) => (
               <Badge
                 variant={row.status === "Active" ? "default" : "secondary"}
@@ -189,14 +207,14 @@ export default function DataTablePage() {
           {
             key: "contractValue",
             header: "Contract",
-            sortable: true,
+            sortable: false,
             renderCell: (row: CustomerRow) =>
               `$${(Number(row.id.slice(-2)) * 1200).toLocaleString()}`,
           },
           {
             key: "users",
             header: "Users",
-            sortable: true,
+            sortable: false,
             renderCell: (row: CustomerRow) => Number(row.id.slice(-2)) + 12,
           },
           {
@@ -215,7 +233,7 @@ export default function DataTablePage() {
             key: "lastActive",
             header: "Last Active",
             width: 140,
-            sortable: true,
+            sortable: false,
             renderCell: (row: CustomerRow) =>
               formatDateTime(addDays(row.createdAt, 7)).slice(5, 16),
           },
@@ -234,7 +252,7 @@ export default function DataTablePage() {
           {
             key: "score",
             header: "Score",
-            sortable: true,
+            sortable: false,
             renderCell: (row: CustomerRow) =>
               60 + (Number(row.id.slice(-2)) % 40),
           },
@@ -245,15 +263,24 @@ export default function DataTablePage() {
         initialPageSize={15}
         initialQuery={{
           keyword: "",
+          searchField: "",
           status: "",
           createdAt: undefined,
         }}
         queryFields={[
           {
             key: "keyword",
-            type: "text",
+            type: "search",
             label: "Keyword",
-            placeholder: "Search by customer ID or name",
+            placeholder: "Search customers",
+            fieldKey: "searchField",
+            fieldPlaceholder: "All fields",
+            fieldOptions: [
+              { label: "ID", value: "id" },
+              { label: "Name", value: "name" },
+              { label: "Region", value: "region" },
+              { label: "Owner", value: "owner" },
+            ],
           },
           {
             key: "status",
@@ -271,11 +298,7 @@ export default function DataTablePage() {
             label: "Created At",
           },
         ]}
-        queryLegend="Customer Query"
         pageSizeOptions={[10, 15, 30, 50]}
-        emptyText="No customers found."
-        loadingText="Loading customers..."
-        errorText="Unable to load customers."
       />
     </div>
   )
@@ -360,4 +383,16 @@ function compareSortValues(left: string | number, right: string | number) {
   }
 
   return String(left).localeCompare(String(right), "en")
+}
+
+function buildDataTableLocaleText(
+  t: ReturnType<typeof useTranslation>["t"]
+): DataTableLocaleText {
+  return {
+    emptyText: t("datatable.emptyText", "暂无数据"),
+    errorText: t("datatable.errorText", "数据加载失败"),
+    loadingText: t("datatable.loadingText", "正在加载数据..."),
+    refreshLabel: t("datatable.refreshLabel", "刷新数据"),
+    totalLabel: t("datatable.totalLabel", "Total"),
+  }
 }

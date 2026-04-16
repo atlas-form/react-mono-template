@@ -1,8 +1,9 @@
 import {
+  AdvancedSelect,
   Button,
   Input,
-  NativeSelect,
   Pagination,
+  SearchInput,
   Spinner,
   Table,
   TableBody,
@@ -58,6 +59,7 @@ export interface DataTableQueryFieldBase<TQuery> {
   disabled?: boolean
 }
 
+// A simple text field. Use this for plain value input without the built-in search behavior.
 export interface DataTableTextQueryField<
   TQuery,
 > extends DataTableQueryFieldBase<TQuery> {
@@ -66,6 +68,7 @@ export interface DataTableTextQueryField<
   inputType?: "text" | "search" | "email" | "number" | "tel" | "url"
 }
 
+// A built-in select field. Render it only when the page needs this filter.
 export interface DataTableSelectQueryField<
   TQuery,
 > extends DataTableQueryFieldBase<TQuery> {
@@ -74,6 +77,19 @@ export interface DataTableSelectQueryField<
   options: readonly DataTableSelectOption[]
 }
 
+// A built-in global search field. It can optionally pair with a second select
+// so the page can choose which query field(s) the keyword should target.
+export interface DataTableSearchQueryField<
+  TQuery,
+> extends DataTableQueryFieldBase<TQuery> {
+  type: "search"
+  placeholder?: string
+  fieldKey?: keyof TQuery & string
+  fieldPlaceholder?: string
+  fieldOptions?: readonly DataTableSelectOption[]
+}
+
+// A built-in date range field. Render it only when the page needs time-based filtering.
 export interface DataTableDateRangeQueryField<
   TQuery,
 > extends DataTableQueryFieldBase<TQuery> {
@@ -95,8 +111,14 @@ export interface DataTableCustomQueryField<
   ) => ReactNode
 }
 
+export type DataTableBuiltInQueryField<TQuery> =
+  | DataTableSearchQueryField<TQuery>
+  | DataTableSelectQueryField<TQuery>
+  | DataTableDateRangeQueryField<TQuery>
+
 export type DataTableQueryField<TQuery> =
   | DataTableTextQueryField<TQuery>
+  | DataTableSearchQueryField<TQuery>
   | DataTableSelectQueryField<TQuery>
   | DataTableDateRangeQueryField<TQuery>
   | DataTableCustomQueryField<TQuery>
@@ -107,6 +129,17 @@ export interface DataTableFetchParams<TQuery = object> {
   signal: AbortSignal
   query: TQuery
   sort: DataTableSortState | null
+}
+
+export interface DataTableLocaleText {
+  emptyText?: ReactNode
+  errorText?: ReactNode
+  loadingText?: ReactNode
+  refreshLabel?: string
+  totalLabel?: ReactNode
+  sortAscendingLabel?: string
+  sortDescendingLabel?: string
+  clearSortLabel?: string
 }
 
 export interface DataTableProps<T, TQuery extends object = object> {
@@ -129,11 +162,12 @@ export interface DataTableProps<T, TQuery extends object = object> {
   pageSizeOptions?: readonly number[]
   onError?: (error: unknown) => void
   initialQuery?: TQuery
+  // Built-in query controls are opt-in. Pass only the ones the page actually needs.
   queryFields?: readonly DataTableQueryField<TQuery>[]
-  queryLegend?: ReactNode
   height?: number | string
   refreshLabel?: string
   initialSort?: DataTableSortState | null
+  localeText?: DataTableLocaleText
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
@@ -216,6 +250,9 @@ function getStickyColumnStyles({
 }
 
 function getQueryFieldWidth(field: DataTableQueryField<object>) {
+  if (field.type === "search") {
+    return field.fieldOptions?.length ? 460 : 320
+  }
   if (field.type === "text") return 320
   if (field.type === "date-range") return 240
   if (field.type === "select") return 180
@@ -241,10 +278,10 @@ export function DataTable<T, TQuery extends object = object>({
   onError,
   initialQuery,
   queryFields = [],
-  queryLegend = "Query",
   height,
   refreshLabel = "Refresh data",
   initialSort = null,
+  localeText,
 }: DataTableProps<T, TQuery>) {
   const [rows, setRows] = useState<T[]>([])
   const [page, setPage] = useState(initialPage)
@@ -268,6 +305,11 @@ export function DataTable<T, TQuery extends object = object>({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const hasRows = rows.length > 0
   const hasQueryFields = queryFields.length > 0
+  const resolvedEmptyText = localeText?.emptyText ?? emptyText
+  const resolvedErrorText = localeText?.errorText ?? errorText
+  const resolvedLoadingText = localeText?.loadingText ?? loadingText
+  const resolvedRefreshLabel = localeText?.refreshLabel ?? refreshLabel
+  const resolvedTotalLabel = localeText?.totalLabel ?? "Total"
 
   useLayoutEffect(() => {
     const updateWidths = () => {
@@ -435,9 +477,11 @@ export function DataTable<T, TQuery extends object = object>({
       .slice(1)
       .map((column) => <TableCell key={column.key}>{null}</TableCell>)
 
-  const loadingContent = renderLoading ? renderLoading() : loadingText
-  const emptyContent = renderEmpty ? renderEmpty() : emptyText
-  const errorContent = renderError ? renderError(error, handleRetry) : errorText
+  const emptyContent = renderEmpty ? renderEmpty() : resolvedEmptyText
+  const errorContent = renderError ? renderError(error, handleRetry) : resolvedErrorText
+  const loadingContentResolved = renderLoading
+    ? renderLoading()
+    : resolvedLoadingText
 
   const renderQueryFieldControl = (field: DataTableQueryField<TQuery>) => {
     const value = draftQuery[field.key]
@@ -460,29 +504,67 @@ export function DataTable<T, TQuery extends object = object>({
       )
     }
 
-    if (field.type === "select") {
-      const options = field.placeholder
-        ? [
-            {
-              label: field.placeholder,
-              value: "",
-            },
-            ...field.options,
-          ]
-        : field.options
-
-      return (
-        <NativeSelect
+    if (field.type === "search") {
+      const searchInput = (
+        <SearchInput
           value={asStringValue(value)}
           onValueChange={(nextValue) =>
             setValue(nextValue as TQuery[keyof TQuery & string])
           }
-          options={options.map((option) => ({
+          placeholder={field.placeholder}
+          disabled={disabled}
+          updateStrategy="blur-enter"
+        />
+      )
+
+      if (!field.fieldKey || !field.fieldOptions?.length) {
+        return searchInput
+      }
+
+      const fieldKey = field.fieldKey
+
+      return (
+        <div className="flex items-center gap-2">
+          <div className="w-36 shrink-0">
+            <AdvancedSelect
+              value={asStringValue(draftQuery[fieldKey])}
+              onValueChange={(nextValue) =>
+                updateDraftQueryValue(
+                  fieldKey,
+                  nextValue as TQuery[typeof fieldKey]
+                )
+              }
+              list={field.fieldOptions.map((option) => ({
+                label: option.label,
+                value: option.value,
+                disabled: option.disabled,
+              }))}
+              disabled={disabled}
+              placeholder={field.fieldPlaceholder}
+              allowClear
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">{searchInput}</div>
+        </div>
+      )
+    }
+
+    if (field.type === "select") {
+      return (
+        <AdvancedSelect
+          value={asStringValue(value)}
+          onValueChange={(nextValue) =>
+            setValue(nextValue as TQuery[keyof TQuery & string])
+          }
+          list={field.options.map((option) => ({
             label: option.label,
             value: option.value,
             disabled: option.disabled,
           }))}
           disabled={disabled}
+          placeholder={field.placeholder}
+          allowClear
         />
       )
     }
@@ -515,8 +597,7 @@ export function DataTable<T, TQuery extends object = object>({
       <div className="shrink-0" data-slot="data-table-header">
         {hasQueryFields ? (
           <div className="flex flex-col gap-2 overflow-hidden">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-lg font-semibold">{queryLegend}</div>
+            <div className="flex items-center justify-end gap-3">
               <Button
                 type="button"
                 variant="outline"
@@ -527,7 +608,7 @@ export function DataTable<T, TQuery extends object = object>({
                 <span aria-hidden="true" className="text-base leading-none">
                   ↻
                 </span>
-                <span className="sr-only">{refreshLabel}</span>
+                <span className="sr-only">{resolvedRefreshLabel}</span>
               </Button>
             </div>
 
@@ -567,7 +648,7 @@ export function DataTable<T, TQuery extends object = object>({
               <span aria-hidden="true" className="text-base leading-none">
                 ↻
               </span>
-              <span className="sr-only">{refreshLabel}</span>
+              <span className="sr-only">{resolvedRefreshLabel}</span>
             </Button>
           </div>
         )}
@@ -579,7 +660,9 @@ export function DataTable<T, TQuery extends object = object>({
             className="min-w-full w-max"
             containerClassName="overflow-visible"
           >
-            {caption ? <TableCaption>{caption}</TableCaption> : null}
+            {caption ? (
+              <TableCaption>{caption}</TableCaption>
+            ) : null}
             <TableHeader>
               <TableRow>
                 {columns.map((column, columnIndex) => {
@@ -635,7 +718,7 @@ export function DataTable<T, TQuery extends object = object>({
                 <TableRow>
                   <TableCell>
                     {renderLoading ? (
-                      loadingContent
+                      loadingContentResolved
                     ) : (
                       <div
                         style={{
@@ -645,7 +728,7 @@ export function DataTable<T, TQuery extends object = object>({
                         }}
                       >
                         <Spinner size="sm" />
-                        <span>{loadingContent}</span>
+                        <span>{loadingContentResolved}</span>
                       </div>
                     )}
                   </TableCell>
@@ -702,18 +785,18 @@ export function DataTable<T, TQuery extends object = object>({
       </div>
 
       <div className="mt-2 overflow-x-auto px-4 py-2" data-slot="data-table-tail">
-        <div className="flex min-w-max flex-nowrap items-center justify-between gap-6">
-          <div className="flex shrink-0 items-center gap-2 text-sm">
+        <div className="flex min-w-max flex-nowrap items-center justify-between">
+          <div className="shrink-0 flex items-center gap-2 text-sm">
             <span>
-              <strong>Total:</strong> {total}
+              <strong>{resolvedTotalLabel}:</strong> {total}
             </span>
-            <NativeSelect
+            <AdvancedSelect
               value={String(pageSize)}
               onValueChange={(value: string) => {
                 setPage(1)
                 setPageSize(Number(value))
               }}
-              options={safePageSizeOptions.map((value) => ({
+              list={safePageSizeOptions.map((value) => ({
                 label: String(value),
                 value: String(value),
               }))}
