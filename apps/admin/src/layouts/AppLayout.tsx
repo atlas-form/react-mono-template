@@ -119,7 +119,7 @@ export default function AppLayout() {
 
   return (
     <div className="h-screen overflow-hidden bg-(--app-bg) text-(--app-text)">
-      <div className="mx-auto flex h-full max-w-400 min-w-0 flex-col overflow-hidden pt-1 pb-2">
+      <div className="flex h-full min-w-0 flex-col overflow-hidden">
         <Sidebar
           brandEyebrow="Workspace"
           brandTitle="Admin"
@@ -164,8 +164,8 @@ export default function AppLayout() {
               </AvatarDropdown>,
             ]}
           />
-          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden rounded-(--ui-radius-xl) border border-border">
-            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
+            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden border border-border">
               <Outlet />
             </div>
           </div>
