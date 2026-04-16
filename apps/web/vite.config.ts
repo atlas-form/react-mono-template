@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
     envDir,
     plugins: [react(), tailwindcss()],
     resolve: {
+      extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
       alias: {
         "@": path.resolve(__dirname, "src"),
       },

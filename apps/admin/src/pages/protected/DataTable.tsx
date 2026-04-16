@@ -1,13 +1,8 @@
 import { useCallback } from "react"
 import { Badge } from "@workspace/ui-components/stable/badge"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui-components/stable/card"
+import { Card, CardContent } from "@workspace/ui-components/stable/card"
 import { DataTable, type DataTableFetchResult } from "@workspace/ui-data"
+import type { DateRangeValue } from "@workspace/app-components"
 
 interface CustomerRow {
   id: string
@@ -31,25 +26,51 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
   createdAt: new Date(2026, 0, 1 + index, 9 + (index % 8), (index * 7) % 60, 0),
 }))
 
+interface CustomerTableQuery {
+  keyword: string
+  status: "" | CustomerRow["status"]
+  createdAt?: DateRangeValue
+}
+
 export default function DataTablePage() {
   const fetchData = useCallback(
     async ({
       page,
       pageSize,
-      signal: _signal,
+      query,
+      signal,
     }: {
       page: number
       pageSize: number
+      query: CustomerTableQuery
       signal: AbortSignal
     }): Promise<DataTableFetchResult<CustomerRow>> => {
+      void signal
       await new Promise((resolve) => setTimeout(resolve, 120))
+
+      const filteredRows = customerRows.filter((row) => {
+        const matchesKeyword =
+          query.keyword.trim().length === 0 ||
+          row.id.toLowerCase().includes(query.keyword.trim().toLowerCase()) ||
+          row.name.toLowerCase().includes(query.keyword.trim().toLowerCase())
+
+        const matchesStatus = query.status === "" || row.status === query.status
+
+        const from = query.createdAt?.from
+        const to = query.createdAt?.to
+        const matchesCreatedAt =
+          (!from || row.createdAt >= startOfDay(from)) &&
+          (!to || row.createdAt <= endOfDay(to))
+
+        return matchesKeyword && matchesStatus && matchesCreatedAt
+      })
 
       const start = (page - 1) * pageSize
       const end = start + pageSize
 
       return {
-        items: customerRows.slice(start, end),
-        total: customerRows.length,
+        items: filteredRows.slice(start, end),
+        total: filteredRows.length,
       }
     },
     []
@@ -58,18 +79,8 @@ export default function DataTablePage() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader>
-          <Badge variant="outline">DataTable</Badge>
-          <CardTitle>Customer Directory</CardTitle>
-          <CardDescription>
-            使用 `@workspace/ui-data` 的远程分页表格组件做 admin 示例页。
-          </CardDescription>
-        </CardHeader>
-      </Card>
-
-      <Card>
         <CardContent>
-          <DataTable<CustomerRow>
+          <DataTable<CustomerRow, CustomerTableQuery>
             caption="Customer directory"
             columns={[
               {
@@ -91,7 +102,9 @@ export default function DataTablePage() {
                 key: "status",
                 header: "Status",
                 renderCell: (row: CustomerRow) => (
-                  <Badge variant={row.status === "Active" ? "default" : "secondary"}>
+                  <Badge
+                    variant={row.status === "Active" ? "default" : "secondary"}
+                  >
                     {row.status}
                   </Badge>
                 ),
@@ -110,6 +123,36 @@ export default function DataTablePage() {
             fetchData={fetchData}
             getRowId={(row: CustomerRow) => row.id}
             initialPageSize={10}
+            initialQuery={{
+              keyword: "",
+              status: "",
+              createdAt: undefined,
+            }}
+            queryFields={[
+              {
+                key: "keyword",
+                type: "text",
+                label: "Keyword",
+                placeholder: "Search by customer ID or name",
+              },
+              {
+                key: "status",
+                type: "select",
+                label: "Status",
+                placeholder: "All status",
+                options: [
+                  { label: "Active", value: "Active" },
+                  { label: "Paused", value: "Paused" },
+                ],
+              },
+              {
+                key: "createdAt",
+                type: "date-range",
+                label: "Created At",
+                description: "Filter customers by creation date range.",
+              },
+            ]}
+            queryLegend="Customer Query"
             pageSizeOptions={[10, 20, 50]}
             emptyText="No customers found."
             loadingText="Loading customers..."
@@ -127,4 +170,16 @@ function formatDateTime(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(
     date.getHours()
   )}:${pad(date.getMinutes())}`
+}
+
+function startOfDay(date: Date) {
+  const value = new Date(date)
+  value.setHours(0, 0, 0, 0)
+  return value
+}
+
+function endOfDay(date: Date) {
+  const value = new Date(date)
+  value.setHours(23, 59, 59, 999)
+  return value
 }

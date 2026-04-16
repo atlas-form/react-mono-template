@@ -679,6 +679,9 @@ importers:
 
   packages/ui-data:
     dependencies:
+      '@workspace/app-components':
+        specifier: workspace:*
+        version: link:../app-components
       '@workspace/ui-components':
         specifier: workspace:*
         version: link:../ui-components

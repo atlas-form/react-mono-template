@@ -9,6 +9,7 @@ export default defineConfig({
     port: 5175,
   },
   resolve: {
+    extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@workspace/ui-icon": path.resolve(

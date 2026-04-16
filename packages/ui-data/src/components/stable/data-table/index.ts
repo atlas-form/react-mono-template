@@ -5,4 +5,6 @@ export type {
   DataTableFetchParams,
   DataTableFetchResult,
   DataTableProps,
+  DataTableQueryField,
+  DataTableSelectOption,
 } from "./data-table"

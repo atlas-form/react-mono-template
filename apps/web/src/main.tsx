@@ -6,7 +6,7 @@ import { store } from "./store"
 import "./index.css"
 import "@workspace/services/i18n"
 import { queryClient } from "@workspace/services/query/client"
-import App from "./App"
+import App from "./App.tsx"
 import { initTheme } from "@workspace/ui-theme"
 import { getEnv } from "@/config/env"
 

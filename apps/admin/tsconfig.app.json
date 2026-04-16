@@ -24,6 +24,8 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@workspace/app-components": ["../../packages/app-components/src/index.ts"],
+      "@workspace/app-components/*": ["../../packages/app-components/src/*"],
       "@workspace/ui-data": ["../../packages/ui-data/src/index.ts"],
       "@workspace/ui-data/*": ["../../packages/ui-data/src/*"]
     }

@@ -23,7 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@workspace/app-components": ["../../packages/app-components/src/index.ts"],
+      "@workspace/app-components/*": ["../../packages/app-components/src/*"]
     }
   },
   "include": ["src"]
