@@ -1,6 +1,7 @@
 import {
   AdvancedSelect,
   Button,
+  Checkbox,
   Input,
   Pagination,
   SearchInput,
@@ -131,6 +132,20 @@ export interface DataTableLocaleText {
   clearSortLabel?: string
 }
 
+export interface DataTableHeaderActionsContext<T> {
+  clearSelection: () => void
+  selectedRowKeys: Key[]
+  selectedRows: T[]
+}
+
+export interface DataTableBulkDeleteConfig<T> {
+  label?: ReactNode
+  onDelete: (context: DataTableHeaderActionsContext<T>) => Promise<void> | void
+  columnWidth?: number
+  selectedRowKeys?: readonly Key[]
+  onSelectedRowKeysChange?: (keys: Key[], rows: T[]) => void
+}
+
 export interface DataTableProps<T, TQuery extends object = object> {
   columns: readonly DataTableColumn<T>[]
   fixedLeftColumns?: number
@@ -152,7 +167,10 @@ export interface DataTableProps<T, TQuery extends object = object> {
   onError?: (error: unknown) => void
   initialQuery?: TQuery
   queryFields?: readonly DataTableQueryField<TQuery>[]
-  headerActions?: ReactNode
+  headerActions?:
+    | ReactNode
+    | ((context: DataTableHeaderActionsContext<T>) => ReactNode)
+  bulkDelete?: false | DataTableBulkDeleteConfig<T>
   height?: number | string
   refreshLabel?: string
   resetLabel?: string
@@ -162,6 +180,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
 const DEFAULT_STICKY_COLUMN_WIDTH = 160
+const DEFAULT_SELECTION_COLUMN_WIDTH = 44
 
 function createQueryState<TQuery extends object>(initialQuery?: TQuery) {
   return { ...(initialQuery ?? {}) } as TQuery
@@ -269,6 +288,7 @@ export function DataTable<T, TQuery extends object = object>({
   initialQuery,
   queryFields = [],
   headerActions,
+  bulkDelete = false,
   height,
   refreshLabel = "Refresh data",
   resetLabel = "Reset filters",
@@ -284,10 +304,21 @@ export function DataTable<T, TQuery extends object = object>({
   const [reloadToken, setReloadToken] = useState(0)
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState<number[]>([])
   const [sort, setSort] = useState<DataTableSortState | null>(initialSort)
+  const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>([])
+  const [deleting, setDeleting] = useState(false)
   const [draftQuery, setDraftQuery] = useState<TQuery>(() =>
     createQueryState(initialQuery)
   )
   const headerCellRefs = useRef<Array<HTMLTableCellElement | null>>([])
+  const rowSelectionEnabled = bulkDelete !== false
+  const selectionColumnWidth =
+    bulkDelete !== false
+      ? bulkDelete.columnWidth ?? DEFAULT_SELECTION_COLUMN_WIDTH
+      : DEFAULT_SELECTION_COLUMN_WIDTH
+  const selectedRowKeys =
+    bulkDelete !== false && bulkDelete.selectedRowKeys
+      ? [...bulkDelete.selectedRowKeys]
+    : internalSelectedRowKeys
 
   const safePageSizeOptions = useMemo(() => {
     const values = new Set<number>([...pageSizeOptions, initialPageSize])
@@ -348,7 +379,7 @@ export function DataTable<T, TQuery extends object = object>({
   }, [columns])
 
   const stickyLeftOffsets = useMemo(() => {
-    let currentLeft = 0
+    let currentLeft = rowSelectionEnabled ? selectionColumnWidth : 0
 
     return columns.map((column, columnIndex) => {
       if (!isLeftStickyColumn(column, columnIndex, fixedLeftColumns)) {
@@ -364,7 +395,13 @@ export function DataTable<T, TQuery extends object = object>({
 
       return leftOffset
     })
-  }, [columns, fixedLeftColumns, measuredColumnWidths])
+  }, [
+    columns,
+    fixedLeftColumns,
+    measuredColumnWidths,
+    rowSelectionEnabled,
+    selectionColumnWidth,
+  ])
 
   const stickyRightOffsets = useMemo(() => {
     let currentRight = 0
@@ -435,6 +472,24 @@ export function DataTable<T, TQuery extends object = object>({
     setReloadToken((current: number) => current + 1)
   }
 
+  const updateSelectedRowKeys = (nextKeys: Key[]) => {
+    if (bulkDelete === false || !bulkDelete.selectedRowKeys) {
+      setInternalSelectedRowKeys(nextKeys)
+    }
+
+    const selectedRows = rows.filter((row, rowIndex) =>
+      nextKeys.includes(getRowId(row, rowIndex))
+    )
+
+    if (bulkDelete !== false) {
+      bulkDelete.onSelectedRowKeysChange?.(nextKeys, selectedRows)
+    }
+  }
+
+  const clearSelection = () => {
+    updateSelectedRowKeys([])
+  }
+
   const handleResetQuery = () => {
     setPage(1)
     setDraftQuery(createQueryState(initialQuery))
@@ -495,11 +550,52 @@ export function DataTable<T, TQuery extends object = object>({
 
     return sort.direction === "asc" ? "ascending" : "descending"
   }
+  const selectedRowKeySet = useMemo(
+    () => new Set<Key>(selectedRowKeys),
+    [selectedRowKeys]
+  )
+  const currentPageRowKeys = useMemo(
+    () => rows.map((row, rowIndex) => getRowId(row, rowIndex)),
+    [getRowId, rows]
+  )
+  const selectedRows = useMemo(
+    () =>
+      rows.filter((row, rowIndex) =>
+        selectedRowKeySet.has(getRowId(row, rowIndex))
+      ),
+    [getRowId, rows, selectedRowKeySet]
+  )
+  const allCurrentPageRowsSelected =
+    rowSelectionEnabled &&
+    currentPageRowKeys.length > 0 &&
+    currentPageRowKeys.every((key) => selectedRowKeySet.has(key))
+  const totalColumnCount = columns.length + (rowSelectionEnabled ? 1 : 0)
+  const resolvedHeaderActions =
+    typeof headerActions === "function"
+      ? headerActions({
+          clearSelection,
+          selectedRowKeys,
+          selectedRows,
+        })
+      : headerActions
 
-  const renderFillerCells = () =>
-    columns
-      .slice(1)
-      .map((column) => <TableCell key={column.key}>{null}</TableCell>)
+  const handleBulkDelete = async () => {
+    if (bulkDelete === false || deleting || selectedRowKeys.length === 0) return
+
+    setDeleting(true)
+
+    try {
+      await bulkDelete.onDelete({
+        clearSelection,
+        selectedRowKeys,
+        selectedRows,
+      })
+      clearSelection()
+      handleRetry()
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const emptyContent = renderEmpty ? renderEmpty() : resolvedEmptyText
   const errorContent = renderError ? renderError(error, handleRetry) : resolvedErrorText
@@ -684,9 +780,21 @@ export function DataTable<T, TQuery extends object = object>({
               ))}
             </div>
 
-            {headerActions ? (
+            {bulkDelete !== false || resolvedHeaderActions ? (
               <div className="flex shrink-0 items-center gap-2">
-                {headerActions}
+                {bulkDelete !== false && rowSelectionEnabled ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    disabled={selectedRowKeys.length === 0 || deleting}
+                    onClick={() => {
+                      void handleBulkDelete()
+                    }}
+                  >
+                    {bulkDelete.label ?? `Delete Selected (${selectedRowKeys.length})`}
+                  </Button>
+                ) : null}
+                {resolvedHeaderActions}
               </div>
             ) : null}
           </div>
@@ -704,9 +812,21 @@ export function DataTable<T, TQuery extends object = object>({
                 <span className="sr-only">{resolvedRefreshLabel}</span>
               </Button>
             </div>
-            {headerActions ? (
+            {bulkDelete !== false || resolvedHeaderActions ? (
               <div className="flex min-w-0 items-center justify-end gap-2">
-                {headerActions}
+                {bulkDelete !== false && rowSelectionEnabled ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    disabled={selectedRowKeys.length === 0 || deleting}
+                    onClick={() => {
+                      void handleBulkDelete()
+                    }}
+                  >
+                    {bulkDelete.label ?? `Delete Selected (${selectedRowKeys.length})`}
+                  </Button>
+                ) : null}
+                {resolvedHeaderActions}
               </div>
             ) : null}
           </div>
@@ -727,6 +847,42 @@ export function DataTable<T, TQuery extends object = object>({
             ) : null}
             <TableHeader>
               <TableRow>
+                {rowSelectionEnabled ? (
+                  <TableHead
+                    className="sticky top-0 left-0 z-30 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                    style={{
+                      left: 0,
+                      minWidth: `${selectionColumnWidth}px`,
+                      width: `${selectionColumnWidth}px`,
+                    }}
+                  >
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        checked={allCurrentPageRowsSelected}
+                        onCheckedChange={(checked) => {
+                          if (!checked) {
+                            updateSelectedRowKeys(
+                              selectedRowKeys.filter(
+                                (key) => !currentPageRowKeys.includes(key)
+                              )
+                            )
+                            return
+                          }
+
+                          updateSelectedRowKeys(
+                            Array.from(
+                              new Set<Key>([
+                                ...selectedRowKeys,
+                                ...currentPageRowKeys,
+                              ])
+                            )
+                          )
+                        }}
+                        disabled={!hasRows || loading}
+                      />
+                    </div>
+                  </TableHead>
+                ) : null}
                 {columns.map((column, columnIndex) => {
                   const leftOffset = stickyLeftOffsets[columnIndex]
                   const rightOffset = stickyRightOffsets[columnIndex]
@@ -780,7 +936,7 @@ export function DataTable<T, TQuery extends object = object>({
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell>
+                  <TableCell colSpan={totalColumnCount}>
                     {renderLoading ? (
                       loadingContentResolved
                     ) : (
@@ -796,27 +952,58 @@ export function DataTable<T, TQuery extends object = object>({
                       </div>
                     )}
                   </TableCell>
-                  {renderFillerCells()}
                 </TableRow>
               ) : null}
 
               {!loading && error ? (
                 <TableRow>
-                  <TableCell>{errorContent}</TableCell>
-                  {renderFillerCells()}
+                  <TableCell colSpan={totalColumnCount}>{errorContent}</TableCell>
                 </TableRow>
               ) : null}
 
               {!loading && !error && !hasRows ? (
                 <TableRow>
-                  <TableCell>{emptyContent}</TableCell>
-                  {renderFillerCells()}
+                  <TableCell colSpan={totalColumnCount}>{emptyContent}</TableCell>
                 </TableRow>
               ) : null}
 
               {!loading && !error
                 ? rows.map((row: T, rowIndex: number) => (
                     <TableRow key={getRowId(row, rowIndex)}>
+                      {rowSelectionEnabled ? (
+                        <TableCell
+                          className="sticky left-0 z-20 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                          style={{
+                            left: 0,
+                            minWidth: `${selectionColumnWidth}px`,
+                            width: `${selectionColumnWidth}px`,
+                          }}
+                        >
+                          <div className="flex items-center justify-center">
+                            <Checkbox
+                              checked={selectedRowKeySet.has(
+                                getRowId(row, rowIndex)
+                              )}
+                              onCheckedChange={(checked) => {
+                                const rowKey = getRowId(row, rowIndex)
+
+                                if (!checked) {
+                                  updateSelectedRowKeys(
+                                    selectedRowKeys.filter((key) => key !== rowKey)
+                                  )
+                                  return
+                                }
+
+                                updateSelectedRowKeys(
+                                  Array.from(
+                                    new Set<Key>([...selectedRowKeys, rowKey])
+                                  )
+                                )
+                              }}
+                            />
+                          </div>
+                        </TableCell>
+                      ) : null}
                       {columns.map((column, columnIndex) => (
                         <TableCell
                           key={column.key}

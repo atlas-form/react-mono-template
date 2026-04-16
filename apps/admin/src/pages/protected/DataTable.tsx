@@ -1,7 +1,6 @@
 import { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui-components/stable/badge"
-import { Button } from "@workspace/ui-components"
 import {
   DataTable,
   type DateRangeValue,
@@ -107,8 +106,8 @@ export default function DataTablePage() {
     <div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
       <DataTable<CustomerRow, CustomerTableQuery>
         localeText={buildDataTableLocaleText(t)}
-        fixedLeftColumns={1}
-        fixedRightColumns={2}
+        // fixedLeftColumns={1}
+        // fixedRightColumns={2}
         columns={[
           {
             key: "seq",
@@ -248,16 +247,12 @@ export default function DataTablePage() {
         fetchData={fetchData}
         getRowId={(row: CustomerRow) => row.id}
         height="100%"
-        headerActions={
-          <>
-            <Button type="button" variant="outline">
-              Add
-            </Button>
-            <Button type="button" variant="outline">
-              Delete
-            </Button>
-          </>
-        }
+        bulkDelete={{
+          onDelete: async ({ selectedRowKeys }) => {
+            void selectedRowKeys
+            await new Promise((resolve) => setTimeout(resolve, 200))
+          },
+        }}
         initialPageSize={15}
         initialQuery={{
           keyword: "",

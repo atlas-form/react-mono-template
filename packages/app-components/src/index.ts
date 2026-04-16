@@ -21,10 +21,12 @@ export { MultipleDatePicker } from "./components/date-time-picker"
 export { TimePicker } from "./components/date-time-picker"
 export { DataTable } from "./components/data-table"
 export type {
+  DataTableBulkDeleteConfig,
   DataTableBuiltInQueryField,
   DataTableColumn,
   DataTableFetchParams,
   DataTableFetchResult,
+  DataTableHeaderActionsContext,
   DataTableLocaleText,
   DataTableProps,
   DataTableQueryField,
