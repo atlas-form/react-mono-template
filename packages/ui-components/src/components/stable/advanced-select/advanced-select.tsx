@@ -36,13 +36,18 @@ export function AdvancedSelect({
 }: AdvancedSelectProps) {
   const hasValue = value.length > 0
 
-  const handleClear = (event: MouseEvent<HTMLSpanElement>) => {
+  const handleClear = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     event.stopPropagation()
     onValueChange("")
   }
 
-  const handlePointerDown = (event: PointerEvent<HTMLSpanElement>) => {
+  const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+  const handleMouseDown = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     event.stopPropagation()
   }
@@ -52,17 +57,16 @@ export function AdvancedSelect({
       <SelectTrigger hideIndicator={hideIndicator}>
         <SelectValue placeholder={placeholder} />
         {allowClear && hasValue ? (
-          <span
-            role="button"
+          <button
+            type="button"
             aria-label={clearLabel}
-            tabIndex={-1}
             className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
             onPointerDown={handlePointerDown}
-            onMouseDown={handlePointerDown}
+            onMouseDown={handleMouseDown}
             onClick={handleClear}
           >
             <ClearIcon className="size-4" />
-          </span>
+          </button>
         ) : null}
       </SelectTrigger>
 

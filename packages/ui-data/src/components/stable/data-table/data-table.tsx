@@ -54,7 +54,7 @@ export interface DataTableSelectOption {
 
 export interface DataTableQueryFieldBase<TQuery> {
   key: keyof TQuery & string
-  label: ReactNode
+  label?: ReactNode
   description?: ReactNode
   disabled?: boolean
 }
@@ -310,6 +310,11 @@ export function DataTable<T, TQuery extends object = object>({
   const resolvedLoadingText = localeText?.loadingText ?? loadingText
   const resolvedRefreshLabel = localeText?.refreshLabel ?? refreshLabel
   const resolvedTotalLabel = localeText?.totalLabel ?? "Total"
+  const resolvedSortAscendingLabel =
+    localeText?.sortAscendingLabel ?? "Sort ascending"
+  const resolvedSortDescendingLabel =
+    localeText?.sortDescendingLabel ?? "Sort descending"
+  const resolvedClearSortLabel = localeText?.clearSortLabel ?? "Clear sort"
 
   useLayoutEffect(() => {
     const updateWidths = () => {
@@ -472,6 +477,22 @@ export function DataTable<T, TQuery extends object = object>({
     return sort.direction === "asc" ? "↑" : "↓"
   }
 
+  const getSortAriaLabel = (column: DataTableColumn<T>) => {
+    if (column.sortable !== true) return undefined
+    if (sort?.columnKey !== column.key) return resolvedSortAscendingLabel
+    return sort.direction === "asc"
+      ? resolvedSortDescendingLabel
+      : resolvedClearSortLabel
+  }
+
+  const getAriaSort = (column: DataTableColumn<T>) => {
+    if (column.sortable !== true || sort?.columnKey !== column.key) {
+      return "none" as const
+    }
+
+    return sort.direction === "asc" ? "ascending" : "descending"
+  }
+
   const renderFillerCells = () =>
     columns
       .slice(1)
@@ -513,7 +534,7 @@ export function DataTable<T, TQuery extends object = object>({
           }
           placeholder={field.placeholder}
           disabled={disabled}
-          updateStrategy="blur-enter"
+          updateStrategy="enter"
         />
       )
 
@@ -677,6 +698,7 @@ export function DataTable<T, TQuery extends object = object>({
                       ref={(element) => {
                         headerCellRefs.current[columnIndex] = element
                       }}
+                      aria-sort={getAriaSort(column)}
                       className={
                         isStickyLeft
                           ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
@@ -696,6 +718,7 @@ export function DataTable<T, TQuery extends object = object>({
                         className="flex w-full cursor-pointer items-center gap-2 text-left disabled:cursor-default"
                         onClick={() => toggleSort(column)}
                         disabled={column.sortable !== true}
+                        aria-label={getSortAriaLabel(column)}
                       >
                         <span className="min-w-0 truncate">{column.header}</span>
                         {column.sortable !== true ? null : (

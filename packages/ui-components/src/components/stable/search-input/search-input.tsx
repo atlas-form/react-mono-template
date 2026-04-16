@@ -11,7 +11,7 @@ export interface SearchInputProps {
   onValueChange: (value: string) => void
   placeholder?: string
   disabled?: boolean
-  updateStrategy?: "immediate" | "blur-enter"
+  updateStrategy?: "immediate" | "blur-enter" | "enter"
 }
 
 export function SearchInput({
@@ -51,7 +51,7 @@ export function SearchInput({
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (updateStrategy !== "blur-enter") return
+    if (updateStrategy !== "blur-enter" && updateStrategy !== "enter") return
 
     if (event.key === "Enter") {
       event.preventDefault()
