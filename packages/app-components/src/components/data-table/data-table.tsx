@@ -607,7 +607,7 @@ export function DataTable<T, TQuery extends object = object>({
 
   return (
     <div
-      className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-xl flex-col gap-3"
+      className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-xl flex-col"
       data-slot="data-table"
       style={{ height: resolveTableHeight(height) }}
     >
@@ -678,7 +678,7 @@ export function DataTable<T, TQuery extends object = object>({
       </div>
 
       <div
-        className="min-h-0 flex-1 overflow-hidden"
+        className="mt-3 min-h-0 flex-1 overflow-hidden"
         data-slot="data-table-body"
       >
         <div className="h-full overflow-auto">
@@ -812,7 +812,7 @@ export function DataTable<T, TQuery extends object = object>({
         </div>
       </div>
 
-      <div className="overflow-x-auto px-3 py-2" data-slot="data-table-tail">
+      <div className="mt-2 overflow-x-auto px-3 py-2" data-slot="data-table-tail">
         <div className="flex min-w-max flex-nowrap items-center justify-between">
           <div className="shrink-0 flex items-center gap-2 text-sm">
             <span>
