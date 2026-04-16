@@ -702,28 +702,26 @@ export function DataTable<T, TQuery extends object = object>({
       </div>
 
       <div className="mt-2 overflow-x-auto px-4 py-2" data-slot="data-table-tail">
-        <div className="flex min-w-max items-center justify-between">
-          <div className="ml-[100px]">
-            <div className="flex shrink-0 items-center gap-2 text-sm">
-              <span>
-                <strong>Total:</strong> {total}
-              </span>
-              <NativeSelect
-                value={String(pageSize)}
-                onValueChange={(value: string) => {
-                  setPage(1)
-                  setPageSize(Number(value))
-                }}
-                options={safePageSizeOptions.map((value) => ({
-                  label: String(value),
-                  value: String(value),
-                }))}
-                disabled={loading}
-              />
-            </div>
+        <div className="flex min-w-max flex-nowrap items-center justify-between gap-6">
+          <div className="flex shrink-0 items-center gap-2 text-sm">
+            <span>
+              <strong>Total:</strong> {total}
+            </span>
+            <NativeSelect
+              value={String(pageSize)}
+              onValueChange={(value: string) => {
+                setPage(1)
+                setPageSize(Number(value))
+              }}
+              options={safePageSizeOptions.map((value) => ({
+                label: String(value),
+                value: String(value),
+              }))}
+              disabled={loading}
+            />
           </div>
 
-          <div className="mr-[100px] shrink-0">
+          <div className="shrink-0">
             <Pagination
               page={Math.min(page, totalPages)}
               totalPages={totalPages}
