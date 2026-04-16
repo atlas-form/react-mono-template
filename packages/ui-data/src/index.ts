@@ -6,4 +6,6 @@ export type {
   DataTableProps,
   DataTableQueryField,
   DataTableSelectOption,
+  DataTableSortDirection,
+  DataTableSortState,
 } from "./components/stable/data-table"

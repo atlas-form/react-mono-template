@@ -7,4 +7,6 @@ export type {
   DataTableProps,
   DataTableQueryField,
   DataTableSelectOption,
+  DataTableSortDirection,
+  DataTableSortState,
 } from "./data-table"

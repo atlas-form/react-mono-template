@@ -35,6 +35,14 @@ export interface DataTableColumn<T> {
   renderCell: (row: T, rowIndex: number) => ReactNode
   width?: number | string
   sticky?: "left" | "right"
+  sortable?: boolean
+}
+
+export type DataTableSortDirection = "asc" | "desc"
+
+export interface DataTableSortState {
+  columnKey: string
+  direction: DataTableSortDirection
 }
 
 export interface DataTableSelectOption {
@@ -98,6 +106,7 @@ export interface DataTableFetchParams<TQuery = object> {
   pageSize: number
   signal: AbortSignal
   query: TQuery
+  sort: DataTableSortState | null
 }
 
 export interface DataTableProps<T, TQuery extends object = object> {
@@ -124,6 +133,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
   queryLegend?: ReactNode
   height?: number | string
   refreshLabel?: string
+  initialSort?: DataTableSortState | null
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
@@ -234,6 +244,7 @@ export function DataTable<T, TQuery extends object = object>({
   queryLegend = "Query",
   height,
   refreshLabel = "Refresh data",
+  initialSort = null,
 }: DataTableProps<T, TQuery>) {
   const [rows, setRows] = useState<T[]>([])
   const [page, setPage] = useState(initialPage)
@@ -243,6 +254,7 @@ export function DataTable<T, TQuery extends object = object>({
   const [error, setError] = useState<unknown>(null)
   const [reloadToken, setReloadToken] = useState(0)
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState<number[]>([])
+  const [sort, setSort] = useState<DataTableSortState | null>(initialSort)
   const [draftQuery, setDraftQuery] = useState<TQuery>(() =>
     createQueryState(initialQuery)
   )
@@ -352,6 +364,7 @@ export function DataTable<T, TQuery extends object = object>({
           pageSize,
           signal: controller.signal,
           query: draftQuery,
+          sort,
         })
 
         if (controller.signal.aborted) return
@@ -371,7 +384,7 @@ export function DataTable<T, TQuery extends object = object>({
     })()
 
     return () => controller.abort()
-  }, [draftQuery, fetchData, onError, page, pageSize, reloadToken])
+  }, [draftQuery, fetchData, onError, page, pageSize, reloadToken, sort])
 
   const handleRetry = () => {
     setReloadToken((current: number) => current + 1)
@@ -386,6 +399,35 @@ export function DataTable<T, TQuery extends object = object>({
       ...current,
       [key]: value,
     }))
+  }
+
+  const toggleSort = (column: DataTableColumn<T>) => {
+    if (column.sortable !== true) return
+
+    setPage(1)
+    setSort((current) => {
+      if (current?.columnKey !== column.key) {
+        return {
+          columnKey: column.key,
+          direction: "asc",
+        }
+      }
+
+      if (current.direction === "asc") {
+        return {
+          columnKey: column.key,
+          direction: "desc",
+        }
+      }
+
+      return null
+    })
+  }
+
+  const getSortIndicator = (column: DataTableColumn<T>) => {
+    if (column.sortable !== true) return null
+    if (sort?.columnKey !== column.key) return "↕"
+    return sort.direction === "asc" ? "↑" : "↓"
   }
 
   const renderFillerCells = () =>
@@ -566,7 +608,22 @@ export function DataTable<T, TQuery extends object = object>({
                         ),
                       }}
                     >
-                      {column.header}
+                      <button
+                        type="button"
+                        className="flex w-full cursor-pointer items-center gap-2 text-left disabled:cursor-default"
+                        onClick={() => toggleSort(column)}
+                        disabled={column.sortable !== true}
+                      >
+                        <span className="min-w-0 truncate">{column.header}</span>
+                        {column.sortable !== true ? null : (
+                          <span
+                            aria-hidden="true"
+                            className="shrink-0 text-xs text-muted-foreground"
+                          >
+                            {getSortIndicator(column)}
+                          </span>
+                        )}
+                      </button>
                     </TableHead>
                   )
                 })}
@@ -644,32 +701,29 @@ export function DataTable<T, TQuery extends object = object>({
         </div>
       </div>
 
-      <div
-        className="relative mt-2 overflow-x-auto px-4 py-2"
-        data-slot="data-table-tail"
-      >
-        <div className="flex min-w-max items-center text-sm">
-          <div className="flex shrink-0 items-center gap-2">
-            <span>
-              <strong>Total:</strong> {total}
-            </span>
-            <NativeSelect
-              value={String(pageSize)}
-              onValueChange={(value: string) => {
-                setPage(1)
-                setPageSize(Number(value))
-              }}
-              options={safePageSizeOptions.map((value) => ({
-                label: String(value),
-                value: String(value),
-              }))}
-              disabled={loading}
-            />
+      <div className="mt-2 overflow-x-auto px-4 py-2" data-slot="data-table-tail">
+        <div className="flex min-w-max items-center justify-between">
+          <div className="ml-[100px]">
+            <div className="flex shrink-0 items-center gap-2 text-sm">
+              <span>
+                <strong>Total:</strong> {total}
+              </span>
+              <NativeSelect
+                value={String(pageSize)}
+                onValueChange={(value: string) => {
+                  setPage(1)
+                  setPageSize(Number(value))
+                }}
+                options={safePageSizeOptions.map((value) => ({
+                  label: String(value),
+                  value: String(value),
+                }))}
+                disabled={loading}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 items-center">
-          <div className="pointer-events-auto shrink-0">
+          <div className="mr-[100px] shrink-0">
             <Pagination
               page={Math.min(page, totalPages)}
               totalPages={totalPages}

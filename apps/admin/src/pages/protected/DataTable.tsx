@@ -1,6 +1,10 @@
 import { useCallback } from "react"
 import { Badge } from "@workspace/ui-components/stable/badge"
-import { DataTable, type DataTableFetchResult } from "@workspace/ui-data"
+import {
+  DataTable,
+  type DataTableFetchResult,
+  type DataTableSortState,
+} from "@workspace/ui-data"
 import type { DateRangeValue } from "@workspace/app-components"
 
 interface CustomerRow {
@@ -42,11 +46,13 @@ export default function DataTablePage() {
       pageSize,
       query,
       signal,
+      sort,
     }: {
       page: number
       pageSize: number
       query: CustomerTableQuery
       signal: AbortSignal
+      sort: DataTableSortState | null
     }): Promise<DataTableFetchResult<CustomerRow>> => {
       void signal
       await new Promise((resolve) => setTimeout(resolve, 120))
@@ -68,12 +74,24 @@ export default function DataTablePage() {
         return matchesKeyword && matchesStatus && matchesCreatedAt
       })
 
+      const sortedRows = [...filteredRows].sort((left, right) => {
+        if (!sort) {
+          return 0
+        }
+
+        const leftValue = getCustomerSortValue(left, sort.columnKey)
+        const rightValue = getCustomerSortValue(right, sort.columnKey)
+        const result = compareSortValues(leftValue, rightValue)
+
+        return sort.direction === "asc" ? result : -result
+      })
+
       const start = (page - 1) * pageSize
       const end = start + pageSize
 
       return {
-        items: filteredRows.slice(start, end),
-        total: filteredRows.length,
+        items: sortedRows.slice(start, end),
+        total: sortedRows.length,
       }
     },
     []
@@ -90,16 +108,19 @@ export default function DataTablePage() {
             key: "seq",
             header: "#",
             width: 48,
+            sortable: false,
             renderCell: (_row: CustomerRow, rowIndex: number) => rowIndex + 1,
           },
           {
             key: "id",
             header: "ID",
+            sortable: true,
             renderCell: (row: CustomerRow) => row.id,
           },
           {
             key: "name",
             header: "Name",
+            sortable: true,
             renderCell: (row: CustomerRow) => row.name,
           },
           {
@@ -110,6 +131,7 @@ export default function DataTablePage() {
           {
             key: "status",
             header: "Status",
+            sortable: true,
             renderCell: (row: CustomerRow) => (
               <Badge
                 variant={row.status === "Active" ? "default" : "secondary"}
@@ -126,6 +148,7 @@ export default function DataTablePage() {
           {
             key: "createdAt",
             header: "Created At",
+            sortable: true,
             renderCell: (row: CustomerRow) => formatDateTime(row.createdAt),
           },
           {
@@ -166,12 +189,14 @@ export default function DataTablePage() {
           {
             key: "contractValue",
             header: "Contract",
+            sortable: true,
             renderCell: (row: CustomerRow) =>
               `$${(Number(row.id.slice(-2)) * 1200).toLocaleString()}`,
           },
           {
             key: "users",
             header: "Users",
+            sortable: true,
             renderCell: (row: CustomerRow) => Number(row.id.slice(-2)) + 12,
           },
           {
@@ -190,6 +215,7 @@ export default function DataTablePage() {
             key: "lastActive",
             header: "Last Active",
             width: 140,
+            sortable: true,
             renderCell: (row: CustomerRow) =>
               formatDateTime(addDays(row.createdAt, 7)).slice(5, 16),
           },
@@ -208,6 +234,7 @@ export default function DataTablePage() {
           {
             key: "score",
             header: "Score",
+            sortable: true,
             renderCell: (row: CustomerRow) =>
               60 + (Number(row.id.slice(-2)) % 40),
           },
@@ -278,4 +305,59 @@ function addDays(date: Date, days: number) {
   const value = new Date(date)
   value.setDate(value.getDate() + days)
   return value
+}
+
+function getCustomerSortValue(row: CustomerRow, columnKey: string) {
+  switch (columnKey) {
+    case "id":
+      return row.id
+    case "name":
+      return row.name
+    case "tier":
+      return row.tier
+    case "status":
+      return row.status
+    case "region":
+      return row.region
+    case "createdAt":
+      return row.createdAt.getTime()
+    case "owner":
+      return owners[Number(row.id.slice(-1)) % owners.length]
+    case "channel":
+      return channels[Number(row.id.slice(-2)) % channels.length]
+    case "industry":
+      return industries[Number(row.id.slice(-1)) % industries.length]
+    case "segment":
+      return segments[Number(row.id.slice(-2)) % segments.length]
+    case "city":
+      return row.region.replace(" China", "")
+    case "renewal":
+      return addDays(row.createdAt, 90).getTime()
+    case "contractValue":
+      return Number(row.id.slice(-2)) * 1200
+    case "users":
+      return Number(row.id.slice(-2)) + 12
+    case "storage":
+      return Number(row.id.slice(-2)) % 80
+    case "health":
+      return ["Great", "Good", "Watch", "Risk"][Number(row.id.slice(-1)) % 4]
+    case "lastActive":
+      return addDays(row.createdAt, 7).getTime()
+    case "plan":
+      return row.tier === "Enterprise" ? "Annual" : "Monthly"
+    case "source":
+      return ["Expo", "Referral", "Ads", "SEO"][Number(row.id.slice(-1)) % 4]
+    case "score":
+      return 60 + (Number(row.id.slice(-2)) % 40)
+    default:
+      return row.id
+  }
+}
+
+function compareSortValues(left: string | number, right: string | number) {
+  if (typeof left === "number" && typeof right === "number") {
+    return left - right
+  }
+
+  return String(left).localeCompare(String(right), "en")
 }
