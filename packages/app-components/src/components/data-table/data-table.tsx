@@ -25,12 +25,30 @@ import {
   TooltipTrigger,
 } from "@workspace/ui-components"
 import {
-  getDataTableCopy,
-  normalizeLanguage,
-} from "@workspace/shared-i18n"
-import { RefreshCw, RotateCcw } from "lucide-react"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@workspace/ui-core/components/dropdown-menu"
+import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
+import {
+  MoreHorizontal,
+  Pencil,
+  RefreshCw,
+  RotateCcw,
+  Trash2,
+} from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type Key, type ReactNode } from "react"
+import {
+  Fragment,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Key,
+  type ReactNode,
+} from "react"
 
 import { DateRangePicker, type DateRangeValue } from "../date-time-picker"
 
@@ -142,6 +160,15 @@ export interface DataTableLocaleText {
   refreshLabel?: string
   resetLabel?: string
   totalLabel?: ReactNode
+  actionsLabel?: ReactNode
+  editLabel?: ReactNode
+  deleteLabel?: ReactNode
+  moreLabel?: string
+  cancelLabel?: ReactNode
+  saveLabel?: ReactNode
+  confirmDeleteLabel?: ReactNode
+  deleteDialogTitle?: ReactNode
+  deleteDialogDescription?: ReactNode
   sortAscendingLabel?: string
   sortDescendingLabel?: string
   clearSortLabel?: string
@@ -176,22 +203,21 @@ export interface DataTableBulkUpdateFieldBase {
   disabled?: boolean
 }
 
-export interface DataTableBulkUpdateTextField
-  extends DataTableBulkUpdateFieldBase {
+export interface DataTableBulkUpdateTextField extends DataTableBulkUpdateFieldBase {
   type: "text"
   placeholder?: string
   inputType?: "text" | "search" | "email" | "number" | "tel" | "url"
 }
 
-export interface DataTableBulkUpdateSelectField
-  extends DataTableBulkUpdateFieldBase {
+export interface DataTableBulkUpdateSelectField extends DataTableBulkUpdateFieldBase {
   type: "select"
   placeholder?: string
   options: readonly DataTableSelectOption[]
 }
 
-export interface DataTableBulkUpdateCustomField<T>
-  extends DataTableBulkUpdateFieldBase {
+export interface DataTableBulkUpdateCustomField<
+  T,
+> extends DataTableBulkUpdateFieldBase {
   type: "custom"
   renderControl: (
     value: unknown,
@@ -209,8 +235,9 @@ export type DataTableBulkUpdateField<T> =
   | DataTableBulkUpdateSelectField
   | DataTableBulkUpdateCustomField<T>
 
-export interface DataTableBulkUpdateSubmitContext<T>
-  extends DataTableHeaderActionsContext<T> {
+export interface DataTableBulkUpdateSubmitContext<
+  T,
+> extends DataTableHeaderActionsContext<T> {
   fieldKey: string
   value: unknown
 }
@@ -226,6 +253,47 @@ export interface DataTableBulkUpdateConfig<T> {
   columnWidth?: number
   selectedRowKeys?: readonly Key[]
   onSelectedRowKeysChange?: (keys: Key[], rows: T[]) => void
+}
+
+export interface DataTableRowActionItem<T> {
+  key: string
+  label: ReactNode
+  variant?: "default" | "destructive"
+  disabled?: boolean | ((row: T, rowIndex: number) => boolean)
+  onClick?: (row: T, rowIndex: number) => void
+}
+
+export interface DataTableEditActionConfig<T> {
+  label?: ReactNode
+  title?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
+  description?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
+  cancelLabel?: ReactNode
+  confirmLabel?: ReactNode
+  renderContent?: (context: {
+    row: T
+    rowIndex: number
+    close: () => void
+  }) => ReactNode
+  onConfirm?: (row: T, rowIndex: number) => Promise<void> | void
+}
+
+export interface DataTableDeleteActionConfig<T> {
+  label?: ReactNode
+  title?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
+  description?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
+  cancelLabel?: ReactNode
+  confirmLabel?: ReactNode
+  onConfirm?: (row: T, rowIndex: number) => Promise<void> | void
+}
+
+export interface DataTableRowActionsConfig<T> {
+  header?: ReactNode
+  columnWidth?: number | string
+  sticky?: "left" | "right" | false
+  moreLabel?: string
+  edit?: false | DataTableEditActionConfig<T>
+  delete?: false | DataTableDeleteActionConfig<T>
+  moreItems?: readonly DataTableRowActionItem<T>[]
 }
 
 export interface DataTableProps<T, TQuery extends object = object> {
@@ -254,6 +322,7 @@ export interface DataTableProps<T, TQuery extends object = object> {
     | ((context: DataTableHeaderActionsContext<T>) => ReactNode)
   bulkDelete?: false | DataTableBulkDeleteConfig<T>
   bulkUpdate?: false | DataTableBulkUpdateConfig<T>
+  rowActions?: false | DataTableRowActionsConfig<T>
   height?: number | string
   refreshLabel?: string
   resetLabel?: string
@@ -351,6 +420,260 @@ function getQueryFieldWidth(field: DataTableQueryField<object>) {
   return 220
 }
 
+function resolveRowActionDisabled<T>(
+  disabled: DataTableRowActionItem<T>["disabled"],
+  row: T,
+  rowIndex: number
+) {
+  if (typeof disabled === "function") {
+    return disabled(row, rowIndex)
+  }
+
+  return disabled === true
+}
+
+function resolveRowActionContent<T>(
+  value: ReactNode | ((row: T, rowIndex: number) => ReactNode) | undefined,
+  row: T,
+  rowIndex: number
+) {
+  if (typeof value === "function") {
+    return value(row, rowIndex)
+  }
+
+  return value
+}
+
+function DataTableRowActionsCell<T>({
+  row,
+  rowIndex,
+  rowActions,
+  moreItems,
+  resolvedEditLabel,
+  resolvedDeleteLabel,
+  resolvedMoreLabel,
+  resolvedCancelLabel,
+  resolvedSaveLabel,
+  resolvedConfirmDeleteLabel,
+  resolvedDeleteDialogTitle,
+  resolvedDeleteDialogDescription,
+}: {
+  row: T
+  rowIndex: number
+  rowActions: DataTableRowActionsConfig<T>
+  moreItems: readonly DataTableRowActionItem<T>[]
+  resolvedEditLabel: ReactNode
+  resolvedDeleteLabel: ReactNode
+  resolvedMoreLabel: string
+  resolvedCancelLabel: ReactNode
+  resolvedSaveLabel: ReactNode
+  resolvedConfirmDeleteLabel: ReactNode
+  resolvedDeleteDialogTitle: ReactNode
+  resolvedDeleteDialogDescription: ReactNode
+}) {
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [submittingEdit, setSubmittingEdit] = useState(false)
+  const [submittingDelete, setSubmittingDelete] = useState(false)
+  const editAction = rowActions.edit || null
+  const deleteAction = rowActions.delete || null
+
+  const handleEditConfirm = async () => {
+    if (!editAction?.onConfirm || submittingEdit) {
+      setEditDialogOpen(false)
+      return
+    }
+
+    setSubmittingEdit(true)
+
+    try {
+      await editAction.onConfirm(row, rowIndex)
+      setEditDialogOpen(false)
+    } finally {
+      setSubmittingEdit(false)
+    }
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteAction?.onConfirm || submittingDelete) {
+      setDeleteDialogOpen(false)
+      return
+    }
+
+    setSubmittingDelete(true)
+
+    try {
+      await deleteAction.onConfirm(row, rowIndex)
+      setDeleteDialogOpen(false)
+    } finally {
+      setSubmittingDelete(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-end gap-1.5">
+        {editAction ? (
+          <button
+            type="button"
+            onClick={() => setEditDialogOpen(true)}
+            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+          >
+            <Pencil aria-hidden="true" className="size-4" />
+            <span className="sr-only">
+              {editAction.label ?? resolvedEditLabel}
+            </span>
+          </button>
+        ) : null}
+
+        {deleteAction ? (
+          <button
+            type="button"
+            onClick={() => setDeleteDialogOpen(true)}
+            className="inline-flex size-8 items-center justify-center rounded-md text-destructive transition hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
+          >
+            <Trash2 aria-hidden="true" className="size-4" />
+            <span className="sr-only">
+              {deleteAction.label ?? resolvedDeleteLabel}
+            </span>
+          </button>
+        ) : null}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              disabled={moreItems.length === 0}
+              className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+            >
+              <MoreHorizontal aria-hidden="true" className="size-4.5" />
+              <span className="sr-only">
+                {rowActions.moreLabel ?? resolvedMoreLabel}
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            mode="headless"
+            align="end"
+            sideOffset={8}
+            className="z-[2000] min-w-36 overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg outline-hidden"
+          >
+            {moreItems.map((item) => (
+              <DropdownMenuItem
+                key={item.key}
+                mode="headless"
+                variant={item.variant ?? "default"}
+                className="flex min-h-8 cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-none outline-hidden transition focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-disabled:pointer-events-none data-disabled:opacity-50"
+                disabled={resolveRowActionDisabled(
+                  item.disabled,
+                  row,
+                  rowIndex
+                )}
+                onSelect={() => item.onClick?.(row, rowIndex)}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {editAction ? (
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {resolveRowActionContent(editAction.title, row, rowIndex) ??
+                  editAction.label ??
+                  resolvedEditLabel}
+              </DialogTitle>
+              {editAction.description ? (
+                <DialogDescription>
+                  {resolveRowActionContent(
+                    editAction.description,
+                    row,
+                    rowIndex
+                  )}
+                </DialogDescription>
+              ) : null}
+            </DialogHeader>
+
+            {editAction.renderContent?.({
+              row,
+              rowIndex,
+              close: () => setEditDialogOpen(false),
+            }) ?? null}
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditDialogOpen(false)}
+                disabled={submittingEdit}
+              >
+                {editAction.cancelLabel ?? resolvedCancelLabel}
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  void handleEditConfirm()
+                }}
+                disabled={submittingEdit}
+              >
+                {editAction.confirmLabel ?? resolvedSaveLabel}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : null}
+
+      {deleteAction ? (
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {resolveRowActionContent(deleteAction.title, row, rowIndex) ??
+                  deleteAction.label ??
+                  resolvedDeleteDialogTitle}
+              </DialogTitle>
+              {deleteAction.description || resolvedDeleteDialogDescription ? (
+                <DialogDescription>
+                  {resolveRowActionContent(
+                    deleteAction.description,
+                    row,
+                    rowIndex
+                  ) ?? resolvedDeleteDialogDescription}
+                </DialogDescription>
+              ) : null}
+            </DialogHeader>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                disabled={submittingDelete}
+              >
+                {deleteAction.cancelLabel ?? resolvedCancelLabel}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => {
+                  void handleDeleteConfirm()
+                }}
+                disabled={submittingDelete}
+              >
+                {deleteAction.confirmLabel ?? resolvedConfirmDeleteLabel}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : null}
+    </>
+  )
+}
+
 export function DataTable<T, TQuery extends object = object>({
   columns,
   fixedLeftColumns = 0,
@@ -373,6 +696,7 @@ export function DataTable<T, TQuery extends object = object>({
   headerActions,
   bulkDelete = false,
   bulkUpdate = false,
+  rowActions = false,
   height,
   refreshLabel,
   resetLabel,
@@ -391,7 +715,9 @@ export function DataTable<T, TQuery extends object = object>({
   const [reloadToken, setReloadToken] = useState(0)
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState<number[]>([])
   const [sort, setSort] = useState<DataTableSortState | null>(initialSort)
-  const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>([])
+  const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>(
+    []
+  )
   const [deleting, setDeleting] = useState(false)
   const [bulkUpdateDialogOpen, setBulkUpdateDialogOpen] = useState(false)
   const [bulkUpdateFieldKey, setBulkUpdateFieldKey] = useState("")
@@ -402,16 +728,20 @@ export function DataTable<T, TQuery extends object = object>({
   )
   const headerCellRefs = useRef<Array<HTMLTableCellElement | null>>([])
   const selectionConfig =
-    bulkDelete !== false ? bulkDelete : bulkUpdate !== false ? bulkUpdate : false
+    bulkDelete !== false
+      ? bulkDelete
+      : bulkUpdate !== false
+        ? bulkUpdate
+        : false
   const rowSelectionEnabled = selectionConfig !== false
   const selectionColumnWidth =
     selectionConfig !== false
-      ? selectionConfig.columnWidth ?? DEFAULT_SELECTION_COLUMN_WIDTH
+      ? (selectionConfig.columnWidth ?? DEFAULT_SELECTION_COLUMN_WIDTH)
       : DEFAULT_SELECTION_COLUMN_WIDTH
   const selectedRowKeys =
     selectionConfig !== false && selectionConfig.selectedRowKeys
       ? [...selectionConfig.selectedRowKeys]
-    : internalSelectedRowKeys
+      : internalSelectedRowKeys
 
   const safePageSizeOptions = useMemo(() => {
     const values = new Set<number>([...pageSizeOptions, initialPageSize])
@@ -435,6 +765,18 @@ export function DataTable<T, TQuery extends object = object>({
   const resolvedResetLabel =
     localeText?.resetLabel ?? resetLabel ?? copy.resetLabel
   const resolvedTotalLabel = localeText?.totalLabel ?? copy.totalLabel
+  const resolvedActionsLabel = localeText?.actionsLabel ?? copy.actionsLabel
+  const resolvedEditLabel = localeText?.editLabel ?? copy.editLabel
+  const resolvedDeleteLabel = localeText?.deleteLabel ?? copy.deleteLabel
+  const resolvedMoreLabel = localeText?.moreLabel ?? copy.moreLabel
+  const resolvedCancelLabel = localeText?.cancelLabel ?? copy.cancelLabel
+  const resolvedSaveLabel = localeText?.saveLabel ?? copy.saveLabel
+  const resolvedConfirmDeleteLabel =
+    localeText?.confirmDeleteLabel ?? copy.confirmDeleteLabel
+  const resolvedDeleteDialogTitle =
+    localeText?.deleteDialogTitle ?? copy.deleteDialogTitle
+  const resolvedDeleteDialogDescription =
+    localeText?.deleteDialogDescription ?? copy.deleteDialogDescription
   const resolvedSortAscendingLabel =
     localeText?.sortAscendingLabel ?? copy.sortAscendingLabel
   const resolvedSortDescendingLabel =
@@ -462,11 +804,52 @@ export function DataTable<T, TQuery extends object = object>({
     () => bulkUpdateFields.filter((field) => field.disabled !== true),
     [bulkUpdateFields]
   )
+  const resolvedColumns = useMemo(() => {
+    if (rowActions === false) {
+      return [...columns]
+    }
+
+    const moreItems = rowActions.moreItems ?? []
+    const actionColumn: DataTableColumn<T> = {
+      key: "__actions__",
+      header: rowActions.header ?? resolvedActionsLabel,
+      width: rowActions.columnWidth ?? 116,
+      sticky:
+        rowActions.sticky === false
+          ? undefined
+          : (rowActions.sticky ?? "right"),
+      renderCell: (row, rowIndex) => (
+        <DataTableRowActionsCell
+          row={row}
+          rowIndex={rowIndex}
+          rowActions={rowActions}
+          moreItems={moreItems}
+          resolvedEditLabel={resolvedEditLabel}
+          resolvedDeleteLabel={resolvedDeleteLabel}
+          resolvedMoreLabel={resolvedMoreLabel}
+          resolvedCancelLabel={resolvedCancelLabel}
+          resolvedSaveLabel={resolvedSaveLabel}
+          resolvedConfirmDeleteLabel={resolvedConfirmDeleteLabel}
+          resolvedDeleteDialogTitle={resolvedDeleteDialogTitle}
+          resolvedDeleteDialogDescription={resolvedDeleteDialogDescription}
+        />
+      ),
+    }
+
+    return [...columns, actionColumn]
+  }, [
+    columns,
+    resolvedActionsLabel,
+    resolvedDeleteLabel,
+    resolvedEditLabel,
+    resolvedMoreLabel,
+    rowActions,
+  ])
 
   useLayoutEffect(() => {
     const updateWidths = () => {
       setMeasuredColumnWidths(
-        columns.map((_, columnIndex) => {
+        resolvedColumns.map((_, columnIndex) => {
           const cell = headerCellRefs.current[columnIndex]
           return cell?.getBoundingClientRect().width ?? 0
         })
@@ -494,12 +877,12 @@ export function DataTable<T, TQuery extends object = object>({
     return () => {
       observer.disconnect()
     }
-  }, [columns])
+  }, [resolvedColumns])
 
   const stickyLeftOffsets = useMemo(() => {
     let currentLeft = rowSelectionEnabled ? selectionColumnWidth : 0
 
-    return columns.map((column, columnIndex) => {
+    return resolvedColumns.map((column, columnIndex) => {
       if (!isLeftStickyColumn(column, columnIndex, fixedLeftColumns)) {
         return undefined
       }
@@ -514,25 +897,31 @@ export function DataTable<T, TQuery extends object = object>({
       return leftOffset
     })
   }, [
-    columns,
     fixedLeftColumns,
     measuredColumnWidths,
+    resolvedColumns,
     rowSelectionEnabled,
     selectionColumnWidth,
   ])
 
   const stickyRightOffsets = useMemo(() => {
     let currentRight = 0
-    const offsets = Array<number | undefined>(columns.length).fill(undefined)
+    const offsets = Array<number | undefined>(resolvedColumns.length).fill(
+      undefined
+    )
 
-    for (let columnIndex = columns.length - 1; columnIndex >= 0; columnIndex -= 1) {
-      const column = columns[columnIndex]
+    for (
+      let columnIndex = resolvedColumns.length - 1;
+      columnIndex >= 0;
+      columnIndex -= 1
+    ) {
+      const column = resolvedColumns[columnIndex]
 
       if (
         !isRightStickyColumn(
           column,
           columnIndex,
-          columns.length,
+          resolvedColumns.length,
           fixedLeftColumns,
           fixedRightColumns
         )
@@ -549,7 +938,12 @@ export function DataTable<T, TQuery extends object = object>({
     }
 
     return offsets
-  }, [columns, fixedLeftColumns, fixedRightColumns, measuredColumnWidths])
+  }, [
+    fixedLeftColumns,
+    fixedRightColumns,
+    measuredColumnWidths,
+    resolvedColumns,
+  ])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -615,7 +1009,9 @@ export function DataTable<T, TQuery extends object = object>({
 
   const activeBulkUpdateField = useMemo(
     () =>
-      availableBulkUpdateFields.find((field) => field.key === bulkUpdateFieldKey) ??
+      availableBulkUpdateFields.find(
+        (field) => field.key === bulkUpdateFieldKey
+      ) ??
       availableBulkUpdateFields[0] ??
       null,
     [availableBulkUpdateFields, bulkUpdateFieldKey]
@@ -733,7 +1129,8 @@ export function DataTable<T, TQuery extends object = object>({
     rowSelectionEnabled &&
     currentPageRowKeys.length > 0 &&
     currentPageRowKeys.every((key) => selectedRowKeySet.has(key))
-  const totalColumnCount = columns.length + (rowSelectionEnabled ? 1 : 0)
+  const totalColumnCount =
+    resolvedColumns.length + (rowSelectionEnabled ? 1 : 0)
   const resolvedHeaderActions =
     typeof headerActions === "function"
       ? headerActions({
@@ -762,7 +1159,9 @@ export function DataTable<T, TQuery extends object = object>({
   }
 
   const emptyContent = renderEmpty ? renderEmpty() : resolvedEmptyText
-  const errorContent = renderError ? renderError(error, handleRetry) : resolvedErrorText
+  const errorContent = renderError
+    ? renderError(error, handleRetry)
+    : resolvedErrorText
   const loadingContentResolved = renderLoading
     ? renderLoading()
     : resolvedLoadingText
@@ -903,475 +1302,496 @@ export function DataTable<T, TQuery extends object = object>({
       )
     }
 
-    return activeBulkUpdateField.renderControl(bulkUpdateValue, setBulkUpdateValue, {
-      disabled: updating,
-      selectedRowKeys,
-      selectedRows,
-    })
+    return activeBulkUpdateField.renderControl(
+      bulkUpdateValue,
+      setBulkUpdateValue,
+      {
+        disabled: updating,
+        selectedRowKeys,
+        selectedRows,
+      }
+    )
   }
 
   return (
     <TooltipProvider>
       <div
-        className="flex h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-xl flex-col"
+        className="flex h-full min-h-0 w-full max-w-full min-w-0 flex-col overflow-hidden rounded-xl"
         data-slot="data-table"
         style={{ height: resolveTableHeight(height) }}
       >
-      <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
-        {hasQueryFields ? (
-          <div className="flex min-w-0 items-start gap-6 overflow-hidden">
-            <div className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto">
-              {leadingSearchField ? (
-                <label
-                  key={leadingSearchField.key}
-                  className="flex min-w-[180px] shrink-0 flex-col gap-1"
-                  style={{
-                    width: `min(100%, ${getQueryFieldWidth(
-                      leadingSearchField as DataTableQueryField<object>
-                    )}px)`,
-                  }}
-                >
-                  {renderQueryFieldControl(leadingSearchField)}
-                  {leadingSearchField.description ? (
-                    <span className="text-xs leading-4 text-muted-foreground">
-                      {leadingSearchField.description}
-                    </span>
-                  ) : null}
-                </label>
-              ) : null}
+        <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
+          {hasQueryFields ? (
+            <div className="flex min-w-0 items-start gap-6 overflow-hidden">
+              <div className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto">
+                {leadingSearchField ? (
+                  <label
+                    key={leadingSearchField.key}
+                    className="flex min-w-[180px] shrink-0 flex-col gap-1"
+                    style={{
+                      width: `min(100%, ${getQueryFieldWidth(
+                        leadingSearchField as DataTableQueryField<object>
+                      )}px)`,
+                    }}
+                  >
+                    {renderQueryFieldControl(leadingSearchField)}
+                    {leadingSearchField.description ? (
+                      <span className="text-xs leading-4 text-muted-foreground">
+                        {leadingSearchField.description}
+                      </span>
+                    ) : null}
+                  </label>
+                ) : null}
 
+                <div className="flex shrink-0 items-center gap-3">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        disabled={loading}
+                        onClick={handleResetQuery}
+                        className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                      >
+                        <RotateCcw aria-hidden="true" className="size-4.5" />
+                        <span className="sr-only">{resolvedResetLabel}</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{resolvedResetLabel}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        disabled={loading}
+                        onClick={handleRetry}
+                        className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                      >
+                        <RefreshCw aria-hidden="true" className="size-4.5" />
+                        <span className="sr-only">{resolvedRefreshLabel}</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
+                  </Tooltip>
+                </div>
+
+                {trailingQueryFields.map((field) => (
+                  <label
+                    key={field.key}
+                    className="flex min-w-[180px] shrink-0 flex-col gap-1"
+                    style={{
+                      width: `min(100%, ${getQueryFieldWidth(
+                        field as DataTableQueryField<object>
+                      )}px)`,
+                    }}
+                  >
+                    {renderQueryFieldControl(field)}
+                    {field.description ? (
+                      <span className="text-xs leading-4 text-muted-foreground">
+                        {field.description}
+                      </span>
+                    ) : null}
+                  </label>
+                ))}
+              </div>
+
+              {bulkDelete !== false ||
+              bulkUpdate !== false ||
+              resolvedHeaderActions ? (
+                <div className="flex shrink-0 items-center gap-2">
+                  {bulkDelete !== false && rowSelectionEnabled ? (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      disabled={selectedRowKeys.length === 0 || deleting}
+                      onClick={() => {
+                        void handleBulkDelete()
+                      }}
+                    >
+                      {bulkDelete.label ??
+                        resolvedBulkDeleteLabel(selectedRowKeys.length)}
+                    </Button>
+                  ) : null}
+                  {bulkUpdate !== false ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={selectedRowKeys.length === 0}
+                      onClick={handleOpenBulkUpdate}
+                    >
+                      {bulkUpdate.label ??
+                        resolvedBulkUpdateLabel(selectedRowKeys.length)}
+                    </Button>
+                  ) : null}
+                  {resolvedHeaderActions}
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div className="flex items-center justify-between gap-3">
               <div className="flex shrink-0 items-center gap-3">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="icon"
-                      disabled={loading}
-                      onClick={handleResetQuery}
-                    >
-                      <RotateCcw aria-hidden="true" className="size-4.5" />
-                      <span className="sr-only">{resolvedResetLabel}</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{resolvedResetLabel}</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
                       disabled={loading}
                       onClick={handleRetry}
+                      className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
                     >
                       <RefreshCw aria-hidden="true" className="size-4.5" />
                       <span className="sr-only">{resolvedRefreshLabel}</span>
-                    </Button>
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
                 </Tooltip>
               </div>
-
-              {trailingQueryFields.map((field) => (
-                <label
-                  key={field.key}
-                  className="flex min-w-[180px] shrink-0 flex-col gap-1"
-                  style={{
-                    width: `min(100%, ${getQueryFieldWidth(
-                      field as DataTableQueryField<object>
-                    )}px)`,
-                  }}
-                >
-                  {renderQueryFieldControl(field)}
-                  {field.description ? (
-                    <span className="text-xs leading-4 text-muted-foreground">
-                      {field.description}
-                    </span>
-                  ) : null}
-                </label>
-              ))}
-            </div>
-
-            {bulkDelete !== false || bulkUpdate !== false || resolvedHeaderActions ? (
-              <div className="flex shrink-0 items-center gap-2">
-                {bulkDelete !== false && rowSelectionEnabled ? (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    disabled={selectedRowKeys.length === 0 || deleting}
-                    onClick={() => {
-                      void handleBulkDelete()
-                    }}
-                  >
-                    {bulkDelete.label ??
-                      resolvedBulkDeleteLabel(selectedRowKeys.length)}
-                  </Button>
-                ) : null}
-                {bulkUpdate !== false ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={selectedRowKeys.length === 0}
-                    onClick={handleOpenBulkUpdate}
-                  >
-                    {bulkUpdate.label ??
-                      resolvedBulkUpdateLabel(selectedRowKeys.length)}
-                  </Button>
-                ) : null}
-                {resolvedHeaderActions}
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex shrink-0 items-center gap-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    disabled={loading}
-                    onClick={handleRetry}
-                  >
-                    <RefreshCw aria-hidden="true" className="size-4.5" />
-                    <span className="sr-only">{resolvedRefreshLabel}</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-              </Tooltip>
-            </div>
-            {bulkDelete !== false || bulkUpdate !== false || resolvedHeaderActions ? (
-              <div className="flex min-w-0 items-center justify-end gap-2">
-                {bulkDelete !== false && rowSelectionEnabled ? (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    disabled={selectedRowKeys.length === 0 || deleting}
-                    onClick={() => {
-                      void handleBulkDelete()
-                    }}
-                  >
-                    {bulkDelete.label ??
-                      resolvedBulkDeleteLabel(selectedRowKeys.length)}
-                  </Button>
-                ) : null}
-                {bulkUpdate !== false ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={selectedRowKeys.length === 0}
-                    onClick={handleOpenBulkUpdate}
-                  >
-                    {bulkUpdate.label ??
-                      resolvedBulkUpdateLabel(selectedRowKeys.length)}
-                  </Button>
-                ) : null}
-                {resolvedHeaderActions}
-              </div>
-            ) : null}
-          </div>
-        )}
-      </div>
-
-      <div
-        className="mt-3 min-h-0 flex-1 overflow-hidden"
-        data-slot="data-table-body"
-      >
-        <div className="h-full overflow-auto">
-          <Table
-            className="min-w-full w-max"
-            containerClassName="overflow-visible"
-          >
-            {caption ? (
-              <TableCaption>{caption}</TableCaption>
-            ) : null}
-            <TableHeader>
-              <TableRow>
-                {rowSelectionEnabled ? (
-                  <TableHead
-                    className="sticky top-0 left-0 z-30 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
-                    style={{
-                      left: 0,
-                      minWidth: `${selectionColumnWidth}px`,
-                      width: `${selectionColumnWidth}px`,
-                    }}
-                  >
-                    <div className="flex items-center justify-center">
-                      <Checkbox
-                        checked={allCurrentPageRowsSelected}
-                        onCheckedChange={(checked) => {
-                          if (!checked) {
-                            updateSelectedRowKeys(
-                              selectedRowKeys.filter(
-                                (key) => !currentPageRowKeys.includes(key)
-                              )
-                            )
-                            return
-                          }
-
-                          updateSelectedRowKeys(
-                            Array.from(
-                              new Set<Key>([
-                                ...selectedRowKeys,
-                                ...currentPageRowKeys,
-                              ])
-                            )
-                          )
-                        }}
-                        disabled={!hasRows || loading}
-                      />
-                    </div>
-                  </TableHead>
-                ) : null}
-                {columns.map((column, columnIndex) => {
-                  const leftOffset = stickyLeftOffsets[columnIndex]
-                  const rightOffset = stickyRightOffsets[columnIndex]
-                  const isStickyLeft = leftOffset !== undefined
-                  const isStickyRight = rightOffset !== undefined
-
-                  return (
-                    <TableHead
-                      key={column.key}
-                      ref={(element) => {
-                        headerCellRefs.current[columnIndex] = element
-                      }}
-                      aria-sort={getAriaSort(column)}
-                      className={
-                        isStickyLeft
-                          ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
-                          : isStickyRight
-                            ? "sticky top-0 right-0 z-20 bg-[var(--surface)] shadow-[inset_1px_0_0_var(--border)]"
-                            : "sticky top-0 z-10 bg-[var(--surface)]"
-                      }
-                      style={{
-                        ...getStickyColumnStyles({ leftOffset, rightOffset }),
-                        minWidth: resolveColumnMinWidth(
-                          column as DataTableColumn<object>
-                        ),
+              {bulkDelete !== false ||
+              bulkUpdate !== false ||
+              resolvedHeaderActions ? (
+                <div className="flex min-w-0 items-center justify-end gap-2">
+                  {bulkDelete !== false && rowSelectionEnabled ? (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      disabled={selectedRowKeys.length === 0 || deleting}
+                      onClick={() => {
+                        void handleBulkDelete()
                       }}
                     >
-                      <button
-                        type="button"
-                        className="flex w-full cursor-pointer items-center gap-2 text-left disabled:cursor-default"
-                        onClick={() => toggleSort(column)}
-                        disabled={column.sortable !== true}
-                        aria-label={getSortAriaLabel(column)}
-                      >
-                        <span className="min-w-0 truncate">{column.header}</span>
-                        {column.sortable !== true ? null : (
-                          <span
-                            aria-hidden="true"
-                            className="shrink-0 text-xs text-muted-foreground"
-                          >
-                            {getSortIndicator(column)}
-                          </span>
-                        )}
-                      </button>
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            </TableHeader>
+                      {bulkDelete.label ??
+                        resolvedBulkDeleteLabel(selectedRowKeys.length)}
+                    </Button>
+                  ) : null}
+                  {bulkUpdate !== false ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={selectedRowKeys.length === 0}
+                      onClick={handleOpenBulkUpdate}
+                    >
+                      {bulkUpdate.label ??
+                        resolvedBulkUpdateLabel(selectedRowKeys.length)}
+                    </Button>
+                  ) : null}
+                  {resolvedHeaderActions}
+                </div>
+              ) : null}
+            </div>
+          )}
+        </div>
 
-            <TableBody>
-              {loading ? (
+        <div
+          className="mt-3 min-h-0 flex-1 overflow-hidden"
+          data-slot="data-table-body"
+        >
+          <div className="h-full overflow-auto">
+            <Table
+              className="w-max min-w-full"
+              containerClassName="overflow-visible"
+            >
+              {caption ? <TableCaption>{caption}</TableCaption> : null}
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={totalColumnCount}>
-                    {renderLoading ? (
-                      loadingContentResolved
-                    ) : (
-                      <div
+                  {rowSelectionEnabled ? (
+                    <TableHead
+                      className="sticky top-0 left-0 z-30 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                      style={{
+                        left: 0,
+                        minWidth: `${selectionColumnWidth}px`,
+                        width: `${selectionColumnWidth}px`,
+                      }}
+                    >
+                      <div className="flex items-center justify-center">
+                        <Checkbox
+                          checked={allCurrentPageRowsSelected}
+                          onCheckedChange={(checked) => {
+                            if (!checked) {
+                              updateSelectedRowKeys(
+                                selectedRowKeys.filter(
+                                  (key) => !currentPageRowKeys.includes(key)
+                                )
+                              )
+                              return
+                            }
+
+                            updateSelectedRowKeys(
+                              Array.from(
+                                new Set<Key>([
+                                  ...selectedRowKeys,
+                                  ...currentPageRowKeys,
+                                ])
+                              )
+                            )
+                          }}
+                          disabled={!hasRows || loading}
+                        />
+                      </div>
+                    </TableHead>
+                  ) : null}
+                  {resolvedColumns.map((column, columnIndex) => {
+                    const leftOffset = stickyLeftOffsets[columnIndex]
+                    const rightOffset = stickyRightOffsets[columnIndex]
+                    const isStickyLeft = leftOffset !== undefined
+                    const isStickyRight = rightOffset !== undefined
+
+                    return (
+                      <TableHead
+                        key={column.key}
+                        ref={(element) => {
+                          headerCellRefs.current[columnIndex] = element
+                        }}
+                        aria-sort={getAriaSort(column)}
+                        className={
+                          isStickyLeft
+                            ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                            : isStickyRight
+                              ? "sticky top-0 right-0 z-20 bg-[var(--surface)] shadow-[inset_1px_0_0_var(--border)]"
+                              : "sticky top-0 z-10 bg-[var(--surface)]"
+                        }
                         style={{
-                          alignItems: "center",
-                          display: "flex",
-                          gap: "8px",
+                          ...getStickyColumnStyles({ leftOffset, rightOffset }),
+                          minWidth: resolveColumnMinWidth(
+                            column as DataTableColumn<object>
+                          ),
                         }}
                       >
-                        <Spinner size="sm" />
-                        <span>{loadingContentResolved}</span>
-                      </div>
-                    )}
-                  </TableCell>
+                        <button
+                          type="button"
+                          className="flex w-full cursor-pointer items-center gap-2 text-left disabled:cursor-default"
+                          onClick={() => toggleSort(column)}
+                          disabled={column.sortable !== true}
+                          aria-label={getSortAriaLabel(column)}
+                        >
+                          <span className="min-w-0 truncate">
+                            {column.header}
+                          </span>
+                          {column.sortable !== true ? null : (
+                            <span
+                              aria-hidden="true"
+                              className="shrink-0 text-xs text-muted-foreground"
+                            >
+                              {getSortIndicator(column)}
+                            </span>
+                          )}
+                        </button>
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ) : null}
+              </TableHeader>
 
-              {!loading && error ? (
-                <TableRow>
-                  <TableCell colSpan={totalColumnCount}>{errorContent}</TableCell>
-                </TableRow>
-              ) : null}
-
-              {!loading && !error && !hasRows ? (
-                <TableRow>
-                  <TableCell colSpan={totalColumnCount}>{emptyContent}</TableCell>
-                </TableRow>
-              ) : null}
-
-              {!loading && !error
-                ? rows.map((row: T, rowIndex: number) => (
-                    <TableRow key={getRowId(row, rowIndex)}>
-                      {rowSelectionEnabled ? (
-                        <TableCell
-                          className="sticky left-0 z-20 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={totalColumnCount}>
+                      {renderLoading ? (
+                        loadingContentResolved
+                      ) : (
+                        <div
                           style={{
-                            left: 0,
-                            minWidth: `${selectionColumnWidth}px`,
-                            width: `${selectionColumnWidth}px`,
+                            alignItems: "center",
+                            display: "flex",
+                            gap: "8px",
                           }}
                         >
-                          <div className="flex items-center justify-center">
-                            <Checkbox
-                              checked={selectedRowKeySet.has(
-                                getRowId(row, rowIndex)
-                              )}
-                              onCheckedChange={(checked) => {
-                                const rowKey = getRowId(row, rowIndex)
-
-                                if (!checked) {
-                                  updateSelectedRowKeys(
-                                    selectedRowKeys.filter((key) => key !== rowKey)
-                                  )
-                                  return
-                                }
-
-                                updateSelectedRowKeys(
-                                  Array.from(
-                                    new Set<Key>([...selectedRowKeys, rowKey])
-                                  )
-                                )
-                              }}
-                            />
-                          </div>
-                        </TableCell>
-                      ) : null}
-                      {columns.map((column, columnIndex) => (
-                        <TableCell
-                          key={column.key}
-                          className={
-                            stickyLeftOffsets[columnIndex] !== undefined
-                              ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
-                              : stickyRightOffsets[columnIndex] !== undefined
-                                ? "sticky right-0 z-10 bg-[var(--background)] shadow-[inset_1px_0_0_var(--border)]"
-                                : undefined
-                          }
-                          style={{
-                            ...getStickyColumnStyles({
-                              leftOffset: stickyLeftOffsets[columnIndex],
-                              rightOffset: stickyRightOffsets[columnIndex],
-                            }),
-                            minWidth: resolveColumnMinWidth(
-                              column as DataTableColumn<object>
-                            ),
-                          }}
-                        >
-                          <Fragment>{column.renderCell(row, rowIndex)}</Fragment>
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                : null}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      <div className="mt-2 overflow-x-auto px-3 py-2" data-slot="data-table-tail">
-        <div className="flex min-w-max flex-nowrap items-center justify-between">
-          <div className="shrink-0 flex items-center gap-2 text-sm">
-            <span>
-              <strong>{resolvedTotalLabel}:</strong> {total}
-            </span>
-            <AdvancedSelect
-              value={String(pageSize)}
-              onValueChange={(value: string) => {
-                setPage(1)
-                setPageSize(Number(value))
-              }}
-              list={safePageSizeOptions.map((value) => ({
-                label: String(value),
-                value: String(value),
-              }))}
-              disabled={loading}
-            />
-          </div>
-
-          <div className="shrink-0">
-            <Pagination
-              page={Math.min(page, totalPages)}
-              totalPages={totalPages}
-              onPageChange={setPage}
-            />
-          </div>
-        </div>
-      </div>
-
-      {bulkUpdate !== false ? (
-        <Dialog open={bulkUpdateDialogOpen} onOpenChange={setBulkUpdateDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{bulkUpdate.title ?? resolvedBulkUpdateTitle}</DialogTitle>
-              <DialogDescription>
-                {bulkUpdate.description ??
-                  resolvedBulkUpdateDescription(selectedRowKeys.length)}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium">
-                  {resolvedBulkUpdateFieldLabel}
-                </span>
-                <AdvancedSelect
-                  value={activeBulkUpdateField?.key ?? ""}
-                  onValueChange={(value) => {
-                    setBulkUpdateFieldKey(value)
-                    setBulkUpdateValue("")
-                  }}
-                  list={availableBulkUpdateFields.map((field) => ({
-                    label: field.label,
-                    value: field.key,
-                  }))}
-                  disabled={updating}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium">
-                  {resolvedBulkUpdateValueLabel}
-                </span>
-                {renderBulkUpdateControl()}
-                {activeBulkUpdateField?.description ? (
-                  <span className="text-xs text-muted-foreground">
-                    {activeBulkUpdateField.description}
-                  </span>
+                          <Spinner size="sm" />
+                          <span>{loadingContentResolved}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
                 ) : null}
-              </div>
+
+                {!loading && error ? (
+                  <TableRow>
+                    <TableCell colSpan={totalColumnCount}>
+                      {errorContent}
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+
+                {!loading && !error && !hasRows ? (
+                  <TableRow>
+                    <TableCell colSpan={totalColumnCount}>
+                      {emptyContent}
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+
+                {!loading && !error
+                  ? rows.map((row: T, rowIndex: number) => (
+                      <TableRow key={getRowId(row, rowIndex)}>
+                        {rowSelectionEnabled ? (
+                          <TableCell
+                            className="sticky left-0 z-20 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                            style={{
+                              left: 0,
+                              minWidth: `${selectionColumnWidth}px`,
+                              width: `${selectionColumnWidth}px`,
+                            }}
+                          >
+                            <div className="flex items-center justify-center">
+                              <Checkbox
+                                checked={selectedRowKeySet.has(
+                                  getRowId(row, rowIndex)
+                                )}
+                                onCheckedChange={(checked) => {
+                                  const rowKey = getRowId(row, rowIndex)
+
+                                  if (!checked) {
+                                    updateSelectedRowKeys(
+                                      selectedRowKeys.filter(
+                                        (key) => key !== rowKey
+                                      )
+                                    )
+                                    return
+                                  }
+
+                                  updateSelectedRowKeys(
+                                    Array.from(
+                                      new Set<Key>([...selectedRowKeys, rowKey])
+                                    )
+                                  )
+                                }}
+                              />
+                            </div>
+                          </TableCell>
+                        ) : null}
+                        {resolvedColumns.map((column, columnIndex) => (
+                          <TableCell
+                            key={column.key}
+                            className={
+                              stickyLeftOffsets[columnIndex] !== undefined
+                                ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                                : stickyRightOffsets[columnIndex] !== undefined
+                                  ? "sticky right-0 z-10 bg-[var(--background)] shadow-[inset_1px_0_0_var(--border)]"
+                                  : undefined
+                            }
+                            style={{
+                              ...getStickyColumnStyles({
+                                leftOffset: stickyLeftOffsets[columnIndex],
+                                rightOffset: stickyRightOffsets[columnIndex],
+                              }),
+                              minWidth: resolveColumnMinWidth(
+                                column as DataTableColumn<object>
+                              ),
+                            }}
+                          >
+                            <Fragment>
+                              {column.renderCell(row, rowIndex)}
+                            </Fragment>
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  : null}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
+        <div
+          className="mt-2 overflow-x-auto px-3 py-2"
+          data-slot="data-table-tail"
+        >
+          <div className="flex min-w-max flex-nowrap items-center justify-between">
+            <div className="flex shrink-0 items-center gap-2 text-sm">
+              <span>
+                <strong>{resolvedTotalLabel}:</strong> {total}
+              </span>
+              <AdvancedSelect
+                value={String(pageSize)}
+                onValueChange={(value: string) => {
+                  setPage(1)
+                  setPageSize(Number(value))
+                }}
+                list={safePageSizeOptions.map((value) => ({
+                  label: String(value),
+                  value: String(value),
+                }))}
+                disabled={loading}
+              />
             </div>
 
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={updating}
-                onClick={() => setBulkUpdateDialogOpen(false)}
-              >
-                {resolvedBulkUpdateCancelLabel}
-              </Button>
-              <Button
-                type="button"
-                disabled={activeBulkUpdateField === null || updating}
-                onClick={() => {
-                  void handleBulkUpdateSubmit()
-                }}
-              >
-                {resolvedBulkUpdateApplyLabel}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      ) : null}
+            <div className="shrink-0">
+              <Pagination
+                page={Math.min(page, totalPages)}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            </div>
+          </div>
+        </div>
+
+        {bulkUpdate !== false ? (
+          <Dialog
+            open={bulkUpdateDialogOpen}
+            onOpenChange={setBulkUpdateDialogOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {bulkUpdate.title ?? resolvedBulkUpdateTitle}
+                </DialogTitle>
+                <DialogDescription>
+                  {bulkUpdate.description ??
+                    resolvedBulkUpdateDescription(selectedRowKeys.length)}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">
+                    {resolvedBulkUpdateFieldLabel}
+                  </span>
+                  <AdvancedSelect
+                    value={activeBulkUpdateField?.key ?? ""}
+                    onValueChange={(value) => {
+                      setBulkUpdateFieldKey(value)
+                      setBulkUpdateValue("")
+                    }}
+                    list={availableBulkUpdateFields.map((field) => ({
+                      label: field.label,
+                      value: field.key,
+                    }))}
+                    disabled={updating}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">
+                    {resolvedBulkUpdateValueLabel}
+                  </span>
+                  {renderBulkUpdateControl()}
+                  {activeBulkUpdateField?.description ? (
+                    <span className="text-xs text-muted-foreground">
+                      {activeBulkUpdateField.description}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={updating}
+                  onClick={() => setBulkUpdateDialogOpen(false)}
+                >
+                  {resolvedBulkUpdateCancelLabel}
+                </Button>
+                <Button
+                  type="button"
+                  disabled={activeBulkUpdateField === null || updating}
+                  onClick={() => {
+                    void handleBulkUpdateSubmit()
+                  }}
+                >
+                  {resolvedBulkUpdateApplyLabel}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : null}
       </div>
     </TooltipProvider>
   )

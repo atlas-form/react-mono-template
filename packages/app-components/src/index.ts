@@ -32,6 +32,10 @@ export type {
   DataTableLocaleText,
   DataTableProps,
   DataTableQueryField,
+  DataTableDeleteActionConfig,
+  DataTableEditActionConfig,
+  DataTableRowActionItem,
+  DataTableRowActionsConfig,
   DataTableSelectOption,
   DataTableSortDirection,
   DataTableSortState,
@@ -42,8 +46,6 @@ export type {
   DateRangePickerProps,
   DateRangeValue,
 } from "./components/date-time-picker"
-export type {
-  MultipleDatePickerProps,
-} from "./components/date-time-picker"
+export type { MultipleDatePickerProps } from "./components/date-time-picker"
 export type { TimePickerProps } from "./components/date-time-picker"
 export type { YearRange } from "./components/date-time-picker"

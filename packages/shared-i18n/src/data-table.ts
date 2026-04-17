@@ -7,6 +7,15 @@ export interface DataTableCopy {
   refreshLabel: string
   resetLabel: string
   totalLabel: string
+  actionsLabel: string
+  editLabel: string
+  deleteLabel: string
+  moreLabel: string
+  cancelLabel: string
+  saveLabel: string
+  confirmDeleteLabel: string
+  deleteDialogTitle: string
+  deleteDialogDescription: string
   sortAscendingLabel: string
   sortDescendingLabel: string
   clearSortLabel: string
@@ -28,6 +37,15 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     refreshLabel: "Refresh data",
     resetLabel: "Reset filters",
     totalLabel: "Total",
+    actionsLabel: "Actions",
+    editLabel: "Edit",
+    deleteLabel: "Delete",
+    moreLabel: "More actions",
+    cancelLabel: "Cancel",
+    saveLabel: "Save",
+    confirmDeleteLabel: "Delete",
+    deleteDialogTitle: "Confirm deletion",
+    deleteDialogDescription: "This action cannot be undone.",
     sortAscendingLabel: "Sort ascending",
     sortDescendingLabel: "Sort descending",
     clearSortLabel: "Clear sort",
@@ -48,6 +66,15 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     refreshLabel: "刷新数据",
     resetLabel: "重置筛选",
     totalLabel: "总数",
+    actionsLabel: "操作",
+    editLabel: "编辑",
+    deleteLabel: "删除",
+    moreLabel: "更多操作",
+    cancelLabel: "取消",
+    saveLabel: "保存",
+    confirmDeleteLabel: "确认删除",
+    deleteDialogTitle: "确认删除",
+    deleteDialogDescription: "该操作无法撤销。",
     sortAscendingLabel: "升序排序",
     sortDescendingLabel: "降序排序",
     clearSortLabel: "清除排序",

@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { Badge } from "@workspace/ui-components/stable/badge"
+import { Input } from "@workspace/ui-components"
 import {
   DataTable,
   type DateRangeValue,
@@ -304,6 +305,56 @@ export default function DataTablePage() {
           },
         ]}
         pageSizeOptions={[10, 15, 30, 50]}
+        rowActions={{
+          edit: {
+            title: (row) => `Edit ${row.name}`,
+            description: (row) =>
+              `Update customer ${row.id} in a modal dialog.`,
+            renderContent: ({ row }) => (
+              <div className="grid gap-4 py-2">
+                <Input value={row.name} onValueChange={() => {}} disabled />
+                <Input value={row.region} onValueChange={() => {}} disabled />
+              </div>
+            ),
+            onConfirm: async (row) => {
+              console.info("edit row", row.id)
+              await new Promise((resolve) => setTimeout(resolve, 200))
+            },
+          },
+          delete: {
+            title: (row) =>
+              t("datatable.actions.deleteTitle", {
+                defaultValue: "Delete {{name}}?",
+                name: row.name,
+              }),
+            description: (row) =>
+              t("datatable.actions.deleteDescription", {
+                defaultValue:
+                  "This action will remove customer {{id}} from the current list.",
+                id: row.id,
+              }),
+            onConfirm: async (row) => {
+              console.info("delete row", row.id)
+              await new Promise((resolve) => setTimeout(resolve, 200))
+            },
+          },
+          moreItems: [
+            {
+              key: "detail",
+              label: "View detail",
+              onClick: (row) => {
+                console.info("view detail", row.id)
+              },
+            },
+            {
+              key: "duplicate",
+              label: "Duplicate",
+              onClick: (row) => {
+                console.info("duplicate row", row.id)
+              },
+            },
+          ],
+        }}
       />
     </div>
   )
