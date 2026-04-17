@@ -59,11 +59,23 @@ function ToolbarActions({
     bulkDelete !== false
       ? bulkDelete.label ?? resolvedBulkDeleteLabel(selectedRowKeysCount)
       : null
+  const actionCount =
+    (insert !== false ? 1 : 0) +
+    (bulkUpdate !== false ? 1 : 0) +
+    (bulkDelete !== false && rowSelectionEnabled ? 1 : 0)
+  const desktopWidthClass =
+    actionCount >= 3
+      ? "sm:w-[7.5rem]"
+      : actionCount === 2
+        ? "sm:w-[5rem]"
+        : actionCount === 1
+          ? "sm:w-[2.5rem]"
+          : "sm:w-auto"
 
   return (
-    <div className="w-[3.25rem] flex-none self-stretch sm:w-[11rem]">
-      <div className="flex h-full w-full items-start justify-center border-l border-border pl-2 sm:pl-4">
-        <div className="flex w-full flex-col items-center gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-center sm:gap-2">
+    <div className={`w-[2.5rem] flex-none self-stretch ${desktopWidthClass}`}>
+      <div className="flex h-full w-full items-center justify-center border-l border-border pl-2 sm:pl-4">
+        <div className="flex w-full flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-center sm:justify-center sm:gap-1">
           {insert !== false ? (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -71,9 +83,9 @@ function ToolbarActions({
                   type="button"
                   disabled={insert.disabled === true}
                   onClick={onOpenInsert}
-                  className="inline-flex size-11 items-center justify-center rounded-lg bg-primary text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
                 >
-                  <Plus aria-hidden="true" className="size-5" />
+                  <Plus aria-hidden="true" className="size-4" />
                   <span className="sr-only">{insertTooltip}</span>
                 </button>
               </TooltipTrigger>
@@ -87,9 +99,9 @@ function ToolbarActions({
                   type="button"
                   disabled={selectedRowKeysCount === 0}
                   onClick={onOpenBulkUpdate}
-                  className="inline-flex size-11 items-center justify-center rounded-lg bg-secondary text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex size-8 items-center justify-center rounded-md bg-secondary text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
                 >
-                  <SquarePen aria-hidden="true" className="size-5" />
+                  <SquarePen aria-hidden="true" className="size-4" />
                   <span className="sr-only">{bulkUpdateTooltip}</span>
                 </button>
               </TooltipTrigger>
@@ -103,9 +115,9 @@ function ToolbarActions({
                   type="button"
                   disabled={selectedRowKeysCount === 0 || deleting}
                   onClick={onOpenBulkDelete}
-                  className="inline-flex size-11 items-center justify-center rounded-lg bg-destructive text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex size-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
                 >
-                  <Trash aria-hidden="true" className="size-5" />
+                  <Trash aria-hidden="true" className="size-4" />
                   <span className="sr-only">{bulkDeleteTooltip}</span>
                 </button>
               </TooltipTrigger>
@@ -277,8 +289,8 @@ export function DataTableHeader<TQuery extends object>({
       />
     </div>
   ) : (
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex min-w-0 flex-1 items-center gap-3">
+    <div className="flex items-start justify-between gap-4 border border-cyan-500">
+      <div className="flex min-w-0 flex-1 items-center gap-3 border border-amber-500">
         <Tooltip>
           <TooltipTrigger asChild>
             <button

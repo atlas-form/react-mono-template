@@ -1,4 +1,4 @@
-import type { MouseEvent, PointerEvent, ReactNode } from "react"
+import type { KeyboardEvent, MouseEvent, PointerEvent, ReactNode } from "react"
 import {
   Select as CoreSelect,
   SelectContent,
@@ -36,20 +36,34 @@ export function AdvancedSelect({
 }: AdvancedSelectProps) {
   const hasValue = value.length > 0
 
-  const handleClear = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const clearValue = () => {
     onValueChange("")
   }
 
-  const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+  const handleClear = (
+    event: MouseEvent<HTMLSpanElement> | KeyboardEvent<HTMLSpanElement>
+  ) => {
+    event.preventDefault()
+    event.stopPropagation()
+    clearValue()
+  }
+
+  const handlePointerDown = (event: PointerEvent<HTMLSpanElement>) => {
     event.preventDefault()
     event.stopPropagation()
   }
 
-  const handleMouseDown = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDown = (event: MouseEvent<HTMLSpanElement>) => {
     event.preventDefault()
     event.stopPropagation()
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return
+    }
+
+    handleClear(event)
   }
 
   return (
@@ -57,16 +71,18 @@ export function AdvancedSelect({
       <SelectTrigger hideIndicator={hideIndicator}>
         <SelectValue placeholder={placeholder} />
         {allowClear && hasValue ? (
-          <button
-            type="button"
+          <span
+            role="button"
+            tabIndex={disabled ? -1 : 0}
             aria-label={clearLabel}
             className="inline-flex size-4 shrink-0 items-center justify-center text-muted-foreground"
             onPointerDown={handlePointerDown}
             onMouseDown={handleMouseDown}
+            onKeyDown={handleKeyDown}
             onClick={handleClear}
           >
             <ClearIcon className="size-4" />
-          </button>
+          </span>
         ) : null}
       </SelectTrigger>
 
