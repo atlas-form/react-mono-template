@@ -1,14 +1,6 @@
 import {
   AdvancedSelect,
-  Button,
   Checkbox,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  Input,
   Pagination,
   SearchInput,
   Spinner,
@@ -19,28 +11,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
+  Input,
 } from "@workspace/ui-components"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui-core/components/dropdown-menu"
 import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
-import {
-  MoreHorizontal,
-  Plus,
-  Pencil,
-  RefreshCw,
-  RotateCcw,
-  SquarePen,
-  Trash,
-  Trash2,
-} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import {
   Fragment,
@@ -50,681 +24,62 @@ import {
   useRef,
   useState,
   type Key,
-  type ReactNode,
 } from "react"
 
-import { DateRangePicker, type DateRangeValue } from "../date-time-picker"
-
-export interface DataTableFetchResult<T> {
-  items: T[]
-  total: number
-}
-
-export interface DataTableColumn<T> {
-  key: string
-  header: ReactNode
-  renderCell: (row: T, rowIndex: number) => ReactNode
-  width?: number | string
-  sticky?: "left" | "right"
-  sortable?: boolean
-}
-
-export type DataTableSortDirection = "asc" | "desc"
-
-export interface DataTableSortState {
-  columnKey: string
-  direction: DataTableSortDirection
-}
-
-export interface DataTableSelectOption {
-  label: string
-  value: string
-  disabled?: boolean
-}
-
-export interface DataTableQueryFieldBase<TQuery> {
-  key: keyof TQuery & string
-  label?: ReactNode
-  description?: ReactNode
-  disabled?: boolean
-}
-
-export interface DataTableTextQueryField<
-  TQuery,
-> extends DataTableQueryFieldBase<TQuery> {
-  type: "text"
-  placeholder?: string
-  inputType?: "text" | "search" | "email" | "number" | "tel" | "url"
-}
-
-export interface DataTableSelectQueryField<
-  TQuery,
-> extends DataTableQueryFieldBase<TQuery> {
-  type: "select"
-  placeholder?: string
-  options: readonly DataTableSelectOption[]
-}
-
-export interface DataTableSearchQueryField<
-  TQuery,
-> extends DataTableQueryFieldBase<TQuery> {
-  type: "search"
-  placeholder?: string
-  fieldKey?: keyof TQuery & string
-  fieldPlaceholder?: string
-  fieldOptions?: readonly DataTableSelectOption[]
-}
-
-export interface DataTableDateRangeQueryField<
-  TQuery,
-> extends DataTableQueryFieldBase<TQuery> {
-  type: "date-range"
-  placeholder?: string
-}
-
-export type DataTableBuiltInQueryField<TQuery> =
-  | DataTableSearchQueryField<TQuery>
-  | DataTableSelectQueryField<TQuery>
-  | DataTableDateRangeQueryField<TQuery>
-
-export type DataTableQueryField<TQuery> =
-  | DataTableTextQueryField<TQuery>
-  | DataTableSearchQueryField<TQuery>
-  | DataTableSelectQueryField<TQuery>
-  | DataTableDateRangeQueryField<TQuery>
-
-export interface DataTableFetchParams<TQuery = object> {
-  page: number
-  pageSize: number
-  signal: AbortSignal
-  query: TQuery
-  sort: DataTableSortState | null
-}
-
-export interface DataTableLocaleText {
-  emptyText?: ReactNode
-  errorText?: ReactNode
-  loadingText?: ReactNode
-  refreshLabel?: string
-  resetLabel?: string
-  totalLabel?: ReactNode
-  insertLabel?: ReactNode
-  actionsLabel?: ReactNode
-  editLabel?: ReactNode
-  deleteLabel?: ReactNode
-  moreLabel?: string
-  cancelLabel?: ReactNode
-  saveLabel?: ReactNode
-  confirmDeleteLabel?: ReactNode
-  deleteDialogTitle?: ReactNode
-  deleteDialogDescription?: ReactNode
-  bulkDeleteDialogDescription?: (count: number) => ReactNode
-  sortAscendingLabel?: string
-  sortDescendingLabel?: string
-  clearSortLabel?: string
-  bulkDeleteLabel?: (count: number) => ReactNode
-  bulkUpdateLabel?: (count: number) => ReactNode
-  bulkUpdateTitle?: ReactNode
-  bulkUpdateDescription?: (count: number) => ReactNode
-  bulkUpdateFieldLabel?: ReactNode
-  bulkUpdateValueLabel?: ReactNode
-  bulkUpdateCancelLabel?: ReactNode
-  bulkUpdateApplyLabel?: ReactNode
-}
-
-export interface DataTableSelectionContext<T> {
-  clearSelection: () => void
-  selectedRowKeys: Key[]
-  selectedRows: T[]
-}
-
-export interface DataTableBulkDeleteConfig<T> {
-  label?: ReactNode
-  title?: ReactNode
-  description?: ReactNode | ((count: number) => ReactNode)
-  onDelete: (context: DataTableSelectionContext<T>) => Promise<void> | void
-}
-
-export interface DataTableInsertActionConfig {
-  label?: ReactNode
-  disabled?: boolean
-  title?: ReactNode
-  description?: ReactNode
-  cancelLabel?: ReactNode
-  confirmLabel?: ReactNode
-  renderContent?: (context: { close: () => void }) => ReactNode
-  onConfirm?: () => Promise<void> | void
-}
-
-export interface DataTableBulkUpdateFieldBase {
-  key: string
-  label: ReactNode
-  description?: ReactNode
-  disabled?: boolean
-}
-
-export interface DataTableBulkUpdateTextField extends DataTableBulkUpdateFieldBase {
-  type: "text"
-  placeholder?: string
-  inputType?: "text" | "search" | "email" | "number" | "tel" | "url"
-}
-
-export interface DataTableBulkUpdateSelectField extends DataTableBulkUpdateFieldBase {
-  type: "select"
-  placeholder?: string
-  options: readonly DataTableSelectOption[]
-}
-
-export type DataTableBulkUpdateField =
-  | DataTableBulkUpdateTextField
-  | DataTableBulkUpdateSelectField
-
-export interface DataTableBulkUpdateSubmitContext<
-  T,
-> extends DataTableSelectionContext<T> {
-  fieldKey: string
-  value: unknown
-}
-
-export interface DataTableBulkUpdateConfig<T> {
-  label?: ReactNode
-  title?: ReactNode
-  description?: ReactNode
-  fields: readonly DataTableBulkUpdateField[]
-  onSubmit: (
-    context: DataTableBulkUpdateSubmitContext<T>
-  ) => Promise<void> | void
-}
-
-export interface DataTableRowSelectionConfig<T> {
-  columnWidth?: number
-  selectedRowKeys?: readonly Key[]
-  onSelectedRowKeysChange?: (keys: Key[], rows: T[]) => void
-}
-
-export interface DataTableRowActionItem<T> {
-  key: string
-  label: ReactNode
-  variant?: "default" | "destructive"
-  disabled?: boolean | ((row: T, rowIndex: number) => boolean)
-  onClick?: (row: T, rowIndex: number) => void
-}
-
-export interface DataTableEditActionConfig<T> {
-  label?: ReactNode
-  title?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
-  description?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
-  cancelLabel?: ReactNode
-  confirmLabel?: ReactNode
-  renderContent?: (context: {
-    row: T
-    rowIndex: number
-    close: () => void
-  }) => ReactNode
-  onConfirm?: (row: T, rowIndex: number) => Promise<void> | void
-}
-
-export interface DataTableDeleteActionConfig<T> {
-  label?: ReactNode
-  title?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
-  description?: ReactNode | ((row: T, rowIndex: number) => ReactNode)
-  cancelLabel?: ReactNode
-  confirmLabel?: ReactNode
-  onConfirm?: (row: T, rowIndex: number) => Promise<void> | void
-}
-
-export interface DataTableRowActionsConfig<T> {
-  header?: ReactNode
-  columnWidth?: number | string
-  sticky?: "left" | "right" | false
-  moreLabel?: string
-  edit?: false | DataTableEditActionConfig<T>
-  delete?: false | DataTableDeleteActionConfig<T>
-  moreItems?: readonly DataTableRowActionItem<T>[]
-}
-
-export interface DataTableProps<T, TQuery extends object = object> {
-  columns: readonly DataTableColumn<T>[]
-  fixedLeftColumns?: number
-  fixedRightColumns?: number
-  fetchData: (
-    params: DataTableFetchParams<TQuery>
-  ) => Promise<DataTableFetchResult<T>>
-  getRowId: (row: T, rowIndex: number) => Key
-  caption?: ReactNode
-  emptyText?: ReactNode
-  errorText?: ReactNode
-  loadingText?: ReactNode
-  renderEmpty?: () => ReactNode
-  renderError?: (error: unknown, retry: () => void) => ReactNode
-  renderLoading?: () => ReactNode
-  initialPage?: number
-  initialPageSize?: number
-  pageSizeOptions?: readonly number[]
-  onError?: (error: unknown) => void
-  initialQuery?: TQuery
-  builtInQueryFields?: readonly DataTableBuiltInQueryField<TQuery>[]
-  queryFields?: readonly DataTableQueryField<TQuery>[]
-  toolbarActions?: ReactNode
-  insert?: false | DataTableInsertActionConfig
-  selection?: false | DataTableRowSelectionConfig<T>
-  bulkDelete?: false | DataTableBulkDeleteConfig<T>
-  bulkUpdate?: false | DataTableBulkUpdateConfig<T>
-  rowActions?: false | DataTableRowActionsConfig<T>
-  height?: number | string
-  refreshLabel?: string
-  resetLabel?: string
-  initialSort?: DataTableSortState | null
-  localeText?: DataTableLocaleText
-}
-
-const DEFAULT_PAGE_SIZE_OPTIONS = [10, 15, 30, 50] as const
-const DEFAULT_STICKY_COLUMN_WIDTH = 160
-const DEFAULT_SELECTION_COLUMN_WIDTH = 44
-const DEFAULT_ROW_ACTION_BUTTON_WIDTH = 32
-const DEFAULT_ROW_ACTION_GAP_WIDTH = 6
-const DEFAULT_ROW_ACTION_CELL_PADDING = 16
-
-function createQueryState<TQuery extends object>(initialQuery?: TQuery) {
-  return { ...(initialQuery ?? {}) } as TQuery
-}
-
-function asStringValue(value: unknown) {
-  return typeof value === "string" ? value : ""
-}
-
-function asDateRangeValue(value: unknown) {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return undefined
-  }
-
-  return value as DateRangeValue
-}
-
-function resolveTableHeight(height?: number | string) {
-  if (height === undefined) return undefined
-  return typeof height === "number" ? `${height}px` : height
-}
-
-function resolveColumnMinWidth(column: DataTableColumn<object>) {
-  if (column.width === undefined) return undefined
-
-  return typeof column.width === "number" ? `${column.width}px` : column.width
-}
-
-function resolveRowActionsColumnWidth<T>(
-  rowActions: DataTableRowActionsConfig<T>
-) {
-  if (rowActions.columnWidth !== undefined) {
-    return rowActions.columnWidth
-  }
-
-  const buttonCount =
-    (rowActions.edit ? 1 : 0) +
-    (rowActions.delete ? 1 : 0) +
-    ((rowActions.moreItems?.length ?? 0) > 0 ? 1 : 0)
-
-  if (buttonCount <= 0) {
-    return 0
-  }
-
-  return (
-    buttonCount * DEFAULT_ROW_ACTION_BUTTON_WIDTH +
-    Math.max(0, buttonCount - 1) * DEFAULT_ROW_ACTION_GAP_WIDTH +
-    DEFAULT_ROW_ACTION_CELL_PADDING
-  )
-}
-
-function resolveColumnPixelWidth(column: DataTableColumn<object>) {
-  if (typeof column.width === "number") return column.width
-  if (typeof column.width !== "string") return undefined
-
-  const matched = /^(\d+(?:\.\d+)?)px$/.exec(column.width.trim())
-  return matched ? Number(matched[1]) : undefined
-}
-
-function isLeftStickyColumn<T>(
-  column: DataTableColumn<T>,
-  columnIndex: number,
-  fixedLeftColumns: number
-) {
-  return column.sticky === "left" || columnIndex < fixedLeftColumns
-}
-
-function isRightStickyColumn<T>(
-  column: DataTableColumn<T>,
-  columnIndex: number,
-  columnCount: number,
-  fixedLeftColumns: number,
-  fixedRightColumns: number
-) {
-  if (column.sticky === "left" || columnIndex < fixedLeftColumns) {
-    return false
-  }
-
-  return (
-    column.sticky === "right" ||
-    (fixedRightColumns > 0 && columnIndex >= columnCount - fixedRightColumns)
-  )
-}
-
-function getStickyColumnStyles({
-  leftOffset,
-  rightOffset,
-}: {
-  leftOffset?: number
-  rightOffset?: number
-}) {
-  if (leftOffset === undefined && rightOffset === undefined) return undefined
-
-  return {
-    ...(leftOffset !== undefined ? { left: `${leftOffset}px` } : null),
-    position: "sticky" as const,
-    ...(rightOffset !== undefined ? { right: `${rightOffset}px` } : null),
-  }
-}
-
-function getQueryFieldLayoutStyle(field: DataTableQueryField<object>) {
-  if (field.type === "search") {
-    return field.fieldOptions?.length
-      ? {
-          flex: "1 1 420px",
-          minWidth: "340px",
-          maxWidth: "520px",
-        }
-      : {
-          flex: "1 1 320px",
-          minWidth: "260px",
-          maxWidth: "420px",
-        }
-  }
-
-  if (field.type === "text") {
-    return {
-      flex: "1 1 280px",
-      minWidth: "220px",
-      maxWidth: "360px",
-    }
-  }
-
-  if (field.type === "date-range") {
-    return {
-      flex: "0 1 240px",
-      minWidth: "220px",
-      maxWidth: "280px",
-    }
-  }
-
-  if (field.type === "select") {
-    return {
-      flex: "0 1 180px",
-      minWidth: "160px",
-      maxWidth: "220px",
-    }
-  }
-
-  return {
-    flex: "0 1 220px",
-    minWidth: "180px",
-    maxWidth: "280px",
-  }
-}
-
-function resolveRowActionDisabled<T>(
-  disabled: DataTableRowActionItem<T>["disabled"],
-  row: T,
-  rowIndex: number
-) {
-  if (typeof disabled === "function") {
-    return disabled(row, rowIndex)
-  }
-
-  return disabled === true
-}
-
-function resolveRowActionContent<T>(
-  value: ReactNode | ((row: T, rowIndex: number) => ReactNode) | undefined,
-  row: T,
-  rowIndex: number
-) {
-  if (typeof value === "function") {
-    return value(row, rowIndex)
-  }
-
-  return value
-}
-
-function DataTableRowActionsCell<T>({
-  row,
-  rowIndex,
-  rowActions,
-  moreItems,
-  resolvedEditLabel,
-  resolvedDeleteLabel,
-  resolvedMoreLabel,
-  resolvedCancelLabel,
-  resolvedSaveLabel,
-  resolvedConfirmDeleteLabel,
-  resolvedDeleteDialogTitle,
-  resolvedDeleteDialogDescription,
-}: {
-  row: T
-  rowIndex: number
-  rowActions: DataTableRowActionsConfig<T>
-  moreItems: readonly DataTableRowActionItem<T>[]
-  resolvedEditLabel: ReactNode
-  resolvedDeleteLabel: ReactNode
-  resolvedMoreLabel: string
-  resolvedCancelLabel: ReactNode
-  resolvedSaveLabel: ReactNode
-  resolvedConfirmDeleteLabel: ReactNode
-  resolvedDeleteDialogTitle: ReactNode
-  resolvedDeleteDialogDescription: ReactNode
-}) {
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [submittingEdit, setSubmittingEdit] = useState(false)
-  const [submittingDelete, setSubmittingDelete] = useState(false)
-  const editAction = rowActions.edit || null
-  const deleteAction = rowActions.delete || null
-  const hasMoreActions = moreItems.length > 0
-
-  const handleEditConfirm = async () => {
-    if (!editAction?.onConfirm || submittingEdit) {
-      setEditDialogOpen(false)
-      return
-    }
-
-    setSubmittingEdit(true)
-
-    try {
-      await editAction.onConfirm(row, rowIndex)
-      setEditDialogOpen(false)
-    } finally {
-      setSubmittingEdit(false)
-    }
-  }
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteAction?.onConfirm || submittingDelete) {
-      setDeleteDialogOpen(false)
-      return
-    }
-
-    setSubmittingDelete(true)
-
-    try {
-      await deleteAction.onConfirm(row, rowIndex)
-      setDeleteDialogOpen(false)
-    } finally {
-      setSubmittingDelete(false)
-    }
-  }
-
-  return (
-    <>
-      <div className="flex items-center justify-end gap-1.5">
-        {editAction ? (
-          <button
-            type="button"
-            onClick={() => setEditDialogOpen(true)}
-            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-          >
-            <Pencil aria-hidden="true" className="size-4" />
-            <span className="sr-only">
-              {editAction.label ?? resolvedEditLabel}
-            </span>
-          </button>
-        ) : null}
-
-        {deleteAction ? (
-          <button
-            type="button"
-            onClick={() => setDeleteDialogOpen(true)}
-            className="inline-flex size-8 items-center justify-center rounded-md text-destructive transition hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
-          >
-            <Trash2 aria-hidden="true" className="size-4" />
-            <span className="sr-only">
-              {deleteAction.label ?? resolvedDeleteLabel}
-            </span>
-          </button>
-        ) : null}
-
-        {hasMoreActions ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground"
-              >
-                <MoreHorizontal aria-hidden="true" className="size-4.5" />
-                <span className="sr-only">
-                  {rowActions.moreLabel ?? resolvedMoreLabel}
-                </span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              mode="headless"
-              align="end"
-              sideOffset={8}
-              className="z-[2000] min-w-36 overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg outline-hidden"
-            >
-              {moreItems.map((item) => (
-                <DropdownMenuItem
-                  key={item.key}
-                  mode="headless"
-                  variant={item.variant ?? "default"}
-                  className="flex min-h-8 cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-none outline-hidden transition focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-disabled:pointer-events-none data-disabled:opacity-50"
-                  disabled={resolveRowActionDisabled(
-                    item.disabled,
-                    row,
-                    rowIndex
-                  )}
-                  onSelect={() => item.onClick?.(row, rowIndex)}
-                >
-                  {item.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : null}
-      </div>
-
-      {editAction ? (
-        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {resolveRowActionContent(editAction.title, row, rowIndex) ??
-                  editAction.label ??
-                  resolvedEditLabel}
-              </DialogTitle>
-              {editAction.description ? (
-                <DialogDescription>
-                  {resolveRowActionContent(
-                    editAction.description,
-                    row,
-                    rowIndex
-                  )}
-                </DialogDescription>
-              ) : null}
-            </DialogHeader>
-
-            {editAction.renderContent?.({
-              row,
-              rowIndex,
-              close: () => setEditDialogOpen(false),
-            }) ?? null}
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setEditDialogOpen(false)}
-                disabled={submittingEdit}
-              >
-                {editAction.cancelLabel ?? resolvedCancelLabel}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => {
-                  void handleEditConfirm()
-                }}
-                disabled={submittingEdit}
-              >
-                {editAction.confirmLabel ?? resolvedSaveLabel}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      ) : null}
-
-      {deleteAction ? (
-        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {resolveRowActionContent(deleteAction.title, row, rowIndex) ??
-                  deleteAction.label ??
-                  resolvedDeleteDialogTitle}
-              </DialogTitle>
-              {deleteAction.description || resolvedDeleteDialogDescription ? (
-                <DialogDescription>
-                  {resolveRowActionContent(
-                    deleteAction.description,
-                    row,
-                    rowIndex
-                  ) ?? resolvedDeleteDialogDescription}
-                </DialogDescription>
-              ) : null}
-            </DialogHeader>
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDeleteDialogOpen(false)}
-                disabled={submittingDelete}
-              >
-                {deleteAction.cancelLabel ?? resolvedCancelLabel}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => {
-                  void handleDeleteConfirm()
-                }}
-                disabled={submittingDelete}
-              >
-                {deleteAction.confirmLabel ?? resolvedConfirmDeleteLabel}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      ) : null}
-    </>
-  )
-}
+import { DateRangePicker } from "../date-time-picker"
+import { DataTableDialogs } from "./data-table-dialogs"
+import { DataTableHeader } from "./data-table-header"
+import { DataTableRowActionsCell } from "./data-table-row-actions-cell"
+import type {
+  DataTableBuiltInQueryField,
+  DataTableColumn,
+  DataTableProps,
+  DataTableQueryField,
+  DataTableRowSelectionConfig,
+  DataTableSortState,
+} from "./data-table.types"
+import {
+  DEFAULT_PAGE_SIZE_OPTIONS,
+  DEFAULT_SELECTION_COLUMN_WIDTH,
+  DEFAULT_STICKY_COLUMN_WIDTH,
+  asDateRangeValue,
+  asStringValue,
+  createQueryState,
+  getStickyColumnStyles,
+  isLeftStickyColumn,
+  isRightStickyColumn,
+  resolveColumnMinWidth,
+  resolveColumnPixelWidth,
+  resolveRowActionsColumnWidth,
+  resolveTableHeight,
+} from "./data-table.utils"
+
+export type {
+  DataTableBulkDeleteConfig,
+  DataTableBulkUpdateConfig,
+  DataTableBulkUpdateField,
+  DataTableBulkUpdateSubmitContext,
+  DataTableBuiltInQueryField,
+  DataTableColumn,
+  DataTableDateRangeQueryField,
+  DataTableDeleteActionConfig,
+  DataTableEditActionConfig,
+  DataTableFetchParams,
+  DataTableFetchResult,
+  DataTableInsertActionConfig,
+  DataTableLocaleText,
+  DataTableProps,
+  DataTableQueryField,
+  DataTableRowActionItem,
+  DataTableRowActionsConfig,
+  DataTableRowSelectionConfig,
+  DataTableSearchQueryField,
+  DataTableSelectOption,
+  DataTableSelectionContext,
+  DataTableSortDirection,
+  DataTableSortState,
+  DataTableTextQueryField,
+} from "./data-table.types"
 
 export function DataTable<T, TQuery extends object = object>({
   columns,
@@ -761,6 +116,7 @@ export function DataTable<T, TQuery extends object = object>({
   const { i18n } = useTranslation()
   const language = normalizeLanguage(i18n.language)
   const copy = getDataTableCopy(language)
+
   const [rows, setRows] = useState<T[]>([])
   const [page, setPage] = useState(initialPage)
   const [pageSize, setPageSize] = useState(initialPageSize)
@@ -785,6 +141,7 @@ export function DataTable<T, TQuery extends object = object>({
     createQueryState(initialQuery)
   )
   const headerCellRefs = useRef<Array<HTMLTableCellElement | null>>([])
+
   const selectionConfig: false | DataTableRowSelectionConfig<T> =
     selection === false
       ? false
@@ -818,6 +175,7 @@ export function DataTable<T, TQuery extends object = object>({
   const trailingBuiltInQueryFields = leadingBuiltInSearchField
     ? builtInQueryFields.filter((field) => field !== leadingBuiltInSearchField)
     : builtInQueryFields
+
   const resolvedEmptyText = localeText?.emptyText ?? emptyText ?? copy.emptyText
   const resolvedErrorText = localeText?.errorText ?? errorText ?? copy.errorText
   const resolvedLoadingText =
@@ -864,11 +222,13 @@ export function DataTable<T, TQuery extends object = object>({
     localeText?.bulkUpdateCancelLabel ?? copy.bulkUpdateCancelLabel
   const resolvedBulkUpdateApplyLabel =
     localeText?.bulkUpdateApplyLabel ?? copy.bulkUpdateApplyLabel
+
   const bulkUpdateFields = bulkUpdate !== false ? bulkUpdate.fields : []
   const availableBulkUpdateFields = useMemo(
     () => bulkUpdateFields.filter((field) => field.disabled !== true),
     [bulkUpdateFields]
   )
+
   const resolvedColumns = useMemo(() => {
     if (rowActions === false) {
       return [...columns]
@@ -907,9 +267,9 @@ export function DataTable<T, TQuery extends object = object>({
     resolvedActionsLabel,
     resolvedCancelLabel,
     resolvedConfirmDeleteLabel,
-    resolvedDeleteLabel,
     resolvedDeleteDialogDescription,
     resolvedDeleteDialogTitle,
+    resolvedDeleteLabel,
     resolvedEditLabel,
     resolvedMoreLabel,
     resolvedSaveLabel,
@@ -930,7 +290,6 @@ export function DataTable<T, TQuery extends object = object>({
 
     if (typeof ResizeObserver === "undefined") {
       window.addEventListener("resize", updateWidths)
-
       return () => {
         window.removeEventListener("resize", updateWidths)
       }
@@ -1059,12 +418,12 @@ export function DataTable<T, TQuery extends object = object>({
       setInternalSelectedRowKeys(nextKeys)
     }
 
-    const selectedRows = rows.filter((row, rowIndex) =>
+    const nextSelectedRows = rows.filter((row, rowIndex) =>
       nextKeys.includes(getRowId(row, rowIndex))
     )
 
     if (selectionConfig !== false) {
-      selectionConfig.onSelectedRowKeysChange?.(nextKeys, selectedRows)
+      selectionConfig.onSelectedRowKeysChange?.(nextKeys, nextSelectedRows)
     }
   }
 
@@ -1095,6 +454,22 @@ export function DataTable<T, TQuery extends object = object>({
     setBulkUpdateValue("")
     setBulkUpdateDialogOpen(true)
   }
+
+  const selectedRowKeySet = useMemo(
+    () => new Set<Key>(selectedRowKeys),
+    [selectedRowKeys]
+  )
+  const currentPageRowKeys = useMemo(
+    () => rows.map((row, rowIndex) => getRowId(row, rowIndex)),
+    [getRowId, rows]
+  )
+  const selectedRows = useMemo(
+    () =>
+      rows.filter((row, rowIndex) =>
+        selectedRowKeySet.has(getRowId(row, rowIndex))
+      ),
+    [getRowId, rows, selectedRowKeySet]
+  )
 
   const handleBulkUpdateSubmit = async () => {
     if (
@@ -1180,21 +555,7 @@ export function DataTable<T, TQuery extends object = object>({
 
     return sort.direction === "asc" ? "ascending" : "descending"
   }
-  const selectedRowKeySet = useMemo(
-    () => new Set<Key>(selectedRowKeys),
-    [selectedRowKeys]
-  )
-  const currentPageRowKeys = useMemo(
-    () => rows.map((row, rowIndex) => getRowId(row, rowIndex)),
-    [getRowId, rows]
-  )
-  const selectedRows = useMemo(
-    () =>
-      rows.filter((row, rowIndex) =>
-        selectedRowKeySet.has(getRowId(row, rowIndex))
-      ),
-    [getRowId, rows, selectedRowKeySet]
-  )
+
   const allCurrentPageRowsSelected =
     rowSelectionEnabled &&
     currentPageRowKeys.length > 0 &&
@@ -1218,6 +579,11 @@ export function DataTable<T, TQuery extends object = object>({
     } finally {
       setDeleting(false)
     }
+  }
+
+  const handleBulkDeleteAndClose = async () => {
+    await handleBulkDelete()
+    setBulkDeleteDialogOpen(false)
   }
 
   const handleInsertConfirm = async () => {
@@ -1347,40 +713,6 @@ export function DataTable<T, TQuery extends object = object>({
     return null
   }
 
-  const renderBulkUpdateControl = () => {
-    if (activeBulkUpdateField === null) return null
-
-    if (activeBulkUpdateField.type === "text") {
-      return (
-        <Input
-          value={typeof bulkUpdateValue === "string" ? bulkUpdateValue : ""}
-          onValueChange={setBulkUpdateValue}
-          placeholder={activeBulkUpdateField.placeholder}
-          disabled={updating}
-          type={activeBulkUpdateField.inputType}
-        />
-      )
-    }
-
-    if (activeBulkUpdateField.type === "select") {
-      return (
-        <AdvancedSelect
-          value={typeof bulkUpdateValue === "string" ? bulkUpdateValue : ""}
-          onValueChange={setBulkUpdateValue}
-          list={activeBulkUpdateField.options.map((option) => ({
-            label: option.label,
-            value: option.value,
-            disabled: option.disabled,
-          }))}
-          placeholder={activeBulkUpdateField.placeholder}
-          disabled={updating}
-        />
-      )
-    }
-
-    return null
-  }
-
   return (
     <TooltipProvider>
       <div
@@ -1389,236 +721,34 @@ export function DataTable<T, TQuery extends object = object>({
         style={{ height: resolveTableHeight(height) }}
       >
         <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
-          {hasAnyQueryFields ? (
-            <div className="flex min-w-0 items-start gap-4 overflow-hidden">
-              <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden">
-                <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden">
-                  <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2.5">
-                  {leadingBuiltInSearchField ? (
-                    <label
-                      key={leadingBuiltInSearchField.key}
-                      className="flex min-w-0 flex-col gap-1"
-                      style={getQueryFieldLayoutStyle(
-                        leadingBuiltInSearchField as DataTableQueryField<object>
-                      )}
-                    >
-                      {renderQueryFieldControl(leadingBuiltInSearchField)}
-                      {leadingBuiltInSearchField.description ? (
-                        <span className="text-xs leading-4 text-muted-foreground">
-                          {leadingBuiltInSearchField.description}
-                        </span>
-                      ) : null}
-                    </label>
-                  ) : null}
-
-                  <div className="flex shrink-0 items-center gap-1 self-center px-1">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          disabled={loading}
-                          onClick={handleResetQuery}
-                          className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          <RotateCcw aria-hidden="true" className="size-4.5" />
-                          <span className="sr-only">{resolvedResetLabel}</span>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{resolvedResetLabel}</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          disabled={loading}
-                          onClick={handleRetry}
-                          className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          <RefreshCw aria-hidden="true" className="size-4.5" />
-                          <span className="sr-only">{resolvedRefreshLabel}</span>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-                    </Tooltip>
-                  </div>
-
-                  {trailingBuiltInQueryFields.map((field) => (
-                    <label
-                      key={field.key}
-                      className="flex min-w-0 flex-col gap-1"
-                      style={getQueryFieldLayoutStyle(
-                        field as DataTableQueryField<object>
-                      )}
-                    >
-                      {renderQueryFieldControl(field)}
-                      {field.description ? (
-                        <span className="text-xs leading-4 text-muted-foreground">
-                          {field.description}
-                        </span>
-                      ) : null}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {hasUserQueryFields ? (
-                <div className="flex min-w-0 flex-wrap items-start gap-2.5">
-                  {queryFields.map((field) => (
-                    <label
-                      key={field.key}
-                      className="flex min-w-0 flex-col gap-1"
-                      style={getQueryFieldLayoutStyle(
-                        field as DataTableQueryField<object>
-                      )}
-                    >
-                      {renderQueryFieldControl(field)}
-                      {field.description ? (
-                        <span className="text-xs leading-4 text-muted-foreground">
-                          {field.description}
-                        </span>
-                      ) : null}
-                    </label>
-                  ))}
-                </div>
-              ) : null}
-
-              </div>
-
-              {insert !== false ||
-              bulkDelete !== false ||
-              bulkUpdate !== false ||
-              toolbarActions ? (
-                <div className="w-[5.5rem] flex-none self-stretch sm:w-[14rem]">
-                  <div className="flex h-full w-full items-start justify-center border-l border-border pl-2 sm:pl-4">
-                    <div className="flex w-full flex-col items-stretch gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-center sm:gap-2">
-                      {insert !== false ? (
-                        <button
-                          type="button"
-                          disabled={insert.disabled === true}
-                          onClick={() => {
-                            setInsertDialogOpen(true)
-                          }}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-primary px-1 py-1.5 text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <Plus aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {insert.label ?? resolvedInsertLabel}
-                          </span>
-                        </button>
-                      ) : null}
-                      {bulkUpdate !== false ? (
-                        <button
-                          type="button"
-                          disabled={selectedRowKeys.length === 0}
-                          onClick={handleOpenBulkUpdate}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-secondary px-1 py-1.5 text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <SquarePen aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {bulkUpdate.label ??
-                              resolvedBulkUpdateLabel(selectedRowKeys.length)}
-                          </span>
-                        </button>
-                      ) : null}
-                      {bulkDelete !== false && rowSelectionEnabled ? (
-                        <button
-                          type="button"
-                          disabled={selectedRowKeys.length === 0 || deleting}
-                          onClick={() => {
-                            setBulkDeleteDialogOpen(true)
-                          }}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-destructive px-1 py-1.5 text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <Trash aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {bulkDelete.label ??
-                              resolvedBulkDeleteLabel(selectedRowKeys.length)}
-                          </span>
-                        </button>
-                      ) : null}
-                      {toolbarActions}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex min-w-0 flex-1 items-center gap-3">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      disabled={loading}
-                      onClick={handleRetry}
-                      className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                    >
-                      <RefreshCw aria-hidden="true" className="size-4.5" />
-                      <span className="sr-only">{resolvedRefreshLabel}</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-                </Tooltip>
-              </div>
-              {insert !== false ||
-              bulkDelete !== false ||
-              bulkUpdate !== false ||
-              toolbarActions ? (
-                <div className="w-[5.5rem] flex-none self-stretch sm:w-[14rem]">
-                  <div className="flex h-full w-full items-start justify-center border-l border-border pl-2 sm:pl-4">
-                    <div className="flex w-full flex-col items-stretch gap-1.5 pt-1 sm:flex-row sm:items-center sm:justify-center sm:gap-2">
-                      {insert !== false ? (
-                        <button
-                          type="button"
-                          disabled={insert.disabled === true}
-                          onClick={() => {
-                            setInsertDialogOpen(true)
-                          }}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-primary px-1 py-1.5 text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <Plus aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {insert.label ?? resolvedInsertLabel}
-                          </span>
-                        </button>
-                      ) : null}
-                      {bulkUpdate !== false ? (
-                        <button
-                          type="button"
-                          disabled={selectedRowKeys.length === 0}
-                          onClick={handleOpenBulkUpdate}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-secondary px-1 py-1.5 text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <SquarePen aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {bulkUpdate.label ??
-                              resolvedBulkUpdateLabel(selectedRowKeys.length)}
-                          </span>
-                        </button>
-                      ) : null}
-                      {bulkDelete !== false && rowSelectionEnabled ? (
-                        <button
-                          type="button"
-                          disabled={selectedRowKeys.length === 0 || deleting}
-                          onClick={() => {
-                            setBulkDeleteDialogOpen(true)
-                          }}
-                          className="inline-flex w-full flex-col items-center justify-start gap-1 rounded-lg bg-destructive px-1 py-1.5 text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 sm:w-16 sm:px-1.5"
-                        >
-                          <Trash aria-hidden="true" className="size-4.5" />
-                          <span className="line-clamp-2 min-h-[1.75rem] text-center text-[10px] leading-3.5 sm:min-h-[2rem] sm:leading-4">
-                            {bulkDelete.label ??
-                              resolvedBulkDeleteLabel(selectedRowKeys.length)}
-                          </span>
-                        </button>
-                      ) : null}
-                      {toolbarActions}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
+          <DataTableHeader
+            hasAnyQueryFields={hasAnyQueryFields}
+            hasUserQueryFields={hasUserQueryFields}
+            leadingBuiltInSearchField={
+              leadingBuiltInSearchField as DataTableBuiltInQueryField<TQuery> | null
+            }
+            trailingBuiltInQueryFields={trailingBuiltInQueryFields}
+            queryFields={queryFields}
+            loading={loading}
+            insert={insert}
+            bulkDelete={bulkDelete}
+            bulkUpdate={bulkUpdate}
+            toolbarActions={toolbarActions}
+            rowSelectionEnabled={rowSelectionEnabled}
+            deleting={deleting}
+            selectedRowKeysCount={selectedRowKeys.length}
+            resolvedResetLabel={resolvedResetLabel}
+            resolvedRefreshLabel={resolvedRefreshLabel}
+            resolvedInsertLabel={resolvedInsertLabel}
+            resolvedBulkUpdateLabel={resolvedBulkUpdateLabel}
+            resolvedBulkDeleteLabel={resolvedBulkDeleteLabel}
+            renderQueryFieldControl={renderQueryFieldControl}
+            onResetQuery={handleResetQuery}
+            onRetry={handleRetry}
+            onOpenInsert={() => setInsertDialogOpen(true)}
+            onOpenBulkUpdate={handleOpenBulkUpdate}
+            onOpenBulkDelete={() => setBulkDeleteDialogOpen(true)}
+          />
         </div>
 
         <div
@@ -1864,160 +994,41 @@ export function DataTable<T, TQuery extends object = object>({
           </div>
         </div>
 
-        {bulkUpdate !== false ? (
-          <Dialog
-            open={bulkUpdateDialogOpen}
-            onOpenChange={setBulkUpdateDialogOpen}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {bulkUpdate.title ?? resolvedBulkUpdateTitle}
-                </DialogTitle>
-                <DialogDescription>
-                  {bulkUpdate.description ??
-                    resolvedBulkUpdateDescription(selectedRowKeys.length)}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium">
-                    {resolvedBulkUpdateFieldLabel}
-                  </span>
-                  <AdvancedSelect
-                    value={activeBulkUpdateField?.key ?? ""}
-                    onValueChange={(value) => {
-                      setBulkUpdateFieldKey(value)
-                      setBulkUpdateValue("")
-                    }}
-                    list={availableBulkUpdateFields.map((field) => ({
-                      label: field.label,
-                      value: field.key,
-                    }))}
-                    disabled={updating}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium">
-                    {resolvedBulkUpdateValueLabel}
-                  </span>
-                  {renderBulkUpdateControl()}
-                  {activeBulkUpdateField?.description ? (
-                    <span className="text-xs text-muted-foreground">
-                      {activeBulkUpdateField.description}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={updating}
-                  onClick={() => setBulkUpdateDialogOpen(false)}
-                >
-                  {resolvedBulkUpdateCancelLabel}
-                </Button>
-                <Button
-                  type="button"
-                  disabled={activeBulkUpdateField === null || updating}
-                  onClick={() => {
-                    void handleBulkUpdateSubmit()
-                  }}
-                >
-                  {resolvedBulkUpdateApplyLabel}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : null}
-
-        {bulkDelete !== false ? (
-          <Dialog
-            open={bulkDeleteDialogOpen}
-            onOpenChange={setBulkDeleteDialogOpen}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {bulkDelete.title ?? resolvedDeleteDialogTitle}
-                </DialogTitle>
-                <DialogDescription>
-                  {(typeof bulkDelete.description === "function"
-                    ? bulkDelete.description(selectedRowKeys.length)
-                    : bulkDelete.description) ??
-                    resolvedBulkDeleteDialogDescription(selectedRowKeys.length)}
-                </DialogDescription>
-              </DialogHeader>
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={deleting}
-                  onClick={() => setBulkDeleteDialogOpen(false)}
-                >
-                  {resolvedCancelLabel}
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={deleting || selectedRowKeys.length === 0}
-                  onClick={() => {
-                    void (async () => {
-                      await handleBulkDelete()
-                      setBulkDeleteDialogOpen(false)
-                    })()
-                  }}
-                >
-                  {resolvedConfirmDeleteLabel}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : null}
-
-        {insert !== false ? (
-          <Dialog open={insertDialogOpen} onOpenChange={setInsertDialogOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {insert.title ?? insert.label ?? resolvedInsertLabel}
-                </DialogTitle>
-                {insert.description ? (
-                  <DialogDescription>{insert.description}</DialogDescription>
-                ) : null}
-              </DialogHeader>
-
-              {insert.renderContent?.({
-                close: () => setInsertDialogOpen(false),
-              }) ?? null}
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={submittingInsert}
-                  onClick={() => setInsertDialogOpen(false)}
-                >
-                  {insert.cancelLabel ?? resolvedCancelLabel}
-                </Button>
-                <Button
-                  type="button"
-                  disabled={submittingInsert}
-                  onClick={() => {
-                    void handleInsertConfirm()
-                  }}
-                >
-                  {insert.confirmLabel ?? resolvedSaveLabel}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : null}
+        <DataTableDialogs
+          insert={insert}
+          insertDialogOpen={insertDialogOpen}
+          setInsertDialogOpen={setInsertDialogOpen}
+          submittingInsert={submittingInsert}
+          handleInsertConfirm={handleInsertConfirm}
+          bulkDelete={bulkDelete}
+          bulkDeleteDialogOpen={bulkDeleteDialogOpen}
+          setBulkDeleteDialogOpen={setBulkDeleteDialogOpen}
+          deleting={deleting}
+          selectedRowKeys={selectedRowKeys}
+          handleBulkDeleteAndClose={handleBulkDeleteAndClose}
+          bulkUpdate={bulkUpdate}
+          bulkUpdateDialogOpen={bulkUpdateDialogOpen}
+          setBulkUpdateDialogOpen={setBulkUpdateDialogOpen}
+          updating={updating}
+          activeBulkUpdateField={activeBulkUpdateField}
+          bulkUpdateValue={bulkUpdateValue}
+          setBulkUpdateFieldKey={setBulkUpdateFieldKey}
+          setBulkUpdateValue={(value) => setBulkUpdateValue(value)}
+          availableBulkUpdateFields={availableBulkUpdateFields}
+          handleBulkUpdateSubmit={handleBulkUpdateSubmit}
+          resolvedInsertLabel={resolvedInsertLabel}
+          resolvedCancelLabel={resolvedCancelLabel}
+          resolvedSaveLabel={resolvedSaveLabel}
+          resolvedDeleteDialogTitle={resolvedDeleteDialogTitle}
+          resolvedBulkDeleteDialogDescription={resolvedBulkDeleteDialogDescription}
+          resolvedConfirmDeleteLabel={resolvedConfirmDeleteLabel}
+          resolvedBulkUpdateTitle={resolvedBulkUpdateTitle}
+          resolvedBulkUpdateDescription={resolvedBulkUpdateDescription}
+          resolvedBulkUpdateFieldLabel={resolvedBulkUpdateFieldLabel}
+          resolvedBulkUpdateValueLabel={resolvedBulkUpdateValueLabel}
+          resolvedBulkUpdateCancelLabel={resolvedBulkUpdateCancelLabel}
+          resolvedBulkUpdateApplyLabel={resolvedBulkUpdateApplyLabel}
+        />
       </div>
     </TooltipProvider>
   )

@@ -93,10 +93,7 @@ export default function DataTablePage() {
           (!to || row.createdAt <= endOfDay(to))
 
         return (
-          matchesKeyword &&
-          matchesStatus &&
-          matchesRegion &&
-          matchesCreatedAt
+          matchesKeyword && matchesStatus && matchesRegion && matchesCreatedAt
         )
       })
 
@@ -366,34 +363,34 @@ export default function DataTablePage() {
             label: t("datatable.fields.createdAt", "Created At"),
           },
         ]}
-        queryFields={[
-          {
-            key: "status",
-            type: "select",
-            label: t("datatable.fields.status", "Status"),
-            placeholder: t("datatable.fields.status", "Status"),
-            options: [
-              {
-                label: t("datatable.options.status.active", "Active"),
-                value: "Active",
-              },
-              {
-                label: t("datatable.options.status.paused", "Paused"),
-                value: "Paused",
-              },
-            ],
-          },
-          {
-            key: "region",
-            type: "select",
-            label: t("datatable.fields.region", "Region"),
-            placeholder: t("datatable.fields.region", "Region"),
-            options: regions.map((region) => ({
-              label: region,
-              value: region,
-            })),
-          },
-        ]}
+        // queryFields={[
+        //   {
+        //     key: "status",
+        //     type: "select",
+        //     label: t("datatable.fields.status", "Status"),
+        //     placeholder: t("datatable.fields.status", "Status"),
+        //     options: [
+        //       {
+        //         label: t("datatable.options.status.active", "Active"),
+        //         value: "Active",
+        //       },
+        //       {
+        //         label: t("datatable.options.status.paused", "Paused"),
+        //         value: "Paused",
+        //       },
+        //     ],
+        //   },
+        //   {
+        //     key: "region",
+        //     type: "select",
+        //     label: t("datatable.fields.region", "Region"),
+        //     placeholder: t("datatable.fields.region", "Region"),
+        //     options: regions.map((region) => ({
+        //       label: region,
+        //       value: region,
+        //     })),
+        //   },
+        // ]}
         pageSizeOptions={[10, 15, 30, 50]}
         rowActions={{
           edit: {
