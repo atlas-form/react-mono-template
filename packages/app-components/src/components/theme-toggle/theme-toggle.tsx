@@ -98,7 +98,6 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         className
       )}
       aria-label={label}
-      title={label}
       onClick={() => {
         setMode(nextMode)
         setThemeMode(nextMode)
