@@ -7,6 +7,12 @@
   },
   "welcome": "Welcome to React",
   "description": "This is an example of i18n.",
+  "datatable": {
+    "actions": {
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDescription": "This action will remove customer {{id}} from the current list."
+    }
+  },
   "header": {
     "theme": {
       "system": "System",

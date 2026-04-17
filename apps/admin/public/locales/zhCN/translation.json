@@ -7,6 +7,12 @@
   },
   "welcome": "欢迎使用 React",
   "description": "这是一个 i18n 的示例。",
+  "datatable": {
+    "actions": {
+      "deleteTitle": "删除 {{name}}？",
+      "deleteDescription": "此操作会将客户 {{id}} 从当前列表中移除。"
+    }
+  },
   "header": {
     "theme": {
       "system": "跟随系统",
