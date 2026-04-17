@@ -723,6 +723,25 @@ export function DataTable<T, TQuery extends object = object>({
     return null
   }
 
+  const stickyBlurStyle = {
+    WebkitBackdropFilter: "blur(14px)",
+    backdropFilter: "blur(14px)",
+  } as const
+
+  const stickyHeaderSurfaceStyle = {
+    ...stickyBlurStyle,
+    backgroundColor:
+      "color-mix(in oklab, var(--surface) 82%, transparent)",
+  } as const
+
+  const getStickyBodySurfaceStyle = (striped: boolean) =>
+    ({
+      ...stickyBlurStyle,
+      backgroundColor: striped
+        ? "color-mix(in oklab, var(--muted) 76%, transparent)"
+        : "color-mix(in oklab, var(--background) 82%, transparent)",
+    }) as const
+
   return (
     <TooltipProvider>
       <div
@@ -775,10 +794,11 @@ export function DataTable<T, TQuery extends object = object>({
                 <TableRow>
                   {rowSelectionEnabled ? (
                     <TableHead
-                      className="sticky top-0 left-0 z-30 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                      className="sticky top-0 left-0 z-30 shadow-[inset_-1px_0_0_var(--border)]"
                       style={{
                         left: 0,
                         minWidth: `${selectionColumnWidth}px`,
+                        ...stickyHeaderSurfaceStyle,
                         width: `${selectionColumnWidth}px`,
                       }}
                     >
@@ -824,13 +844,16 @@ export function DataTable<T, TQuery extends object = object>({
                         aria-sort={getAriaSort(column)}
                         className={
                           isStickyLeft
-                            ? "sticky top-0 left-0 z-20 bg-[var(--surface)] shadow-[inset_-1px_0_0_var(--border)]"
+                            ? "sticky top-0 left-0 z-20 shadow-[inset_-1px_0_0_var(--border)]"
                             : isStickyRight
-                              ? "sticky top-0 right-0 z-20 bg-[var(--surface)] shadow-[inset_1px_0_0_var(--border)]"
+                              ? "sticky top-0 right-0 z-20 shadow-[inset_1px_0_0_var(--border)]"
                               : "sticky top-0 z-10 bg-[var(--surface)]"
                         }
                         style={{
                           ...getStickyColumnStyles({ leftOffset, rightOffset }),
+                          ...(isStickyLeft || isStickyRight
+                            ? stickyHeaderSurfaceStyle
+                            : null),
                           minWidth: resolveColumnMinWidth(
                             column as DataTableColumn<object>
                           ),
@@ -900,14 +923,25 @@ export function DataTable<T, TQuery extends object = object>({
                 ) : null}
 
                 {!loading && !error
-                  ? rows.map((row: T, rowIndex: number) => (
-                      <TableRow key={getRowId(row, rowIndex)}>
+                  ? rows.map((row: T, rowIndex: number) => {
+                      const stripedRowClass =
+                        rowIndex % 2 === 1 ? "bg-muted/40" : undefined
+                      const stickyCellSurfaceStyle = getStickyBodySurfaceStyle(
+                        rowIndex % 2 === 1
+                      )
+
+                      return (
+                      <TableRow
+                        key={getRowId(row, rowIndex)}
+                        className={stripedRowClass}
+                      >
                         {rowSelectionEnabled ? (
                           <TableCell
-                            className="sticky left-0 z-20 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                            className="sticky left-0 z-20 shadow-[inset_-1px_0_0_var(--border)]"
                             style={{
                               left: 0,
                               minWidth: `${selectionColumnWidth}px`,
+                              ...stickyCellSurfaceStyle,
                               width: `${selectionColumnWidth}px`,
                             }}
                           >
@@ -943,9 +977,9 @@ export function DataTable<T, TQuery extends object = object>({
                             key={column.key}
                             className={
                               stickyLeftOffsets[columnIndex] !== undefined
-                                ? "sticky left-0 z-10 bg-[var(--background)] shadow-[inset_-1px_0_0_var(--border)]"
+                                ? "sticky left-0 z-10 shadow-[inset_-1px_0_0_var(--border)]"
                                 : stickyRightOffsets[columnIndex] !== undefined
-                                  ? "sticky right-0 z-10 bg-[var(--background)] shadow-[inset_1px_0_0_var(--border)]"
+                                  ? "sticky right-0 z-10 shadow-[inset_1px_0_0_var(--border)]"
                                   : undefined
                             }
                             style={{
@@ -953,6 +987,10 @@ export function DataTable<T, TQuery extends object = object>({
                                 leftOffset: stickyLeftOffsets[columnIndex],
                                 rightOffset: stickyRightOffsets[columnIndex],
                               }),
+                              ...(stickyLeftOffsets[columnIndex] !== undefined ||
+                              stickyRightOffsets[columnIndex] !== undefined
+                                ? stickyCellSurfaceStyle
+                                : null),
                               minWidth: resolveColumnMinWidth(
                                 column as DataTableColumn<object>
                               ),
@@ -964,7 +1002,7 @@ export function DataTable<T, TQuery extends object = object>({
                           </TableCell>
                         ))}
                       </TableRow>
-                    ))
+                    )})
                   : null}
               </TableBody>
             </Table>
