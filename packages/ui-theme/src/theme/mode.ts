@@ -43,7 +43,15 @@ export function initTheme(): () => void {
   const media = window.matchMedia("(prefers-color-scheme: dark)")
 
   const onSystemThemeChange = () => {
-    if (getStoredThemeMode() === "system") {
+    const storedMode = getStoredThemeMode()
+    const systemTheme = media.matches ? "dark" : "light"
+
+    if (storedMode !== "system" && storedMode === systemTheme) {
+      setThemeMode("system")
+      return
+    }
+
+    if (storedMode === "system") {
       applyTheme("system")
     }
   }

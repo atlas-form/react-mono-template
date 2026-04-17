@@ -730,10 +730,7 @@ export function DataTable<T, TQuery extends object = object>({
         data-slot="data-table"
         style={{ height: resolveTableHeight(height) }}
       >
-        <div
-          className="shrink-0 border border-emerald-500 px-3 pt-2"
-          data-slot="data-table-header"
-        >
+        <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
           <DataTableHeader
             hasAnyQueryFields={hasAnyQueryFields}
             hasUserQueryFields={hasUserQueryFields}

@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { logout } from "@/store/authSlice"
-import ThemeModeControl from "@/components/topbar/ThemeModeControl"
 import LanguageControl from "@/components/topbar/LanguageControl"
 import {
   BadgeCheck,
@@ -16,7 +15,11 @@ import {
   TableProperties,
   Users,
 } from "lucide-react"
-import { AvatarDropdown, AvatarDropdownItem } from "@workspace/app-components"
+import {
+  AvatarDropdown,
+  AvatarDropdownItem,
+  ThemeToggle,
+} from "@workspace/app-components"
 import { Sidebar, type SidebarSection } from "@workspace/app-components/sidebar"
 import { TopBar } from "@workspace/app-components/top-bar"
 import { Badge } from "@workspace/ui-components/stable/badge"
@@ -133,7 +136,7 @@ export default function AppLayout() {
                 Admin Console
               </Badge>,
               <LanguageControl key="lang" />,
-              <ThemeModeControl key="theme" />,
+              <ThemeToggle key="theme" />,
               <AvatarDropdown
                 key="account"
                 avatarAlt={user?.name ?? "Admin"}

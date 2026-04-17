@@ -1,4 +1,4 @@
-import { RefreshCw, RotateCcw, Plus, SquarePen, Trash } from "lucide-react"
+import { Plus, RefreshCw, RotateCcw, SquarePen, Trash } from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +30,106 @@ function getCustomQueryFieldLayoutStyle(field: DataTableQueryField<object>) {
   }
 
   return getQueryFieldLayoutStyle(field)
+}
+
+function getToolbarWidthClass(actionCount: number) {
+  if (actionCount >= 3) return "sm:w-[7.5rem]"
+  if (actionCount === 2) return "sm:w-[5rem]"
+  if (actionCount === 1) return "sm:w-[2.5rem]"
+  return "sm:w-auto"
+}
+
+function QueryFieldItem<TQuery extends object>({
+  field,
+  renderQueryFieldControl,
+  compact = false,
+}: {
+  field: DataTableQueryField<TQuery>
+  renderQueryFieldControl: (field: DataTableQueryField<TQuery>) => ReactNode
+  compact?: boolean
+}) {
+  return (
+    <label
+      key={field.key}
+      className="flex min-w-0 flex-col gap-1"
+      style={
+        compact
+          ? getCustomQueryFieldLayoutStyle(field as DataTableQueryField<object>)
+          : getQueryFieldLayoutStyle(field as DataTableQueryField<object>)
+      }
+    >
+      {renderQueryFieldControl(field)}
+      {field.description ? (
+        <span className="text-xs leading-4 text-muted-foreground">
+          {field.description}
+        </span>
+      ) : null}
+    </label>
+  )
+}
+
+function IconToolButton({
+  icon,
+  label,
+  disabled = false,
+  onClick,
+  className,
+}: {
+  icon: ReactNode
+  label: ReactNode
+  disabled?: boolean
+  onClick: () => void
+  className: string
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onClick}
+          className={className}
+        >
+          {icon}
+          <span className="sr-only">{label}</span>
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  )
+}
+
+function QueryToolGroup({
+  loading,
+  resolvedResetLabel,
+  resolvedRefreshLabel,
+  onResetQuery,
+  onRetry,
+}: {
+  loading: boolean
+  resolvedResetLabel: ReactNode
+  resolvedRefreshLabel: ReactNode
+  onResetQuery: () => void
+  onRetry: () => void
+}) {
+  return (
+    <div className="flex shrink-0 items-center gap-1 self-center">
+      <IconToolButton
+        icon={<RotateCcw aria-hidden="true" className="size-4.5" />}
+        label={resolvedResetLabel}
+        disabled={loading}
+        onClick={onResetQuery}
+        className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+      />
+      <IconToolButton
+        icon={<RefreshCw aria-hidden="true" className="size-4.5" />}
+        label={resolvedRefreshLabel}
+        disabled={loading}
+        onClick={onRetry}
+        className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+      />
+    </div>
+  )
 }
 
 function ToolbarActions({
@@ -70,7 +170,8 @@ function ToolbarActions({
     return null
   }
 
-  const insertTooltip = insert !== false ? insert.label ?? resolvedInsertLabel : null
+  const insertTooltip =
+    insert !== false ? insert.label ?? resolvedInsertLabel : null
   const bulkUpdateTooltip =
     bulkUpdate !== false
       ? bulkUpdate.label ?? resolvedBulkUpdateLabel(selectedRowKeysCount)
@@ -83,68 +184,39 @@ function ToolbarActions({
     (insert !== false ? 1 : 0) +
     (bulkUpdate !== false ? 1 : 0) +
     (bulkDelete !== false && rowSelectionEnabled ? 1 : 0)
-  const desktopWidthClass =
-    actionCount >= 3
-      ? "sm:w-[7.5rem]"
-      : actionCount === 2
-        ? "sm:w-[5rem]"
-        : actionCount === 1
-          ? "sm:w-[2.5rem]"
-          : "sm:w-auto"
 
   return (
     <div
-      className={`w-[2.5rem] flex-none self-stretch border border-fuchsia-500 ${desktopWidthClass}`}
+      className={`w-[2.5rem] flex-none self-stretch ${getToolbarWidthClass(actionCount)}`}
     >
       <div className="flex h-full w-full items-center justify-center border-l border-border pl-2 sm:pl-4">
         <div className="flex w-full flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-center sm:justify-center sm:gap-1">
           {insert !== false ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  disabled={insert.disabled === true}
-                  onClick={onOpenInsert}
-                  className="inline-flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <Plus aria-hidden="true" className="size-4" />
-                  <span className="sr-only">{insertTooltip}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{insertTooltip}</TooltipContent>
-            </Tooltip>
+            <IconToolButton
+              icon={<Plus aria-hidden="true" className="size-4" />}
+              label={insertTooltip}
+              disabled={insert.disabled === true}
+              onClick={onOpenInsert}
+              className="inline-flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+            />
           ) : null}
           {bulkUpdate !== false ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  disabled={selectedRowKeysCount === 0}
-                  onClick={onOpenBulkUpdate}
-                  className="inline-flex size-8 items-center justify-center rounded-md bg-secondary text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <SquarePen aria-hidden="true" className="size-4" />
-                  <span className="sr-only">{bulkUpdateTooltip}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{bulkUpdateTooltip}</TooltipContent>
-            </Tooltip>
+            <IconToolButton
+              icon={<SquarePen aria-hidden="true" className="size-4" />}
+              label={bulkUpdateTooltip}
+              disabled={selectedRowKeysCount === 0}
+              onClick={onOpenBulkUpdate}
+              className="inline-flex size-8 items-center justify-center rounded-md bg-secondary text-secondary-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+            />
           ) : null}
           {bulkDelete !== false && rowSelectionEnabled ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  disabled={selectedRowKeysCount === 0 || deleting}
-                  onClick={onOpenBulkDelete}
-                  className="inline-flex size-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <Trash aria-hidden="true" className="size-4" />
-                  <span className="sr-only">{bulkDeleteTooltip}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{bulkDeleteTooltip}</TooltipContent>
-            </Tooltip>
+            <IconToolButton
+              icon={<Trash aria-hidden="true" className="size-4" />}
+              label={bulkDeleteTooltip}
+              disabled={selectedRowKeysCount === 0 || deleting}
+              onClick={onOpenBulkDelete}
+              className="inline-flex size-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+            />
           ) : null}
           {toolbarActions}
         </div>
@@ -204,94 +276,42 @@ export function DataTableHeader<TQuery extends object>({
   onOpenBulkUpdate: () => void
   onOpenBulkDelete: () => void
 }) {
+  const builtInFields = leadingBuiltInSearchField
+    ? [leadingBuiltInSearchField, ...trailingBuiltInQueryFields]
+    : trailingBuiltInQueryFields
+
   return hasAnyQueryFields ? (
-    <div className="flex min-w-0 items-start gap-4 overflow-hidden border border-cyan-500">
-      <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden border border-amber-500">
-        <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden border border-lime-500 sm:flex-nowrap sm:items-center sm:justify-between">
-          <div className="flex min-w-0 max-w-full flex-1 flex-wrap items-start gap-2.5 overflow-hidden border border-rose-500 sm:flex-nowrap sm:items-center">
-            {leadingBuiltInSearchField ? (
-              <label
-                key={leadingBuiltInSearchField.key}
-                className="flex min-w-0 flex-col gap-1"
-                style={getQueryFieldLayoutStyle(
-                  leadingBuiltInSearchField as DataTableQueryField<object>
-                )}
-              >
-                {renderQueryFieldControl(leadingBuiltInSearchField)}
-                {leadingBuiltInSearchField.description ? (
-                  <span className="text-xs leading-4 text-muted-foreground">
-                    {leadingBuiltInSearchField.description}
-                  </span>
-                ) : null}
-              </label>
-            ) : null}
-
-            {trailingBuiltInQueryFields.map((field) => (
-              <label
+    <div className="flex min-w-0 items-start gap-4 overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden">
+        <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden sm:flex-nowrap sm:items-center sm:justify-between">
+          <div className="flex min-w-0 max-w-full flex-1 flex-wrap items-start gap-2.5 overflow-hidden sm:flex-nowrap sm:items-center">
+            {builtInFields.map((field) => (
+              <QueryFieldItem
                 key={field.key}
-                className="flex min-w-0 flex-col gap-1"
-                style={getQueryFieldLayoutStyle(field as DataTableQueryField<object>)}
-              >
-                {renderQueryFieldControl(field)}
-                {field.description ? (
-                  <span className="text-xs leading-4 text-muted-foreground">
-                    {field.description}
-                  </span>
-                ) : null}
-              </label>
+                field={field}
+                renderQueryFieldControl={renderQueryFieldControl}
+              />
             ))}
-
           </div>
 
-          <div className="flex shrink-0 items-center gap-1 self-center border border-sky-500">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={onResetQuery}
-                  className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <RotateCcw aria-hidden="true" className="size-4.5" />
-                  <span className="sr-only">{resolvedResetLabel}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{resolvedResetLabel}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={onRetry}
-                  className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <RefreshCw aria-hidden="true" className="size-4.5" />
-                  <span className="sr-only">{resolvedRefreshLabel}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-            </Tooltip>
-          </div>
+          <QueryToolGroup
+            loading={loading}
+            resolvedResetLabel={resolvedResetLabel}
+            resolvedRefreshLabel={resolvedRefreshLabel}
+            onResetQuery={onResetQuery}
+            onRetry={onRetry}
+          />
         </div>
 
         {hasUserQueryFields ? (
-          <div className="flex min-w-0 flex-wrap items-start gap-1.5 border border-yellow-500">
+          <div className="flex min-w-0 flex-wrap items-start gap-1.5">
             {queryFields.map((field) => (
-              <label
+              <QueryFieldItem
                 key={field.key}
-                className="flex min-w-0 flex-col gap-1"
-                style={getCustomQueryFieldLayoutStyle(
-                  field as DataTableQueryField<object>
-                )}
-              >
-                {renderQueryFieldControl(field)}
-                {field.description ? (
-                  <span className="text-xs leading-4 text-muted-foreground">
-                    {field.description}
-                  </span>
-                ) : null}
-              </label>
+                field={field}
+                renderQueryFieldControl={renderQueryFieldControl}
+                compact
+              />
             ))}
           </div>
         ) : null}
@@ -314,22 +334,15 @@ export function DataTableHeader<TQuery extends object>({
       />
     </div>
   ) : (
-    <div className="flex items-start justify-between gap-4 border border-cyan-500">
-      <div className="flex min-w-0 flex-1 items-center gap-3 border border-amber-500">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              disabled={loading}
-              onClick={onRetry}
-              className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-            >
-              <RefreshCw aria-hidden="true" className="size-4.5" />
-              <span className="sr-only">{resolvedRefreshLabel}</span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-        </Tooltip>
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <QueryToolGroup
+          loading={loading}
+          resolvedResetLabel={resolvedResetLabel}
+          resolvedRefreshLabel={resolvedRefreshLabel}
+          onResetQuery={onResetQuery}
+          onRetry={onRetry}
+        />
       </div>
 
       <ToolbarActions

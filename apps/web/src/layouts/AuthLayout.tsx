@@ -1,6 +1,6 @@
 import { Outlet } from "react-router"
 import HeaderLanguageSwitcher from "@/components/header/HeaderLanguageSwitcher"
-import HeaderThemeSwitcher from "@/components/header/HeaderThemeSwitcher"
+import { ThemeToggle } from "@workspace/app-components"
 
 export default function AuthLayout() {
   return (
@@ -9,7 +9,7 @@ export default function AuthLayout() {
       <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-[color-mix(in_oklab,var(--app-hover)_80%,transparent)] blur-3xl" />
 
       <div className="relative z-30 mx-auto flex w-full max-w-5xl justify-end gap-3 pb-5 sm:pb-6">
-        <HeaderThemeSwitcher />
+        <ThemeToggle />
         <HeaderLanguageSwitcher />
       </div>
 
