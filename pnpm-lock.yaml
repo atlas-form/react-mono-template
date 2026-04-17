@@ -364,6 +364,9 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.95.2(react@19.2.4)
+      '@workspace/app-components':
+        specifier: workspace:*
+        version: link:../../packages/app-components
       '@workspace/mock':
         specifier: workspace:*
         version: link:../../packages/mock
@@ -467,6 +470,9 @@ importers:
 
   packages/app-components:
     dependencies:
+      '@workspace/shared-i18n':
+        specifier: workspace:*
+        version: link:../shared-i18n
       '@workspace/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -537,8 +543,17 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/shared-i18n:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/ui-components:
     dependencies:
+      '@workspace/shared-i18n':
+        specifier: workspace:*
+        version: link:../shared-i18n
       '@workspace/ui-core':
         specifier: workspace:*
         version: link:../ui-core
@@ -573,6 +588,9 @@ importers:
       '@fontsource-variable/geist':
         specifier: 'catalog:'
         version: 5.2.8
+      '@workspace/shared-i18n':
+        specifier: workspace:*
+        version: link:../shared-i18n
       class-variance-authority:
         specifier: 'catalog:'
         version: 0.7.1
@@ -670,14 +688,6 @@ importers:
       typescript-eslint:
         specifier: 'catalog:'
         version: 8.57.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-
-    devDependencies:
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.14
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
 
   packages/ui-theme: {}
 

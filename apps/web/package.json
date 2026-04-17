@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@workspace/app-components": "workspace:*",
     "@workspace/mock": "workspace:*",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
