@@ -3,8 +3,10 @@ import {
   useState,
   type ChangeEvent,
   type KeyboardEvent,
+  type ReactNode,
 } from "react"
 import { Input as CoreInput } from "@workspace/ui-core/components/input"
+import { cn } from "@workspace/ui-core/lib/utils.js"
 
 export interface SearchInputProps {
   value: string
@@ -12,6 +14,9 @@ export interface SearchInputProps {
   placeholder?: string
   disabled?: boolean
   updateStrategy?: "immediate" | "blur-enter" | "enter"
+  inputClassName?: string
+  trailingContent?: ReactNode
+  trailingContentClassName?: string
 }
 
 export function SearchInput({
@@ -20,6 +25,9 @@ export function SearchInput({
   placeholder,
   disabled = false,
   updateStrategy = "immediate",
+  inputClassName,
+  trailingContent,
+  trailingContentClassName,
 }: SearchInputProps) {
   const [draftValue, setDraftValue] = useState(value)
 
@@ -78,8 +86,20 @@ export function SearchInput({
         placeholder={placeholder}
         disabled={disabled}
         type="search"
-        className="pl-9"
+        className={cn("pl-9", trailingContent ? "pr-32" : undefined, inputClassName)}
       />
+
+      {trailingContent ? (
+        <div
+          className={cn(
+            "absolute top-1/2 right-2 flex -translate-y-1/2 items-center",
+            trailingContentClassName
+          )}
+        >
+          <span className="mr-2 h-5 w-px bg-border" aria-hidden="true" />
+          {trailingContent}
+        </div>
+      ) : null}
     </div>
   )
 }

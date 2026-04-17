@@ -117,14 +117,14 @@ export function getQueryFieldLayoutStyle(field: DataTableQueryField<object>) {
   if (field.type === "search") {
     return field.fieldOptions?.length
       ? {
-          flex: "1 1 420px",
-          minWidth: "340px",
-          maxWidth: "520px",
+          flex: "0 1 440px",
+          minWidth: "300px",
+          maxWidth: "440px",
         }
       : {
-          flex: "1 1 320px",
-          minWidth: "260px",
-          maxWidth: "420px",
+          flex: "0 1 360px",
+          minWidth: "240px",
+          maxWidth: "360px",
         }
   }
 

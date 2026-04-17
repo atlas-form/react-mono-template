@@ -12,6 +12,26 @@ import type {
 } from "./data-table.types"
 import { getQueryFieldLayoutStyle } from "./data-table.utils"
 
+function getCustomQueryFieldLayoutStyle(field: DataTableQueryField<object>) {
+  if (field.type === "select") {
+    return {
+      flex: "0 0 auto",
+      minWidth: "auto",
+      maxWidth: "none",
+    }
+  }
+
+  if (field.type === "date-range") {
+    return {
+      flex: "0 1 220px",
+      minWidth: "200px",
+      maxWidth: "240px",
+    }
+  }
+
+  return getQueryFieldLayoutStyle(field)
+}
+
 function ToolbarActions({
   insert,
   bulkDelete,
@@ -73,7 +93,9 @@ function ToolbarActions({
           : "sm:w-auto"
 
   return (
-    <div className={`w-[2.5rem] flex-none self-stretch ${desktopWidthClass}`}>
+    <div
+      className={`w-[2.5rem] flex-none self-stretch border border-fuchsia-500 ${desktopWidthClass}`}
+    >
       <div className="flex h-full w-full items-center justify-center border-l border-border pl-2 sm:pl-4">
         <div className="flex w-full flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-center sm:justify-center sm:gap-1">
           {insert !== false ? (
@@ -183,10 +205,10 @@ export function DataTableHeader<TQuery extends object>({
   onOpenBulkDelete: () => void
 }) {
   return hasAnyQueryFields ? (
-    <div className="flex min-w-0 items-start gap-4 overflow-hidden">
-      <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden">
-        <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden">
-          <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2.5">
+    <div className="flex min-w-0 items-start gap-4 overflow-hidden border border-cyan-500">
+      <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden border border-amber-500">
+        <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden border border-lime-500 sm:flex-nowrap sm:items-center sm:justify-between">
+          <div className="flex min-w-0 max-w-full flex-1 flex-wrap items-start gap-2.5 overflow-hidden border border-rose-500 sm:flex-nowrap sm:items-center">
             {leadingBuiltInSearchField ? (
               <label
                 key={leadingBuiltInSearchField.key}
@@ -204,37 +226,6 @@ export function DataTableHeader<TQuery extends object>({
               </label>
             ) : null}
 
-            <div className="flex shrink-0 items-center gap-1 self-center px-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={onResetQuery}
-                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                  >
-                    <RotateCcw aria-hidden="true" className="size-4.5" />
-                    <span className="sr-only">{resolvedResetLabel}</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>{resolvedResetLabel}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={onRetry}
-                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
-                  >
-                    <RefreshCw aria-hidden="true" className="size-4.5" />
-                    <span className="sr-only">{resolvedRefreshLabel}</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
-              </Tooltip>
-            </div>
-
             {trailingBuiltInQueryFields.map((field) => (
               <label
                 key={field.key}
@@ -249,16 +240,50 @@ export function DataTableHeader<TQuery extends object>({
                 ) : null}
               </label>
             ))}
+
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1 self-center border border-sky-500">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={onResetQuery}
+                  className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <RotateCcw aria-hidden="true" className="size-4.5" />
+                  <span className="sr-only">{resolvedResetLabel}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{resolvedResetLabel}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={onRetry}
+                  className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <RefreshCw aria-hidden="true" className="size-4.5" />
+                  <span className="sr-only">{resolvedRefreshLabel}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{resolvedRefreshLabel}</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
         {hasUserQueryFields ? (
-          <div className="flex min-w-0 flex-wrap items-start gap-2.5">
+          <div className="flex min-w-0 flex-wrap items-start gap-1.5 border border-yellow-500">
             {queryFields.map((field) => (
               <label
                 key={field.key}
                 className="flex min-w-0 flex-col gap-1"
-                style={getQueryFieldLayoutStyle(field as DataTableQueryField<object>)}
+                style={getCustomQueryFieldLayoutStyle(
+                  field as DataTableQueryField<object>
+                )}
               >
                 {renderQueryFieldControl(field)}
                 {field.description ? (

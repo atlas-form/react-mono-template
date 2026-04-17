@@ -14,6 +14,13 @@ import {
   TooltipProvider,
   Input,
 } from "@workspace/ui-components"
+import {
+  Select as CoreSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui-core/components/select"
 import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
 import { useTranslation } from "react-i18next"
 import {
@@ -642,40 +649,43 @@ export function DataTable<T, TQuery extends object = object>({
           placeholder={field.placeholder}
           disabled={disabled}
           updateStrategy="enter"
+          inputClassName={field.fieldKey && field.fieldOptions?.length ? "pr-36" : undefined}
+          trailingContent={
+            field.fieldKey && field.fieldOptions?.length ? (
+              <CoreSelect
+                value={asStringValue(draftQuery[field.fieldKey])}
+                onValueChange={(nextValue) =>
+                  updateDraftQueryValue(
+                    field.fieldKey as keyof TQuery,
+                    nextValue as TQuery[keyof TQuery]
+                  )
+                }
+                disabled={disabled}
+              >
+                <SelectTrigger
+                  hideIndicator
+                  className="h-8 w-24 border-0 bg-transparent px-0 text-sm text-muted-foreground shadow-none hover:bg-transparent focus:ring-0 focus-visible:ring-0"
+                >
+                  <SelectValue placeholder={field.fieldPlaceholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  {field.fieldOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      disabled={option.disabled}
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </CoreSelect>
+            ) : null
+          }
         />
       )
 
-      if (!field.fieldKey || !field.fieldOptions?.length) {
-        return searchInput
-      }
-
-      const fieldKey = field.fieldKey
-
-      return (
-        <div className="flex items-center gap-2.5">
-          <div className="min-w-0 flex-1">{searchInput}</div>
-
-          <div className="w-36 shrink-0">
-            <AdvancedSelect
-              value={asStringValue(draftQuery[fieldKey])}
-              onValueChange={(nextValue) =>
-                updateDraftQueryValue(
-                  fieldKey,
-                  nextValue as TQuery[typeof fieldKey]
-                )
-              }
-              list={field.fieldOptions.map((option) => ({
-                label: option.label,
-                value: option.value,
-                disabled: option.disabled,
-              }))}
-              disabled={disabled}
-              placeholder={field.fieldPlaceholder}
-              allowClear
-            />
-          </div>
-        </div>
-      )
+      return searchInput
     }
 
     if (field.type === "select") {
@@ -720,7 +730,10 @@ export function DataTable<T, TQuery extends object = object>({
         data-slot="data-table"
         style={{ height: resolveTableHeight(height) }}
       >
-        <div className="shrink-0 px-3 pt-2" data-slot="data-table-header">
+        <div
+          className="shrink-0 border border-emerald-500 px-3 pt-2"
+          data-slot="data-table-header"
+        >
           <DataTableHeader
             hasAnyQueryFields={hasAnyQueryFields}
             hasUserQueryFields={hasUserQueryFields}
