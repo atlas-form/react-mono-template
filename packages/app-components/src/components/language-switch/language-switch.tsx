@@ -6,12 +6,16 @@ const LANGUAGE_OPTIONS = [
   { value: "zhCN", label: "简体中文" },
 ]
 
-export default function HeaderLanguageSwitcher() {
+export interface LanguageSwitchProps {
+  className?: string
+}
+
+export function LanguageSwitch(_props: LanguageSwitchProps) {
   const { i18n } = useTranslation()
-  const currentLang = i18n.language || "en"
+  const currentLanguage = i18n.language || "en"
   const currentValue =
-    LANGUAGE_OPTIONS.find((item) => item.value === currentLang) ??
-    LANGUAGE_OPTIONS.find((item) => currentLang.startsWith(item.value)) ??
+    LANGUAGE_OPTIONS.find((item) => item.value === currentLanguage) ??
+    LANGUAGE_OPTIONS.find((item) => currentLanguage.startsWith(item.value)) ??
     LANGUAGE_OPTIONS[0]
 
   return (

@@ -1,6 +1,5 @@
 import { Outlet } from "react-router"
-import LanguageControl from "@/components/topbar/LanguageControl"
-import { ThemeToggle } from "@workspace/app-components"
+import { LanguageSwitch, ThemeToggle } from "@workspace/app-components"
 
 export default function AuthLayout() {
   return (
@@ -18,7 +17,7 @@ export default function AuthLayout() {
             </h1>
           </div>
           <div className="flex flex-wrap gap-3">
-            <LanguageControl />
+            <LanguageSwitch />
             <ThemeToggle />
           </div>
         </div>

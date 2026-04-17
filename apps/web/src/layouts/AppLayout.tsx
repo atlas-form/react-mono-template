@@ -1,7 +1,6 @@
 import { Link, Outlet } from "react-router"
 import HeaderMe from "@/components/header/HeaderMe"
-import HeaderLanguageSwitcher from "@/components/header/HeaderLanguageSwitcher"
-import { ThemeToggle } from "@workspace/app-components"
+import { LanguageSwitch, ThemeToggle } from "@workspace/app-components"
 
 export default function AppLayout() {
   return (
@@ -19,7 +18,7 @@ export default function AppLayout() {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <HeaderLanguageSwitcher />
+            <LanguageSwitch />
             <HeaderMe />
           </div>
         </nav>

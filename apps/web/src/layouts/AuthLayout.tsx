@@ -1,6 +1,5 @@
 import { Outlet } from "react-router"
-import HeaderLanguageSwitcher from "@/components/header/HeaderLanguageSwitcher"
-import { ThemeToggle } from "@workspace/app-components"
+import { LanguageSwitch, ThemeToggle } from "@workspace/app-components"
 
 export default function AuthLayout() {
   return (
@@ -10,7 +9,7 @@ export default function AuthLayout() {
 
       <div className="relative z-30 mx-auto flex w-full max-w-5xl justify-end gap-3 pb-5 sm:pb-6">
         <ThemeToggle />
-        <HeaderLanguageSwitcher />
+        <LanguageSwitch />
       </div>
 
       <Outlet />

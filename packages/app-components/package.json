@@ -26,6 +26,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./top-bar": "./src/components/top-bar/index.ts",
+    "./language-switch": "./src/components/language-switch/index.ts",
     "./theme-toggle": "./src/components/theme-toggle/index.ts",
     "./sidebar": "./src/components/sidebar/index.ts",
     "./date-time-picker": "./src/components/date-time-picker/index.ts",

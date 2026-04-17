@@ -7,6 +7,8 @@ export type {
   AvatarDropdownProps,
 } from "./components/avatar-dropdown"
 export { AvatarDropdownItem } from "./components/avatar-dropdown"
+export { LanguageSwitch } from "./components/language-switch"
+export type { LanguageSwitchProps } from "./components/language-switch"
 export { ThemeToggle } from "./components/theme-toggle"
 export type { ThemeToggleProps } from "./components/theme-toggle"
 export { Sidebar } from "./components/sidebar"

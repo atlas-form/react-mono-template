@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { logout } from "@/store/authSlice"
-import LanguageControl from "@/components/topbar/LanguageControl"
 import {
   BadgeCheck,
   Bell,
@@ -18,6 +17,7 @@ import {
 import {
   AvatarDropdown,
   AvatarDropdownItem,
+  LanguageSwitch,
   ThemeToggle,
 } from "@workspace/app-components"
 import { Sidebar, type SidebarSection } from "@workspace/app-components/sidebar"
@@ -135,7 +135,7 @@ export default function AppLayout() {
               <Badge key="badge" variant="outline">
                 Admin Console
               </Badge>,
-              <LanguageControl key="lang" />,
+              <LanguageSwitch key="lang" />,
               <ThemeToggle key="theme" />,
               <AvatarDropdown
                 key="account"
