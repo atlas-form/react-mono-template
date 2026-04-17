@@ -7,6 +7,7 @@ export interface DataTableCopy {
   refreshLabel: string
   resetLabel: string
   totalLabel: string
+  insertLabel: string
   actionsLabel: string
   editLabel: string
   deleteLabel: string
@@ -16,6 +17,7 @@ export interface DataTableCopy {
   confirmDeleteLabel: string
   deleteDialogTitle: string
   deleteDialogDescription: string
+  bulkDeleteDialogDescription: (count: number) => string
   sortAscendingLabel: string
   sortDescendingLabel: string
   clearSortLabel: string
@@ -37,6 +39,7 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     refreshLabel: "Refresh data",
     resetLabel: "Reset filters",
     totalLabel: "Total",
+    insertLabel: "Insert",
     actionsLabel: "Actions",
     editLabel: "Edit",
     deleteLabel: "Delete",
@@ -46,6 +49,8 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     confirmDeleteLabel: "Delete",
     deleteDialogTitle: "Confirm deletion",
     deleteDialogDescription: "This action cannot be undone.",
+    bulkDeleteDialogDescription: (count: number) =>
+      `This action will delete ${count} selected row(s) and cannot be undone.`,
     sortAscendingLabel: "Sort ascending",
     sortDescendingLabel: "Sort descending",
     clearSortLabel: "Clear sort",
@@ -66,6 +71,7 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     refreshLabel: "刷新数据",
     resetLabel: "重置筛选",
     totalLabel: "总数",
+    insertLabel: "新增",
     actionsLabel: "操作",
     editLabel: "编辑",
     deleteLabel: "删除",
@@ -75,6 +81,8 @@ const DATA_TABLE_COPY: Record<SupportedLanguage, DataTableCopy> = {
     confirmDeleteLabel: "确认删除",
     deleteDialogTitle: "确认删除",
     deleteDialogDescription: "该操作无法撤销。",
+    bulkDeleteDialogDescription: (count: number) =>
+      `该操作会删除已选的 ${count} 条数据，且无法撤销。`,
     sortAscendingLabel: "升序排序",
     sortDescendingLabel: "降序排序",
     clearSortLabel: "清除排序",

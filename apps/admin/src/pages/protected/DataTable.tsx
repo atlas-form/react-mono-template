@@ -37,6 +37,9 @@ const customerRows: CustomerRow[] = Array.from({ length: 100 }, (_, index) => ({
 
 interface CustomerTableQuery {
   keyword: string
+  keywordField: "all" | "id" | "name" | "owner"
+  status: "" | CustomerRow["status"]
+  region: "" | CustomerRow["region"]
   createdAt?: DateRangeValue
 }
 
@@ -62,7 +65,14 @@ export default function DataTablePage() {
       const filteredRows = customerRows.filter((row) => {
         const keyword = query.keyword.trim().toLowerCase()
         const owner = owners[Number(row.id.slice(-1)) % owners.length]
-        const searchCandidates = [row.id, row.name, row.region, owner]
+        const searchCandidatesByField = {
+          all: [row.id, row.name, row.region, owner],
+          id: [row.id],
+          name: [row.name],
+          owner: [owner],
+        } as const
+        const searchCandidates =
+          searchCandidatesByField[query.keywordField || "all"]
 
         const matchesKeyword =
           keyword.length === 0 ||
@@ -70,13 +80,24 @@ export default function DataTablePage() {
             candidate.toLowerCase().includes(keyword)
           )
 
+        const matchesStatus =
+          query.status.length === 0 || row.status === query.status
+
+        const matchesRegion =
+          query.region.length === 0 || row.region === query.region
+
         const from = query.createdAt?.from
         const to = query.createdAt?.to
         const matchesCreatedAt =
           (!from || row.createdAt >= startOfDay(from)) &&
           (!to || row.createdAt <= endOfDay(to))
 
-        return matchesKeyword && matchesCreatedAt
+        return (
+          matchesKeyword &&
+          matchesStatus &&
+          matchesRegion &&
+          matchesCreatedAt
+        )
       })
 
       const sortedRows = [...filteredRows].sort((left, right) => {
@@ -246,6 +267,23 @@ export default function DataTablePage() {
         fetchData={fetchData}
         getRowId={(row: CustomerRow) => row.id}
         height="100%"
+        insert={{
+          label: t("datatable.insert.label", "Insert"),
+          title: t("datatable.insert.title", "Create customer"),
+          description: t(
+            "datatable.insert.description",
+            "Fill in the customer basics before saving."
+          ),
+          renderContent: () => (
+            <div className="grid gap-4 py-2">
+              <Input value="New Customer" onValueChange={() => {}} />
+              <Input value="North China" onValueChange={() => {}} />
+            </div>
+          ),
+          onConfirm: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 200))
+          },
+        }}
         bulkDelete={{
           onDelete: async ({ selectedRowKeys }) => {
             void selectedRowKeys
@@ -289,19 +327,71 @@ export default function DataTablePage() {
         initialPageSize={15}
         initialQuery={{
           keyword: "",
+          keywordField: "all",
+          status: "",
+          region: "",
           createdAt: undefined,
         }}
-        queryFields={[
+        selection={{}}
+        builtInQueryFields={[
           {
             key: "keyword",
             type: "search",
             label: t("datatable.fields.keyword", "Keyword"),
             placeholder: t("datatable.searchPlaceholder", "Search customers"),
+            fieldKey: "keywordField",
+            fieldPlaceholder: t("datatable.fields.keywordField", "Search In"),
+            fieldOptions: [
+              {
+                label: t("datatable.fields.keywordFieldAll", "All"),
+                value: "all",
+              },
+              {
+                label: t("datatable.fields.keywordFieldId", "ID"),
+                value: "id",
+              },
+              {
+                label: t("datatable.fields.keywordFieldName", "Name"),
+                value: "name",
+              },
+              {
+                label: t("datatable.fields.keywordFieldOwner", "Owner"),
+                value: "owner",
+              },
+            ],
           },
           {
             key: "createdAt",
             type: "date-range",
             label: t("datatable.fields.createdAt", "Created At"),
+          },
+        ]}
+        queryFields={[
+          {
+            key: "status",
+            type: "select",
+            label: t("datatable.fields.status", "Status"),
+            placeholder: t("datatable.fields.status", "Status"),
+            options: [
+              {
+                label: t("datatable.options.status.active", "Active"),
+                value: "Active",
+              },
+              {
+                label: t("datatable.options.status.paused", "Paused"),
+                value: "Paused",
+              },
+            ],
+          },
+          {
+            key: "region",
+            type: "select",
+            label: t("datatable.fields.region", "Region"),
+            placeholder: t("datatable.fields.region", "Region"),
+            options: regions.map((region) => ({
+              label: region,
+              value: region,
+            })),
           },
         ]}
         pageSizeOptions={[10, 15, 30, 50]}
@@ -338,22 +428,6 @@ export default function DataTablePage() {
               await new Promise((resolve) => setTimeout(resolve, 200))
             },
           },
-          moreItems: [
-            {
-              key: "detail",
-              label: "View detail",
-              onClick: (row) => {
-                console.info("view detail", row.id)
-              },
-            },
-            {
-              key: "duplicate",
-              label: "Duplicate",
-              onClick: (row) => {
-                console.info("duplicate row", row.id)
-              },
-            },
-          ],
         }}
       />
     </div>

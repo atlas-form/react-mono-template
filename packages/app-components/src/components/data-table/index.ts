@@ -8,7 +8,6 @@ export type {
   DataTableColumn,
   DataTableFetchParams,
   DataTableFetchResult,
-  DataTableHeaderActionsContext,
   DataTableLocaleText,
   DataTableProps,
   DataTableQueryField,
@@ -16,7 +15,9 @@ export type {
   DataTableEditActionConfig,
   DataTableRowActionItem,
   DataTableRowActionsConfig,
+  DataTableRowSelectionConfig,
   DataTableSelectOption,
+  DataTableSelectionContext,
   DataTableSortDirection,
   DataTableSortState,
 } from "./data-table"

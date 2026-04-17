@@ -8,6 +8,11 @@
   "welcome": "Welcome to React",
   "description": "This is an example of i18n.",
   "datatable": {
+    "insert": {
+      "label": "Insert",
+      "title": "Create customer",
+      "description": "Fill in the customer basics before saving."
+    },
     "actions": {
       "deleteTitle": "Delete {{name}}?",
       "deleteDescription": "This action will remove customer {{id}} from the current list."
