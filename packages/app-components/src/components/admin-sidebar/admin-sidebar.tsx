@@ -99,6 +99,7 @@ function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
       <SidebarMenuItem>
         <SidebarMenuButton
           active={item.active}
+          variant="primary"
           tooltip={typeof item.label === "string" ? item.label : undefined}
           onClick={item.onSelect}
         >
@@ -116,6 +117,7 @@ function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
     <SidebarMenuItem>
       <SidebarMenuButton
         active={item.active || hasActiveChild}
+        variant="primary"
         disclosure
         disclosureOpen={open}
         tooltip={typeof item.label === "string" ? item.label : undefined}

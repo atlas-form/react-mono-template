@@ -28,7 +28,7 @@ import {
 export type SidebarSide = "left" | "right"
 export type SidebarVariant = "sidebar" | "floating" | "inset"
 export type SidebarCollapsible = "offcanvas" | "icon" | "none"
-export type SidebarMenuButtonVariant = "default" | "outline"
+export type SidebarMenuButtonVariant = "default" | "primary" | "outline"
 export type SidebarMenuButtonSize = "default" | "sm" | "lg"
 export type SidebarMenuSubButtonSize = "sm" | "md"
 
