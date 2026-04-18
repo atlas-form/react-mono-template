@@ -9,14 +9,20 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarInput,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSkeleton,
   SidebarProvider,
+  SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
   Tree,
@@ -104,6 +110,7 @@ function getInitialLanguage(): AppLanguage {
 
 export function App() {
   const [language, setLanguage] = useState<AppLanguage>(getInitialLanguage)
+  const [sidebarQuery, setSidebarQuery] = useState("")
   const [treeValue, setTreeValue] = useState<string[]>([
     "node-1",
     "node-1-child-1",
@@ -187,28 +194,53 @@ export function App() {
                 <div className="flex min-h-[24rem] w-full">
                   <Sidebar collapsible="icon">
                     <SidebarHeader>
-                      <div className="px-2 py-1 text-sm font-semibold">Workspace</div>
+                      <div className="space-y-3 px-2 py-1">
+                        <div className="text-sm font-semibold">Workspace</div>
+                        <SidebarInput
+                          value={sidebarQuery}
+                          placeholder="Search"
+                          onValueChange={setSidebarQuery}
+                        />
+                      </div>
                     </SidebarHeader>
                     <SidebarSeparator />
                     <SidebarContent>
                       <SidebarGroup>
-                        <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                        <div className="relative">
+                          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                          <SidebarGroupAction
+                            ariaLabel="Add navigation item"
+                            onClick={() => undefined}
+                          >
+                            <span aria-hidden="true">+</span>
+                          </SidebarGroupAction>
+                        </div>
                         <SidebarGroupContent>
                           <SidebarMenu>
                             <SidebarMenuItem>
                               <SidebarMenuButton active tooltip="Overview">
                                 Overview
                               </SidebarMenuButton>
+                              <SidebarMenuBadge>12</SidebarMenuBadge>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                               <SidebarMenuButton tooltip="Orders">
                                 Orders
                               </SidebarMenuButton>
+                              <SidebarMenuAction
+                                ariaLabel="Collapse orders"
+                                showOnHover
+                                onClick={() => undefined}
+                              >
+                                <span aria-hidden="true">-</span>
+                              </SidebarMenuAction>
                             </SidebarMenuItem>
+                            <SidebarMenuSkeleton showIcon />
                           </SidebarMenu>
                         </SidebarGroupContent>
                       </SidebarGroup>
                     </SidebarContent>
+                    <SidebarRail />
                   </Sidebar>
                   <SidebarInset>
                     <div className="flex h-full min-h-[24rem] flex-1 flex-col gap-4 p-4">

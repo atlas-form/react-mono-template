@@ -1,20 +1,26 @@
-import type { ReactNode } from "react"
+import type { ChangeEvent, MouseEvent, ReactNode } from "react"
 import {
   Sidebar as CoreSidebar,
   SidebarContent as CoreSidebarContent,
   SidebarFooter as CoreSidebarFooter,
   SidebarGroup as CoreSidebarGroup,
+  SidebarGroupAction as CoreSidebarGroupAction,
   SidebarGroupContent as CoreSidebarGroupContent,
   SidebarGroupLabel as CoreSidebarGroupLabel,
   SidebarHeader as CoreSidebarHeader,
+  SidebarInput as CoreSidebarInput,
   SidebarInset as CoreSidebarInset,
   SidebarMenu as CoreSidebarMenu,
+  SidebarMenuAction as CoreSidebarMenuAction,
+  SidebarMenuBadge as CoreSidebarMenuBadge,
   SidebarMenuButton as CoreSidebarMenuButton,
   SidebarMenuItem as CoreSidebarMenuItem,
+  SidebarMenuSkeleton as CoreSidebarMenuSkeleton,
   SidebarMenuSub as CoreSidebarMenuSub,
   SidebarMenuSubButton as CoreSidebarMenuSubButton,
   SidebarMenuSubItem as CoreSidebarMenuSubItem,
   SidebarProvider as CoreSidebarProvider,
+  SidebarRail as CoreSidebarRail,
   SidebarSeparator as CoreSidebarSeparator,
   SidebarTrigger as CoreSidebarTrigger,
 } from "@workspace/ui-core/components/sidebar"
@@ -44,8 +50,20 @@ export interface SidebarTriggerProps {
   ariaLabel?: string
 }
 
+export interface SidebarRailProps {
+  ariaLabel?: string
+}
+
 export interface SidebarInsetProps {
   children: ReactNode
+}
+
+export interface SidebarInputProps {
+  value?: string
+  defaultValue?: string
+  placeholder?: string
+  disabled?: boolean
+  onValueChange?: (value: string) => void
 }
 
 export interface SidebarHeaderProps {
@@ -68,6 +86,13 @@ export interface SidebarGroupLabelProps {
   children: ReactNode
 }
 
+export interface SidebarGroupActionProps {
+  children: ReactNode
+  ariaLabel: string
+  disabled?: boolean
+  onClick?: () => void
+}
+
 export interface SidebarGroupContentProps {
   children: ReactNode
 }
@@ -88,6 +113,22 @@ export interface SidebarMenuButtonProps {
   variant?: SidebarMenuButtonVariant
   size?: SidebarMenuButtonSize
   onClick?: () => void
+}
+
+export interface SidebarMenuActionProps {
+  children: ReactNode
+  ariaLabel: string
+  disabled?: boolean
+  showOnHover?: boolean
+  onClick?: () => void
+}
+
+export interface SidebarMenuBadgeProps {
+  children: ReactNode
+}
+
+export interface SidebarMenuSkeletonProps {
+  showIcon?: boolean
 }
 
 export interface SidebarMenuSubProps {
@@ -142,8 +183,36 @@ export function SidebarTrigger({
   return <CoreSidebarTrigger aria-label={ariaLabel} />
 }
 
+export function SidebarRail({
+  ariaLabel = "Toggle sidebar",
+}: SidebarRailProps) {
+  return <CoreSidebarRail aria-label={ariaLabel} />
+}
+
 export function SidebarInset({ children }: SidebarInsetProps) {
   return <CoreSidebarInset>{children}</CoreSidebarInset>
+}
+
+export function SidebarInput({
+  value,
+  defaultValue,
+  placeholder,
+  disabled = false,
+  onValueChange,
+}: SidebarInputProps) {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onValueChange?.(event.target.value)
+  }
+
+  return (
+    <CoreSidebarInput
+      value={value}
+      defaultValue={defaultValue}
+      placeholder={placeholder}
+      disabled={disabled}
+      onChange={handleChange}
+    />
+  )
 }
 
 export function SidebarHeader({ children }: SidebarHeaderProps) {
@@ -168,6 +237,28 @@ export function SidebarGroup({ children }: SidebarGroupProps) {
 
 export function SidebarGroupLabel({ children }: SidebarGroupLabelProps) {
   return <CoreSidebarGroupLabel>{children}</CoreSidebarGroupLabel>
+}
+
+export function SidebarGroupAction({
+  children,
+  ariaLabel,
+  disabled = false,
+  onClick,
+}: SidebarGroupActionProps) {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    onClick?.()
+  }
+
+  return (
+    <CoreSidebarGroupAction
+      aria-label={ariaLabel}
+      disabled={disabled}
+      onClick={handleClick}
+    >
+      {children}
+    </CoreSidebarGroupAction>
+  )
 }
 
 export function SidebarGroupContent({ children }: SidebarGroupContentProps) {
@@ -203,6 +294,40 @@ export function SidebarMenuButton({
       {children}
     </CoreSidebarMenuButton>
   )
+}
+
+export function SidebarMenuAction({
+  children,
+  ariaLabel,
+  disabled = false,
+  showOnHover = false,
+  onClick,
+}: SidebarMenuActionProps) {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    onClick?.()
+  }
+
+  return (
+    <CoreSidebarMenuAction
+      aria-label={ariaLabel}
+      disabled={disabled}
+      showOnHover={showOnHover}
+      onClick={handleClick}
+    >
+      {children}
+    </CoreSidebarMenuAction>
+  )
+}
+
+export function SidebarMenuBadge({ children }: SidebarMenuBadgeProps) {
+  return <CoreSidebarMenuBadge>{children}</CoreSidebarMenuBadge>
+}
+
+export function SidebarMenuSkeleton({
+  showIcon = false,
+}: SidebarMenuSkeletonProps) {
+  return <CoreSidebarMenuSkeleton showIcon={showIcon} />
 }
 
 export function SidebarMenuSub({ children }: SidebarMenuSubProps) {
