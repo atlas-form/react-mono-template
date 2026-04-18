@@ -11,13 +11,13 @@ export { LanguageSwitch } from "./components/language-switch"
 export type { LanguageSwitchProps } from "./components/language-switch"
 export { ThemeToggle } from "./components/theme-toggle"
 export type { ThemeToggleProps } from "./components/theme-toggle"
-export { Sidebar } from "./components/sidebar"
+export { AdminSidebar } from "./components/admin-sidebar"
 export type {
-  SidebarNavEntry,
-  SidebarProps,
-  SidebarSection,
-  SidebarSubEntry,
-} from "./components/sidebar"
+  AdminSidebarNavEntry,
+  AdminSidebarProps,
+  AdminSidebarSection,
+  AdminSidebarSubEntry,
+} from "./components/admin-sidebar"
 export { DatePicker } from "./components/date-time-picker"
 export { DateTimePicker } from "./components/date-time-picker"
 export { DateRangePicker } from "./components/date-time-picker"

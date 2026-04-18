@@ -24,42 +24,42 @@ import {
 } from "@workspace/ui-core/components/sidebar"
 import { TooltipProvider } from "@workspace/ui-core/components/tooltip"
 
-export interface SidebarSubEntry {
+export interface AdminSidebarSubEntry {
   label: ReactNode
   href: string
   active?: boolean
   onSelect?: () => void
 }
 
-export interface SidebarNavEntry {
+export interface AdminSidebarNavEntry {
   label: ReactNode
   href?: string
   active?: boolean
   icon?: ReactNode
   onSelect?: () => void
-  subItems?: SidebarSubEntry[]
+  subItems?: AdminSidebarSubEntry[]
 }
 
-export interface SidebarSection {
+export interface AdminSidebarSection {
   label: ReactNode
-  items: SidebarNavEntry[]
+  items: AdminSidebarNavEntry[]
 }
 
-export interface SidebarProps {
+export interface AdminSidebarProps {
   brandEyebrow?: ReactNode
   brandTitle: ReactNode
   brandDescription?: ReactNode
-  sections: SidebarSection[]
+  sections: AdminSidebarSection[]
   children: ReactNode
 }
 
-export function Sidebar({
+export function AdminSidebar({
   brandEyebrow,
   brandTitle,
   brandDescription,
   sections,
   children,
-}: SidebarProps) {
+}: AdminSidebarProps) {
   return (
     <TooltipProvider>
       <SidebarProvider
@@ -123,7 +123,7 @@ export function Sidebar({
   )
 }
 
-function SidebarNavRow({ item }: { item: SidebarNavEntry }) {
+function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
   const hasSubItems = Boolean(item.subItems?.length)
 
   if (!hasSubItems) {
