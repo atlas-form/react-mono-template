@@ -20,6 +20,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarProvider,
+  SidebarRail,
   SidebarSeparator,
   TooltipProvider,
 } from "@workspace/ui-components"
@@ -138,6 +139,8 @@ export function AdminSidebar({
               </SidebarFooter>
             </>
           ) : null}
+
+          <SidebarRail />
         </Sidebar>
 
         <SidebarInset>{children}</SidebarInset>
@@ -159,7 +162,9 @@ function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
           onClick={item.onSelect}
         >
           {item.icon}
-          {item.label}
+          <span className="truncate group-data-[collapsible=icon]:hidden">
+            {item.label}
+          </span>
         </SidebarMenuButton>
       </SidebarMenuItem>
     )
@@ -179,7 +184,9 @@ function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
         onClick={() => setOpen((current) => !current)}
       >
         {item.icon}
-        {item.label}
+        <span className="truncate group-data-[collapsible=icon]:hidden">
+          {item.label}
+        </span>
       </SidebarMenuButton>
 
       {open ? (

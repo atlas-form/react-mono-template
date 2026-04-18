@@ -72,7 +72,7 @@ const navItems: AdminNavItem[] = [
     ],
   },
   {
-    label: "DataTable",
+    label: "DataTable 超长菜单名称显示效果检查示例项目",
     path: "/datatable",
     icon: <TableProperties />,
     matcher: (pathname: string) => pathname.startsWith("/datatable"),

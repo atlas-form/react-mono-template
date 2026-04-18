@@ -75,11 +75,29 @@ import type {
 } from "./sidebar.types"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
+const SIDEBAR_WIDTH_COOKIE_NAME = "sidebar_width"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3.5rem"
+const SIDEBAR_WIDTH_MIN = "13.5rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
+function parseRemSize(value: string) {
+  return Number.parseFloat(value)
+}
+
+function clampValue(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
+}
+
+function getRootFontSize() {
+  if (typeof window === "undefined") return 16
+
+  return Number.parseFloat(
+    window.getComputedStyle(document.documentElement).fontSize
+  ) || 16
+}
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -89,6 +107,10 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  sidebarWidth: number
+  sidebarWidthMin: number
+  sidebarWidthMax: number
+  setSidebarWidth: (width: number) => void
 }
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
@@ -114,9 +136,44 @@ function SidebarProvider({
 }: SidebarProviderProps) {
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
+  const [sidebarWidth, setSidebarWidthState] = React.useState(() => {
+    const rootFontSize = getRootFontSize()
+    return parseRemSize(SIDEBAR_WIDTH) * rootFontSize
+  })
 
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
+  const sidebarWidthMin = React.useMemo(
+    () => parseRemSize(SIDEBAR_WIDTH_MIN) * getRootFontSize(),
+    []
+  )
+  const sidebarWidthMax = React.useMemo(
+    () => parseRemSize(SIDEBAR_WIDTH) * getRootFontSize(),
+    []
+  )
+  const setSidebarWidth = React.useCallback(
+    (width: number) => {
+      const nextWidth = clampValue(width, sidebarWidthMin, sidebarWidthMax)
+      setSidebarWidthState(nextWidth)
+      document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${nextWidth}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    },
+    [sidebarWidthMax, sidebarWidthMin]
+  )
+
+  React.useEffect(() => {
+    const savedWidth = document.cookie
+      .split("; ")
+      .find((entry) => entry.startsWith(`${SIDEBAR_WIDTH_COOKIE_NAME}=`))
+      ?.split("=")[1]
+
+    if (!savedWidth) return
+
+    const parsedWidth = Number.parseFloat(savedWidth)
+    if (Number.isNaN(parsedWidth)) return
+
+    setSidebarWidth(parsedWidth)
+  }, [setSidebarWidth])
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
@@ -161,8 +218,24 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      sidebarWidth,
+      sidebarWidthMin,
+      sidebarWidthMax,
+      setSidebarWidth,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+    [
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+      sidebarWidth,
+      sidebarWidthMin,
+      sidebarWidthMax,
+      setSidebarWidth,
+    ]
   )
 
   if (mode === "headless") {
@@ -181,7 +254,7 @@ function SidebarProvider({
         data-slot="sidebar-wrapper"
         style={
           {
-            "--sidebar-width": SIDEBAR_WIDTH,
+            "--sidebar-width": `${sidebarWidth}px`,
             "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
             ...style,
           } as React.CSSProperties
@@ -366,7 +439,72 @@ function SidebarTrigger({
 }
 
 function SidebarRail({ mode = DEFAULT_MODE, className, onClick, ...props }: SidebarRailProps) {
-  const { toggleSidebar } = useSidebar()
+  const {
+    isMobile,
+    open,
+    setOpen,
+    sidebarWidth,
+    sidebarWidthMin,
+    sidebarWidthMax,
+    setSidebarWidth,
+    toggleSidebar,
+  } = useSidebar()
+  const suppressClickRef = React.useRef(false)
+
+  const handlePointerDown = React.useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      if (mode === "headless" || isMobile) return
+
+      event.preventDefault()
+
+      const side =
+        event.currentTarget.closest<HTMLElement>("[data-side]")?.dataset.side ===
+        "right"
+          ? "right"
+          : "left"
+      const startX = event.clientX
+      const startWidth = open ? sidebarWidth : sidebarWidthMin
+      suppressClickRef.current = false
+
+      if (!open) {
+        setOpen(true)
+      }
+
+      const handlePointerMove = (moveEvent: PointerEvent) => {
+        const delta = moveEvent.clientX - startX
+        const signedDelta = side === "right" ? -delta : delta
+        const nextWidth = clampValue(
+          startWidth + signedDelta,
+          sidebarWidthMin,
+          sidebarWidthMax
+        )
+
+        if (Math.abs(nextWidth - startWidth) > 2) {
+          suppressClickRef.current = true
+        }
+
+        setSidebarWidth(nextWidth)
+      }
+
+      const handlePointerUp = () => {
+        window.removeEventListener("pointermove", handlePointerMove)
+        window.removeEventListener("pointerup", handlePointerUp)
+      }
+
+      window.addEventListener("pointermove", handlePointerMove)
+      window.addEventListener("pointerup", handlePointerUp)
+    },
+    [
+      isMobile,
+      mode,
+      open,
+      setOpen,
+      setSidebarWidth,
+      sidebarWidth,
+      sidebarWidthMax,
+      sidebarWidthMin,
+    ]
+  )
 
   if (mode === "headless") {
     return (
@@ -391,9 +529,14 @@ function SidebarRail({ mode = DEFAULT_MODE, className, onClick, ...props }: Side
       aria-label="Toggle Sidebar"
       tabIndex={-1}
       onClick={(event) => {
+        if (suppressClickRef.current) {
+          suppressClickRef.current = false
+          return
+        }
         onClick?.(event)
         toggleSidebar()
       }}
+      onPointerDown={handlePointerDown}
       title="Toggle Sidebar"
       className={cn(
         sidebarRailClassName,
