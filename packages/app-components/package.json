@@ -11,11 +11,11 @@
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
-    "date-fns": "^4.1.0",
+    "date-fns": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-day-picker": "^9.14.0",
+    "react-day-picker": "catalog:",
     "react-i18next": "catalog:"
   },
   "devDependencies": {

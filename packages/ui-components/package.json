@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@workspace/shared-i18n": "workspace:*",
-    "date-fns": "^4.1.0",
+    "date-fns": "catalog:",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-theme": "workspace:*",
     "react": "catalog:",
