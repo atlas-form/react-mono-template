@@ -116,12 +116,13 @@ function SidebarNavRow({ item }: { item: AdminSidebarNavEntry }) {
     <SidebarMenuItem>
       <SidebarMenuButton
         active={item.active || hasActiveChild}
+        disclosure
+        disclosureOpen={open}
         tooltip={typeof item.label === "string" ? item.label : undefined}
         onClick={() => setOpen((current) => !current)}
       >
         {item.icon}
         {item.label}
-        {open ? "收起" : "展开"}
       </SidebarMenuButton>
 
       {open ? (

@@ -109,6 +109,8 @@ export interface SidebarMenuButtonProps {
   children: ReactNode
   active?: boolean
   disabled?: boolean
+  disclosure?: boolean
+  disclosureOpen?: boolean
   tooltip?: string
   variant?: SidebarMenuButtonVariant
   size?: SidebarMenuButtonSize
@@ -277,6 +279,8 @@ export function SidebarMenuButton({
   children,
   active = false,
   disabled = false,
+  disclosure = false,
+  disclosureOpen = false,
   tooltip,
   variant = "default",
   size = "default",
@@ -286,6 +290,8 @@ export function SidebarMenuButton({
     <CoreSidebarMenuButton
       isActive={active}
       disabled={disabled}
+      disclosure={disclosure}
+      disclosureOpen={disclosureOpen}
       tooltip={tooltip}
       variant={variant}
       size={size}

@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 
 import { useIsMobile } from "../../hooks/use-mobile"
 import { DEFAULT_MODE } from "../../lib/component-mode"
-import { PanelLeftIcon } from "../../lib/icon-slots"
+import { ChevronRightIcon, PanelLeftIcon } from "../../lib/icon-slots"
 import { cn } from "../../lib/utils"
 import { Button } from "../button"
 import { Input } from "../input"
@@ -603,6 +603,8 @@ function SidebarMenuButton({
   mode = DEFAULT_MODE,
   asChild = false,
   isActive = false,
+  disclosure = false,
+  disclosureOpen = false,
   variant = "default",
   size = "default",
   tooltip,
@@ -644,9 +646,23 @@ function SidebarMenuButton({
       data-sidebar="menu-button"
       data-size={size}
       data-active={isActive}
+      data-disclosure={disclosure}
+      data-disclosure-open={disclosureOpen}
+      aria-expanded={disclosure ? disclosureOpen : undefined}
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
       {...props}
-    />
+    >
+      {props.children}
+      {disclosure ? (
+        <ChevronRightIcon
+          aria-hidden="true"
+          className={cn(
+            "ml-auto shrink-0 transition-transform duration-200 ease-out group-data-[collapsible=icon]:hidden",
+            disclosureOpen ? "rotate-90" : undefined
+          )}
+        />
+      ) : null}
+    </Comp>
   )
 
   if (!tooltip) {
