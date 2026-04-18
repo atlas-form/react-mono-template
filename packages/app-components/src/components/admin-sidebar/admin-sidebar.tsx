@@ -82,7 +82,7 @@ export function AdminSidebar({
       <SidebarProvider defaultOpen>
         <Sidebar collapsible="icon">
           <SidebarHeader>
-            <div className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
+            <div className="flex items-center gap-2 group-data-[collapsible=icon]:gap-0">
               <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
                 {typeof brandTitle === "string" ? brandTitle.charAt(0).toUpperCase() : "W"}
               </div>
