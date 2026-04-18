@@ -49,7 +49,8 @@ export const sidebarInputClassName = "h-8 w-full bg-background shadow-none"
 
 export const sidebarHeaderClassName = "flex flex-col gap-2 p-2"
 
-export const sidebarFooterClassName = "flex flex-col gap-2 p-2"
+export const sidebarFooterClassName =
+  "flex flex-col gap-2 p-2 group-data-[collapsible=icon]:items-center"
 
 export const sidebarSeparatorClassName =
   "mx-2 bg-sidebar-border data-horizontal:w-auto"
