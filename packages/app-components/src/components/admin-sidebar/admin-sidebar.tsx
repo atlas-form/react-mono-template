@@ -1,5 +1,11 @@
 import { useState, type ReactNode } from "react"
 import {
+  AvatarDropdown,
+  AvatarDropdownItem,
+  type AvatarDropdownAction,
+} from "../avatar-dropdown"
+import {
+  SidebarFooter,
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -44,6 +50,21 @@ export interface AdminSidebarProps {
   brandTitle: ReactNode
   brandDescription?: ReactNode
   sections: AdminSidebarSection[]
+  footerAccount?: {
+    avatarSrc?: string
+    avatarAlt: string
+    avatarFallback: ReactNode
+    displayName: ReactNode
+    displayId: ReactNode
+    actions?: Array<{
+      icon?: ReactNode
+      label: ReactNode
+      onSelect?: () => void
+      href?: string
+      disabled?: boolean
+    }>
+    logout?: AvatarDropdownAction
+  }
   children: ReactNode
 }
 
@@ -52,6 +73,7 @@ export function AdminSidebar({
   brandTitle,
   brandDescription,
   sections,
+  footerAccount,
   children,
 }: AdminSidebarProps) {
   return (
@@ -83,6 +105,34 @@ export function AdminSidebar({
               </SidebarGroup>
             ))}
           </SidebarContent>
+
+          {footerAccount ? (
+            <>
+              <SidebarSeparator />
+              <SidebarFooter>
+                <AvatarDropdown
+                  triggerVariant="sidebar"
+                  avatarAlt={footerAccount.avatarAlt}
+                  avatarSrc={footerAccount.avatarSrc}
+                  avatarFallback={footerAccount.avatarFallback}
+                  displayName={footerAccount.displayName}
+                  displayId={footerAccount.displayId}
+                  logout={footerAccount.logout}
+                >
+                  {footerAccount.actions?.map((action, index) => (
+                    <AvatarDropdownItem
+                      key={index}
+                      icon={action.icon}
+                      label={action.label}
+                      onSelect={action.onSelect}
+                      href={action.href}
+                      disabled={action.disabled}
+                    />
+                  ))}
+                </AvatarDropdown>
+              </SidebarFooter>
+            </>
+          ) : null}
         </Sidebar>
 
         <SidebarInset>{children}</SidebarInset>

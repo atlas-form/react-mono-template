@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { LogOut } from "lucide-react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ export interface AvatarDropdownProps {
   displayId: ReactNode
   children?: ReactNode
   logout?: AvatarDropdownAction
+  triggerVariant?: "icon" | "sidebar"
 }
 
 function handleAction(action?: { href?: string; onSelect?: () => void }) {
@@ -85,30 +86,63 @@ export function AvatarDropdown({
   displayId,
   children,
   logout,
+  triggerVariant = "icon",
 }: AvatarDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-[#121821] p-0.5 outline-hidden transition hover:border-white/55 focus-visible:ring-2 focus-visible:ring-(--app-primary)"
-          aria-label="Open account menu"
-        >
-          <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
-            {avatarSrc ? (
-              <img
-                src={avatarSrc}
-                alt={avatarAlt}
-                className="block h-6 w-6 rounded-full object-cover"
-              />
-            ) : null}
-            {!avatarSrc ? (
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1c2431] text-[10px] font-semibold text-white">
-                {avatarFallback}
+        {triggerVariant === "sidebar" ? (
+          <button
+            type="button"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-left outline-hidden transition hover:bg-[var(--surface-hover)] focus-visible:ring-2 focus-visible:ring-(--app-primary)"
+            aria-label="Open account menu"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
+              {avatarSrc ? (
+                <img
+                  src={avatarSrc}
+                  alt={avatarAlt}
+                  className="block h-10 w-10 rounded-full object-cover"
+                />
+              ) : null}
+              {!avatarSrc ? (
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1c2431] text-sm font-semibold text-white">
+                  {avatarFallback}
+                </span>
+              ) : null}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold text-foreground">
+                {displayName}
               </span>
-            ) : null}
-          </span>
-        </button>
+              <span className="block truncate text-xs text-muted-foreground">
+                {displayId}
+              </span>
+            </span>
+            <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/35 bg-[#121821] p-0.5 outline-hidden transition hover:border-white/55 focus-visible:ring-2 focus-visible:ring-(--app-primary)"
+            aria-label="Open account menu"
+          >
+            <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
+              {avatarSrc ? (
+                <img
+                  src={avatarSrc}
+                  alt={avatarAlt}
+                  className="block h-6 w-6 rounded-full object-cover"
+                />
+              ) : null}
+              {!avatarSrc ? (
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1c2431] text-[10px] font-semibold text-white">
+                  {avatarFallback}
+                </span>
+              ) : null}
+            </span>
+          </button>
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

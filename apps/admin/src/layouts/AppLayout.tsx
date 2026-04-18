@@ -15,8 +15,6 @@ import {
   Users,
 } from "lucide-react"
 import {
-  AvatarDropdown,
-  AvatarDropdownItem,
   LanguageSwitch,
   ThemeToggle,
 } from "@workspace/app-components"
@@ -131,6 +129,34 @@ export default function AppLayout() {
           brandTitle="Admin"
           brandDescription="Enterprise"
           sections={sections}
+          footerAccount={{
+            avatarAlt: user?.name ?? "Admin",
+            avatarSrc: user?.avatar,
+            avatarFallback: (user?.name ?? "A").charAt(0).toUpperCase(),
+            displayName: user?.name ?? "Admin",
+            displayId: user?.email ?? "workspace-admin@example.com",
+            logout: {
+              label: "Log out",
+              onSelect: handleLogout,
+            },
+            actions: [
+              {
+                icon: <BadgeCheck />,
+                label: "Account",
+                onSelect: () => navigate("/settings"),
+              },
+              {
+                icon: <CreditCard />,
+                label: "Billing",
+                onSelect: () => navigate("/settings"),
+              },
+              {
+                icon: <Bell />,
+                label: "Notifications",
+                onSelect: () => navigate("/settings"),
+              },
+            ],
+          }}
         >
           <TopBar
             title={currentSection.label}
@@ -140,34 +166,6 @@ export default function AppLayout() {
               </Badge>,
               <LanguageSwitch key="lang" />,
               <ThemeToggle key="theme" />,
-              <AvatarDropdown
-                key="account"
-                avatarAlt={user?.name ?? "Admin"}
-                avatarSrc={user?.avatar}
-                avatarFallback={(user?.name ?? "A").charAt(0).toUpperCase()}
-                displayName={user?.name ?? "Admin"}
-                displayId={user?.email ?? "workspace-admin@example.com"}
-                logout={{
-                  label: "Log out",
-                  onSelect: handleLogout,
-                }}
-              >
-                <AvatarDropdownItem
-                  icon={<BadgeCheck />}
-                  label="Account"
-                  onSelect={() => navigate("/settings")}
-                />
-                <AvatarDropdownItem
-                  icon={<CreditCard />}
-                  label="Billing"
-                  onSelect={() => navigate("/settings")}
-                />
-                <AvatarDropdownItem
-                  icon={<Bell />}
-                  label="Notifications"
-                  onSelect={() => navigate("/settings")}
-                />
-              </AvatarDropdown>,
             ]}
           />
           <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
