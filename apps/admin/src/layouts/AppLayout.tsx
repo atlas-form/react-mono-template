@@ -169,7 +169,7 @@ export default function AppLayout() {
             ]}
           />
           <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
-            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden border border-border">
+            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
               <Outlet />
             </div>
           </div>
