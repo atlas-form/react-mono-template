@@ -1,8 +1,8 @@
 import { Checkbox as CoreCheckbox } from "@workspace/ui-core/components/checkbox"
 
 export interface CheckboxProps {
-  checked: boolean
-  onCheckedChange?: (checked: boolean) => void
+  checked: boolean | "indeterminate"
+  onCheckedChange?: (checked: boolean | "indeterminate") => void
   disabled?: boolean
 }
 
@@ -15,9 +15,7 @@ export function Checkbox({
     <CoreCheckbox
       checked={checked}
       disabled={disabled}
-      onCheckedChange={
-        onCheckedChange ? (value) => onCheckedChange(value === true) : undefined
-      }
+      onCheckedChange={onCheckedChange}
     />
   )
 }

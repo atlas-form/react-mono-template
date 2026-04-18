@@ -1,0 +1,1176 @@
+import { useCallback, useMemo, useState } from "react"
+import {
+  BookMarked,
+  ClipboardList,
+  Filter,
+  PencilLine,
+  Settings2,
+  Sparkles,
+  TableProperties,
+  Trash2,
+} from "lucide-react"
+import {
+  DataTable,
+  type DataTableBuiltInQueryField,
+  type DateRangeValue,
+  type DataTableColumn,
+  type DataTableFetchResult,
+  type DataTableQueryField,
+  type DataTableSortState,
+} from "@workspace/app-components"
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  Separator,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@workspace/ui-components"
+
+type ScenarioPreset = "minimal" | "operations" | "audit"
+
+interface CustomerRow {
+  id: string
+  name: string
+  tier: "Enterprise" | "Growth" | "Starter"
+  status: "Active" | "Paused" | "Review"
+  region: string
+  owner: string
+  channel: string
+  industry: string
+  createdAt: Date
+  renewalAt: Date
+  contractValue: number
+  usageScore: number
+  lastActiveAt: Date
+}
+
+interface TableQuery {
+  keyword: string
+  keywordField: "all" | "id" | "name" | "owner"
+  status: "" | CustomerRow["status"]
+  region: "" | CustomerRow["region"]
+  owner: "" | CustomerRow["owner"]
+  createdAt?: DateRangeValue
+}
+
+interface FeatureState {
+  selection: boolean
+  insert: boolean
+  bulkUpdate: boolean
+  bulkDelete: boolean
+  rowActions: boolean
+  keywordSearch: boolean
+  advancedFilters: boolean
+  stickyLeft: boolean
+  stickyRight: boolean
+  denseColumns: boolean
+}
+
+const REGIONS = ["North China", "East China", "South China", "West China"] as const
+const OWNERS = ["Alice", "Bob", "Cathy", "David"] as const
+const CHANNELS = ["Direct", "Partner", "Online", "Field"] as const
+const INDUSTRIES = ["Retail", "Finance", "Education", "Manufacturing"] as const
+const TIERS = ["Enterprise", "Growth", "Starter"] as const
+const STATUSES = ["Active", "Paused", "Review"] as const
+
+const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
+  minimal: {
+    selection: false,
+    insert: false,
+    bulkUpdate: false,
+    bulkDelete: false,
+    rowActions: false,
+    keywordSearch: true,
+    advancedFilters: false,
+    stickyLeft: false,
+    stickyRight: false,
+    denseColumns: false,
+  },
+  operations: {
+    selection: true,
+    insert: true,
+    bulkUpdate: true,
+    bulkDelete: false,
+    rowActions: true,
+    keywordSearch: true,
+    advancedFilters: true,
+    stickyLeft: true,
+    stickyRight: true,
+    denseColumns: false,
+  },
+  audit: {
+    selection: true,
+    insert: false,
+    bulkUpdate: false,
+    bulkDelete: true,
+    rowActions: true,
+    keywordSearch: true,
+    advancedFilters: true,
+    stickyLeft: true,
+    stickyRight: true,
+    denseColumns: true,
+  },
+}
+
+const PRESET_COPY: Record<
+  ScenarioPreset,
+  { title: string; summary: string; badge: string }
+> = {
+  minimal: {
+    title: "基础列表",
+    summary: "只保留搜索、分页和基础列，适合后台首版或轻量组件页。",
+    badge: "Starter",
+  },
+  operations: {
+    title: "运营后台",
+    summary: "开启筛选、批量修改、插入和行操作，适合日常业务操作台。",
+    badge: "Recommended",
+  },
+  audit: {
+    title: "审计宽表",
+    summary: "强调宽表、冻结列和删除能力，适合稽核、报表和历史追踪页面。",
+    badge: "Wide Table",
+  },
+}
+
+const FIELD_PLAYBOOK = [
+  {
+    title: "基础必填",
+    description:
+      "`columns`、`fetchData`、`getRowId` 是最小闭环。只要这三个完整，表格就能加载、分页和排序。",
+  },
+  {
+    title: "查询区域",
+    description:
+      "`builtInQueryFields` 适合搜索框和日期范围，`queryFields` 适合状态、归属人、区域这类业务筛选。",
+  },
+  {
+    title: "操作能力",
+    description:
+      "`insert`、`bulkUpdate`、`bulkDelete`、`rowActions` 分别覆盖新增、批量处理、批量删除和单行操作。",
+  },
+  {
+    title: "宽表体验",
+    description:
+      "`fixedLeftColumns` 和 `fixedRightColumns` 用来冻结关键列。字段一多，就应该把标识列和操作列固定住。",
+  },
+]
+
+const INITIAL_QUERY: TableQuery = {
+  keyword: "",
+  keywordField: "all",
+  status: "",
+  region: "",
+  owner: "",
+  createdAt: undefined,
+}
+
+export default function DataTableGuidePage() {
+  const [preset, setPreset] = useState<ScenarioPreset>("operations")
+  const [features, setFeatures] = useState<FeatureState>(
+    PRESET_FEATURES.operations
+  )
+  const [rows, setRows] = useState<CustomerRow[]>(() => createCustomerRows())
+  const [insertDraft, setInsertDraft] = useState({
+    name: "New Workspace Customer",
+    region: "East China",
+  })
+  const [activeTab, setActiveTab] = useState("live")
+
+  const applyPreset = (nextPreset: ScenarioPreset) => {
+    setPreset(nextPreset)
+    setFeatures(PRESET_FEATURES[nextPreset])
+  }
+
+  const setFeature = (key: keyof FeatureState, value: boolean) => {
+    setFeatures((current) => ({
+      ...current,
+      [key]: value,
+      selection:
+        key === "selection"
+          ? value
+          : key === "bulkUpdate" || key === "bulkDelete"
+            ? value || current.selection
+            : current.selection,
+    }))
+  }
+
+  const columns = useMemo<readonly DataTableColumn<CustomerRow>[]>(() => {
+    const baseColumns: DataTableColumn<CustomerRow>[] = [
+      {
+        key: "id",
+        header: "客户 ID",
+        width: 120,
+        sortable: true,
+        renderCell: (row) => row.id,
+      },
+      {
+        key: "name",
+        header: "客户名称",
+        width: 220,
+        sortable: true,
+        renderCell: (row) => (
+          <div className="space-y-1">
+            <div className="font-medium">{row.name}</div>
+            <div className="text-xs text-(--app-muted-text)">{row.owner}</div>
+          </div>
+        ),
+      },
+      {
+        key: "status",
+        header: "状态",
+        width: 120,
+        sortable: true,
+        renderCell: (row) => (
+          <Badge variant={resolveStatusVariant(row.status)}>{row.status}</Badge>
+        ),
+      },
+      {
+        key: "tier",
+        header: "层级",
+        width: 120,
+        sortable: true,
+        renderCell: (row) => row.tier,
+      },
+      {
+        key: "region",
+        header: "区域",
+        width: 140,
+        sortable: true,
+        renderCell: (row) => row.region,
+      },
+      {
+        key: "contractValue",
+        header: "合同金额",
+        width: 140,
+        sortable: true,
+        renderCell: (row) => `¥${row.contractValue.toLocaleString()}`,
+      },
+      {
+        key: "usageScore",
+        header: "健康分",
+        width: 120,
+        sortable: true,
+        renderCell: (row) => `${row.usageScore} / 100`,
+      },
+      {
+        key: "createdAt",
+        header: "创建时间",
+        width: 150,
+        sortable: true,
+        renderCell: (row) => formatDate(row.createdAt),
+      },
+    ]
+
+    if (!features.denseColumns) return baseColumns
+
+    return [
+      ...baseColumns,
+      {
+        key: "channel",
+        header: "获客渠道",
+        width: 140,
+        renderCell: (row) => row.channel,
+      },
+      {
+        key: "industry",
+        header: "行业",
+        width: 140,
+        renderCell: (row) => row.industry,
+      },
+      {
+        key: "owner",
+        header: "负责人",
+        width: 120,
+        sortable: true,
+        renderCell: (row) => row.owner,
+      },
+      {
+        key: "renewalAt",
+        header: "续约日期",
+        width: 150,
+        sortable: true,
+        renderCell: (row) => formatDate(row.renewalAt),
+      },
+      {
+        key: "lastActiveAt",
+        header: "最近活跃",
+        width: 150,
+        sortable: true,
+        renderCell: (row) => formatDate(row.lastActiveAt),
+      },
+    ]
+  }, [features.denseColumns])
+
+  const fetchData = useCallback(
+    async ({
+      page,
+      pageSize,
+      query,
+      sort,
+      signal,
+    }: {
+      page: number
+      pageSize: number
+      query: TableQuery
+      sort: DataTableSortState | null
+      signal: AbortSignal
+    }): Promise<DataTableFetchResult<CustomerRow>> => {
+      await sleep(120)
+      if (signal.aborted) {
+        return {
+          items: [],
+          total: 0,
+        }
+      }
+
+      const filteredRows = rows.filter((row) => {
+        const keyword = query.keyword.trim().toLowerCase()
+        const searchMap = {
+          all: [row.id, row.name, row.owner, row.region],
+          id: [row.id],
+          name: [row.name],
+          owner: [row.owner],
+        } as const
+        const candidates = searchMap[query.keywordField || "all"]
+        const keywordMatched =
+          keyword.length === 0 ||
+          candidates.some((value) => value.toLowerCase().includes(keyword))
+
+        const statusMatched =
+          query.status.length === 0 || row.status === query.status
+        const regionMatched =
+          query.region.length === 0 || row.region === query.region
+        const ownerMatched =
+          query.owner.length === 0 || row.owner === query.owner
+        const from = query.createdAt?.from
+        const to = query.createdAt?.to
+        const dateMatched =
+          (!from || row.createdAt >= startOfDay(from)) &&
+          (!to || row.createdAt <= endOfDay(to))
+
+        return (
+          keywordMatched &&
+          statusMatched &&
+          regionMatched &&
+          ownerMatched &&
+          dateMatched
+        )
+      })
+
+      const sortedRows = [...filteredRows].sort((left, right) => {
+        if (!sort) return 0
+
+        const leftValue = resolveSortValue(left, sort.columnKey)
+        const rightValue = resolveSortValue(right, sort.columnKey)
+        const compared = compareValues(leftValue, rightValue)
+
+        return sort.direction === "asc" ? compared : -compared
+      })
+
+      const start = (page - 1) * pageSize
+      return {
+        items: sortedRows.slice(start, start + pageSize),
+        total: sortedRows.length,
+      }
+    },
+    [rows]
+  )
+
+  const builtInQueryFields = useMemo<
+    readonly DataTableBuiltInQueryField<TableQuery>[]
+  >(() => {
+    const fields: DataTableBuiltInQueryField<TableQuery>[] = []
+
+    if (features.keywordSearch) {
+      fields.push({
+        key: "keyword",
+        type: "search" as const,
+        label: "关键词",
+        placeholder: "搜客户名、客户 ID、负责人",
+        fieldKey: "keywordField" as const,
+        fieldPlaceholder: "搜索字段",
+        fieldOptions: [
+          { label: "全部", value: "all" },
+          { label: "客户 ID", value: "id" },
+          { label: "客户名", value: "name" },
+          { label: "负责人", value: "owner" },
+        ],
+      })
+    }
+
+    if (features.advancedFilters) {
+      fields.push({
+        key: "createdAt",
+        type: "date-range" as const,
+        label: "创建时间",
+      })
+    }
+
+    return fields
+  }, [features.advancedFilters, features.keywordSearch])
+
+  const queryFields = useMemo<readonly DataTableQueryField<TableQuery>[]>(() => {
+    if (!features.advancedFilters) return []
+
+    return [
+      {
+        key: "status",
+        type: "select" as const,
+        label: "状态",
+        placeholder: "按状态过滤",
+        options: STATUSES.map((status) => ({ label: status, value: status })),
+      },
+      {
+        key: "region",
+        type: "select" as const,
+        label: "区域",
+        placeholder: "按区域过滤",
+        options: REGIONS.map((region) => ({ label: region, value: region })),
+      },
+      {
+        key: "owner",
+        type: "select" as const,
+        label: "负责人",
+        placeholder: "按负责人过滤",
+        options: OWNERS.map((owner) => ({ label: owner, value: owner })),
+      },
+    ]
+  }, [features.advancedFilters])
+
+  const generatedSnippet = useMemo(
+    () => buildSnippet({ features, preset }),
+    [features, preset]
+  )
+
+  const currentPreset = PRESET_COPY[preset]
+
+  return (
+    <div className="min-h-0 flex-1 overflow-auto">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 pb-10">
+        <section className="grid gap-4 rounded-[28px] border border-(--app-border) bg-[linear-gradient(135deg,var(--app-surface),color-mix(in_srgb,var(--app-accent,#c9d8ff)_18%,var(--app-surface)))] p-6 shadow-sm lg:grid-cols-[1.5fr_0.9fr]">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="outline">Guide App</Badge>
+              <Badge variant="secondary">No Auth</Badge>
+              <Badge variant="outline">Admin Shell Retained</Badge>
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight">
+                DataTable 组件展示与配置说明
+              </h1>
+              <p className="max-w-3xl text-sm leading-6 text-(--app-muted-text)">
+                这个页面专门给用户看 DataTable 要怎么接。你可以直接切预设、点开关、看结果，再把右侧生成的配置片段复制到业务页面里。
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-[24px] border border-white/40 bg-white/55 backdrop-blur dark:bg-black/20">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <span className="flex items-center gap-2 text-base">
+                    <Sparkles className="size-4" />
+                    当前推荐
+                  </span>
+                </CardTitle>
+              <CardDescription>{currentPreset.summary}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
+                    <span>预设</span>
+                    <Badge>{currentPreset.badge}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
+                    <span>固定左列</span>
+                    <span>{features.stickyLeft ? "开启" : "关闭"}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
+                    <span>批量能力</span>
+                    <span>
+                      {features.bulkUpdate || features.bulkDelete ? "已配置" : "未配置"}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section
+          id="presets"
+          className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr_0.9fr]"
+        >
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <span className="flex items-center gap-2">
+                    <Settings2 className="size-4" />
+                    快速预设
+                  </span>
+                </CardTitle>
+                <CardDescription>
+                  先给用户 3 个典型场景按钮，再允许他们继续微调每个配置开关。
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-3">
+                    {(
+                      Object.keys(PRESET_COPY) as Array<keyof typeof PRESET_COPY>
+                    ).map((key) => (
+                      <Button
+                        key={key}
+                        type="button"
+                        variant={preset === key ? "primary" : "outline"}
+                        onClick={() => applyPreset(key)}
+                      >
+                        {PRESET_COPY[key].title}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="rounded-2xl border border-dashed border-(--app-border) bg-(--app-surface) p-4 text-sm leading-6 text-(--app-muted-text)">
+                    {currentPreset.summary}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2">
+                  <BookMarked className="size-4" />
+                  配置原则
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 text-sm leading-6 text-(--app-muted-text)">
+                <p>业务用户最关心的通常不是实现细节，而是“我该开哪些能力”。</p>
+                <p>所以这页先提供按钮，再展示 props，对业务沟通会更顺。</p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2">
+                  <Filter className="size-4" />
+                  配置工具条
+                </span>
+              </CardTitle>
+              <CardDescription>
+                配置要小，重点让用户多看表格。这里每个开关都直接映射一组 props。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {renderFeatureChip(
+                  "首列勾选",
+                  "selection",
+                  features.selection,
+                  (value) => setFeature("selection", value)
+                )}
+                {renderFeatureChip(
+                  "新增弹窗",
+                  "insert",
+                  features.insert,
+                  (value) => setFeature("insert", value)
+                )}
+                {renderFeatureChip(
+                  "批量修改",
+                  "bulkUpdate",
+                  features.bulkUpdate,
+                  (value) => setFeature("bulkUpdate", value)
+                )}
+                {renderFeatureChip(
+                  "批量删除",
+                  "bulkDelete",
+                  features.bulkDelete,
+                  (value) => setFeature("bulkDelete", value)
+                )}
+                {renderFeatureChip(
+                  "行操作",
+                  "rowActions",
+                  features.rowActions,
+                  (value) => setFeature("rowActions", value)
+                )}
+                {renderFeatureChip(
+                  "搜索框",
+                  "builtInQueryFields.search",
+                  features.keywordSearch,
+                  (value) => setFeature("keywordSearch", value)
+                )}
+                {renderFeatureChip(
+                  "高级筛选",
+                  "queryFields + date-range",
+                  features.advancedFilters,
+                  (value) => setFeature("advancedFilters", value)
+                )}
+                {renderFeatureChip(
+                  "固定左列",
+                  "fixedLeftColumns",
+                  features.stickyLeft,
+                  (value) => setFeature("stickyLeft", value)
+                )}
+                {renderFeatureChip(
+                  "固定右侧操作列",
+                  "fixedRightColumns",
+                  features.stickyRight,
+                  (value) => setFeature("stickyRight", value)
+                )}
+                {renderFeatureChip(
+                  "宽表模式",
+                  "extra columns",
+                  features.denseColumns,
+                  (value) => setFeature("denseColumns", value)
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div id="live-demo" className="min-h-[820px] overflow-hidden rounded-[24px] border border-(--app-border) bg-(--app-surface)">
+            <Card>
+              <CardHeader>
+                <div className="border-b border-(--app-border) pb-4">
+                  <CardTitle>
+                    <span className="flex items-center gap-2">
+                      <TableProperties className="size-4" />
+                      实时示例
+                    </span>
+                  </CardTitle>
+                  <CardDescription>
+                    用户点击左侧按钮后，这个表格会立刻反映配置变化。
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex min-h-0 flex-1 flex-col gap-4 p-1">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList>
+                  <TabsTrigger value="live">Live Demo</TabsTrigger>
+                  <TabsTrigger value="config">配置片段</TabsTrigger>
+                  <TabsTrigger value="playbook">接入说明</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="live">
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline">preset: {preset}</Badge>
+                      {features.rowActions ? <Badge>rowActions</Badge> : null}
+                      {features.bulkUpdate ? <Badge>bulkUpdate</Badge> : null}
+                      {features.bulkDelete ? <Badge>bulkDelete</Badge> : null}
+                      {features.denseColumns ? <Badge>wide table</Badge> : null}
+                    </div>
+
+                    <div className="h-[620px] min-h-[620px] overflow-hidden rounded-2xl border border-(--app-border)">
+                      <DataTable<CustomerRow, TableQuery>
+                        columns={columns}
+                        fetchData={fetchData}
+                        getRowId={(row) => row.id}
+                        caption="Guide demo for DataTable configuration"
+                        height="100%"
+                        fixedLeftColumns={features.stickyLeft ? 2 : 0}
+                        fixedRightColumns={features.stickyRight ? 1 : 0}
+                        initialPageSize={10}
+                        initialQuery={INITIAL_QUERY}
+                        pageSizeOptions={[10, 20, 50]}
+                        initialSort={{ columnKey: "createdAt", direction: "desc" }}
+                        builtInQueryFields={builtInQueryFields}
+                        queryFields={queryFields}
+                        toolbarActions={
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="secondary">columns: {columns.length}</Badge>
+                            <Badge variant="outline">
+                              filters:{" "}
+                              {builtInQueryFields.length + queryFields.length}
+                            </Badge>
+                          </div>
+                        }
+                        insert={
+                          features.insert
+                            ? {
+                                label: "新增客户",
+                                title: "新增客户示例",
+                                description:
+                                  "这块内容会放在 DataTable 自带的弹窗里，你可以接业务表单。",
+                                renderContent: () => (
+                                  <div className="grid gap-4 py-2">
+                                    <Input
+                                      value={insertDraft.name}
+                                      onValueChange={(value) =>
+                                        setInsertDraft((current) => ({
+                                          ...current,
+                                          name: value,
+                                        }))
+                                      }
+                                      placeholder="客户名称"
+                                    />
+                                    <Input
+                                      value={insertDraft.region}
+                                      onValueChange={(value) =>
+                                        setInsertDraft((current) => ({
+                                          ...current,
+                                          region: value,
+                                        }))
+                                      }
+                                      placeholder="区域"
+                                    />
+                                  </div>
+                                ),
+                                onConfirm: async () => {
+                                  await sleep(150)
+                                  setRows((current) => [
+                                    createInsertedCustomer(insertDraft),
+                                    ...current,
+                                  ])
+                                  setInsertDraft({
+                                    name: "New Workspace Customer",
+                                    region: "East China",
+                                  })
+                                },
+                              }
+                            : false
+                        }
+                        selection={features.selection ? {} : false}
+                        bulkUpdate={
+                          features.bulkUpdate
+                            ? {
+                                title: "批量修改示例",
+                                description:
+                                  "常见场景是批量改状态、负责人、区域。",
+                                fields: [
+                                  {
+                                    key: "status",
+                                    label: "状态",
+                                    type: "select",
+                                    options: STATUSES.map((status) => ({
+                                      label: status,
+                                      value: status,
+                                    })),
+                                  },
+                                  {
+                                    key: "owner",
+                                    label: "负责人",
+                                    type: "select",
+                                    options: OWNERS.map((owner) => ({
+                                      label: owner,
+                                      value: owner,
+                                    })),
+                                  },
+                                ],
+                                onSubmit: async ({
+                                  fieldKey,
+                                  selectedRowKeys,
+                                  value,
+                                }) => {
+                                  await sleep(150)
+                                  setRows((current) =>
+                                    current.map((row) =>
+                                      selectedRowKeys.includes(row.id)
+                                        ? ({
+                                            ...row,
+                                            [fieldKey]: value,
+                                          } as CustomerRow)
+                                        : row
+                                    )
+                                  )
+                                },
+                              }
+                            : false
+                        }
+                        bulkDelete={
+                          features.bulkDelete
+                            ? {
+                                title: "批量删除示例",
+                                description: (count) =>
+                                  `当前会删除 ${count} 条数据。实际接入时这里通常连 API。`,
+                                onDelete: async ({ selectedRowKeys }) => {
+                                  await sleep(150)
+                                  setRows((current) =>
+                                    current.filter(
+                                      (row) => !selectedRowKeys.includes(row.id)
+                                    )
+                                  )
+                                },
+                              }
+                            : false
+                        }
+                        rowActions={
+                          features.rowActions
+                            ? {
+                                sticky: features.stickyRight ? "right" : false,
+                                edit: {
+                                  title: (row) => `编辑 ${row.name}`,
+                                  description: (row) =>
+                                    `这里可以接你的编辑表单。当前示例会把 ${row.id} 标记成 Review。`,
+                                  renderContent: ({ row }) => (
+                                    <div className="grid gap-3 py-2">
+                                      <Input
+                                        value={row.name}
+                                        onValueChange={() => {}}
+                                        disabled
+                                      />
+                                      <Input
+                                        value={row.region}
+                                        onValueChange={() => {}}
+                                        disabled
+                                      />
+                                    </div>
+                                  ),
+                                  onConfirm: async (row) => {
+                                    await sleep(150)
+                                    setRows((current) =>
+                                      current.map((item) =>
+                                        item.id === row.id
+                                          ? { ...item, status: "Review" }
+                                          : item
+                                      )
+                                    )
+                                  },
+                                },
+                                delete: {
+                                  title: (row) => `删除 ${row.name}？`,
+                                  description: (row) =>
+                                    `这行演示了单行删除文案。客户 ID：${row.id}`,
+                                  onConfirm: async (row) => {
+                                    await sleep(150)
+                                    setRows((current) =>
+                                      current.filter((item) => item.id !== row.id)
+                                    )
+                                  },
+                                },
+                                moreItems: [
+                                  {
+                                    key: "copy-id",
+                                    label: "复制客户 ID",
+                                    onClick: (row) => {
+                                      void navigator.clipboard?.writeText(row.id)
+                                    },
+                                  },
+                                ],
+                              }
+                            : false
+                        }
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="config">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-(--app-border) bg-[#101828] p-4 text-sm text-slate-100">
+                      <pre className="overflow-x-auto whitespace-pre-wrap font-mono leading-6">
+                        {generatedSnippet}
+                      </pre>
+                    </div>
+                    <p className="text-sm leading-6 text-(--app-muted-text)">
+                      这个片段不是完整页面，而是告诉用户当前这组按钮会映射成哪些关键 props。
+                    </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="playbook">
+                  <div id="playbook" className="grid gap-4">
+                    {FIELD_PLAYBOOK.map((item) => (
+                      <div
+                        key={item.title}
+                        className="rounded-2xl border border-(--app-border)"
+                      >
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>
+                              <span className="text-base">{item.title}</span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-sm leading-6 text-(--app-muted-text)">
+                              {item.description}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section id="playbook" className="grid gap-4 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2 text-base">
+                  <ClipboardList className="size-4" />
+                  第一步
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm leading-6 text-(--app-muted-text)">
+                先定义 `Row` 和 `Query` 类型。DataTable 的复杂度主要来自这两个对象，不要先写 JSX。
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2 text-base">
+                  <PencilLine className="size-4" />
+                  第二步
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm leading-6 text-(--app-muted-text)">
+                再把 `columns`、`queryFields`、`rowActions` 按功能块拆开，业务页面会更容易维护。
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <span className="flex items-center gap-2 text-base">
+                  <Trash2 className="size-4" />
+                  第三步
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm leading-6 text-(--app-muted-text)">
+                最后才接 `insert`、`bulkUpdate`、`bulkDelete` 这些变更型操作，这样不会把表格页写成一团。
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="rounded-[28px] border border-(--app-border) bg-(--app-surface) p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold">推荐对外展示方式</h2>
+              <p className="text-sm leading-6 text-(--app-muted-text)">
+                给用户看组件时，不要只放一个表格。最有效的是“场景按钮 + 实时示例 + props 片段 + 接入说明”四件套。
+              </p>
+            </div>
+            <div className="hidden h-12 lg:block">
+              <Separator orientation="vertical" />
+            </div>
+            <div className="grid gap-2 text-sm text-(--app-muted-text)">
+              <div>1. 先选场景</div>
+              <div>2. 再看表格效果</div>
+              <div>3. 最后抄配置代码</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  )
+}
+
+function renderFeatureChip(
+  title: string,
+  hint: string,
+  checked: boolean,
+  onCheckedChange: (value: boolean) => void
+) {
+  return (
+    <div className="flex min-w-[180px] items-center gap-3 rounded-xl border border-(--app-border) bg-(--app-surface) px-3 py-2">
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{title}</div>
+        <div className="truncate text-[11px] text-(--app-muted-text)">
+          {hint}
+        </div>
+      </div>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </div>
+  )
+}
+
+function buildSnippet({
+  features,
+  preset,
+}: {
+  features: FeatureState
+  preset: ScenarioPreset
+}) {
+  const lines = [
+    `// preset: ${preset}`,
+    `<DataTable<CustomerRow, TableQuery>`,
+    `  columns={columns}`,
+    `  fetchData={fetchData}`,
+    `  getRowId={(row) => row.id}`,
+    `  initialQuery={INITIAL_QUERY}`,
+    `  initialPageSize={10}`,
+    `  fixedLeftColumns={${features.stickyLeft ? 2 : 0}}`,
+    `  fixedRightColumns={${features.stickyRight ? 1 : 0}}`,
+  ]
+
+  if (features.keywordSearch) {
+    lines.push(`  builtInQueryFields={builtInQueryFields}`)
+  }
+
+  if (features.advancedFilters) {
+    lines.push(`  queryFields={queryFields}`)
+  }
+
+  if (features.insert) {
+    lines.push(`  insert={{ label: "新增客户", onConfirm: handleInsert }}`)
+  }
+
+  if (features.selection) {
+    lines.push(`  selection={{}}`)
+  }
+
+  if (features.bulkUpdate) {
+    lines.push(`  bulkUpdate={{ fields: bulkUpdateFields, onSubmit: handleBulkUpdate }}`)
+  }
+
+  if (features.bulkDelete) {
+    lines.push(`  bulkDelete={{ onDelete: handleBulkDelete }}`)
+  }
+
+  if (features.rowActions) {
+    lines.push(`  rowActions={{ edit, delete, moreItems }}`)
+  }
+
+  lines.push(`/>`)
+
+  return lines.join("\n")
+}
+
+function createCustomerRows() {
+  return Array.from({ length: 56 }, (_, index) => {
+    const idSeed = index + 1001
+    const createdAt = new Date(2026, 0, 1 + index, 9 + (index % 8), 0, 0)
+
+    return {
+      id: `C-${idSeed}`,
+      name: `Workspace Customer ${index + 1}`,
+      tier: TIERS[index % TIERS.length],
+      status: STATUSES[index % STATUSES.length],
+      region: REGIONS[index % REGIONS.length],
+      owner: OWNERS[index % OWNERS.length],
+      channel: CHANNELS[index % CHANNELS.length],
+      industry: INDUSTRIES[index % INDUSTRIES.length],
+      createdAt,
+      renewalAt: addDays(createdAt, 90),
+      contractValue: 18000 + index * 1600,
+      usageScore: 62 + (index % 31),
+      lastActiveAt: addDays(createdAt, 7 + (index % 4)),
+    } satisfies CustomerRow
+  })
+}
+
+function createInsertedCustomer(draft: { name: string; region: string }): CustomerRow {
+  const baseDate = new Date()
+
+  return {
+    id: `C-${Math.floor(baseDate.getTime() / 1000)}`,
+    name: draft.name || "New Customer",
+    tier: "Growth",
+    status: "Active",
+    region: draft.region || "East China",
+    owner: "Alice",
+    channel: "Direct",
+    industry: "Retail",
+    createdAt: baseDate,
+    renewalAt: addDays(baseDate, 90),
+    contractValue: 28000,
+    usageScore: 88,
+    lastActiveAt: baseDate,
+  }
+}
+
+function resolveStatusVariant(status: CustomerRow["status"]) {
+  if (status === "Active") return "default"
+  if (status === "Paused") return "secondary"
+  return "outline"
+}
+
+function resolveSortValue(row: CustomerRow, columnKey: string) {
+  switch (columnKey) {
+    case "id":
+      return row.id
+    case "name":
+      return row.name
+    case "status":
+      return row.status
+    case "tier":
+      return row.tier
+    case "region":
+      return row.region
+    case "owner":
+      return row.owner
+    case "contractValue":
+      return row.contractValue
+    case "usageScore":
+      return row.usageScore
+    case "createdAt":
+      return row.createdAt.getTime()
+    case "renewalAt":
+      return row.renewalAt.getTime()
+    case "lastActiveAt":
+      return row.lastActiveAt.getTime()
+    default:
+      return row.id
+  }
+}
+
+function compareValues(left: string | number, right: string | number) {
+  if (typeof left === "number" && typeof right === "number") {
+    return left - right
+  }
+
+  return String(left).localeCompare(String(right), "zh-CN")
+}
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date)
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
+}
+
+function addDays(date: Date, days: number) {
+  const value = new Date(date)
+  value.setDate(value.getDate() + days)
+  return value
+}
+
+function startOfDay(date: Date) {
+  const value = new Date(date)
+  value.setHours(0, 0, 0, 0)
+  return value
+}
+
+function endOfDay(date: Date) {
+  const value = new Date(date)
+  value.setHours(23, 59, 59, 999)
+  return value
+}

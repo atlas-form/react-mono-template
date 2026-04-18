@@ -562,6 +562,15 @@ export function DataTable<T, TQuery extends object = object>({
     rowSelectionEnabled &&
     currentPageRowKeys.length > 0 &&
     currentPageRowKeys.every((key) => selectedRowKeySet.has(key))
+  const someCurrentPageRowsSelected =
+    rowSelectionEnabled &&
+    currentPageRowKeys.some((key) => selectedRowKeySet.has(key))
+  const headerSelectionState: boolean | "indeterminate" =
+    allCurrentPageRowsSelected
+      ? true
+      : someCurrentPageRowsSelected
+        ? "indeterminate"
+        : false
   const totalColumnCount =
     resolvedColumns.length + (rowSelectionEnabled ? 1 : 0)
 
@@ -759,9 +768,9 @@ export function DataTable<T, TQuery extends object = object>({
                     >
                       <div className="flex items-center justify-center">
                         <Checkbox
-                          checked={allCurrentPageRowsSelected}
+                          checked={headerSelectionState}
                           onCheckedChange={(checked) => {
-                            if (!checked) {
+                            if (checked !== true) {
                               updateSelectedRowKeys(
                                 selectedRowKeys.filter(
                                   (key) => !currentPageRowKeys.includes(key)
