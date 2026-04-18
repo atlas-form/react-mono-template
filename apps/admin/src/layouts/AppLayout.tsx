@@ -134,7 +134,7 @@ export default function AppLayout() {
             avatarSrc: user?.avatar,
             avatarFallback: (user?.name ?? "A").charAt(0).toUpperCase(),
             displayName: user?.name ?? "Admin",
-            displayId: user?.email ?? "workspace-admin@example.com",
+            displayId: user?.id || user?.email || "workspace-admin@example.com",
             logout: {
               label: "Log out",
               onSelect: handleLogout,

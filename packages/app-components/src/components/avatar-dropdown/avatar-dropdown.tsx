@@ -94,19 +94,19 @@ export function AvatarDropdown({
         {triggerVariant === "sidebar" ? (
           <button
             type="button"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-xl bg-[var(--surface)] px-3 py-2 text-left outline-hidden transition hover:bg-[var(--surface-hover)] focus-visible:ring-2 focus-visible:ring-(--app-primary) group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0"
+            className="flex w-full items-center gap-2.5 overflow-hidden rounded-xl bg-[var(--surface)] px-2.5 py-2 text-left outline-hidden transition hover:bg-[var(--surface-hover)] focus-visible:ring-2 focus-visible:ring-(--app-primary) group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0"
             aria-label="Open account menu"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
               {avatarSrc ? (
                 <img
                   src={avatarSrc}
                   alt={avatarAlt}
-                  className="block h-10 w-10 rounded-full object-cover"
+                  className="block h-9 w-9 rounded-full object-cover"
                 />
               ) : null}
               {!avatarSrc ? (
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1c2431] text-sm font-semibold text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1c2431] text-[13px] font-semibold text-white">
                   {avatarFallback}
                 </span>
               ) : null}
