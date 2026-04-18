@@ -6,6 +6,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+  SidebarTrigger,
   Tree,
   type TreeNode,
 } from "@workspace/ui-components"
@@ -75,10 +88,6 @@ const TREE_DATA: TreeNode[] = [
   },
 ]
 
-function getDateLocale(language: AppLanguage) {
-  return language === "zhCN" ? "zh-CN" : "en-US"
-}
-
 function getInitialLanguage(): AppLanguage {
   const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
   if (stored === "en" || stored === "zhCN") {
@@ -122,10 +131,10 @@ export function App() {
               UI Components
             </p>
             <h1 className="text-3xl font-semibold tracking-tight">
-              Tree
+              Tree + Sidebar
             </h1>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              这里暂时只保留 `Tree` 组件测试，方便单独验证级联多选、折叠展开和搜索。
+              当前页面用于验证 `Tree` 和新补充的 `Sidebar` stable 封装。
             </p>
           </div>
 
@@ -161,6 +170,61 @@ export function App() {
               <p className="text-sm text-muted-foreground">
                 当前值：{treeValue.length ? treeValue.join(", ") : "-"}
               </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Sidebar</CardTitle>
+            <CardDescription>
+              `ui-components` 对 `ui-core/sidebar` 的 stable 封装验证。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-hidden rounded-xl border">
+              <SidebarProvider defaultOpen>
+                <div className="flex min-h-[24rem] w-full">
+                  <Sidebar collapsible="icon">
+                    <SidebarHeader>
+                      <div className="px-2 py-1 text-sm font-semibold">Workspace</div>
+                    </SidebarHeader>
+                    <SidebarSeparator />
+                    <SidebarContent>
+                      <SidebarGroup>
+                        <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                          <SidebarMenu>
+                            <SidebarMenuItem>
+                              <SidebarMenuButton active tooltip="Overview">
+                                Overview
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                              <SidebarMenuButton tooltip="Orders">
+                                Orders
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                          </SidebarMenu>
+                        </SidebarGroupContent>
+                      </SidebarGroup>
+                    </SidebarContent>
+                  </Sidebar>
+                  <SidebarInset>
+                    <div className="flex h-full min-h-[24rem] flex-1 flex-col gap-4 p-4">
+                      <div className="flex items-center gap-3">
+                        <SidebarTrigger />
+                        <div>
+                          <p className="text-sm font-medium">Sidebar Preview</p>
+                          <p className="text-sm text-muted-foreground">
+                            验证 `SidebarProvider`、`SidebarTrigger` 和菜单结构。
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </SidebarInset>
+                </div>
+              </SidebarProvider>
             </div>
           </CardContent>
         </Card>
