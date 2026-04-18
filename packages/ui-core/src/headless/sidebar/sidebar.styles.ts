@@ -4,7 +4,7 @@ export const sidebarWrapperClassName =
   "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar"
 
 export const sidebarStaticClassName =
-  "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground"
+  "flex h-full w-(--sidebar-width) flex-col bg-[var(--surface)] text-sidebar-foreground"
 
 export const sidebarGapVariants = cva(
   "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear group-data-[collapsible=offcanvas]:w-0 group-data-[side=right]:rotate-180",
@@ -51,7 +51,8 @@ export const sidebarHeaderClassName = "flex flex-col gap-2 p-2"
 
 export const sidebarFooterClassName = "flex flex-col gap-2 p-2"
 
-export const sidebarSeparatorClassName = "mx-2 w-auto bg-sidebar-border"
+export const sidebarSeparatorClassName =
+  "mx-2 bg-sidebar-border data-horizontal:w-auto"
 
 export const sidebarContentClassName =
   "no-scrollbar flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden"
@@ -147,12 +148,12 @@ export const sidebarMenuSubButtonVariants = cva(
 
 export const sidebarClassNames = {
   slot1:
-    "w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden",
+    "w-(--sidebar-width) bg-[var(--surface)] p-0 text-sidebar-foreground [&>button]:hidden",
   slot2: "sr-only",
   slot3: "flex h-full w-full flex-col",
   slot4: "group peer hidden text-sidebar-foreground md:block",
   slot5:
-    "flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border",
+    "flex size-full flex-col bg-[var(--surface)] group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border",
   slot6: "size-4 rounded-md",
   slot7: "h-4 max-w-(--skeleton-width) flex-1",
 } as const

@@ -94,7 +94,7 @@ export function AvatarDropdown({
         {triggerVariant === "sidebar" ? (
           <button
             type="button"
-            className="flex w-full items-center gap-3 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-left outline-hidden transition hover:bg-[var(--surface-hover)] focus-visible:ring-2 focus-visible:ring-(--app-primary)"
+            className="flex w-full items-center gap-3 overflow-hidden rounded-xl bg-[var(--surface)] px-3 py-2 text-left outline-hidden transition hover:bg-[var(--surface-hover)] focus-visible:ring-2 focus-visible:ring-(--app-primary)"
             aria-label="Open account menu"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0f1724]">
