@@ -1,0 +1,214 @@
+import { forwardRef, type CSSProperties, type ReactNode } from "react"
+import {
+  Table as CoreTable,
+  TableBody as CoreTableBody,
+  TableCaption as CoreTableCaption,
+  TableCell as CoreTableCell,
+  TableHead as CoreTableHead,
+  TableHeader as CoreTableHeader,
+  TableRow as CoreTableRow,
+} from "@workspace/ui-core/components/table"
+import { cn } from "@workspace/ui-core/lib/utils.js"
+
+type StickySide = "left" | "right"
+
+const stickyBlurStyle = {
+  WebkitBackdropFilter: "blur(14px)",
+  backdropFilter: "blur(14px)",
+} as const
+
+const stickyHeaderSurfaceStyle = {
+  ...stickyBlurStyle,
+  backgroundColor:
+    "color-mix(in oklab, var(--surface) 82%, transparent)",
+} as const
+
+function getStickyBodySurfaceStyle(striped: boolean) {
+  return {
+    ...stickyBlurStyle,
+    backgroundColor: striped
+      ? "color-mix(in oklab, var(--muted) 76%, transparent)"
+      : "color-mix(in oklab, var(--background) 82%, transparent)",
+  } as const
+}
+
+function getStickyInsetShadow(side: StickySide) {
+  return side === "left"
+    ? "shadow-[inset_-1px_0_0_var(--border)]"
+    : "shadow-[inset_1px_0_0_var(--border)]"
+}
+
+function getStickyOffsetStyle(
+  stickySide?: StickySide,
+  stickyOffset?: number
+): CSSProperties | undefined {
+  if (!stickySide || stickyOffset === undefined) {
+    return undefined
+  }
+
+  return stickySide === "left"
+    ? { left: stickyOffset }
+    : { right: stickyOffset }
+}
+
+export interface DataTableTableProps {
+  children: ReactNode
+}
+
+export interface DataTableTableHeaderProps {
+  children: ReactNode
+}
+
+export interface DataTableTableBodyProps {
+  children: ReactNode
+}
+
+export interface DataTableTableRowProps {
+  children: ReactNode
+  striped?: boolean
+}
+
+export interface DataTableTableHeadProps {
+  children: ReactNode
+  minWidth?: CSSProperties["minWidth"]
+  width?: CSSProperties["width"]
+  stickySide?: StickySide
+  stickyOffset?: number
+  priority?: "base" | "sticky" | "selection"
+  ariaSort?: "none" | "ascending" | "descending" | "other"
+}
+
+export interface DataTableTableCellProps {
+  children: ReactNode
+  colSpan?: number
+  minWidth?: CSSProperties["minWidth"]
+  width?: CSSProperties["width"]
+  stickySide?: StickySide
+  stickyOffset?: number
+  striped?: boolean
+  priority?: "base" | "sticky" | "selection"
+}
+
+export interface DataTableTableCaptionProps {
+  children: ReactNode
+}
+
+export function DataTableTable({ children }: DataTableTableProps) {
+  return (
+    <CoreTable className="w-max min-w-full" containerClassName="overflow-visible">
+      {children}
+    </CoreTable>
+  )
+}
+
+export function DataTableTableHeader({
+  children,
+}: DataTableTableHeaderProps) {
+  return <CoreTableHeader>{children}</CoreTableHeader>
+}
+
+export function DataTableTableBody({ children }: DataTableTableBodyProps) {
+  return <CoreTableBody>{children}</CoreTableBody>
+}
+
+export function DataTableTableRow({
+  children,
+  striped = false,
+}: DataTableTableRowProps) {
+  return <CoreTableRow className={striped ? "bg-muted/40" : undefined}>{children}</CoreTableRow>
+}
+
+export const DataTableTableHead = forwardRef<
+  HTMLTableCellElement,
+  DataTableTableHeadProps
+>(function DataTableTableHead(
+  {
+    children,
+    minWidth,
+    width,
+    stickySide,
+    stickyOffset,
+    priority = "base",
+    ariaSort,
+  },
+  ref
+) {
+  const isSticky = stickySide !== undefined
+  const zIndexClass =
+    priority === "selection"
+      ? "z-30"
+      : priority === "sticky"
+        ? "z-20"
+        : "z-10"
+
+  return (
+    <CoreTableHead
+      ref={ref}
+      aria-sort={ariaSort}
+      className={cn(
+        "sticky top-0",
+        zIndexClass,
+        isSticky
+          ? cn(stickySide === "left" ? "left-0" : "right-0", getStickyInsetShadow(stickySide))
+          : "bg-[var(--surface)]"
+      )}
+      style={{
+        ...getStickyOffsetStyle(stickySide, stickyOffset),
+        ...(isSticky ? stickyHeaderSurfaceStyle : null),
+        ...(minWidth ? { minWidth } : null),
+        ...(width ? { width } : null),
+      }}
+    >
+      {children}
+    </CoreTableHead>
+  )
+})
+
+export function DataTableTableCell({
+  children,
+  colSpan,
+  minWidth,
+  width,
+  stickySide,
+  stickyOffset,
+  striped = false,
+  priority = "base",
+}: DataTableTableCellProps) {
+  const isSticky = stickySide !== undefined
+  const zIndexClass =
+    priority === "selection"
+      ? "z-20"
+      : priority === "sticky"
+        ? "z-10"
+        : undefined
+
+  return (
+    <CoreTableCell
+      colSpan={colSpan}
+      className={
+        isSticky
+          ? cn(
+              "sticky",
+              zIndexClass,
+              stickySide === "left" ? "left-0" : "right-0",
+              getStickyInsetShadow(stickySide)
+            )
+          : undefined
+      }
+      style={{
+        ...getStickyOffsetStyle(stickySide, stickyOffset),
+        ...(isSticky ? getStickyBodySurfaceStyle(striped) : null),
+        ...(minWidth ? { minWidth } : null),
+        ...(width ? { width } : null),
+      }}
+    >
+      {children}
+    </CoreTableCell>
+  )
+}
+
+export function DataTableTableCaption({
+  children,
+}: DataTableTableCaptionProps) {
+  return <CoreTableCaption>{children}</CoreTableCaption>
+}

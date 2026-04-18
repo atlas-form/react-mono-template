@@ -22,6 +22,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles.css": "./src/styles/index.css",
+    "./costume/*": "./src/components/costume/*/index.ts",
     "./stable/*": "./src/components/stable/*/index.ts",
     "./labs/*": "./src/components/labs/*/index.ts"
   }

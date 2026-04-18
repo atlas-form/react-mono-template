@@ -4,23 +4,19 @@ import {
   Pagination,
   SearchInput,
   Spinner,
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   TooltipProvider,
   Input,
 } from "@workspace/ui-components"
+import { DataTableInlineSelect } from "@workspace/ui-components/costume/data-table-inline-select"
 import {
-  Select as CoreSelect,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@workspace/ui-core/components/select"
+  DataTableTable,
+  DataTableTableBody,
+  DataTableTableCaption,
+  DataTableTableCell,
+  DataTableTableHead,
+  DataTableTableHeader,
+  DataTableTableRow,
+} from "@workspace/ui-components/costume/data-table-table"
 import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
 import { useTranslation } from "react-i18next"
 import {
@@ -52,7 +48,6 @@ import {
   asDateRangeValue,
   asStringValue,
   createQueryState,
-  getStickyColumnStyles,
   isLeftStickyColumn,
   isRightStickyColumn,
   resolveColumnMinWidth,
@@ -652,7 +647,7 @@ export function DataTable<T, TQuery extends object = object>({
           inputClassName={field.fieldKey && field.fieldOptions?.length ? "pr-36" : undefined}
           trailingContent={
             field.fieldKey && field.fieldOptions?.length ? (
-              <CoreSelect
+              <DataTableInlineSelect
                 value={asStringValue(draftQuery[field.fieldKey])}
                 onValueChange={(nextValue) =>
                   updateDraftQueryValue(
@@ -661,25 +656,9 @@ export function DataTable<T, TQuery extends object = object>({
                   )
                 }
                 disabled={disabled}
-              >
-                <SelectTrigger
-                  hideIndicator
-                  className="h-8 w-24 border-0 bg-transparent px-0 text-sm text-muted-foreground shadow-none hover:bg-transparent focus:ring-0 focus-visible:ring-0"
-                >
-                  <SelectValue placeholder={field.fieldPlaceholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  {field.fieldOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      disabled={option.disabled}
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </CoreSelect>
+                placeholder={field.fieldPlaceholder}
+                options={field.fieldOptions}
+              />
             ) : null
           }
         />
@@ -722,25 +701,6 @@ export function DataTable<T, TQuery extends object = object>({
 
     return null
   }
-
-  const stickyBlurStyle = {
-    WebkitBackdropFilter: "blur(14px)",
-    backdropFilter: "blur(14px)",
-  } as const
-
-  const stickyHeaderSurfaceStyle = {
-    ...stickyBlurStyle,
-    backgroundColor:
-      "color-mix(in oklab, var(--surface) 82%, transparent)",
-  } as const
-
-  const getStickyBodySurfaceStyle = (striped: boolean) =>
-    ({
-      ...stickyBlurStyle,
-      backgroundColor: striped
-        ? "color-mix(in oklab, var(--muted) 76%, transparent)"
-        : "color-mix(in oklab, var(--background) 82%, transparent)",
-    }) as const
 
   return (
     <TooltipProvider>
@@ -785,22 +745,17 @@ export function DataTable<T, TQuery extends object = object>({
           data-slot="data-table-body"
         >
           <div className="h-full overflow-auto">
-            <Table
-              className="w-max min-w-full"
-              containerClassName="overflow-visible"
-            >
-              {caption ? <TableCaption>{caption}</TableCaption> : null}
-              <TableHeader>
-                <TableRow>
+            <DataTableTable>
+              {caption ? <DataTableTableCaption>{caption}</DataTableTableCaption> : null}
+              <DataTableTableHeader>
+                <DataTableTableRow>
                   {rowSelectionEnabled ? (
-                    <TableHead
-                      className="sticky top-0 left-0 z-30 shadow-[inset_-1px_0_0_var(--border)]"
-                      style={{
-                        left: 0,
-                        minWidth: `${selectionColumnWidth}px`,
-                        ...stickyHeaderSurfaceStyle,
-                        width: `${selectionColumnWidth}px`,
-                      }}
+                    <DataTableTableHead
+                      stickySide="left"
+                      stickyOffset={0}
+                      minWidth={`${selectionColumnWidth}px`}
+                      width={`${selectionColumnWidth}px`}
+                      priority="selection"
                     >
                       <div className="flex items-center justify-center">
                         <Checkbox
@@ -827,7 +782,7 @@ export function DataTable<T, TQuery extends object = object>({
                           disabled={!hasRows || loading}
                         />
                       </div>
-                    </TableHead>
+                    </DataTableTableHead>
                   ) : null}
                   {resolvedColumns.map((column, columnIndex) => {
                     const leftOffset = stickyLeftOffsets[columnIndex]
@@ -836,28 +791,20 @@ export function DataTable<T, TQuery extends object = object>({
                     const isStickyRight = rightOffset !== undefined
 
                     return (
-                      <TableHead
+                      <DataTableTableHead
                         key={column.key}
                         ref={(element) => {
                           headerCellRefs.current[columnIndex] = element
                         }}
-                        aria-sort={getAriaSort(column)}
-                        className={
-                          isStickyLeft
-                            ? "sticky top-0 left-0 z-20 shadow-[inset_-1px_0_0_var(--border)]"
-                            : isStickyRight
-                              ? "sticky top-0 right-0 z-20 shadow-[inset_1px_0_0_var(--border)]"
-                              : "sticky top-0 z-10 bg-[var(--surface)]"
+                        ariaSort={getAriaSort(column)}
+                        stickySide={
+                          isStickyLeft ? "left" : isStickyRight ? "right" : undefined
                         }
-                        style={{
-                          ...getStickyColumnStyles({ leftOffset, rightOffset }),
-                          ...(isStickyLeft || isStickyRight
-                            ? stickyHeaderSurfaceStyle
-                            : null),
-                          minWidth: resolveColumnMinWidth(
-                            column as DataTableColumn<object>
-                          ),
-                        }}
+                        stickyOffset={isStickyLeft ? leftOffset : rightOffset}
+                        priority={isStickyLeft || isStickyRight ? "sticky" : "base"}
+                        minWidth={resolveColumnMinWidth(
+                          column as DataTableColumn<object>
+                        )}
                       >
                         <button
                           type="button"
@@ -878,16 +825,16 @@ export function DataTable<T, TQuery extends object = object>({
                             </span>
                           )}
                         </button>
-                      </TableHead>
+                      </DataTableTableHead>
                     )
                   })}
-                </TableRow>
-              </TableHeader>
+                </DataTableTableRow>
+              </DataTableTableHeader>
 
-              <TableBody>
+              <DataTableTableBody>
                 {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow>
+                    <DataTableTableCell colSpan={totalColumnCount}>
                       {renderLoading ? (
                         loadingContentResolved
                       ) : (
@@ -902,48 +849,43 @@ export function DataTable<T, TQuery extends object = object>({
                           <span>{loadingContentResolved}</span>
                         </div>
                       )}
-                    </TableCell>
-                  </TableRow>
+                    </DataTableTableCell>
+                  </DataTableTableRow>
                 ) : null}
 
                 {!loading && error ? (
-                  <TableRow>
-                    <TableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow>
+                    <DataTableTableCell colSpan={totalColumnCount}>
                       {errorContent}
-                    </TableCell>
-                  </TableRow>
+                    </DataTableTableCell>
+                  </DataTableTableRow>
                 ) : null}
 
                 {!loading && !error && !hasRows ? (
-                  <TableRow>
-                    <TableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow>
+                    <DataTableTableCell colSpan={totalColumnCount}>
                       {emptyContent}
-                    </TableCell>
-                  </TableRow>
+                    </DataTableTableCell>
+                  </DataTableTableRow>
                 ) : null}
 
                 {!loading && !error
                   ? rows.map((row: T, rowIndex: number) => {
-                      const stripedRowClass =
-                        rowIndex % 2 === 1 ? "bg-muted/40" : undefined
-                      const stickyCellSurfaceStyle = getStickyBodySurfaceStyle(
-                        rowIndex % 2 === 1
-                      )
+                      const isStriped = rowIndex % 2 === 1
 
                       return (
-                      <TableRow
+                      <DataTableTableRow
                         key={getRowId(row, rowIndex)}
-                        className={stripedRowClass}
+                        striped={isStriped}
                       >
                         {rowSelectionEnabled ? (
-                          <TableCell
-                            className="sticky left-0 z-20 shadow-[inset_-1px_0_0_var(--border)]"
-                            style={{
-                              left: 0,
-                              minWidth: `${selectionColumnWidth}px`,
-                              ...stickyCellSurfaceStyle,
-                              width: `${selectionColumnWidth}px`,
-                            }}
+                          <DataTableTableCell
+                            stickySide="left"
+                            stickyOffset={0}
+                            minWidth={`${selectionColumnWidth}px`}
+                            width={`${selectionColumnWidth}px`}
+                            striped={isStriped}
+                            priority="selection"
                           >
                             <div className="flex items-center justify-center">
                               <Checkbox
@@ -970,42 +912,43 @@ export function DataTable<T, TQuery extends object = object>({
                                 }}
                               />
                             </div>
-                          </TableCell>
+                          </DataTableTableCell>
                         ) : null}
                         {resolvedColumns.map((column, columnIndex) => (
-                          <TableCell
+                          <DataTableTableCell
                             key={column.key}
-                            className={
+                            stickySide={
                               stickyLeftOffsets[columnIndex] !== undefined
-                                ? "sticky left-0 z-10 shadow-[inset_-1px_0_0_var(--border)]"
+                                ? "left"
                                 : stickyRightOffsets[columnIndex] !== undefined
-                                  ? "sticky right-0 z-10 shadow-[inset_1px_0_0_var(--border)]"
+                                  ? "right"
                                   : undefined
                             }
-                            style={{
-                              ...getStickyColumnStyles({
-                                leftOffset: stickyLeftOffsets[columnIndex],
-                                rightOffset: stickyRightOffsets[columnIndex],
-                              }),
-                              ...(stickyLeftOffsets[columnIndex] !== undefined ||
+                            stickyOffset={
+                              stickyLeftOffsets[columnIndex] ??
+                              stickyRightOffsets[columnIndex]
+                            }
+                            striped={isStriped}
+                            priority={
+                              stickyLeftOffsets[columnIndex] !== undefined ||
                               stickyRightOffsets[columnIndex] !== undefined
-                                ? stickyCellSurfaceStyle
-                                : null),
-                              minWidth: resolveColumnMinWidth(
-                                column as DataTableColumn<object>
-                              ),
-                            }}
+                                ? "sticky"
+                                : "base"
+                            }
+                            minWidth={resolveColumnMinWidth(
+                              column as DataTableColumn<object>
+                            )}
                           >
                             <Fragment>
                               {column.renderCell(row, rowIndex)}
                             </Fragment>
-                          </TableCell>
+                          </DataTableTableCell>
                         ))}
-                      </TableRow>
+                      </DataTableTableRow>
                     )})
                   : null}
-              </TableBody>
-            </Table>
+              </DataTableTableBody>
+            </DataTableTable>
           </div>
         </div>
 
