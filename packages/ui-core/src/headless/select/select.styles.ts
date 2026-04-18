@@ -38,7 +38,7 @@ export const selectLabelClassName = "px-1.5 py-1 text-xs text-muted-foreground"
 export const selectItemClassName =
   "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-1.5 pl-8 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
 export const selectItemStateClassName =
-  "hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] data-[highlighted]:bg-[var(--primary)] data-[highlighted]:text-[var(--primary-foreground)] focus:bg-[var(--primary)] focus:text-[var(--primary-foreground)]"
+  "hover:bg-sidebar-primary hover:text-sidebar-primary-foreground data-[highlighted]:bg-sidebar-primary data-[highlighted]:text-sidebar-primary-foreground focus:bg-sidebar-primary focus:text-sidebar-primary-foreground"
 
 // Backward-compatible alias for external imports.
 export const selectItemVariantClassNames = {
