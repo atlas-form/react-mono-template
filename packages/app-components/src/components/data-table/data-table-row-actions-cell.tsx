@@ -6,6 +6,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  IconButton,
 } from "@workspace/ui-components"
 import {
   DropdownMenu,
@@ -96,43 +97,30 @@ export function DataTableRowActionsCell<T>({
     <>
       <div className="flex items-center justify-end gap-1.5">
         {editAction ? (
-          <button
-            type="button"
+          <IconButton
+            label={editAction.label ?? resolvedEditLabel}
             onClick={() => setEditDialogOpen(true)}
-            className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
           >
             <Pencil aria-hidden="true" className="size-4" />
-            <span className="sr-only">
-              {editAction.label ?? resolvedEditLabel}
-            </span>
-          </button>
+          </IconButton>
         ) : null}
 
         {deleteAction ? (
-          <button
-            type="button"
+          <IconButton
+            label={deleteAction.label ?? resolvedDeleteLabel}
+            variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
-            className="inline-flex size-8 items-center justify-center rounded-md text-destructive transition hover:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
           >
             <Trash2 aria-hidden="true" className="size-4" />
-            <span className="sr-only">
-              {deleteAction.label ?? resolvedDeleteLabel}
-            </span>
-          </button>
+          </IconButton>
         ) : null}
 
         {hasMoreActions ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground"
-              >
+              <IconButton label={rowActions.moreLabel ?? resolvedMoreLabel}>
                 <MoreHorizontal aria-hidden="true" className="size-4.5" />
-                <span className="sr-only">
-                  {rowActions.moreLabel ?? resolvedMoreLabel}
-                </span>
-              </button>
+              </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               mode="headless"

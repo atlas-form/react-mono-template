@@ -1,6 +1,12 @@
 export { Button } from "./components/stable/button"
 export type { ButtonProps } from "./components/stable/button"
 
+export { IconButton } from "./components/stable/icon-button"
+export type {
+  IconButtonProps,
+  IconButtonVariant,
+} from "./components/stable/icon-button"
+
 export {
   Sidebar,
   SidebarContent,
