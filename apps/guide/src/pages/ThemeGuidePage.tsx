@@ -1,6 +1,11 @@
-import { useMemo, useState } from "react"
 import {
-  Badge,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react"
+import {
   Button,
   Card,
   CardContent,
@@ -8,20 +13,21 @@ import {
   CardHeader,
   CardTitle,
   Input,
-  toast,
 } from "@workspace/ui-components"
-
-type ThemeMode = "light" | "dark"
+import {
+  applyThemeOverrides,
+  clearThemeOverrides,
+  loadThemeOverrides,
+  saveThemeOverrides,
+  type ThemeDraft,
+  type ThemeMode,
+} from "@/theme/themeOverrides"
 
 type TokenDefinition = {
   key: string
   label: string
   description: string
 }
-
-type ThemeValues = Record<string, string>
-
-type ThemeDraft = Record<ThemeMode, ThemeValues>
 
 const CORE_TOKEN_DEFINITIONS: readonly TokenDefinition[] = [
   { key: "background", label: "Background", description: "页面背景主色。" },
@@ -136,6 +142,11 @@ const COMPONENT_TOKEN_DEFINITIONS: readonly TokenDefinition[] = [
   },
 ] as const
 
+const ALL_TOKEN_DEFINITIONS = [
+  ...CORE_TOKEN_DEFINITIONS,
+  ...COMPONENT_TOKEN_DEFINITIONS,
+] as const
+
 const DEFAULT_TOKENS: ThemeDraft = {
   light: {
     background: "oklch(0.99 0.002 247)",
@@ -221,158 +232,165 @@ const DEFAULT_TOKENS: ThemeDraft = {
   },
 }
 
-const ALL_TOKEN_KEYS = [
-  ...CORE_TOKEN_DEFINITIONS.map((token) => token.key),
-  ...COMPONENT_TOKEN_DEFINITIONS.map((token) => token.key),
-]
-
-function buildPreviewStyle(mode: ThemeMode, draft: ThemeDraft) {
-  return ALL_TOKEN_KEYS.reduce<Record<string, string>>((style, key) => {
-    style[`--${key}`] = draft[mode][key]
-    return style
-  }, {})
+function mergeDraftWithDefaults(
+  draft: ThemeDraft | null | undefined
+): ThemeDraft {
+  return {
+    light: {
+      ...DEFAULT_TOKENS.light,
+      ...(draft?.light ?? {}),
+    },
+    dark: {
+      ...DEFAULT_TOKENS.dark,
+      ...(draft?.dark ?? {}),
+    },
+  }
 }
 
-function buildThemeCss(mode: ThemeMode, values: ThemeValues) {
-  const selector =
-    mode === "light" ? ":root" : 'html[data-theme="dark"],\n:root.dark'
+function getResolvedDocumentTheme(): ThemeMode {
+  if (typeof document === "undefined") {
+    return "light"
+  }
 
-  const coreLines = CORE_TOKEN_DEFINITIONS.map(
-    (token) => `  --${token.key}: ${values[token.key]};`
-  ).join("\n")
-
-  const componentLines = COMPONENT_TOKEN_DEFINITIONS.map(
-    (token) => `  --${token.key}: ${values[token.key]};`
-  ).join("\n")
-
-  return `${selector} {\n  /* Core semantic tokens */\n${coreLines}\n\n  /* Component-level tokens */\n${componentLines}\n}`
+  const attr = document.documentElement.getAttribute("data-theme")
+  return attr === "dark" ? "dark" : "light"
 }
 
-function ThemePreviewCard({
-  mode,
-  draft,
+function resolveColorInputValue(value: string) {
+  if (typeof document === "undefined") {
+    return "#000000"
+  }
+
+  const sample = document.createElement("span")
+  sample.style.color = ""
+  sample.style.color = value
+
+  if (!sample.style.color) {
+    return "#000000"
+  }
+
+  document.body.appendChild(sample)
+  const resolved = window.getComputedStyle(sample).color
+  sample.remove()
+
+  const match = resolved.match(
+    /rgba?\(\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})/i
+  )
+
+  if (!match) {
+    return "#000000"
+  }
+
+  const toHex = (channel: string) =>
+    Number(channel).toString(16).padStart(2, "0")
+
+  return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`
+}
+
+function ThemeTokenField({
+  token,
+  activeMode,
+  value,
+  onChange,
 }: {
-  mode: ThemeMode
-  draft: ThemeDraft
+  token: TokenDefinition
+  activeMode: ThemeMode
+  value: string
+  onChange: (value: string) => void
 }) {
-  const previewStyle = useMemo(() => buildPreviewStyle(mode, draft), [draft, mode])
+  const colorInputId = useId()
+  const colorInputRef = useRef<HTMLInputElement | null>(null)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const swatchRef = useRef<HTMLSpanElement | null>(null)
+
+  const getHexFromRenderedSwatch = () => {
+    const swatch = swatchRef.current
+    if (!swatch || typeof window === "undefined") {
+      return resolveColorInputValue(value)
+    }
+
+    const resolved = window.getComputedStyle(swatch).backgroundColor
+    const match = resolved.match(
+      /rgba?\(\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})/i
+    )
+
+    if (!match) {
+      return resolveColorInputValue(value)
+    }
+
+    const toHex = (channel: string) =>
+      Number(channel).toString(16).padStart(2, "0")
+
+    return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`
+  }
+
+  const positionColorInputNearTrigger = () => {
+    const input = colorInputRef.current
+    const trigger = triggerRef.current
+    if (!input || !trigger) {
+      return
+    }
+
+    input.value = getHexFromRenderedSwatch()
+
+    const rect = trigger.getBoundingClientRect()
+    input.style.left = `${Math.round(rect.left + rect.width / 2)}px`
+    input.style.top = `${Math.round(rect.top + rect.height / 2)}px`
+  }
+
+  const openColorPicker = () => {
+    const input = colorInputRef.current
+    if (!input) {
+      return
+    }
+
+    positionColorInputNearTrigger()
+
+    if ("showPicker" in input && typeof input.showPicker === "function") {
+      input.showPicker()
+      return
+    }
+
+    input.click()
+  }
 
   return (
-    <div
-      data-theme={mode}
-      className="rounded-2xl border border-(--border) p-4 shadow-sm"
-      style={{
-        ...previewStyle,
-        background: "var(--background)",
-        color: "var(--foreground)",
-      }}
-    >
+    <div className="rounded-xl border border-(--border) bg-(--card) p-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-sm font-medium">{mode === "light" ? "Light" : "Dark"} Preview</div>
-          <div className="text-xs text-(--muted-foreground)">
-            基于当前表单值渲染，不会改动真实包文件。
+          <div className="text-sm font-medium">{token.label}</div>
+          <div className="mt-1 text-xs text-(--muted-foreground)">
+            {token.description}
           </div>
         </div>
-        <Badge variant="outline">{mode}</Badge>
-      </div>
-      <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div
-          className="rounded-xl border p-4"
-          style={{
-            background: "var(--card)",
-            color: "var(--card-foreground)",
-            borderColor: "var(--border)",
-          }}
+        <button
+          type="button"
+          ref={triggerRef}
+          className="block h-14 w-14 shrink-0 cursor-pointer rounded-2xl border border-(--border) p-3"
+          aria-label={`${token.label} color picker`}
+          title={`选择 ${activeMode} ${token.label} 颜色`}
+          onClick={openColorPicker}
         >
-          <div className="text-sm font-semibold">Guild Theme Surface</div>
-          <div className="mt-1 text-sm text-(--muted-foreground)">
-            用一组语义色同时覆盖背景、按钮、输入框和状态色。
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium"
-              style={{
-                background: "var(--primary)",
-                color: "var(--primary-foreground)",
-              }}
-            >
-              Save Theme
-            </button>
-            <button
-              type="button"
-              className="rounded-lg border px-3 py-2 text-sm font-medium"
-              style={{
-                background: "var(--secondary)",
-                color: "var(--secondary-foreground)",
-                borderColor: "var(--primary-outline)",
-              }}
-            >
-              Secondary
-            </button>
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium"
-              style={{
-                background: "var(--destructive)",
-                color: "var(--primary-foreground)",
-              }}
-            >
-              Dangerous
-            </button>
-          </div>
-          <div
-            className="mt-4 rounded-xl border px-3 py-2 text-sm"
-            style={{
-              background: "var(--surface)",
-              color: "var(--surface-foreground)",
-              borderColor: "var(--input)",
-              boxShadow: "0 0 0 2px var(--ring) inset",
-            }}
-          >
-            Token-driven input shell
-          </div>
-        </div>
-        <div className="grid gap-3">
-          <div
-            className="rounded-xl border p-4"
-            style={{
-              background: "var(--sidebar)",
-              color: "var(--sidebar-foreground)",
-              borderColor: "var(--sidebar-border)",
-            }}
-          >
-            <div
-              className="inline-flex rounded-md px-2 py-1 text-xs font-semibold"
-              style={{
-                background: "var(--sidebar-primary)",
-                color: "var(--sidebar-primary-foreground)",
-              }}
-            >
-              Sidebar Primary
-            </div>
-            <div
-              className="mt-3 rounded-lg px-3 py-2 text-sm"
-              style={{
-                background: "var(--sidebar-accent)",
-                color: "var(--sidebar-accent-foreground)",
-              }}
-            >
-              Active navigation item
-            </div>
-          </div>
-          <div className="grid grid-cols-5 gap-2">
-            {["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"].map((key) => (
-              <div key={key} className="space-y-2 text-center text-[11px] text-(--muted-foreground)">
-                <div
-                  className="h-14 rounded-lg"
-                  style={{ background: `var(--${key})` }}
-                />
-                <span>{key}</span>
-              </div>
-            ))}
-          </div>
+          <span
+            ref={swatchRef}
+            className="block h-full w-full rounded-md border border-black/10"
+            style={{ background: value }}
+          />
+        </button>
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <input
+          id={colorInputId}
+          ref={colorInputRef}
+          type="color"
+          value={resolveColorInputValue(value)}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="pointer-events-none fixed z-[-1] h-px w-px opacity-0"
+          onChange={(event) => onChange(event.target.value)}
+        />
+        <div className="min-w-0 flex-1">
+          <Input value={value} onValueChange={onChange} />
         </div>
       </div>
     </div>
@@ -381,93 +399,112 @@ function ThemePreviewCard({
 
 export default function ThemeGuidePage() {
   const [activeMode, setActiveMode] = useState<ThemeMode>("light")
-  const [draft, setDraft] = useState<ThemeDraft>(DEFAULT_TOKENS)
-
-  const cssOutput = useMemo(
-    () =>
-      `${buildThemeCss("light", draft.light)}\n\n${buildThemeCss("dark", draft.dark)}`,
-    [draft]
+  const [draft, setDraft] = useState<ThemeDraft>(() =>
+    mergeDraftWithDefaults(loadThemeOverrides())
   )
+  const [editorShellMode, setEditorShellMode] = useState<ThemeMode>(() =>
+    getResolvedDocumentTheme()
+  )
+
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return undefined
+    }
+
+    const root = document.documentElement
+    const observer = new MutationObserver(() => {
+      setEditorShellMode(getResolvedDocumentTheme())
+    })
+
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  const editorShellStyle = ALL_TOKEN_DEFINITIONS.reduce((style, token) => {
+    style[`--${token.key}`] = DEFAULT_TOKENS[editorShellMode][token.key]
+    return style
+  }, {} as Record<string, string>) as CSSProperties
 
   const updateToken = (mode: ThemeMode, key: string, value: string) => {
     setDraft((current) => ({
       ...current,
-      [mode]: {
-        ...current[mode],
-        [key]: value,
-      },
+      [mode]: (() => {
+        const nextMode = {
+          ...current[mode],
+          [key]: value,
+        }
+
+        const nextDraft = {
+          ...current,
+          [mode]: nextMode,
+        }
+
+        applyThemeOverrides(nextDraft)
+        saveThemeOverrides(nextDraft)
+        return nextMode
+      })(),
     }))
   }
 
   const resetMode = (mode: ThemeMode) => {
-    setDraft((current) => ({
-      ...current,
-      [mode]: { ...DEFAULT_TOKENS[mode] },
-    }))
+    setDraft((current) => {
+      const nextDraft = {
+        ...current,
+        [mode]: { ...DEFAULT_TOKENS[mode] },
+      }
+
+      applyThemeOverrides(nextDraft)
+      saveThemeOverrides(nextDraft)
+      return nextDraft
+    })
   }
 
-  const copyCss = async () => {
-    await navigator.clipboard.writeText(cssOutput)
-    toast("Theme CSS copied", {
-      description: "可以直接贴回 @workspace/ui-theme 的 light/dark token 文件。",
-    })
+  const resetAll = () => {
+    const nextDraft = mergeDraftWithDefaults(null)
+    setDraft(nextDraft)
+    clearThemeOverrides()
   }
 
   return (
     <div className="min-h-0 min-w-0 flex-1 overflow-auto">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 p-4 md:p-6">
+      <div
+        className="mx-auto flex max-w-6xl flex-col gap-6 p-4 md:p-6"
+        style={editorShellStyle}
+      >
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="space-y-2">
-                <Badge variant="outline">ui-theme semantics</Badge>
+              <div>
                 <CardTitle>Theme 配置页</CardTitle>
                 <CardDescription>
-                  按照 `@workspace/ui-theme` 当前语义 token 结构，分别配置 light 和 dark
-                  颜色，并实时查看组件预览与导出结果。
+                  直接修改当前 guide 项目的 light/dark 主题变量。
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={resetAll}>
+                  恢复全部默认
+                </Button>
                 <Button variant="outline" onClick={() => resetMode(activeMode)}>
                   重置当前模式
                 </Button>
-                <Button onClick={() => void copyCss()}>复制 CSS</Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 rounded-2xl border border-dashed border-(--border) bg-(--surface) p-4 md:grid-cols-3">
-              <div>
-                <div className="text-sm font-medium">编辑方式</div>
-                <div className="mt-1 text-sm text-(--muted-foreground)">
-                  支持 `oklch()`、`color(display-p3 ...)`、hex、rgb 和命名色。
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-medium">适用场景</div>
-                <div className="mt-1 text-sm text-(--muted-foreground)">
-                  给 guild/guide 页面先做视觉试配，再回填到 `ui-theme` 包。
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-medium">边界</div>
-                <div className="mt-1 text-sm text-(--muted-foreground)">
-                  这里只改浏览器中的草稿值，不直接写入包源码。
-                </div>
-              </div>
-            </div>
-          </CardContent>
         </Card>
 
-        <div id="semantic-tokens" className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div id="semantic-tokens">
           <Card>
             <CardHeader>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <CardTitle>Semantic Tokens</CardTitle>
-                  <CardDescription>
-                    先切换模式，再编辑对应 token。字段名与 `ui-theme` 保持一致。
-                  </CardDescription>
+                  <CardDescription>字段名与 `ui-theme` 保持一致。</CardDescription>
                 </div>
                 <div className="flex items-center gap-2 rounded-xl bg-(--muted) p-1">
                   {(["light", "dark"] as const).map((mode) => (
@@ -476,8 +513,7 @@ export default function ThemeGuidePage() {
                       type="button"
                       className="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
                       style={{
-                        background:
-                          activeMode === mode ? "var(--card)" : "transparent",
+                        background: activeMode === mode ? "var(--card)" : "transparent",
                         color:
                           activeMode === mode
                             ? "var(--card-foreground)"
@@ -494,100 +530,35 @@ export default function ThemeGuidePage() {
             <CardContent>
               <div className="space-y-6">
                 <section className="space-y-4">
-                  <div>
-                    <div className="text-sm font-semibold">Core tokens</div>
-                    <div className="text-sm text-(--muted-foreground)">
-                      页面层语义色，覆盖背景、文本、边框、状态和品牌主色。
-                    </div>
-                  </div>
+                  <div className="text-sm font-semibold">Core tokens</div>
                   <div className="grid gap-3 md:grid-cols-2">
                     {CORE_TOKEN_DEFINITIONS.map((token) => (
-                      <label
+                      <ThemeTokenField
                         key={token.key}
-                        className="rounded-xl border border-(--border) bg-(--card) p-3"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="text-sm font-medium">{token.label}</div>
-                            <div className="mt-1 text-xs text-(--muted-foreground)">
-                              {token.description}
-                            </div>
-                          </div>
-                          <div
-                            className="h-8 w-8 shrink-0 rounded-md border border-(--border)"
-                            style={{ background: draft[activeMode][token.key] }}
-                          />
-                        </div>
-                        <Input
-                          value={draft[activeMode][token.key]}
-                          onValueChange={(value) =>
-                            updateToken(activeMode, token.key, value)
-                          }
-                        />
-                      </label>
+                        token={token}
+                        activeMode={activeMode}
+                        value={draft[activeMode][token.key]}
+                        onChange={(value) => updateToken(activeMode, token.key, value)}
+                      />
                     ))}
                   </div>
                 </section>
 
                 <section className="space-y-4">
-                  <div>
-                    <div className="text-sm font-semibold">Component tokens</div>
-                    <div className="text-sm text-(--muted-foreground)">
-                      输入框、图表、sidebar 这类组件级颜色语义。
-                    </div>
-                  </div>
+                  <div className="text-sm font-semibold">Component tokens</div>
                   <div className="grid gap-3 md:grid-cols-2">
                     {COMPONENT_TOKEN_DEFINITIONS.map((token) => (
-                      <label
+                      <ThemeTokenField
                         key={token.key}
-                        className="rounded-xl border border-(--border) bg-(--card) p-3"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="text-sm font-medium">{token.label}</div>
-                            <div className="mt-1 text-xs text-(--muted-foreground)">
-                              {token.description}
-                            </div>
-                          </div>
-                          <div
-                            className="h-8 w-8 shrink-0 rounded-md border border-(--border)"
-                            style={{ background: draft[activeMode][token.key] }}
-                          />
-                        </div>
-                        <Input
-                          value={draft[activeMode][token.key]}
-                          onValueChange={(value) =>
-                            updateToken(activeMode, token.key, value)
-                          }
-                        />
-                      </label>
+                        token={token}
+                        activeMode={activeMode}
+                        value={draft[activeMode][token.key]}
+                        onChange={(value) => updateToken(activeMode, token.key, value)}
+                      />
                     ))}
                   </div>
                 </section>
               </div>
-            </CardContent>
-          </Card>
-
-          <div id="preview" className="space-y-6">
-            <ThemePreviewCard mode="light" draft={draft} />
-            <ThemePreviewCard mode="dark" draft={draft} />
-          </div>
-        </div>
-
-        <div id="export">
-          <Card>
-            <CardHeader>
-              <CardTitle>导出 CSS</CardTitle>
-              <CardDescription>
-                当前输出遵循 `ui-theme` 的 light/dark 语义结构，可以直接作为 token 草稿。
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <textarea
-                value={cssOutput}
-                readOnly
-                className="min-h-[420px] w-full rounded-xl border border-(--border) bg-(--surface) p-3 font-mono text-xs text-(--foreground)"
-              />
             </CardContent>
           </Card>
         </div>

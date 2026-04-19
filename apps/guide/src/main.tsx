@@ -7,6 +7,7 @@ import { queryClient } from "@workspace/services/query/client"
 import App from "./App.tsx"
 import { initTheme } from "@workspace/ui-theme"
 import { getEnv } from "@/config/env"
+import { applyThemeOverrides, loadThemeOverrides } from "@/theme/themeOverrides"
 
 async function bootstrap() {
   const rootElement = document.getElementById("root")
@@ -20,6 +21,10 @@ async function bootstrap() {
   }
 
   initTheme()
+  const themeOverrides = loadThemeOverrides()
+  if (themeOverrides) {
+    applyThemeOverrides(themeOverrides)
+  }
 
   createRoot(rootElement).render(
     <StrictMode>
