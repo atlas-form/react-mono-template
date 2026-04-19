@@ -144,7 +144,10 @@ export function FoundationDemo() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <Checkbox checked={checked} onCheckedChange={setChecked} />
+              <Checkbox
+                checked={checked}
+                onCheckedChange={(next) => setChecked(next === true)}
+              />
               <Checkbox checked disabled />
             </div>
 

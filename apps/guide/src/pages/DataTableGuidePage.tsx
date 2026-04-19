@@ -560,20 +560,21 @@ export default function DataTableGuidePage() {
         </section>
 
         <section className="grid items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <Card className="lg:sticky lg:top-4">
-            <CardHeader>
-              <CardTitle>
-                <span className="flex items-center gap-2">
-                  <Filter className="size-4" />
-                  配置工具条
-                </span>
-              </CardTitle>
-              <CardDescription>
-                开关放在左侧，收窄控制区，主区域尽量留给表格预览。
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-2">
+          <div className="lg:sticky lg:top-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <span className="flex items-center gap-2">
+                    <Filter className="size-4" />
+                    配置工具条
+                  </span>
+                </CardTitle>
+                <CardDescription>
+                  开关放在左侧，收窄控制区，主区域尽量留给表格预览。
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-2">
                 <div className="px-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
                   业务能力
                 </div>
@@ -671,31 +672,32 @@ export default function DataTableGuidePage() {
                   (value) => setFeature("customEmptyCopy", value)
                 )}
               </div>
-              <div className="mt-4 rounded-xl border border-dashed border-(--app-border) p-3">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
-                  弹窗示例
+                <div className="mt-4 rounded-xl border border-dashed border-(--app-border) p-3">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
+                    弹窗示例
+                  </div>
+                  <div className="mt-3 grid gap-2">
+                    {renderDemoHint(
+                      "新增弹窗",
+                      "打开表格右上角“新增客户”，看 insert.renderContent 自定义内容。"
+                    )}
+                    {renderDemoHint(
+                      "编辑弹窗",
+                      "点任意行的编辑图标，看 rowActions.edit.title / description / renderContent。"
+                    )}
+                    {renderDemoHint(
+                      "删除弹窗",
+                      "点任意行的删除图标，看 rowActions.delete 的自定义标题和说明。"
+                    )}
+                    {renderDemoHint(
+                      "更多菜单",
+                      "点操作列里的更多菜单，查看 moreItems；其中“打开审计弹窗”会触发业务自定义 Dialog。"
+                    )}
+                  </div>
                 </div>
-                <div className="mt-3 grid gap-2">
-                  {renderDemoHint(
-                    "新增弹窗",
-                    "打开表格右上角“新增客户”，看 insert.renderContent 自定义内容。"
-                  )}
-                  {renderDemoHint(
-                    "编辑弹窗",
-                    "点任意行的编辑图标，看 rowActions.edit.title / description / renderContent。"
-                  )}
-                  {renderDemoHint(
-                    "删除弹窗",
-                    "点任意行的删除图标，看 rowActions.delete 的自定义标题和说明。"
-                  )}
-                  {renderDemoHint(
-                    "更多菜单",
-                    "点操作列里的更多菜单，查看 moreItems；其中“打开审计弹窗”会触发业务自定义 Dialog。"
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
           <div id="live-demo" className="min-h-[820px] overflow-hidden rounded-[24px] border border-(--app-border) bg-(--app-surface)">
             <Card>

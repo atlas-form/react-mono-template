@@ -1,6 +1,11 @@
 import { useMemo } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
-import { BookOpenText, LayoutPanelTop, TableProperties } from "lucide-react"
+import {
+  BookOpenText,
+  LayoutPanelTop,
+  Palette,
+  TableProperties,
+} from "lucide-react"
 import { LanguageSwitch, ThemeToggle } from "@workspace/app-components"
 import {
   AdminSidebar,
@@ -19,6 +24,17 @@ const navItems = [
       { label: "快速预设", href: "/#presets" },
       { label: "实时示例", href: "/#live-demo" },
       { label: "配置说明", href: "/#playbook" },
+    ],
+  },
+  {
+    label: "Theme 配置",
+    path: "/theme",
+    icon: <Palette />,
+    matcher: (pathname: string) => pathname === "/theme",
+    subItems: [
+      { label: "语义 token", href: "/theme#semantic-tokens" },
+      { label: "双端预览", href: "/theme#preview" },
+      { label: "导出 CSS", href: "/theme#export" },
     ],
   },
 ]

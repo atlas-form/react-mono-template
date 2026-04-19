@@ -11,7 +11,9 @@
     "dev:all": "turbo dev",
     "lint": "turbo lint",
     "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "test": "turbo test --filter=admin --filter=guide --filter=web",
+    "test:watch": "turbo test:watch --filter=admin --filter=guide --filter=web"
   },
   "devDependencies": {
     "prettier": "catalog:",

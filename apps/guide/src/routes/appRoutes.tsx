@@ -4,7 +4,7 @@ import type { RouteObject } from "react-router"
 import AppLayout from "@/layouts/AppLayout"
 import PageLoading from "@/components/system/PageLoading"
 import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
-import { DataTableGuidePage } from "@/routes/lazy/appPages"
+import { DataTableGuidePage, ThemeGuidePage } from "@/routes/lazy/appPages"
 
 function withSuspense(node: ReactNode) {
   return <Suspense fallback={<PageLoading />}>{node}</Suspense>
@@ -18,6 +18,10 @@ export const appRoutes: RouteObject = {
     {
       index: true,
       element: withSuspense(<DataTableGuidePage />),
+    },
+    {
+      path: "theme",
+      element: withSuspense(<ThemeGuidePage />),
     },
   ],
 }

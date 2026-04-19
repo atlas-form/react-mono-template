@@ -16,6 +16,11 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
+    "test": {},
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
     "dev": {
       "cache": false,
       "persistent": true
