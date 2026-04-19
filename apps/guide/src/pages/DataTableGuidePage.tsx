@@ -25,6 +25,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Input,
   Separator,
   Switch,
@@ -72,6 +78,9 @@ interface FeatureState {
   stickyLeft: boolean
   stickyRight: boolean
   denseColumns: boolean
+  zebraRows: boolean
+  showEmptyState: boolean
+  customEmptyCopy: boolean
 }
 
 const REGIONS = ["North China", "East China", "South China", "West China"] as const
@@ -93,6 +102,9 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyLeft: false,
     stickyRight: false,
     denseColumns: false,
+    zebraRows: false,
+    showEmptyState: false,
+    customEmptyCopy: false,
   },
   operations: {
     selection: true,
@@ -105,6 +117,9 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyLeft: true,
     stickyRight: true,
     denseColumns: false,
+    zebraRows: true,
+    showEmptyState: false,
+    customEmptyCopy: false,
   },
   audit: {
     selection: true,
@@ -117,6 +132,9 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyLeft: true,
     stickyRight: true,
     denseColumns: true,
+    zebraRows: true,
+    showEmptyState: false,
+    customEmptyCopy: false,
   },
 }
 
@@ -184,6 +202,7 @@ export default function DataTableGuidePage() {
     region: "East China",
   })
   const [activeTab, setActiveTab] = useState("live")
+  const [auditDialogRow, setAuditDialogRow] = useState<CustomerRow | null>(null)
 
   const applyPreset = (nextPreset: ScenarioPreset) => {
     setPreset(nextPreset)
@@ -191,16 +210,25 @@ export default function DataTableGuidePage() {
   }
 
   const setFeature = (key: keyof FeatureState, value: boolean) => {
-    setFeatures((current) => ({
-      ...current,
-      [key]: value,
-      selection:
+    setFeatures((current) => {
+      const next = {
+        ...current,
+        [key]: value,
+      }
+
+      next.selection =
         key === "selection"
           ? value
           : key === "bulkUpdate" || key === "bulkDelete"
             ? value || current.selection
-            : current.selection,
-    }))
+            : current.selection
+
+      if (key === "customEmptyCopy" && value) {
+        next.showEmptyState = true
+      }
+
+      return next
+    })
   }
 
   const columns = useMemo<readonly DataTableColumn<CustomerRow>[]>(() => {
@@ -377,12 +405,19 @@ export default function DataTableGuidePage() {
       })
 
       const start = (page - 1) * pageSize
+      if (features.showEmptyState) {
+        return {
+          items: [],
+          total: 0,
+        }
+      }
+
       return {
         items: sortedRows.slice(start, start + pageSize),
         total: sortedRows.length,
       }
     },
-    [rows]
+    [features.showEmptyState, rows]
   )
 
   const builtInQueryFields = useMemo<
@@ -450,6 +485,7 @@ export default function DataTableGuidePage() {
     () => buildSnippet({ features, preset }),
     [features, preset]
   )
+  const dialogSnippet = useMemo(() => buildDialogSnippet(), [])
 
   const currentPreset = PRESET_COPY[preset]
 
@@ -530,6 +566,9 @@ export default function DataTableGuidePage() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-2">
+                <div className="px-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
+                  业务能力
+                </div>
                 {renderFeatureChip(
                   "首列勾选",
                   "selection",
@@ -590,6 +629,50 @@ export default function DataTableGuidePage() {
                   features.denseColumns,
                   (value) => setFeature("denseColumns", value)
                 )}
+                <div className="px-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
+                  展示效果
+                </div>
+                {renderFeatureChip(
+                  "斑马纹",
+                  "striped rows",
+                  features.zebraRows,
+                  (value) => setFeature("zebraRows", value)
+                )}
+                {renderFeatureChip(
+                  "空态演示",
+                  "empty rows",
+                  features.showEmptyState,
+                  (value) => setFeature("showEmptyState", value)
+                )}
+                {renderFeatureChip(
+                  "自定义空文案",
+                  "renderEmpty",
+                  features.customEmptyCopy,
+                  (value) => setFeature("customEmptyCopy", value)
+                )}
+              </div>
+              <div className="mt-4 rounded-xl border border-dashed border-(--app-border) p-3">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-(--app-muted-text)">
+                  弹窗示例
+                </div>
+                <div className="mt-3 grid gap-2">
+                  {renderDemoHint(
+                    "新增弹窗",
+                    "打开表格右上角“新增客户”，看 insert.renderContent 自定义内容。"
+                  )}
+                  {renderDemoHint(
+                    "编辑弹窗",
+                    "点任意行的编辑图标，看 rowActions.edit.title / description / renderContent。"
+                  )}
+                  {renderDemoHint(
+                    "删除弹窗",
+                    "点任意行的删除图标，看 rowActions.delete 的自定义标题和说明。"
+                  )}
+                  {renderDemoHint(
+                    "更多菜单",
+                    "点操作列里的更多菜单，查看 moreItems；其中“打开审计弹窗”会触发业务自定义 Dialog。"
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -615,17 +698,24 @@ export default function DataTableGuidePage() {
                 <TabsList>
                   <TabsTrigger value="live">Live Demo</TabsTrigger>
                   <TabsTrigger value="config">配置片段</TabsTrigger>
+                  <TabsTrigger value="dialogs">弹窗范例</TabsTrigger>
                   <TabsTrigger value="playbook">接入说明</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="live">
                   <div className="space-y-4">
+                    <div className="rounded-xl border border-dashed border-(--app-border) px-4 py-3 text-sm leading-6 text-(--app-muted-text)">
+                      例子入口：
+                      点表格右上角“新增客户”；点任意行的编辑、删除、更多菜单；更多菜单里的“打开审计弹窗”演示的是业务层自定义 Dialog。
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline">preset: {preset}</Badge>
                       <Badge variant="secondary">columns: {columns.length}</Badge>
                       <Badge variant="outline">
                         filters: {builtInQueryFields.length + queryFields.length}
                       </Badge>
+                      {features.zebraRows ? <Badge variant="outline">striped</Badge> : null}
+                      {features.showEmptyState ? <Badge variant="outline">empty state</Badge> : null}
                       {features.rowActions ? <Badge>rowActions</Badge> : null}
                       {features.bulkUpdate ? <Badge>bulkUpdate</Badge> : null}
                       {features.bulkDelete ? <Badge>bulkDelete</Badge> : null}
@@ -637,7 +727,31 @@ export default function DataTableGuidePage() {
                         columns={columns}
                         fetchData={fetchData}
                         getRowId={(row) => row.id}
-                        caption="Guide demo for DataTable configuration"
+                        caption={
+                          features.customEmptyCopy
+                            ? "Guide demo with custom empty experience"
+                            : "Guide demo for DataTable configuration"
+                        }
+                        emptyText={
+                          features.customEmptyCopy
+                            ? "当前筛选下没有客户数据。你可以修改筛选条件后重试。"
+                            : undefined
+                        }
+                        renderEmpty={
+                          features.customEmptyCopy
+                            ? () => (
+                                <div className="flex min-h-[220px] flex-col items-center justify-center gap-3 text-center">
+                                  <div className="text-sm font-medium">
+                                    当前没有可展示的数据
+                                  </div>
+                                  <div className="max-w-[320px] text-sm text-(--app-muted-text)">
+                                    这块可以替换成业务空态，比如引导创建首条记录，或者提示先完成筛选条件。
+                                  </div>
+                                </div>
+                              )
+                            : undefined
+                        }
+                        stripedRows={features.zebraRows}
                         height="100%"
                         fixedLeftColumns={features.stickyLeft ? 2 : 0}
                         fixedRightColumns={features.stickyRight ? 1 : 0}
@@ -808,6 +922,13 @@ export default function DataTableGuidePage() {
                                       void navigator.clipboard?.writeText(row.id)
                                     },
                                   },
+                                  {
+                                    key: "open-audit-dialog",
+                                    label: "打开审计弹窗",
+                                    onClick: (row) => {
+                                      setAuditDialogRow(row)
+                                    },
+                                  },
                                 ],
                               }
                             : false
@@ -827,6 +948,37 @@ export default function DataTableGuidePage() {
                     <p className="text-sm leading-6 text-(--app-muted-text)">
                       这个片段不是完整页面，而是告诉用户当前这组按钮会映射成哪些关键 props。
                     </p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="dialogs">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-(--app-border) bg-[#101828] p-4 text-sm text-slate-100">
+                      <pre className="overflow-x-auto whitespace-pre-wrap font-mono leading-6">
+                        {dialogSnippet}
+                      </pre>
+                    </div>
+                    <div className="grid gap-3 lg:grid-cols-3">
+                      <div className="rounded-2xl border border-(--app-border) p-4">
+                        <div className="text-sm font-medium">新增弹窗</div>
+                        <div className="mt-2 text-sm leading-6 text-(--app-muted-text)">
+                          用 `insert.title`、`insert.description` 和
+                          `insert.renderContent` 自定义表单内容。
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-(--app-border) p-4">
+                        <div className="text-sm font-medium">编辑弹窗</div>
+                        <div className="mt-2 text-sm leading-6 text-(--app-muted-text)">
+                          `rowActions.edit.renderContent` 可以按当前行内容渲染不同表单。
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-(--app-border) p-4">
+                        <div className="text-sm font-medium">更多菜单</div>
+                        <div className="mt-2 text-sm leading-6 text-(--app-muted-text)">
+                          `moreItems` 适合挂复制、跳转、打开二次确认弹窗这类扩展动作。
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </TabsContent>
 
@@ -927,6 +1079,42 @@ export default function DataTableGuidePage() {
           </div>
         </section>
       </div>
+
+      <Dialog
+        open={auditDialogRow !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setAuditDialogRow(null)
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>自定义审计弹窗示例</DialogTitle>
+            <DialogDescription>
+              这个弹窗不是 DataTable 内建动作，而是通过 `moreItems[].onClick`
+              从业务层自己打开的。
+            </DialogDescription>
+          </DialogHeader>
+          {auditDialogRow ? (
+            <div className="grid gap-3 rounded-xl border border-(--app-border) p-4 text-sm">
+              <div>客户名称：{auditDialogRow.name}</div>
+              <div>客户 ID：{auditDialogRow.id}</div>
+              <div>当前状态：{auditDialogRow.status}</div>
+              <div>负责人：{auditDialogRow.owner}</div>
+            </div>
+          ) : null}
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAuditDialogRow(null)}
+            >
+              关闭
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
@@ -946,6 +1134,17 @@ function renderFeatureChip(
         </div>
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </div>
+  )
+}
+
+function renderDemoHint(title: string, description: string) {
+  return (
+    <div className="rounded-lg border border-(--app-border) px-2.5 py-2">
+      <div className="text-[12px] font-medium leading-4">{title}</div>
+      <div className="mt-1 text-[11px] leading-4 text-(--app-muted-text)">
+        {description}
+      </div>
     </div>
   )
 }
@@ -997,9 +1196,64 @@ function buildSnippet({
     lines.push(`  rowActions={{ edit, delete, moreItems }}`)
   }
 
+  if (!features.zebraRows) {
+    lines.push(`  stripedRows={false}`)
+  }
+
+  if (features.showEmptyState) {
+    lines.push(`  // empty state demo: fetchData returns { items: [], total: 0 }`)
+  }
+
+  if (features.customEmptyCopy) {
+    lines.push(`  renderEmpty={() => <CustomEmptyState />}`)
+  }
+
   lines.push(`/>`)
 
   return lines.join("\n")
+}
+
+function buildDialogSnippet() {
+  return [
+    `<DataTable<CustomerRow, TableQuery>`,
+    `  insert={{`,
+    `    title: "新增客户示例",`,
+    `    description: "这里可以放自定义说明文案。",`,
+    `    renderContent: ({ close }) => (`,
+    `      <CustomInsertForm onCancel={close} />`,
+    `    ),`,
+    `    onConfirm: handleInsert,`,
+    `  }}`,
+    ``,
+    `  rowActions={{`,
+    `    edit: {`,
+    `      title: (row) => \`编辑 \${row.name}\`,`,
+    `      description: (row) => \`客户 ID: \${row.id}\`,`,
+    `      renderContent: ({ row, close }) => (`,
+    `        <CustomerEditor row={row} onCancel={close} />`,
+    `      ),`,
+    `      onConfirm: handleRowEdit,`,
+    `    },`,
+    `    delete: {`,
+    `      title: (row) => \`删除 \${row.name}？\`,`,
+    `      description: (row) => \`删除前请确认客户 ID: \${row.id}\`,`,
+    `      onConfirm: handleRowDelete,`,
+    `    },`,
+    `    moreItems: [`,
+    `      {`,
+    `        key: "copy-id",`,
+    `        label: "复制客户 ID",`,
+    `        onClick: (row) => navigator.clipboard.writeText(row.id),`,
+    `      },`,
+    `      {`,
+    `        key: "open-audit-dialog",`,
+    `        label: "打开审计弹窗",`,
+    `        onClick: (row) => openAuditDialog(row),`,
+    `      },`,
+    `    ],`,
+    `  }}`,
+    `/>`,
+  ].join("\n")
 }
 
 function createCustomerRows() {

@@ -109,6 +109,7 @@ export function DataTable<T, TQuery extends object = object>({
   bulkDelete = false,
   bulkUpdate = false,
   rowActions = false,
+  stripedRows = true,
   height,
   refreshLabel,
   resetLabel,
@@ -880,7 +881,7 @@ export function DataTable<T, TQuery extends object = object>({
 
                 {!loading && !error
                   ? rows.map((row: T, rowIndex: number) => {
-                      const isStriped = rowIndex % 2 === 1
+                      const isStriped = stripedRows && rowIndex % 2 === 1
 
                       return (
                       <DataTableTableRow
