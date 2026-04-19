@@ -261,6 +261,8 @@ export interface DataTableProps<T, TQuery extends object = object> {
   bulkUpdate?: false | DataTableBulkUpdateConfig<T>
   rowActions?: false | DataTableRowActionsConfig<T>
   stripedRows?: boolean
+  compactColumns?: boolean
+  compactRows?: boolean
   height?: number | string
   refreshLabel?: string
   resetLabel?: string

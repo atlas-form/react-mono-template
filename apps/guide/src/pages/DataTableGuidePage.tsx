@@ -79,6 +79,8 @@ interface FeatureState {
   stickyRight: boolean
   denseColumns: boolean
   zebraRows: boolean
+  compactColumns: boolean
+  compactRows: boolean
   showEmptyState: boolean
   customEmptyCopy: boolean
 }
@@ -103,6 +105,8 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyRight: false,
     denseColumns: false,
     zebraRows: false,
+    compactColumns: false,
+    compactRows: false,
     showEmptyState: false,
     customEmptyCopy: false,
   },
@@ -118,6 +122,8 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyRight: true,
     denseColumns: false,
     zebraRows: true,
+    compactColumns: false,
+    compactRows: false,
     showEmptyState: false,
     customEmptyCopy: false,
   },
@@ -133,6 +139,8 @@ const PRESET_FEATURES: Record<ScenarioPreset, FeatureState> = {
     stickyRight: true,
     denseColumns: true,
     zebraRows: true,
+    compactColumns: true,
+    compactRows: true,
     showEmptyState: false,
     customEmptyCopy: false,
   },
@@ -639,6 +647,18 @@ export default function DataTableGuidePage() {
                   (value) => setFeature("zebraRows", value)
                 )}
                 {renderFeatureChip(
+                  "紧凑列距",
+                  "compact columns",
+                  features.compactColumns,
+                  (value) => setFeature("compactColumns", value)
+                )}
+                {renderFeatureChip(
+                  "紧凑行高",
+                  "compact rows",
+                  features.compactRows,
+                  (value) => setFeature("compactRows", value)
+                )}
+                {renderFeatureChip(
                   "空态演示",
                   "empty rows",
                   features.showEmptyState,
@@ -715,6 +735,12 @@ export default function DataTableGuidePage() {
                         filters: {builtInQueryFields.length + queryFields.length}
                       </Badge>
                       {features.zebraRows ? <Badge variant="outline">striped</Badge> : null}
+                      {features.compactColumns ? (
+                        <Badge variant="outline">compact columns</Badge>
+                      ) : null}
+                      {features.compactRows ? (
+                        <Badge variant="outline">compact rows</Badge>
+                      ) : null}
                       {features.showEmptyState ? <Badge variant="outline">empty state</Badge> : null}
                       {features.rowActions ? <Badge>rowActions</Badge> : null}
                       {features.bulkUpdate ? <Badge>bulkUpdate</Badge> : null}
@@ -752,6 +778,8 @@ export default function DataTableGuidePage() {
                             : undefined
                         }
                         stripedRows={features.zebraRows}
+                        compactColumns={features.compactColumns}
+                        compactRows={features.compactRows}
                         height="100%"
                         fixedLeftColumns={features.stickyLeft ? 2 : 0}
                         fixedRightColumns={features.stickyRight ? 1 : 0}
@@ -1198,6 +1226,14 @@ function buildSnippet({
 
   if (!features.zebraRows) {
     lines.push(`  stripedRows={false}`)
+  }
+
+  if (features.compactColumns) {
+    lines.push(`  compactColumns`)
+  }
+
+  if (features.compactRows) {
+    lines.push(`  compactRows`)
   }
 
   if (features.showEmptyState) {

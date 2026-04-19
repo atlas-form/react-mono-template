@@ -110,6 +110,8 @@ export function DataTable<T, TQuery extends object = object>({
   bulkUpdate = false,
   rowActions = false,
   stripedRows = true,
+  compactColumns = false,
+  compactRows = false,
   height,
   refreshLabel,
   resetLabel,
@@ -766,6 +768,8 @@ export function DataTable<T, TQuery extends object = object>({
                       minWidth={`${selectionColumnWidth}px`}
                       width={`${selectionColumnWidth}px`}
                       priority="selection"
+                      compactColumns={compactColumns}
+                      compactRows={compactRows}
                     >
                       <div className="flex items-center justify-center">
                         <Checkbox
@@ -815,6 +819,8 @@ export function DataTable<T, TQuery extends object = object>({
                         minWidth={resolveColumnMinWidth(
                           column as DataTableColumn<object>
                         )}
+                        compactColumns={compactColumns}
+                        compactRows={compactRows}
                       >
                         <button
                           type="button"
@@ -843,8 +849,12 @@ export function DataTable<T, TQuery extends object = object>({
 
               <DataTableTableBody>
                 {loading ? (
-                  <DataTableTableRow>
-                    <DataTableTableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow compactRows={compactRows}>
+                    <DataTableTableCell
+                      colSpan={totalColumnCount}
+                      compactColumns={compactColumns}
+                      compactRows={compactRows}
+                    >
                       {renderLoading ? (
                         loadingContentResolved
                       ) : (
@@ -864,16 +874,24 @@ export function DataTable<T, TQuery extends object = object>({
                 ) : null}
 
                 {!loading && error ? (
-                  <DataTableTableRow>
-                    <DataTableTableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow compactRows={compactRows}>
+                    <DataTableTableCell
+                      colSpan={totalColumnCount}
+                      compactColumns={compactColumns}
+                      compactRows={compactRows}
+                    >
                       {errorContent}
                     </DataTableTableCell>
                   </DataTableTableRow>
                 ) : null}
 
                 {!loading && !error && !hasRows ? (
-                  <DataTableTableRow>
-                    <DataTableTableCell colSpan={totalColumnCount}>
+                  <DataTableTableRow compactRows={compactRows}>
+                    <DataTableTableCell
+                      colSpan={totalColumnCount}
+                      compactColumns={compactColumns}
+                      compactRows={compactRows}
+                    >
                       {emptyContent}
                     </DataTableTableCell>
                   </DataTableTableRow>
@@ -887,6 +905,7 @@ export function DataTable<T, TQuery extends object = object>({
                       <DataTableTableRow
                         key={getRowId(row, rowIndex)}
                         striped={isStriped}
+                        compactRows={compactRows}
                       >
                         {rowSelectionEnabled ? (
                           <DataTableTableCell
@@ -896,6 +915,8 @@ export function DataTable<T, TQuery extends object = object>({
                             width={`${selectionColumnWidth}px`}
                             striped={isStriped}
                             priority="selection"
+                            compactColumns={compactColumns}
+                            compactRows={compactRows}
                           >
                             <div className="flex items-center justify-center">
                               <Checkbox
@@ -948,6 +969,8 @@ export function DataTable<T, TQuery extends object = object>({
                             minWidth={resolveColumnMinWidth(
                               column as DataTableColumn<object>
                             )}
+                            compactColumns={compactColumns}
+                            compactRows={compactRows}
                           >
                             <Fragment>
                               {column.renderCell(row, rowIndex)}

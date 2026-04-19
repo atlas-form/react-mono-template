@@ -66,6 +66,7 @@ export interface DataTableTableBodyProps {
 export interface DataTableTableRowProps {
   children: ReactNode
   striped?: boolean
+  compactRows?: boolean
 }
 
 export interface DataTableTableHeadProps {
@@ -76,6 +77,8 @@ export interface DataTableTableHeadProps {
   stickyOffset?: number
   priority?: "base" | "sticky" | "selection"
   ariaSort?: "none" | "ascending" | "descending" | "other"
+  compactColumns?: boolean
+  compactRows?: boolean
 }
 
 export interface DataTableTableCellProps {
@@ -87,6 +90,8 @@ export interface DataTableTableCellProps {
   stickyOffset?: number
   striped?: boolean
   priority?: "base" | "sticky" | "selection"
+  compactColumns?: boolean
+  compactRows?: boolean
 }
 
 export interface DataTableTableCaptionProps {
@@ -114,8 +119,15 @@ export function DataTableTableBody({ children }: DataTableTableBodyProps) {
 export function DataTableTableRow({
   children,
   striped = false,
+  compactRows = false,
 }: DataTableTableRowProps) {
-  return <CoreTableRow className={striped ? "bg-muted/40" : undefined}>{children}</CoreTableRow>
+  return (
+    <CoreTableRow
+      className={cn(striped ? "bg-muted/40" : undefined, compactRows ? "h-8" : undefined)}
+    >
+      {children}
+    </CoreTableRow>
+  )
 }
 
 export const DataTableTableHead = forwardRef<
@@ -130,6 +142,8 @@ export const DataTableTableHead = forwardRef<
     stickyOffset,
     priority = "base",
     ariaSort,
+    compactColumns = false,
+    compactRows = false,
   },
   ref
 ) {
@@ -146,6 +160,8 @@ export const DataTableTableHead = forwardRef<
       ref={ref}
       aria-sort={ariaSort}
       className={cn(
+        compactColumns ? "px-1.5" : undefined,
+        compactRows ? "h-8 py-1.5" : undefined,
         "sticky top-0",
         zIndexClass,
         isSticky
@@ -173,6 +189,8 @@ export function DataTableTableCell({
   stickyOffset,
   striped = false,
   priority = "base",
+  compactColumns = false,
+  compactRows = false,
 }: DataTableTableCellProps) {
   const isSticky = stickySide !== undefined
   const zIndexClass =
@@ -185,7 +203,7 @@ export function DataTableTableCell({
   return (
     <CoreTableCell
       colSpan={colSpan}
-      className={
+      className={cn(
         isSticky
           ? cn(
               "sticky",
@@ -193,8 +211,10 @@ export function DataTableTableCell({
               stickySide === "left" ? "left-0" : "right-0",
               getStickyInsetShadow(stickySide)
             )
-          : undefined
-      }
+          : undefined,
+        compactColumns ? "px-1.5" : undefined,
+        compactRows ? "py-1.5" : undefined
+      )}
       style={{
         ...getStickyOffsetStyle(stickySide, stickyOffset),
         ...(isSticky ? getStickyBodySurfaceStyle(striped) : null),
