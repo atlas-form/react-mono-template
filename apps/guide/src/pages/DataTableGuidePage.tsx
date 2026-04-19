@@ -5,7 +5,6 @@ import {
   Filter,
   PencilLine,
   Settings2,
-  Sparkles,
   TableProperties,
   Trash2,
 } from "lucide-react"
@@ -457,56 +456,6 @@ export default function DataTableGuidePage() {
   return (
     <div className="min-h-0 flex-1 overflow-auto">
       <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 pb-10">
-        <section className="grid gap-4 rounded-[28px] border border-(--app-border) bg-[linear-gradient(135deg,var(--app-surface),color-mix(in_srgb,var(--app-accent,#c9d8ff)_18%,var(--app-surface)))] p-6 shadow-sm lg:grid-cols-[1.5fr_0.9fr]">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="outline">Guide App</Badge>
-              <Badge variant="secondary">No Auth</Badge>
-              <Badge variant="outline">Admin Shell Retained</Badge>
-            </div>
-            <div className="space-y-2">
-              <h1 className="text-3xl font-semibold tracking-tight">
-                DataTable 组件展示与配置说明
-              </h1>
-              <p className="max-w-3xl text-sm leading-6 text-(--app-muted-text)">
-                这个页面专门给用户看 DataTable 要怎么接。你可以直接切预设、点开关、看结果，再把右侧生成的配置片段复制到业务页面里。
-              </p>
-            </div>
-          </div>
-
-          <div className="rounded-[24px] border border-white/40 bg-white/55 backdrop-blur dark:bg-black/20">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  <span className="flex items-center gap-2 text-base">
-                    <Sparkles className="size-4" />
-                    当前推荐
-                  </span>
-                </CardTitle>
-              <CardDescription>{currentPreset.summary}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
-                    <span>预设</span>
-                    <Badge>{currentPreset.badge}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
-                    <span>固定左列</span>
-                    <span>{features.stickyLeft ? "开启" : "关闭"}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-(--app-border) bg-(--app-surface) px-4 py-3">
-                    <span>批量能力</span>
-                    <span>
-                      {features.bulkUpdate || features.bulkDelete ? "已配置" : "未配置"}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
         <section
           id="presets"
           className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr_0.9fr]"
@@ -566,8 +515,8 @@ export default function DataTableGuidePage() {
           </Card>
         </section>
 
-        <section className="space-y-4">
-          <Card>
+        <section className="grid items-start gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
+          <Card className="lg:sticky lg:top-4">
             <CardHeader>
               <CardTitle>
                 <span className="flex items-center gap-2">
@@ -576,11 +525,11 @@ export default function DataTableGuidePage() {
                 </span>
               </CardTitle>
               <CardDescription>
-                配置要小，重点让用户多看表格。这里每个开关都直接映射一组 props。
+                开关放在左侧，收窄控制区，主区域尽量留给表格预览。
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-2">
                 {renderFeatureChip(
                   "首列勾选",
                   "selection",
@@ -673,6 +622,10 @@ export default function DataTableGuidePage() {
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="outline">preset: {preset}</Badge>
+                      <Badge variant="secondary">columns: {columns.length}</Badge>
+                      <Badge variant="outline">
+                        filters: {builtInQueryFields.length + queryFields.length}
+                      </Badge>
                       {features.rowActions ? <Badge>rowActions</Badge> : null}
                       {features.bulkUpdate ? <Badge>bulkUpdate</Badge> : null}
                       {features.bulkDelete ? <Badge>bulkDelete</Badge> : null}
@@ -694,15 +647,6 @@ export default function DataTableGuidePage() {
                         initialSort={{ columnKey: "createdAt", direction: "desc" }}
                         builtInQueryFields={builtInQueryFields}
                         queryFields={queryFields}
-                        toolbarActions={
-                          <div className="flex flex-wrap gap-2">
-                            <Badge variant="secondary">columns: {columns.length}</Badge>
-                            <Badge variant="outline">
-                              filters:{" "}
-                              {builtInQueryFields.length + queryFields.length}
-                            </Badge>
-                          </div>
-                        }
                         insert={
                           features.insert
                             ? {
@@ -994,10 +938,10 @@ function renderFeatureChip(
   onCheckedChange: (value: boolean) => void
 ) {
   return (
-    <div className="flex min-w-[180px] items-center gap-3 rounded-xl border border-(--app-border) bg-(--app-surface) px-3 py-2">
+    <div className="flex w-full items-center gap-1.5 rounded-lg border border-(--app-border) bg-(--app-surface) px-2 py-1.5">
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium">{title}</div>
-        <div className="truncate text-[11px] text-(--app-muted-text)">
+        <div className="truncate text-[13px] font-medium leading-4">{title}</div>
+        <div className="truncate text-[9px] leading-3 text-(--app-muted-text)">
           {hint}
         </div>
       </div>
