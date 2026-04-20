@@ -3,7 +3,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@workspace/ui-components"
+} from "../tooltip"
 import type { ReactNode } from "react"
 
 import type {

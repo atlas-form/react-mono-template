@@ -5,20 +5,6 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@workspace/ui-components/custom/data-table-inline-select",
-        replacement: path.resolve(
-          __dirname,
-          "../ui-components/src/components/custom/data-table-inline-select/index.ts"
-        ),
-      },
-      {
-        find: "@workspace/ui-components/custom/data-table-surface",
-        replacement: path.resolve(
-          __dirname,
-          "../ui-components/src/components/custom/data-table-surface/index.ts"
-        ),
-      },
-      {
         find: "@workspace/ui-core/components/dropdown-menu",
         replacement: path.resolve(
           __dirname,

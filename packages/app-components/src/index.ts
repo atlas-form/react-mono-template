@@ -11,6 +11,18 @@ export { LanguageSwitch } from "./components/language-switch"
 export type { LanguageSwitchProps } from "./components/language-switch"
 export { ThemeToggle } from "./components/theme-toggle"
 export type { ThemeToggleProps } from "./components/theme-toggle"
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/tooltip"
+export type {
+  TooltipContentProps,
+  TooltipProps,
+  TooltipProviderProps,
+  TooltipTriggerProps,
+} from "./components/tooltip"
 export { AdminSidebar } from "./components/admin-sidebar"
 export type {
   AdminSidebarNavEntry,

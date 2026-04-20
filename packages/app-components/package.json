@@ -35,6 +35,7 @@
     "./top-bar": "./src/components/top-bar/index.ts",
     "./language-switch": "./src/components/language-switch/index.ts",
     "./theme-toggle": "./src/components/theme-toggle/index.ts",
+    "./tooltip": "./src/components/tooltip/index.ts",
     "./admin-sidebar": "./src/components/admin-sidebar/index.ts",
     "./date-time-picker": "./src/components/date-time-picker/index.ts",
     "./data-table": "./src/components/data-table/index.ts"

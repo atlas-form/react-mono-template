@@ -24,12 +24,14 @@ import {
   Sheet,
   Skeleton,
   Spinner,
+  toast,
+} from "@workspace/ui-components"
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  toast,
-} from "@workspace/ui-components"
+} from "@workspace/app-components"
 import { DemoBlock, DemoGrid, GuidePage, GuideSection } from "@/components/guide/GuideScaffold"
 
 export default function FeedbackGuidePage() {

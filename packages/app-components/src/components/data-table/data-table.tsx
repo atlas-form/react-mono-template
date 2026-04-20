@@ -4,10 +4,10 @@ import {
   Pagination,
   SearchInput,
   Spinner,
-  TooltipProvider,
   Input,
 } from "@workspace/ui-components"
-import { DataTableInlineSelect } from "@workspace/ui-components/custom/data-table-inline-select"
+import { TooltipProvider } from "../tooltip"
+import { DataTableInlineSelect } from "./data-table-inline-select"
 import {
   DataTableSurface,
   DataTableSurfaceBody,
@@ -16,7 +16,7 @@ import {
   DataTableSurfaceHead,
   DataTableSurfaceHeader,
   DataTableSurfaceRow,
-} from "@workspace/ui-components/custom/data-table-surface"
+} from "./data-table-surface"
 import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
 import { useTranslation } from "react-i18next"
 import {

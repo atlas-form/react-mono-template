@@ -6,10 +6,7 @@ describe("ui-components package exports", () => {
     const exportsMap = readPackageJson().exports ?? {}
     const exportKeys = Object.keys(exportsMap)
     const legacyKeys = exportKeys.filter(
-      (key) =>
-        ![".", "./styles.css", "./stable/*", "./labs/*", "./custom/*"].includes(
-          key
-        )
+      (key) => ![".", "./styles.css", "./stable/*", "./labs/*"].includes(key)
     )
 
     expect(legacyKeys.sort()).toEqual([])

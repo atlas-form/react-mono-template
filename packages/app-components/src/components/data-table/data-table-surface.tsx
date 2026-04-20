@@ -123,7 +123,10 @@ export function DataTableSurfaceRow({
 }: DataTableSurfaceRowProps) {
   return (
     <CoreTableRow
-      className={cn(striped ? "bg-muted/40" : undefined, compactRows ? "h-8" : undefined)}
+      className={cn(
+        striped ? "bg-muted/40" : undefined,
+        compactRows ? "h-8" : undefined
+      )}
     >
       {children}
     </CoreTableRow>
@@ -165,7 +168,10 @@ export const DataTableSurfaceHead = forwardRef<
         "sticky top-0",
         zIndexClass,
         isSticky
-          ? cn(stickySide === "left" ? "left-0" : "right-0", getStickyInsetShadow(stickySide))
+          ? cn(
+              stickySide === "left" ? "left-0" : "right-0",
+              getStickyInsetShadow(stickySide)
+            )
           : "bg-[var(--surface)]"
       )}
       style={{

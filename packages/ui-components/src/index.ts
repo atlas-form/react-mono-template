@@ -228,19 +228,6 @@ export type {
 } from "./components/stable/popover"
 
 export {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./components/custom/tooltip"
-export type {
-  TooltipContentProps,
-  TooltipProps,
-  TooltipProviderProps,
-  TooltipTriggerProps,
-} from "./components/custom/tooltip"
-
-export {
   Card,
   CardAction,
   CardContent,

@@ -22,8 +22,8 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarSeparator,
-  TooltipProvider,
 } from "@workspace/ui-components"
+import { TooltipProvider } from "../tooltip"
 
 export interface AdminSidebarSubEntry {
   label: ReactNode
