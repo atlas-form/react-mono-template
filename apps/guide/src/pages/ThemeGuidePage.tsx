@@ -55,6 +55,12 @@ const PREVIEWABLE_TOKEN_KEYS = new Set<string>([
   "chart-3",
   "chart-4",
   "chart-5",
+  "select",
+  "select-foreground",
+  "select-item-hover",
+  "select-item-hover-foreground",
+  "select-border",
+  "select-ring",
   "sidebar",
   "sidebar-foreground",
   "sidebar-primary",
@@ -140,6 +146,32 @@ const COMPONENT_TOKEN_DEFINITIONS: readonly TokenDefinition[] = [
   { key: "chart-3", label: "Chart 3", description: "图表主色 3。" },
   { key: "chart-4", label: "Chart 4", description: "图表主色 4。" },
   { key: "chart-5", label: "Chart 5", description: "图表主色 5。" },
+  { key: "select", label: "Select", description: "下拉面板背景色。" },
+  {
+    key: "select-foreground",
+    label: "Select Foreground",
+    description: "下拉面板文本颜色。",
+  },
+  {
+    key: "select-item-hover",
+    label: "Select Item Hover",
+    description: "下拉选项 hover / highlighted 背景色。",
+  },
+  {
+    key: "select-item-hover-foreground",
+    label: "Select Item Hover Foreground",
+    description: "下拉选项 hover / highlighted 文本色。",
+  },
+  {
+    key: "select-border",
+    label: "Select Border",
+    description: "下拉触发器与面板边框色。",
+  },
+  {
+    key: "select-ring",
+    label: "Select Ring",
+    description: "下拉面板 ring 颜色。",
+  },
   { key: "sidebar", label: "Sidebar", description: "侧边栏背景色。" },
   {
     key: "sidebar-foreground",
@@ -216,6 +248,12 @@ const DEFAULT_TOKENS: ThemeDraft = {
     "chart-3": "oklch(0.69 0.18 145)",
     "chart-4": "oklch(0.73 0.17 85)",
     "chart-5": "oklch(0.65 0.2 20)",
+    select: "color(display-p3 0.925 0.925 0.925)",
+    "select-foreground": "oklch(0.27 0.02 256)",
+    "select-item-hover": "oklch(0.57 0.19 258)",
+    "select-item-hover-foreground": "oklch(0.99 0 0)",
+    "select-border": "oklch(0.89 0.01 250)",
+    "select-ring": "oklch(0.62 0.18 258)",
     sidebar: "oklch(0.975 0.006 250)",
     "sidebar-foreground": "oklch(0.27 0.02 256)",
     "sidebar-primary": "oklch(0.57 0.19 258)",
@@ -257,6 +295,12 @@ const DEFAULT_TOKENS: ThemeDraft = {
     "chart-3": "oklch(0.73 0.15 150)",
     "chart-4": "oklch(0.75 0.14 95)",
     "chart-5": "oklch(0.7 0.18 30)",
+    select: "color(display-p3 0.163 0.17 0.167)",
+    "select-foreground": "color(display-p3 0.878 0.879 0.879)",
+    "select-item-hover": "oklch(0.69 0.15 258)",
+    "select-item-hover-foreground": "oklch(0.2 0.01 255)",
+    "select-border": "oklch(0.38 0.01 252 / 65%)",
+    "select-ring": "oklch(0.69 0.15 258)",
     sidebar: "oklch(0.22 0.014 255)",
     "sidebar-foreground": "oklch(0.95 0.008 250)",
     "sidebar-primary": "oklch(0.69 0.15 258)",
@@ -333,6 +377,10 @@ function buildPreviewTokenStyle(modeValues: ThemeDraft[ThemeMode]) {
 function getPreviewTitle(tokenKey: string) {
   if (tokenKey.startsWith("chart-")) {
     return "图表色板预览"
+  }
+
+  if (tokenKey.startsWith("select")) {
+    return "下拉选择预览"
   }
 
   if (tokenKey.startsWith("sidebar")) {
@@ -522,6 +570,27 @@ function TokenPreviewPanel({
                       }}
                     />
                   ))}
+                </div>
+              </div>
+            ) : null}
+
+            {token.key.startsWith("select") ? (
+              <div className="rounded-xl border border-(--select-border) bg-(--surface) p-4">
+                <div className="w-72 rounded-lg border border-(--select-border) bg-transparent text-(--foreground)">
+                  <div className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                    <span>Status</span>
+                    <span className="inline-flex size-6 items-center justify-center rounded-full bg-(--surface) text-(--select-foreground)">
+                      ▾
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-3 w-72 rounded-lg border border-(--select-border) bg-(--select) p-1 text-(--select-foreground) shadow-[0_0_0_1px_color-mix(in_oklab,var(--select-ring)_10%,transparent)]">
+                  <div className="px-1.5 py-1 text-xs text-(--muted-foreground)">Options</div>
+                  <div className="rounded-md px-3 py-2 text-sm">Draft</div>
+                  <div className="rounded-md bg-(--select-item-hover) px-3 py-2 text-sm text-(--select-item-hover-foreground)">
+                    Published
+                  </div>
+                  <div className="rounded-md px-3 py-2 text-sm">Archived</div>
                 </div>
               </div>
             ) : null}
