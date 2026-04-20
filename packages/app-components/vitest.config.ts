@@ -5,17 +5,17 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@workspace/ui-components/costume/data-table-inline-select",
+        find: "@workspace/ui-components/custom/data-table-inline-select",
         replacement: path.resolve(
           __dirname,
-          "../ui-components/src/components/costume/data-table-inline-select/index.ts"
+          "../ui-components/src/components/custom/data-table-inline-select/index.ts"
         ),
       },
       {
-        find: "@workspace/ui-components/costume/data-table-table",
+        find: "@workspace/ui-components/custom/data-table-surface",
         replacement: path.resolve(
           __dirname,
-          "../ui-components/src/components/costume/data-table-table/index.ts"
+          "../ui-components/src/components/custom/data-table-surface/index.ts"
         ),
       },
       {

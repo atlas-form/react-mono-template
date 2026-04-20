@@ -51,25 +51,25 @@ function getStickyOffsetStyle(
     : { right: stickyOffset }
 }
 
-export interface DataTableTableProps {
+export interface DataTableSurfaceProps {
   children: ReactNode
 }
 
-export interface DataTableTableHeaderProps {
+export interface DataTableSurfaceHeaderProps {
   children: ReactNode
 }
 
-export interface DataTableTableBodyProps {
+export interface DataTableSurfaceBodyProps {
   children: ReactNode
 }
 
-export interface DataTableTableRowProps {
+export interface DataTableSurfaceRowProps {
   children: ReactNode
   striped?: boolean
   compactRows?: boolean
 }
 
-export interface DataTableTableHeadProps {
+export interface DataTableSurfaceHeadProps {
   children: ReactNode
   minWidth?: CSSProperties["minWidth"]
   width?: CSSProperties["width"]
@@ -81,7 +81,7 @@ export interface DataTableTableHeadProps {
   compactRows?: boolean
 }
 
-export interface DataTableTableCellProps {
+export interface DataTableSurfaceCellProps {
   children: ReactNode
   colSpan?: number
   minWidth?: CSSProperties["minWidth"]
@@ -94,11 +94,11 @@ export interface DataTableTableCellProps {
   compactRows?: boolean
 }
 
-export interface DataTableTableCaptionProps {
+export interface DataTableSurfaceCaptionProps {
   children: ReactNode
 }
 
-export function DataTableTable({ children }: DataTableTableProps) {
+export function DataTableSurface({ children }: DataTableSurfaceProps) {
   return (
     <CoreTable className="w-max min-w-full" containerClassName="overflow-visible">
       {children}
@@ -106,21 +106,21 @@ export function DataTableTable({ children }: DataTableTableProps) {
   )
 }
 
-export function DataTableTableHeader({
+export function DataTableSurfaceHeader({
   children,
-}: DataTableTableHeaderProps) {
+}: DataTableSurfaceHeaderProps) {
   return <CoreTableHeader>{children}</CoreTableHeader>
 }
 
-export function DataTableTableBody({ children }: DataTableTableBodyProps) {
+export function DataTableSurfaceBody({ children }: DataTableSurfaceBodyProps) {
   return <CoreTableBody>{children}</CoreTableBody>
 }
 
-export function DataTableTableRow({
+export function DataTableSurfaceRow({
   children,
   striped = false,
   compactRows = false,
-}: DataTableTableRowProps) {
+}: DataTableSurfaceRowProps) {
   return (
     <CoreTableRow
       className={cn(striped ? "bg-muted/40" : undefined, compactRows ? "h-8" : undefined)}
@@ -130,10 +130,10 @@ export function DataTableTableRow({
   )
 }
 
-export const DataTableTableHead = forwardRef<
+export const DataTableSurfaceHead = forwardRef<
   HTMLTableCellElement,
-  DataTableTableHeadProps
->(function DataTableTableHead(
+  DataTableSurfaceHeadProps
+>(function DataTableSurfaceHead(
   {
     children,
     minWidth,
@@ -180,7 +180,7 @@ export const DataTableTableHead = forwardRef<
   )
 })
 
-export function DataTableTableCell({
+export function DataTableSurfaceCell({
   children,
   colSpan,
   minWidth,
@@ -191,7 +191,7 @@ export function DataTableTableCell({
   priority = "base",
   compactColumns = false,
   compactRows = false,
-}: DataTableTableCellProps) {
+}: DataTableSurfaceCellProps) {
   const isSticky = stickySide !== undefined
   const zIndexClass =
     priority === "selection"
@@ -227,8 +227,8 @@ export function DataTableTableCell({
   )
 }
 
-export function DataTableTableCaption({
+export function DataTableSurfaceCaption({
   children,
-}: DataTableTableCaptionProps) {
+}: DataTableSurfaceCaptionProps) {
   return <CoreTableCaption>{children}</CoreTableCaption>
 }

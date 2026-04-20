@@ -7,16 +7,16 @@ import {
   TooltipProvider,
   Input,
 } from "@workspace/ui-components"
-import { DataTableInlineSelect } from "@workspace/ui-components/costume/data-table-inline-select"
+import { DataTableInlineSelect } from "@workspace/ui-components/custom/data-table-inline-select"
 import {
-  DataTableTable,
-  DataTableTableBody,
-  DataTableTableCaption,
-  DataTableTableCell,
-  DataTableTableHead,
-  DataTableTableHeader,
-  DataTableTableRow,
-} from "@workspace/ui-components/costume/data-table-table"
+  DataTableSurface,
+  DataTableSurfaceBody,
+  DataTableSurfaceCaption,
+  DataTableSurfaceCell,
+  DataTableSurfaceHead,
+  DataTableSurfaceHeader,
+  DataTableSurfaceRow,
+} from "@workspace/ui-components/custom/data-table-surface"
 import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
 import { useTranslation } from "react-i18next"
 import {
@@ -757,12 +757,12 @@ export function DataTable<T, TQuery extends object = object>({
           data-slot="data-table-body"
         >
           <div className="h-full overflow-auto">
-            <DataTableTable>
-              {caption ? <DataTableTableCaption>{caption}</DataTableTableCaption> : null}
-              <DataTableTableHeader>
-                <DataTableTableRow>
+            <DataTableSurface>
+              {caption ? <DataTableSurfaceCaption>{caption}</DataTableSurfaceCaption> : null}
+              <DataTableSurfaceHeader>
+                <DataTableSurfaceRow>
                   {rowSelectionEnabled ? (
-                    <DataTableTableHead
+                    <DataTableSurfaceHead
                       stickySide="left"
                       stickyOffset={0}
                       minWidth={`${selectionColumnWidth}px`}
@@ -796,7 +796,7 @@ export function DataTable<T, TQuery extends object = object>({
                           disabled={!hasRows || loading}
                         />
                       </div>
-                    </DataTableTableHead>
+                    </DataTableSurfaceHead>
                   ) : null}
                   {resolvedColumns.map((column, columnIndex) => {
                     const leftOffset = stickyLeftOffsets[columnIndex]
@@ -805,7 +805,7 @@ export function DataTable<T, TQuery extends object = object>({
                     const isStickyRight = rightOffset !== undefined
 
                     return (
-                      <DataTableTableHead
+                      <DataTableSurfaceHead
                         key={column.key}
                         ref={(element) => {
                           headerCellRefs.current[columnIndex] = element
@@ -841,16 +841,16 @@ export function DataTable<T, TQuery extends object = object>({
                             </span>
                           )}
                         </button>
-                      </DataTableTableHead>
+                      </DataTableSurfaceHead>
                     )
                   })}
-                </DataTableTableRow>
-              </DataTableTableHeader>
+                </DataTableSurfaceRow>
+              </DataTableSurfaceHeader>
 
-              <DataTableTableBody>
+              <DataTableSurfaceBody>
                 {loading ? (
-                  <DataTableTableRow compactRows={compactRows}>
-                    <DataTableTableCell
+                  <DataTableSurfaceRow compactRows={compactRows}>
+                    <DataTableSurfaceCell
                       colSpan={totalColumnCount}
                       compactColumns={compactColumns}
                       compactRows={compactRows}
@@ -869,32 +869,32 @@ export function DataTable<T, TQuery extends object = object>({
                           <span>{loadingContentResolved}</span>
                         </div>
                       )}
-                    </DataTableTableCell>
-                  </DataTableTableRow>
+                    </DataTableSurfaceCell>
+                  </DataTableSurfaceRow>
                 ) : null}
 
                 {!loading && error ? (
-                  <DataTableTableRow compactRows={compactRows}>
-                    <DataTableTableCell
+                  <DataTableSurfaceRow compactRows={compactRows}>
+                    <DataTableSurfaceCell
                       colSpan={totalColumnCount}
                       compactColumns={compactColumns}
                       compactRows={compactRows}
                     >
                       {errorContent}
-                    </DataTableTableCell>
-                  </DataTableTableRow>
+                    </DataTableSurfaceCell>
+                  </DataTableSurfaceRow>
                 ) : null}
 
                 {!loading && !error && !hasRows ? (
-                  <DataTableTableRow compactRows={compactRows}>
-                    <DataTableTableCell
+                  <DataTableSurfaceRow compactRows={compactRows}>
+                    <DataTableSurfaceCell
                       colSpan={totalColumnCount}
                       compactColumns={compactColumns}
                       compactRows={compactRows}
                     >
                       {emptyContent}
-                    </DataTableTableCell>
-                  </DataTableTableRow>
+                    </DataTableSurfaceCell>
+                  </DataTableSurfaceRow>
                 ) : null}
 
                 {!loading && !error
@@ -902,13 +902,13 @@ export function DataTable<T, TQuery extends object = object>({
                       const isStriped = stripedRows && rowIndex % 2 === 1
 
                       return (
-                      <DataTableTableRow
+                      <DataTableSurfaceRow
                         key={getRowId(row, rowIndex)}
                         striped={isStriped}
                         compactRows={compactRows}
                       >
                         {rowSelectionEnabled ? (
-                          <DataTableTableCell
+                          <DataTableSurfaceCell
                             stickySide="left"
                             stickyOffset={0}
                             minWidth={`${selectionColumnWidth}px`}
@@ -943,10 +943,10 @@ export function DataTable<T, TQuery extends object = object>({
                                 }}
                               />
                             </div>
-                          </DataTableTableCell>
+                          </DataTableSurfaceCell>
                         ) : null}
                         {resolvedColumns.map((column, columnIndex) => (
-                          <DataTableTableCell
+                          <DataTableSurfaceCell
                             key={column.key}
                             stickySide={
                               stickyLeftOffsets[columnIndex] !== undefined
@@ -975,13 +975,13 @@ export function DataTable<T, TQuery extends object = object>({
                             <Fragment>
                               {column.renderCell(row, rowIndex)}
                             </Fragment>
-                          </DataTableTableCell>
+                          </DataTableSurfaceCell>
                         ))}
-                      </DataTableTableRow>
+                      </DataTableSurfaceRow>
                     )})
                   : null}
-              </DataTableTableBody>
-            </DataTableTable>
+              </DataTableSurfaceBody>
+            </DataTableSurface>
           </div>
         </div>
 
