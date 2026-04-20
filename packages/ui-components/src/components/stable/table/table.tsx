@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import {
   Table as CoreTable,
   TableBody as CoreTableBody,
@@ -8,60 +9,108 @@ import {
   TableHeader as CoreTableHeader,
   TableRow as CoreTableRow,
 } from "@workspace/ui-core/components/table"
-import type {
-  TableBodyProps as CoreTableBodyProps,
-  TableCaptionProps as CoreTableCaptionProps,
-  TableCellProps as CoreTableCellProps,
-  TableHeadProps as CoreTableHeadProps,
-  TableHeaderProps as CoreTableHeaderProps,
-  TableProps as CoreTableProps,
-  TableRowProps as CoreTableRowProps,
-} from "@workspace/ui-core/components/table"
 
-export type TableProps = CoreTableProps
-
-export type TableHeaderProps = CoreTableHeaderProps
-
-export type TableBodyProps = CoreTableBodyProps
-
-export type TableFooterProps = React.ComponentProps<typeof CoreTableFooter>
-
-export type TableRowProps = CoreTableRowProps
-
-export type TableHeadProps = CoreTableHeadProps
-
-export type TableCellProps = CoreTableCellProps
-
-export type TableCaptionProps = CoreTableCaptionProps
-
-export function Table(props: TableProps) {
-  return <CoreTable {...props} />
+export interface TableProps {
+  children: ReactNode
+  ariaLabel?: string
+  ariaLabelledBy?: string
+  ariaDescribedBy?: string
 }
 
-export function TableHeader(props: TableHeaderProps) {
-  return <CoreTableHeader {...props} />
+export interface TableHeaderProps {
+  children: ReactNode
 }
 
-export function TableBody(props: TableBodyProps) {
-  return <CoreTableBody {...props} />
+export interface TableBodyProps {
+  children: ReactNode
 }
 
-export function TableFooter(props: TableFooterProps) {
-  return <CoreTableFooter {...props} />
+export interface TableFooterProps {
+  children: ReactNode
 }
 
-export function TableRow(props: TableRowProps) {
-  return <CoreTableRow {...props} />
+export interface TableRowProps {
+  children: ReactNode
 }
 
-export function TableHead(props: TableHeadProps) {
-  return <CoreTableHead {...props} />
+export interface TableHeadProps {
+  children: ReactNode
+  colSpan?: number
+  rowSpan?: number
+  scope?: "col" | "row" | "colgroup" | "rowgroup"
+  ariaSort?: "none" | "ascending" | "descending" | "other"
 }
 
-export function TableCell(props: TableCellProps) {
-  return <CoreTableCell {...props} />
+export interface TableCellProps {
+  children: ReactNode
+  colSpan?: number
+  rowSpan?: number
 }
 
-export function TableCaption(props: TableCaptionProps) {
-  return <CoreTableCaption {...props} />
+export interface TableCaptionProps {
+  children: ReactNode
+}
+
+export function Table({
+  children,
+  ariaLabel,
+  ariaLabelledBy,
+  ariaDescribedBy,
+}: TableProps) {
+  return (
+    <CoreTable
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+    >
+      {children}
+    </CoreTable>
+  )
+}
+
+export function TableHeader({ children }: TableHeaderProps) {
+  return <CoreTableHeader>{children}</CoreTableHeader>
+}
+
+export function TableBody({ children }: TableBodyProps) {
+  return <CoreTableBody>{children}</CoreTableBody>
+}
+
+export function TableFooter({ children }: TableFooterProps) {
+  return <CoreTableFooter>{children}</CoreTableFooter>
+}
+
+export function TableRow({ children }: TableRowProps) {
+  return <CoreTableRow>{children}</CoreTableRow>
+}
+
+export function TableHead({
+  children,
+  colSpan,
+  rowSpan,
+  scope,
+  ariaSort,
+}: TableHeadProps) {
+  return (
+    <CoreTableHead
+      colSpan={colSpan}
+      rowSpan={rowSpan}
+      scope={scope}
+      aria-sort={ariaSort}
+    >
+      {children}
+    </CoreTableHead>
+  )
+}
+
+export function TableCell({ children, colSpan, rowSpan }: TableCellProps) {
+  return (
+    <CoreTableCell colSpan={colSpan} rowSpan={rowSpan}>
+      {children}
+    </CoreTableCell>
+  )
+}
+
+export function TableCaption({ children }: TableCaptionProps) {
+  return <CoreTableCaption>{children}</CoreTableCaption>
 }

@@ -4,7 +4,6 @@ import {
   TooltipContent as CoreTooltipContent,
   TooltipProvider as CoreTooltipProvider,
   TooltipTrigger as CoreTooltipTrigger,
-  type TooltipTriggerProps as CoreTooltipTriggerProps,
 } from "@workspace/ui-core/components/tooltip"
 
 export interface TooltipProviderProps {
@@ -18,7 +17,7 @@ export interface TooltipProps {
   children: ReactNode
 }
 
-export type TooltipTriggerProps = CoreTooltipTriggerProps & {
+export interface TooltipTriggerProps {
   children: ReactNode
 }
 
@@ -27,6 +26,7 @@ export type TooltipSide = "top" | "right" | "bottom" | "left"
 export interface TooltipContentProps {
   children: ReactNode
   side?: TooltipSide
+  sideOffset?: number
 }
 
 export function TooltipProvider({
@@ -44,13 +44,22 @@ export function Tooltip({ open, onOpenChange, children }: TooltipProps) {
   )
 }
 
-export function TooltipTrigger({ children, ...props }: TooltipTriggerProps) {
-  return <CoreTooltipTrigger {...props}>{children}</CoreTooltipTrigger>
+export function TooltipTrigger({ children }: TooltipTriggerProps) {
+  return (
+    <CoreTooltipTrigger asChild>
+      <span className="inline-flex">{children}</span>
+    </CoreTooltipTrigger>
+  )
 }
 
 export function TooltipContent({
   children,
   side = "top",
+  sideOffset = 0,
 }: TooltipContentProps) {
-  return <CoreTooltipContent side={side}>{children}</CoreTooltipContent>
+  return (
+    <CoreTooltipContent side={side} sideOffset={sideOffset}>
+      {children}
+    </CoreTooltipContent>
+  )
 }

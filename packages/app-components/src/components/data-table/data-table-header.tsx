@@ -83,13 +83,8 @@ function IconToolButton({
 }) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={onClick}
-          className={className}
-        >
+      <TooltipTrigger>
+        <button type="button" disabled={disabled} onClick={onClick} className={className}>
           {icon}
           <span className="sr-only">{label}</span>
         </button>
