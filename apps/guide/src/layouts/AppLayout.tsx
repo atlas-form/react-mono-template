@@ -122,8 +122,20 @@ export default function AppLayout() {
               onSelect: () => {
                 navigate(item.path)
                 window.setTimeout(() => {
-                  const anchor = document.querySelector(subItem.href)
+                  const hashIndex = subItem.href.indexOf("#")
+                  const hash =
+                    hashIndex >= 0 ? subItem.href.slice(hashIndex) : ""
+
+                  if (!hash) {
+                    return
+                  }
+
+                  const anchor = document.querySelector(hash)
                   anchor?.scrollIntoView({ behavior: "smooth", block: "start" })
+
+                  if (window.location.pathname === item.path) {
+                    window.history.replaceState(null, "", `${item.path}${hash}`)
+                  }
                 }, 0)
               },
             })),

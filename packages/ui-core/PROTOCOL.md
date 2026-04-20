@@ -1,175 +1,102 @@
-# @workspace/ui-core 协议（宪章）
+# @workspace/ui-core 协议
 
-这是 `@workspace/ui-core` 的最高优先级规则集。
+本协议不是普通组件库说明书，而是给 AI 的底层边界文档。
 
-## 不可协商原则
+`ui-core` 的唯一目标是提供 primitive 能力，让上层可以在不破坏行为契约的前提下继续封装。
 
-Primitive（原语层）是唯一原则。任何与 primitive 层定位冲突的实现都不被允许。
+## 1. 宪章
 
-## 强制执行
+- `ui-core` 是 primitive 层，不是产品层。
+- `ui-core` 负责行为契约、可访问性接线、结构基础与 token 挂接点。
+- `ui-core` 不负责页面语义、业务语义、装配语义。
+- AI 不得把 `ui-core` 当成“方便直接给 app 用的组件库”。
 
-- AI 必须严格遵循本协议。
-- 任何冲突都必须以本协议为准。
-- `src/primitives/*` 是 `ui-core` 当前唯一的物理实现目录。
-- `@workspace/ui-core/primitives/*` 是推荐的公共语义导出路径。
-- `src/components/*` 仅用于原始生成空间，不是最终 API。
-- `ui-core` 内禁止依赖上层 UI 库。
-- 产品级视觉封装必须放在 `ui-core` 之外。
+## 2. 目录真相
 
-## 目的
+- `src/primitives/*` 是唯一有效实现目录。
+- `src/components/*` 只保留 shadcn 原始生成结果或迁移参考，不是最终 API。
+- 推荐公共语义路径是 `@workspace/ui-core/primitives/*`。
+- 兼容导出可以存在，但 AI 判断组件归属时必须以 `primitives` 语义理解本包。
 
-`ui-core` 定义 primitive 行为契约、无障碍接线（accessibility wiring）、组合 API 与 token 钩子。
+## 3. 本包允许做什么
 
-这个包**不是**做产品视觉设计决策的地方。
+- 定义 primitive 组件的 DOM 结构与交互行为。
+- 定义无障碍属性、键盘交互、状态挂接与基础样式钩子。
+- 提供 `styled` 与 `primitive` 两种模式。
+- 提供供上层二次封装所需的最小、清晰、稳定控制面。
 
-## 真正的事实来源（重要）
+## 4. 本包禁止做什么
 
-- `src/components/*`：由 shadcn CLI 生成的**原始源码**。
-- `src/primitives/*`：手工重构后的 primitive 实现目录。
-- `@workspace/ui-core/primitives/*`：推荐的 primitive 公共导出语义。
+- 禁止写页面装配逻辑。
+- 禁止写业务语义组件。
+- 禁止为了某个 app 的临时需求直接改 primitive 行为。
+- 禁止把产品层视觉决策下沉到只能服务某个 app 的实现里。
+- 禁止依赖 `ui-components`、`app-components` 或 `apps/*`。
 
-不要把 `src/components/*` 当作最终 API。
+## 5. AI 默认判断规则
 
-## 强制工作流（面向 AI）
+当 AI 被要求新增或修改组件时，先判断：
 
-在 `ui-core` 中创建新组件时，必须严格按以下顺序执行：
+1. 这是行为原语，还是页面/业务语义？
+2. 外部是否需要保留较强控制权？
+3. 这个能力是否应该被多个上层封装复用？
 
-1. 先用 shadcn CLI 生成基础代码。
-2. 将生成的原始文件保留在 `src/components/<component>.tsx`（或 CLI 生成的对应布局）中。
-3. 先把原始文件移动到 primitive 工作区：`src/primitives/<component>/<component>.tsx`（当前目录名保留历史兼容；`src/components/*` 中可保留原始文件作参考）。
-4. 将 primitive 实现拆分为 `*.tsx`、`*.styles.ts`、`*.types.ts`。
-5. 实现 primitive 组件时遵循现有 `src/primitives/button` 模式。
-6. 实现完整可控 API（`mode`、`classNameMode`、`classResolver`），`mode` 必须默认 `styled`。
-7. 先执行 lint 闸门：`pnpm -C packages/ui-core lint`。若失败，不得继续。
-8. 执行类型闸门：`pnpm -C packages/ui-core typecheck`。
-9. 强制 `index.ts` 显式导出风格与 `button` 一致（公共 primitive 入口中禁止 `export *` 通配导出）。
-10. 通过包 `exports` 与 `index.ts` 导出 primitive 组件。
+只有当答案明确指向“primitive 能力”时，才允许进入 `ui-core`。
 
-对于 shadcn 已存在的标准组件，**不要**从零开始手写。
+以下情况通常属于 `ui-core`：
 
-### CLI 命令
+- button / input / dialog / popover / table 这类基础交互与结构原语
+- 可访问性、焦点、状态、触发器、内容容器等行为基础件
 
-在当前工作区运行：
+以下情况不属于 `ui-core`：
 
-```bash
-pnpm -C packages/ui-core exec shadcn add <component-name>
-```
+- data table
+- admin sidebar
+- top bar
+- 页面级 filter bar
+- 带明确产品文案和装配结构的组件
 
-示例：
+## 6. 实现标准
 
-```bash
-pnpm -C packages/ui-core exec shadcn add button
-pnpm -C packages/ui-core exec shadcn add input
-pnpm -C packages/ui-core exec shadcn add select
-```
-
-## Primitive 组件约定
-
-Primitive 组件文件必须遵循：
-
-```text
-src/primitives/component-name/
-  component-name.tsx
-  component-name.styles.ts
-  component-name.types.ts
-  index.ts
-```
-
-以 `src/primitives/button` 作为编码风格与可控 API 设计的参考样例。
-
-## 组件模式规范（强制）
-
-所有 `ui-core` 组件都必须遵循“控制权切换组件”标准，支持两种模式：
-
-- `mode: "styled" | "primitive"`。
+- 所有组件必须遵循通用 `mode` 规范：`"styled" | "primitive"`。
 - 默认 `mode` 必须是 `styled`。
-- 通用 `mode` 类型必须复用 `src/lib/component-mode.ts`（至少复用 `BaseMode` / `DEFAULT_MODE`），禁止在各组件重复定义字面量类型或组件私有 mode 别名（例如 `ButtonMode`）。
-- `mode="primitive"` 仅作为历史兼容别名保留，不再作为新实现的首选术语。
+- `primitive` 模式下不得注入设计系统样式与设计系统状态属性。
+- `styled` 模式下可使用组件内部样式系统，但不得混入 app 私有决策。
+- `mode` 分支必须在组件主体中显式处理，不允许把 styled/primitive 混在模糊工具函数里。
+- `resolve*ClassName` 只服务 styled 分支。
+- 公共 `index.ts` 只能显式导出，禁止 `export *`。
 
-### styled 模式（强制）
+## 7. 新组件工作流
 
-- 使用组件自己的 variants（如 `cva`）。
-- 保留组件级 `variant`/`color`/`size`（如该组件存在这些维度）。
-- 支持 `classNameMode` 的 `merge` / `replace`。
-- 保留并支持 `classResolver` 能力。
+AI 在 `ui-core` 新增组件时，必须按以下顺序：
 
-### primitive 模式（强制）
+1. 优先通过 shadcn CLI 生成原始实现。
+2. 将原始实现保留在 `src/components/*` 作为参考。
+3. 在 `src/primitives/<component>/` 中重构为正式实现。
+4. 拆分为 `*.tsx`、`*.styles.ts`、`*.types.ts`、`index.ts`。
+5. 参考 `src/primitives/button` 组织 API。
+6. 检查该能力是否被错误地做成了产品层语义。
+7. 通过类型与相关门禁后，才允许对外导出。
 
-- 不使用 variants（不依赖 `cva` 产出的样式组合结果）。
-- 不注入任何设计系统 class。
-- 不添加任何设计系统状态 data 属性（例如 `data-variant`、`data-color`、`data-size` 等）。
-- 完全由外部 `className` 控制。
-- 不添加 `data-slot` 等设计系统标识属性。
-- 必须在组件分支中显式剔除设计系统 props（如 `variant`/`color`/`size`/`classNameMode`/`classResolver`），且只向 DOM 透传业务 props。
-- primitive 返回结构必须为“`className + rest`”模式，避免 `className` 重复透传。
+## 8. 与上层的关系
 
-### 实现约束（强制）
+- `ui-components` 可以消费 `ui-core`，但必须收紧 API。
+- `app-components` 可以消费 `ui-core`，但不得把 primitive 控制面原样泄露给 app。
+- `apps/*` 默认不应直接散落使用 `ui-core`。
+- 当 app 确有例外需求时，应先在本地或 `app-components` 做一层协议化封装。
 
-- `resolve*ClassName`（或同类函数）只负责 styled 模式，不允许混入 primitive 分支逻辑。
-- `mode` 分支必须在组件主体中显式处理，不允许把 styled/primitive 混在同一个解析函数里。
-- 分支结构必须清晰，避免深层嵌套条件。
-- 不再使用 `unstyled` 作为控制入口；统一使用 `mode="primitive"`。
+## 9. 样式原则
 
-## 公共导出规则（严格）
+- 样式必须消费 token，不得硬编码产品色值。
+- `ui-core` 可以有默认样式，但这些样式仍然只能表达 primitive 默认态，不能表达具体业务品牌策略。
+- 颜色、状态、语义 token 必须来自共享主题体系。
 
-每个 `src/primitives/<component>/index.ts` 必须像 `button` 一样使用显式导出：
+## 10. 输出检查清单
 
-```ts
-export { Component } from "./component"
-export { componentStylesOrVariants } from "./component.styles"
-export type { ComponentProps, ComponentTypes } from "./component.types"
-```
-
-公共 primitive `index.ts` 禁止使用通配导出（`export *`）。
-
-## 设计边界
-
-- 逻辑和基础构建块放在 `ui-core`。
-- 组件必须对调用方保持完全可控。
-- 默认类名保持最小化且易于覆盖。
-- 不要在这里加入产品特定品牌样式。
-- 不要在这里放置产品品牌或业务视觉决策。
-
-## 样式化组件应放在哪里
-
-预设计（有明确视觉主张）的简单/稳定组件应放在 `@workspace/ui-components`。
-复合、装配、页面语义组件应放在 `@workspace/app-components`。
-
-- `ui-core`：primitive 原语层，支持 `mode="primitive"` 与历史兼容 `mode="primitive"`。
-- `ui-components`：基于 `ui-core` 构建的样式化封装。
-- `app-components`：基于 `ui-components` / `ui-core` 构建的复合装配层。
-
-## 应用消费策略（重要）
-
-- 默认情况下，应用包应消费 `@workspace/ui-components`。
-- `@workspace/ui-core` 不是默认的应用直连层。
-- 例外：只有在特殊需求下才允许应用直接使用 `ui-core`。
-- 在该例外场景中，应封装在应用本地组件中，而不是在业务代码中到处散落原始 primitive 用法。
-
-## 输出检查清单
-
-- 已先通过 shadcn CLI 生成。
-- 原始文件保留在 `src/components/*`。
-- 在重构前，原始文件已移动/复制到 `src/primitives/<component>/<component>.tsx`。
-- 已按样例模式在 `src/primitives/*` 实现 primitive 版本。
-- 在适用场景下支持外部完整样式控制。
-- 组件已实现通用 `mode` 双模式规范（`styled` + `primitive`），且默认 `styled`。
-- 使用来自 `globals.css` 与 `state.css` 的 tokens。
-- 组件内未自定义任何颜色规则，所有颜色均来自 `globals.css`/`state.css` 变量；缺失变量已先补齐再写样式。
-- 通过 `index.ts` 与包 `exports` 保持 API 稳定且显式。
-- `pnpm -C packages/ui-core lint` 通过。
-- `pnpm -C packages/ui-core typecheck` 通过。
-- `index.ts` 仅使用 `button` 风格的显式导出。
-
-## 样式输入
-
-- 基础主题 token 来自 `globals.css`。
-- 交互状态 token 来自 `state.css`。
-- 组件应消费 token，而非硬编码产品颜色。
-
-## 颜色规则（强制）
-
-- 不允许在组件（`*.tsx`、`*.styles.ts`）里自行定义颜色规则（包括但不限于硬编码颜色值、临时色值、绕过 token 的颜色表达式）。
-- 每一个颜色都必须使用 `globals.css` 与 `state.css` 提供的变量。
-- 如果外部还没有对应变量，必须先在 `globals.css` 或 `state.css` 中补齐变量定义，再编写组件样式。
-- 任何违反上述规则的实现都视为不合规，必须回退并按变量化方式重写。
+- 组件确实属于 primitive 层。
+- 实现位于 `src/primitives/*`。
+- 没有引入页面语义或业务语义。
+- `mode` 规范完整。
+- 公共导出为显式导出。
+- 没有依赖上层包。
+- 类型检查与相关闸门通过。

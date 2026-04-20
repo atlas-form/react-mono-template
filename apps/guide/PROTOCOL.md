@@ -1,42 +1,47 @@
-# apps/admin 协议（AI 必读）
+# apps/guide 协议
 
-本协议用于 `apps/admin`。
+`guide` 不是业务 app，它是参考样例 app。
 
-## 1. 模板来源
+它的主要价值是向 AI 和开发者展示：
 
-- `apps/admin` 必须继承 `apps/web` 的工程模板。
-- 启动方式、env 校验、API 聚合、会话恢复、路由拆分规则默认沿用 `web`。
+- 各层组件应该怎么被合法使用
+- 哪些能力属于 `ui-components`
+- 哪些能力属于 `app-components`
+- 页面应如何按框架边界装配
 
-## 2. app 角色
+## 1. 宪章
 
-- `apps/admin` 是管理台应用。
-- 负责后台页面、后台布局、后台导航和页面级状态编排。
-- 不是共享能力沉淀层。
+- `guide` 是示例与参考应用。
+- `guide` 的首要目标是展示正确用法，不是追求业务完整性。
+- `guide` 中的代码会被 AI 当作样例，因此清晰边界比快速实现更重要。
 
-## 3. 必须复用的部分
+## 2. 使用原则
 
-- `src/main.tsx` 的启动注入方式
-- `src/config/env.ts` 的环境变量读取方式
-- `src/api/index.ts` 的服务聚合方式
-- `App.tsx` 中的会话恢复模式
-- `routes/*`、`layouts/*`、`pages/*` 的分层
+- 展示基础稳定组件时，优先从 `@workspace/ui-components` 导入。
+- 展示复合场景组件时，优先从 `@workspace/app-components` 导入。
+- 不得为了演示方便直接越层使用 `ui-core`，除非该页面明确就是在讲 primitive。
 
-## 4. 后台特例
+## 3. guide 的责任
 
-- 后台 UI 必须优先复用 `@workspace/ui-components` 与 `@workspace/ui-theme`。
-- 页面私有布局允许在 `apps/admin` 内用局部结构表达，但不能引入第三方 UI 设计系统作为主组件层。
-- 服务能力、错误模型、query client、主题模式能力仍必须复用 workspace 现有包。
-- 不得把 demo 项目的目录结构直接整套搬入本仓库；只能提取适合 `admin` 的页面和布局思路。
+- 提供高质量合法示例
+- 展示组件协议的推荐用法
+- 帮助 AI 学会各层组件的正确归属与消费方式
 
-## 5. 共享边界
+guide 不负责：
 
-- 只在 `admin` 内使用的后台布局与页面组件，留在 `apps/admin/src/components`。
-- 若未来明确被多个 app 复用，再上移到 `packages/*`。
+- 承载真实业务流程
+- 长期保存临时脏实验
+- 成为另一套共享组件系统
 
-## 6. 完成门禁
+## 4. AI 在 guide 中的默认行为
 
-涉及 `apps/admin` 的改动至少通过：
+- 写示例时优先追求“边界正确”和“示例清楚”
+- 不要为了炫技引入模糊写法
+- 不要在 guide 页面里创造会误导 AI 的临时模式
 
-- `pnpm -C apps/admin lint`
-- `pnpm -C apps/admin test`
-- `pnpm -C apps/admin build`
+## 5. 完成标准
+
+- 示例代码能正确表达框架边界
+- 导入路径和组件归属正确
+- 没有展示违规用法
+- guide 自身相关门禁通过

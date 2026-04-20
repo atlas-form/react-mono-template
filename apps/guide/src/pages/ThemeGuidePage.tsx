@@ -853,7 +853,7 @@ export default function ThemeGuidePage() {
   return (
     <div className="min-h-0 min-w-0 flex-1 overflow-auto">
       <div
-        className="mx-auto flex max-w-6xl flex-col gap-6 p-4 md:p-6"
+        className="mx-auto flex w-full max-w-[1800px] flex-col gap-6 p-4 md:p-6"
         style={editorShellStyle}
       >
         <Card>
@@ -882,7 +882,7 @@ export default function ThemeGuidePage() {
 
         <div
           id="semantic-tokens"
-          className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]"
+          className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(360px,0.8fr)] 2xl:grid-cols-[minmax(0,1.65fr)_minmax(380px,0.75fr)]"
         >
           <Card>
             <CardHeader>

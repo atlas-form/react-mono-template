@@ -1,118 +1,135 @@
 # @workspace/ui-components 协议
 
-## 宪章
+本包是整个框架最关键的约束层。
 
-`@workspace/ui-components` 是构建在 `@workspace/ui-core` 之上的基础样式化组件层。
-所有应用包在需要简单、稳定、可复用的共享 UI 时，应优先从本包消费。
+它的职责不是“提供很多组件”，而是“给 AI 提供一组稳定、固定、不可随意漂移的前端协议”。
 
-## 作用域
+## 1. 宪章
 
-- `@workspace/ui-core`：primitive 原语与行为契约。不得因应用需求直接修改。
-- `@workspace/ui-components`：简单组件、标准组件、稳定组件。负责固定 API 的基础视觉封装。
-- `@workspace/app-components`：面向应用的复合组件。负责页面装配、布局语义与业务场景组合。
+- `ui-components` 是 stable 协议层。
+- 外部 app 默认应优先消费本包，而不是直接消费 `ui-core`。
+- 本包的首要目标是减少 AI 乱写，不是提高灵活性。
+- 任何会削弱边界的便利性写法，都应默认视为不合法。
 
-## 组件分组（强制）
+## 2. 本包在整个框架中的位置
 
-`src/components` 下所有组件必须且只能归入一个分组：
+- `ui-core`：primitive 能力层
+- `ui-components`：稳定、固定、可复用的产品级协议层
+- `app-components`：复合装配层
+- `apps/*`：最终应用层
 
-- `src/components/stable/*`：标准化、可复用、可用于生产的组件。
-- `src/components/labs/*`：实验性或领域性组件，尚未标准化。
+AI 在判断归属时，若组件是“简单、稳定、通用、格式清晰”的共享能力，应优先进入本包。
 
-禁止将组件直接实现到 `src/components/*` 根目录。
+## 3. 目录规则
 
-## Fixed-Only 原则（强制）
+- `src/components/stable/*`：正式稳定协议组件
+- `src/components/labs/*`：实验组件
 
-`@workspace/ui-components` 必须实现 fixed-only 设计系统。
+禁止：
 
-- 组件必须暴露确定性、显式的产品 API。
-- 组件禁止暴露 free/flex/customization 接口。
-- 组件禁止依赖应用层的样式决策。
+- 把组件直接写到 `src/components/*` 根目录
+- 恢复 `custom` 这一层
+- 把复合装配组件伪装成 stable 组件塞进本包
 
-## API 约束（强制）
+## 4. Stable 的真正含义
 
-对 stable 组件：
+这里的 stable 不是“功能很多”，而是：
+
+- API 边界稳定
+- 使用方式稳定
+- DOM 结构和交互入口稳定
+- 样式控制权不向外扩散
+- AI 在修改时不需要重新发明协议
+
+如果一个组件离开了固定结构、固定触发方式、固定样式边界就无法成立，那它不属于 stable。
+
+## 5. Stable 组件强制规则
 
 - 必须使用显式、受控的 props。
-- 禁止暴露 `className`、`style`、自由形态 `...props` 透传。
-- 禁止暴露 `mode`、`asChild`、`classResolver`、`classNameMode` 或同类 primitive 控制项。
-- 禁止向应用层暴露通用 slot/render 注入能力。
+- 禁止暴露 `className`、`style`、自由形态 `...props`。
+- 禁止暴露 `mode`、`asChild`、`classResolver`、`classNameMode` 或同类 primitive 控制面。
+- 禁止暴露 render prop、slot 注入、结构改写入口。
+- 禁止直接透传 `ui-core` props。
+- 禁止直接返回 `<CoreXxx {...props} />` 这类透明包装。
+- 禁止通过“先包一层再原样导出”的方式伪装稳定组件。
 
-## 结构约束（强制）
+## 6. 什么应该进入本包
 
-- 组件在有产品语义时必须通过显式结构化 props 表达（例如 `title`、`description`、`actions`）。
-- 禁止将会削弱产品一致性的任意组合能力作为默认应用层 API 暴露。
-- 若组件本质是页面装配、业务语义组合、布局壳层或没有稳定统一格式的复合组件，不得放入 `ui-components`，必须进入 `@workspace/app-components`。
+通常适合进入 `ui-components` 的能力：
 
-## 实现风格规则
+- button
+- input
+- checkbox
+- stable table
+- stable dialog
+- alert
+- badge
 
-### 简单组件（Button 风格）
+这些组件有共同特征：
 
-简单组件（单一职责、低组合复杂度）必须遵循 Button 风格 API：
+- 页面到页面之间格式基本一致
+- 不需要大量页面语义定制
+- 可以用固定协议描述清楚
 
-- 仅允许显式白名单 props。
-- 禁止直接重导出 ui-core 全量 props。
-- 禁止向应用层开放样式覆盖入口。
+## 7. 什么不应该进入本包
 
-### 复杂组件（Select 风格）
+以下能力通常应进入 `app-components`：
 
-复杂组件（多结构/多交互状态）必须遵循 Select 风格封装：
+- data table
+- admin sidebar
+- top bar
+- 页面 filter/header 组合
+- 明显依赖场景语义的 tooltip 包装
+- 任意需要大量结构或样式逃生口的组件
 
-- 在 `ui-components` 内提供仍然具备稳定通用格式的组件封装。
-- 对外仅暴露受控、确定性的 API。
-- 禁止向应用层暴露结构改写与样式注入能力。
+一句话判断：
 
-不符合“稳定通用格式”前提的复合组件，不属于本包职责。
+- 若组件本质是“规范”
+  - 进入 `ui-components`
+- 若组件本质是“场景装配”
+  - 进入 `app-components`
 
-## 应用使用规则（强制）
+## 8. AI 默认工作流
 
-应用必须：
+AI 在修改或新增本包组件时，必须按以下顺序：
 
-- 从 `@workspace/ui-components` 导入共享基础组件。
-- 从 `@workspace/app-components` 导入共享复合组件。
+1. 先判断该能力是否真的属于 stable。
+2. 阅读本包协议与同类组件样例。
+3. 优先参考现有合法 stable 组件写法。
+4. 只暴露最小白名单 API。
+5. 写完后运行本包 rules 与 typecheck。
 
-应用禁止：
+如果 AI 发现自己需要加：
 
-- 从 `@workspace/ui-core` 导入共享产品 UI。
-- 通过包裹共享组件进行样式注入作为 workaround。
-- 通过任何扩展点覆盖共享组件样式。
+- `className`
+- `style`
+- `asChild`
+- render props
+- Core props alias
+- 透明 passthrough
 
-当现有能力不足时：
+应立即停止，并重新判断该能力是否应该移到 `app-components` 或 `ui-core`。
 
-- 若是简单、稳定组件能力不足，必须扩展或修改 `@workspace/ui-components`。
-- 若是复合组件装配能力不足，必须扩展或修改 `@workspace/app-components`。
-- 禁止在应用层通过自定义绕过共享包边界实现需求。
+## 9. 导出规则
 
-## 导出策略
+- 根导出 `@workspace/ui-components` 只导出 stable 组件。
+- `labs` 只能通过显式子路径导出。
+- 包导出列表必须保持极小且明确。
+- 不允许恢复模糊目录出口。
 
-- 根导出（`@workspace/ui-components`）必须导出 stable 组件。
-- 根导出默认禁止导出 labs 组件。
-- 若 labs 组件需要临时消费，必须使用显式 labs 子路径导出，并按临时能力管理。
+## 10. 规则与样例
 
-## 构建与晋升闸门
+- `tests/rules/*` 是本包协议的自动执行层。
+- 现有 stable 组件的价值首先是“给 AI 提供样例”，其次才是“提供功能”。
+- 新组件数量不是目标。
+- 高质量、边界清晰、可作为 AI 参考的样例才是目标。
 
-每个新增共享组件必须遵循：
+## 11. 完成定义
 
-1. 从 `ui-core` 原语/契约出发。
-2. 判断边界：
-   - 简单/稳定组件，进入 `ui-components`
-   - 复合/装配组件，进入 `app-components`
-3. 在目标包内实现对应能力。
-4. 若落在 `ui-components`，选择分组：`labs` 或 `stable`。
-5. 在 `apps/test` 增加或更新验证。
-6. 通过闸门：
-   - `pnpm --filter @workspace/ui-components typecheck`
-   - `pnpm --filter test lint`
-   - `pnpm --filter test build`
-7. 仅在 API 与行为稳定后，方可从 `labs` 晋升到 `stable`。
+只有同时满足以下条件，改动才算完成：
 
-## AI 执行规则（强制）
-
-任何修改本包的 AI 代理必须遵守：
-
-1. 本协议是硬约束。
-2. 禁止将产品样式决策下放到 `ui-core`。
-3. 禁止把复合组件错误地塞进 `ui-components`。
-4. 必须执行 stable/labs 分组约束。
-5. 必须优先 fixed-only 严格 API，而非便利性透传。
-6. 禁止新增面向应用层的可定制入口。
-7. 协议与便利性冲突时，以协议为准。
+- 组件归属判断正确。
+- API 没有泄露 primitive 控制面。
+- 没有新增灵活逃生口。
+- `pnpm -C packages/ui-components test:rules` 通过。
+- `pnpm -C packages/ui-components typecheck` 通过。

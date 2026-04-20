@@ -1,52 +1,100 @@
 # @workspace/app-components 协议
 
-## 宪章
+`app-components` 不是杂物层，也不是 `ui-components` 的失败收容站。
 
-`@workspace/app-components` 用于承载共享复合组件。
+它的职责是承载“共享复合组件”和“共享场景装配协议”。
 
-这里的组件直接服务于应用装配，可以有明确页面语义、布局语义和业务语义，不要求像基础组件那样具备稳定统一格式。
+## 1. 宪章
 
-## 作用域
+- `app-components` 是复合装配层。
+- 本包允许比 `ui-components` 更灵活，但不能没有边界。
+- 本包可以使用 `ui-core`，但不能把 `ui-core` 的原始控制面直接泄露给最终 app。
+- 本包的目标不是追求自由，而是把高价值场景沉淀成可复用框架件。
 
-- 负责跨 app 复用的复合组件。
-- 负责基于 `ui-components` / `ui-core` 进行页面级装配。
-- 允许使用更贴近应用的结构化 API。
+## 2. 本包适合承载什么
 
-## 不属于本包的内容
+适合：
 
-- 简单、基础、通用、样式固定的组件，不得放入本包，必须进入 `@workspace/ui-components`。
-- primitive 原语与行为契约，不得放入本包，必须进入 `@workspace/ui-core`。
-- 主题 token，不得放入本包，必须进入 `@workspace/ui-theme`。
+- data table
+- admin sidebar
+- top bar
+- date-time picker
+- 其他明确服务于页面结构、列表页、后台场景、业务装配的共享组件
 
-## API 原则
+这些组件的共同点：
 
-- 组件 API 以应用可用性优先，不强制 fixed-only。
-- 可以暴露合理的组合能力，但仍应避免无边界透传。
-- 优先表达页面装配语义，而不是伪装成基础原子组件。
+- 比基础组件复杂
+- 带场景语义
+- 适合多个 app 共享
+- 需要内部装配多个下层组件
 
-## 目录规则
+## 3. 本包不适合承载什么
 
-- 组件实现放在 `src/components/*`。
-- 根导出只导出当前明确要给应用消费的组件。
-- 允许按组件名提供子路径导出。
-- 如果某个复合组件已经成为核心框架组件，并且存在明确使用边界，必须在组件目录下补充局部 `PROTOCOL.md`。
-- 当任务涉及该核心框架组件本身，或需要在 app 中新增/修改其使用方式时，AI 必须继续阅读对应组件目录下的局部协议。
+- primitive 原语
+- 纯基础 UI
+- 应该进入 `ui-components/stable` 的简单稳定组件
+- 单个 app 私有的一次性页面结构
+- 主题 token 与通用设计变量
 
-### 关键局部协议
+## 4. API 原则
 
-- `DataTable`：
-  `src/components/data-table/PROTOCOL.md`
-  当任务涉及表格查询、批量操作、行操作、header actions、admin 列表页搭建时，必须继续阅读此协议。
+- 对外 API 应表达场景语义，而不是暴露底层细节。
+- 可以比 `ui-components` 更灵活，但灵活性必须服务场景，而不是给 app 任意改结构。
+- 禁止无边界 `...props` 透传。
+- 禁止直接 re-export `ui-core` 组件或类型。
+- 禁止通过透明包装把 `ui-core` 原样暴露给 app。
 
-## 应用使用规则
+## 5. 与 ui-core / ui-components 的关系
 
-- app 需要共享复合组件时，应优先从 `@workspace/app-components` 导入。
-- 禁止在多个 app 中复制同一个布局壳层或复合组件实现。
-- 若组件已经沉淀为稳定基础模式，应回收至 `@workspace/ui-components`。
+- 优先组合 `ui-components` 提供的稳定协议组件。
+- 必要时允许直接使用 `ui-core`。
+- 但只要使用了 `ui-core`，就必须在本包重新定义清晰的场景协议。
+- app 应消费的是 `app-components` 的语义 API，而不是它内部依赖了什么 primitive。
 
-## 完成标准
+## 6. AI 默认判断规则
 
-1. 明确判断该组件属于“复合组件”，而不是基础组件。
-2. 在 `app-components` 内实现并导出。
-3. 至少在一个真实 app 中完成接入验证。
-4. 通过 `pnpm --filter @workspace/app-components typecheck`。
+当 AI 需要新增共享能力时，按以下顺序判断：
+
+1. 它是不是 primitive？
+  - 是：去 `ui-core`
+2. 它是不是简单、稳定、通用协议？
+  - 是：去 `ui-components`
+3. 它是不是复合装配、页面语义、后台场景协议？
+  - 是：来 `app-components`
+4. 它是不是只给某一个 app 用？
+  - 是：留在对应 app 内
+
+## 7. 局部协议
+
+若某个复合组件已经成为框架核心件，必须在组件目录下补充局部 `PROTOCOL.md`。
+
+当前重点样例：
+
+- `src/components/data-table/PROTOCOL.md`
+
+当任务涉及该组件本身，或需要在 app 中新增/修改其用法时，AI 必须继续阅读局部协议，而不能只看本包顶层协议。
+
+## 8. 规则系统
+
+- `tests/rules/*` 用于防止本包对外泄露 primitive 控制面。
+- 这些规则的目标不是禁止本包内部实现灵活，而是禁止把这种灵活性直接外放给 app。
+- 通过 rules 不等于设计已经完美，只等于当前已定义边界没有被打破。
+
+## 9. 样例原则
+
+- 本包组件首先是 AI 参考样例，其次才是功能集合。
+- 重点不是数量，而是让 AI 学会：
+  - 如何封装复合场景
+  - 如何内部使用 `ui-core`
+  - 如何不把底层能力泄露出去
+
+## 10. 完成定义
+
+改动只有在以下条件同时满足时才算完成：
+
+- 组件归属判断正确。
+- 没有把基础组件错误塞进本包。
+- 没有对外泄露 `ui-core` 原始控制面。
+- 如属于核心框架件，局部协议已同步。
+- `pnpm -C packages/app-components test:rules` 通过。
+- `pnpm -C packages/app-components typecheck` 通过。
