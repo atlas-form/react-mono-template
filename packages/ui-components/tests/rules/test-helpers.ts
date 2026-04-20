@@ -46,6 +46,10 @@ export function toLocations(findings: RuleFinding[]): string[] {
   return findings.map((finding) => `${finding.file}:${finding.line}`).sort()
 }
 
+export function toFiles(findings: RuleFinding[]): string[] {
+  return [...new Set(findings.map((finding) => finding.file))].sort()
+}
+
 function walk(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const fullPath = path.join(dir, entry.name)
