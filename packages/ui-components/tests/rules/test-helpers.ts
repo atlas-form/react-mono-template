@@ -10,6 +10,12 @@ export interface RuleFinding {
   text: string
 }
 
+export interface ExportedPropBlockMatch {
+  file: string
+  exportName: string
+  text: string
+}
+
 export function readPackageJson() {
   return JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as {
     exports?: Record<string, string>
@@ -48,6 +54,42 @@ export function toLocations(findings: RuleFinding[]): string[] {
 
 export function toFiles(findings: RuleFinding[]): string[] {
   return [...new Set(findings.map((finding) => finding.file))].sort()
+}
+
+export function findExportedPropBlocksMatching(
+  files: string[],
+  matcher: (blockText: string) => boolean
+): ExportedPropBlockMatch[] {
+  return files.flatMap((file) => {
+    const relativeFile = path.relative(packageRoot, file)
+    const source = readFileSync(file, "utf8")
+    const matches = source.matchAll(
+      /export\s+(?:interface|type)\s+(\w+Props)\b[\s\S]*?(?:\{[\s\S]*?\})/g
+    )
+
+    return Array.from(matches).flatMap((match) => {
+      const exportName = match[1]
+      const text = match[0]
+
+      return matcher(text)
+        ? [
+            {
+              file: relativeFile,
+              exportName,
+              text,
+            },
+          ]
+        : []
+    })
+  })
+}
+
+export function toFileExports(
+  matches: ExportedPropBlockMatch[]
+): string[] {
+  return matches
+    .map((match) => `${match.file}:${match.exportName}`)
+    .sort()
 }
 
 function walk(dir: string): string[] {

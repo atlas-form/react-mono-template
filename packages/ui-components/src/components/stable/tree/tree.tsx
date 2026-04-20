@@ -37,10 +37,9 @@ export interface TreeViewProps {
   searchValue?: string
   emptyLabel?: ReactNode
   maxHeight?: number
-  className?: string
 }
 
-export interface TreeProps extends Omit<TreeViewProps, "searchValue" | "className"> {
+export interface TreeProps extends Omit<TreeViewProps, "searchValue"> {
   placeholder?: string
   searchPlaceholder?: string
   emptySearchLabel?: ReactNode
@@ -396,7 +395,6 @@ export function TreeView({
   searchValue = "",
   emptyLabel = "No nodes found.",
   maxHeight = 320,
-  className,
 }: TreeViewProps) {
   const index = useMemo(() => buildTreeIndex(data), [data])
   const [resolvedExpandedIds, setResolvedExpandedIds] = useControllableState({
@@ -436,19 +434,14 @@ export function TreeView({
 
   if (!filteredData.length) {
     return (
-      <div
-        className={cn(
-          "flex items-center justify-center rounded-lg border border-dashed px-4 py-8 text-sm text-muted-foreground",
-          className,
-        )}
-      >
+      <div className="flex items-center justify-center rounded-lg border border-dashed px-4 py-8 text-sm text-muted-foreground">
         {emptyLabel}
       </div>
     )
   }
 
   return (
-    <CoreScrollArea className={cn("w-full", className)}>
+    <CoreScrollArea className="w-full">
       <div style={{ maxHeight }} className="space-y-0 pr-3">
         {filteredData.map((node) => (
           <TreeNodeRow
