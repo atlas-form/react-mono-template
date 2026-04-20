@@ -117,10 +117,12 @@ export function DataTableRowActionsCell<T>({
 
         {hasMoreActions ? (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <IconButton label={rowActions.moreLabel ?? resolvedMoreLabel}>
-                <MoreHorizontal aria-hidden="true" className="size-4.5" />
-              </IconButton>
+            <DropdownMenuTrigger
+              className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
+              aria-label={rowActions.moreLabel ?? resolvedMoreLabel}
+            >
+              <MoreHorizontal aria-hidden="true" className="size-4.5" />
+              <span className="sr-only">{rowActions.moreLabel ?? resolvedMoreLabel}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               mode="headless"

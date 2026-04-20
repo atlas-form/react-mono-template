@@ -167,7 +167,9 @@ describe("DataTable", () => {
     })
 
     await user.click(rowScope.getByRole("button", { name: "更多操作" }))
-    await user.click(await screen.findByText("打开审计弹窗"))
+    await user.click(
+      await screen.findByRole("menuitem", { name: "打开审计弹窗" })
+    )
 
     expect(moreAction).toHaveBeenCalledWith("row-1")
   })

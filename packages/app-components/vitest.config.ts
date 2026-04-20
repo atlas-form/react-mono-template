@@ -22,19 +22,27 @@ export default defineConfig({
         find: "@workspace/ui-core/components/dropdown-menu",
         replacement: path.resolve(
           __dirname,
-          "../ui-core/src/components/dropdown-menu/index.ts"
+          "../ui-core/src/headless/dropdown-menu/index.ts"
         ),
       },
       {
         find: "@workspace/ui-core/components/table",
         replacement: path.resolve(
           __dirname,
-          "../ui-core/src/components/table/index.ts"
+          "../ui-core/src/headless/table/index.ts"
         ),
       },
       {
         find: "@workspace/ui-core/lib/utils.js",
         replacement: path.resolve(__dirname, "../ui-core/src/lib/utils.ts"),
+      },
+      {
+        find: /^@workspace\/ui-core\/components\/(.*)$/,
+        replacement: `${path.resolve(__dirname, "../ui-core/src/headless")}/$1/index.ts`,
+      },
+      {
+        find: /^@workspace\/ui-core\/lib\/(.*)\.js$/,
+        replacement: `${path.resolve(__dirname, "../ui-core/src/lib")}/$1.ts`,
       },
       {
         find: /^@workspace\/app-components$/,
@@ -58,7 +66,7 @@ export default defineConfig({
       },
       {
         find: /^@workspace\/ui-components\/(.*)$/,
-        replacement: `${path.resolve(__dirname, "../ui-components/src")}/$1`,
+        replacement: `${path.resolve(__dirname, "../ui-components/src/components")}/$1`,
       },
       {
         find: /^@workspace\/ui-core$/,

@@ -1,4 +1,8 @@
-import type { MouseEventHandler, ReactNode } from "react"
+import {
+  forwardRef,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react"
 import { Button as CoreButton } from "@workspace/ui-core/components/button"
 
 export type IconButtonVariant =
@@ -32,25 +36,31 @@ const VARIANT_CLASS_NAMES: Record<IconButtonVariant, string> = {
     "bg-transparent text-destructive hover:bg-destructive/10 hover:text-destructive",
 }
 
-export function IconButton({
-  children,
-  label,
-  variant = "default",
-  type = "button",
-  disabled = false,
-  onClick,
-}: IconButtonProps) {
-  return (
-    <CoreButton
-      type={type}
-      variant="ghost"
-      size="icon"
-      disabled={disabled}
-      onClick={onClick}
-      className={VARIANT_CLASS_NAMES[variant]}
-    >
-      {children}
-      <span className="sr-only">{label}</span>
-    </CoreButton>
-  )
-}
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
+  function IconButton(
+    {
+      children,
+      label,
+      variant = "default",
+      type = "button",
+      disabled = false,
+      onClick,
+    },
+    ref
+  ) {
+    return (
+      <CoreButton
+        ref={ref}
+        type={type}
+        variant="ghost"
+        size="icon"
+        disabled={disabled}
+        onClick={onClick}
+        className={VARIANT_CLASS_NAMES[variant]}
+      >
+        {children}
+        <span className="sr-only">{label}</span>
+      </CoreButton>
+    )
+  }
+)

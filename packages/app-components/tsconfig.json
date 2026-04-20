@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "types": ["vitest/globals"],
     "paths": {
       "@workspace/app-components/*": ["./src/*"],
       "@workspace/shared-i18n": ["../shared-i18n/src/index.ts"],
@@ -18,11 +19,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "src/test/**/*"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

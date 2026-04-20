@@ -1,3 +1,4 @@
+import { forwardRef } from "react"
 import { Slot } from "radix-ui"
 
 import { DEFAULT_MODE, type BaseMode } from "../../lib/component-mode"
@@ -41,11 +42,11 @@ function resolveStyledClassName({
   return cn(defaultClassName, className)
 }
 
-export function Button({
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   mode = DEFAULT_MODE,
   asChild = false,
   ...props
-}: ButtonProps) {
+}, ref) {
   const Comp = asChild ? Slot.Root : "button"
   const resolvedMode: BaseMode = mode
 
@@ -58,7 +59,7 @@ export function Button({
       classResolver: _classResolver,
       ...rest
     } = props
-    return <Comp className={className} {...rest} />
+    return <Comp ref={ref} className={className} {...rest} />
   }
 
   const {
@@ -81,6 +82,7 @@ export function Button({
 
   return (
     <Comp
+      ref={ref}
       data-slot="button"
       data-variant={resolvedVariant}
       data-size={resolvedSize}
@@ -88,4 +90,4 @@ export function Button({
       {...styledProps}
     />
   )
-}
+})
