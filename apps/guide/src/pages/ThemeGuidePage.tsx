@@ -400,7 +400,7 @@ function TokenPreviewPanel({
             token.key === "primary-foreground" ? (
               <div className="rounded-xl border border-(--border) bg-(--surface) p-4">
                 <div className="mb-3 flex flex-wrap gap-2">
-                  <Button>Primary Action</Button>
+                  <Button variant="primary">Primary Action</Button>
                   <Button variant="outline">Outline Action</Button>
                   <Badge>Live</Badge>
                   <IconButton variant="primary" label="favorite">
@@ -408,7 +408,7 @@ function TokenPreviewPanel({
                   </IconButton>
                 </div>
                 <div className="text-sm text-(--muted-foreground)">
-                  观察主按钮、描边按钮、badge 和 icon action 的变化。
+                  这里的主按钮、描边按钮、badge 和 icon action 都直接消费 primary 相关语义。
                 </div>
               </div>
             ) : null}
