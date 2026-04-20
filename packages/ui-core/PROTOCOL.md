@@ -15,6 +15,7 @@
 
 - `src/primitives/*` 是唯一有效实现目录。
 - `src/components/*` 只保留 shadcn 原始生成结果或迁移参考，不是最终 API。
+- `tests/rules/*` 是 `ui-core` 协议的自动检查层，不是普通单元测试。
 - 推荐公共语义路径是 `@workspace/ui-core/primitives/*`。
 - 兼容导出可以存在，但 AI 判断组件归属时必须以 `primitives` 语义理解本包。
 
@@ -76,22 +77,35 @@ AI 在 `ui-core` 新增组件时，必须按以下顺序：
 4. 拆分为 `*.tsx`、`*.styles.ts`、`*.types.ts`、`index.ts`。
 5. 参考 `src/primitives/button` 组织 API。
 6. 检查该能力是否被错误地做成了产品层语义。
-7. 通过类型与相关门禁后，才允许对外导出。
+7. 运行 `pnpm -C packages/ui-core test:rules`，确保结构与依赖边界合法。
+8. 运行 `pnpm -C packages/ui-core typecheck`。
+9. 通过相关门禁后，才允许对外导出。
 
-## 8. 与上层的关系
+## 8. 规则系统
+
+- `ui-core` 的规则测试放在 `tests/rules/*`。
+- 当前规则优先覆盖结构边界与依赖边界，再逐步扩展到更强的语义边界。
+- 已有 AST 规则至少应保证：
+  - primitive 目录结构完整
+  - primitive `index.ts` 使用显式导出
+  - primitive `index.ts` 只导出本地文件
+  - `ui-core` 不依赖上层包
+- 当协议与实现冲突时，以规则和本协议共同定义的边界为准。
+
+## 9. 与上层的关系
 
 - `ui-components` 可以消费 `ui-core`，但必须收紧 API。
 - `app-components` 可以消费 `ui-core`，但不得把 primitive 控制面原样泄露给 app。
 - `apps/*` 默认不应直接散落使用 `ui-core`。
 - 当 app 确有例外需求时，应先在本地或 `app-components` 做一层协议化封装。
 
-## 9. 样式原则
+## 10. 样式原则
 
 - 样式必须消费 token，不得硬编码产品色值。
 - `ui-core` 可以有默认样式，但这些样式仍然只能表达 primitive 默认态，不能表达具体业务品牌策略。
 - 颜色、状态、语义 token 必须来自共享主题体系。
 
-## 10. 输出检查清单
+## 11. 输出检查清单
 
 - 组件确实属于 primitive 层。
 - 实现位于 `src/primitives/*`。
@@ -99,4 +113,5 @@ AI 在 `ui-core` 新增组件时，必须按以下顺序：
 - `mode` 规范完整。
 - 公共导出为显式导出。
 - 没有依赖上层包。
-- 类型检查与相关闸门通过。
+- `pnpm -C packages/ui-core test:rules` 通过。
+- `pnpm -C packages/ui-core typecheck` 通过。

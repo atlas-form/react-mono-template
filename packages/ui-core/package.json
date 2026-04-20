@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "test:rules": "vitest run -c vitest.config.ts tests/rules",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -45,7 +46,8 @@
     "globals": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "typescript-eslint": "catalog:"
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:"
   },
   "exports": {
     "./styles.css": "./src/styles/index.css",
