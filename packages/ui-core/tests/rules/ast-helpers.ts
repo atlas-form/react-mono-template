@@ -78,6 +78,23 @@ export function findExportFindings(
   })
 }
 
+export function findStatementFindings(
+  files: string[],
+  matcher: (node: ts.Statement) => boolean
+): RuleFinding[] {
+  return files.flatMap((file) => {
+    const { sourceFile } = readSourceFile(file)
+
+    return sourceFile.statements.flatMap((statement) => {
+      if (!matcher(statement)) {
+        return []
+      }
+
+      return [toFinding(file, sourceFile, statement)]
+    })
+  })
+}
+
 export function toLocations(findings: RuleFinding[]): string[] {
   return findings.map((finding) => `${finding.file}:${finding.line}`).sort()
 }
