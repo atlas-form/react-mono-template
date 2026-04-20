@@ -97,7 +97,9 @@ AI 在修改或新增本包组件时，必须按以下顺序：
 2. 阅读本包协议与同类组件样例。
 3. 优先参考现有合法 stable 组件写法。
 4. 只暴露最小白名单 API。
-5. 写完后运行本包 rules 与 typecheck。
+5. 写完后运行：
+   - `pnpm -C packages/ui-components test:rules`
+   - `pnpm -C packages/ui-components typecheck`
 
 如果 AI 发现自己需要加：
 
@@ -120,6 +122,7 @@ AI 在修改或新增本包组件时，必须按以下顺序：
 ## 10. 规则与样例
 
 - `tests/rules/*` 是本包协议的自动执行层。
+- `tests/rules/ast-helpers.ts` 是当前规则基础设施的一部分；新增规则应优先继续使用 AST，而不是退回文本匹配。
 - 现有 stable 组件的价值首先是“给 AI 提供样例”，其次才是“提供功能”。
 - 新组件数量不是目标。
 - 高质量、边界清晰、可作为 AI 参考的样例才是目标。

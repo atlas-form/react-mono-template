@@ -63,6 +63,9 @@
   - 是：来 `app-components`
 4. 它是不是只给某一个 app 用？
   - 是：留在对应 app 内
+5. 改完后运行：
+  - `pnpm -C packages/app-components test:rules`
+  - `pnpm -C packages/app-components typecheck`
 
 ## 7. 局部协议
 
@@ -77,6 +80,7 @@
 ## 8. 规则系统
 
 - `tests/rules/*` 用于防止本包对外泄露 primitive 控制面。
+- `tests/rules/ast-helpers.ts` 是当前规则基础设施的一部分；新增规则应优先继续使用 AST，而不是退回文本匹配。
 - 这些规则的目标不是禁止本包内部实现灵活，而是禁止把这种灵活性直接外放给 app。
 - 通过 rules 不等于设计已经完美，只等于当前已定义边界没有被打破。
 
