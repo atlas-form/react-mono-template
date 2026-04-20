@@ -16,6 +16,7 @@ import {
   IconButton,
   Input,
   Switch,
+  toast,
 } from "@workspace/ui-components"
 import {
   applyThemeOverrides,
@@ -365,6 +366,17 @@ function resolveColorInputValue(value: string) {
     Number(channel).toString(16).padStart(2, "0")
 
   return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`
+}
+
+function buildThemeCss(mode: ThemeMode, values: ThemeDraft[ThemeMode]) {
+  const selector =
+    mode === "light" ? ":root" : 'html[data-theme="dark"],\n:root.dark'
+
+  const lines = ALL_TOKEN_DEFINITIONS.map(
+    (token) => `  --${token.key}: ${values[token.key]};`
+  ).join("\n")
+
+  return `${selector} {\n${lines}\n}`
 }
 
 function buildPreviewTokenStyle(modeValues: ThemeDraft[ThemeMode]) {
@@ -830,6 +842,14 @@ export default function ThemeGuidePage() {
     clearThemeOverrides()
   }
 
+  const exportCurrentThemeCss = async () => {
+    const css = buildThemeCss(activeMode, draft[activeMode])
+    await navigator.clipboard.writeText(css)
+    toast("CSS tokens copied", {
+      description: `已复制当前 ${activeMode} 主题的 token CSS。`,
+    })
+  }
+
   return (
     <div className="min-h-0 min-w-0 flex-1 overflow-auto">
       <div
@@ -846,6 +866,9 @@ export default function ThemeGuidePage() {
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={() => void exportCurrentThemeCss()}>
+                  导出当前主题 CSS
+                </Button>
                 <Button variant="outline" onClick={resetAll}>
                   恢复全部默认
                 </Button>
