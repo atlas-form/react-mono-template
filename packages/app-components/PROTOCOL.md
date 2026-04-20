@@ -56,16 +56,20 @@
 当 AI 需要新增共享能力时，按以下顺序判断：
 
 1. 它是不是 primitive？
-  - 是：去 `ui-core`
+   是：去 `ui-core`
+
 2. 它是不是简单、稳定、通用协议？
-  - 是：去 `ui-components`
+   是：去 `ui-components`
+
 3. 它是不是复合装配、页面语义、后台场景协议？
-  - 是：来 `app-components`
+   是：来 `app-components`
+
 4. 它是不是只给某一个 app 用？
-  - 是：留在对应 app 内
+   是：留在对应 app 内
+
 5. 改完后运行：
-  - `pnpm -C packages/app-components test:rules`
-  - `pnpm -C packages/app-components typecheck`
+   `pnpm -C packages/app-components test:rules`
+   `pnpm -C packages/app-components typecheck`
 
 ## 7. 局部协议
 
