@@ -7,7 +7,7 @@
 
 ## 作用域
 
-- `@workspace/ui-core`：headless 原语与行为契约。不得因应用需求直接修改。
+- `@workspace/ui-core`：primitive 原语与行为契约。不得因应用需求直接修改。
 - `@workspace/ui-components`：简单组件、标准组件、稳定组件。负责固定 API 的基础视觉封装。
 - `@workspace/app-components`：面向应用的复合组件。负责页面装配、布局语义与业务场景组合。
 
@@ -34,7 +34,7 @@
 
 - 必须使用显式、受控的 props。
 - 禁止暴露 `className`、`style`、自由形态 `...props` 透传。
-- 禁止暴露 `mode`、`asChild`、`classResolver`、`classNameMode` 或同类 headless 控制项。
+- 禁止暴露 `mode`、`asChild`、`classResolver`、`classNameMode` 或同类 primitive 控制项。
 - 禁止向应用层暴露通用 slot/render 注入能力。
 
 ## 结构约束（强制）

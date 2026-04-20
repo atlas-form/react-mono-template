@@ -63,7 +63,7 @@ export function AvatarDropdownItem({
 }: AvatarDropdownItemProps) {
   return (
     <DropdownMenuItem
-      mode="headless"
+      mode="primitive"
       className={itemClassName()}
       onSelect={handleAction({ href, onSelect })}
       disabled={disabled}
@@ -146,7 +146,7 @@ export function AvatarDropdown({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        mode="headless"
+        mode="primitive"
         align="end"
         sideOffset={10}
         className="z-[2000] w-56 overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-0 text-[var(--surface-foreground)] opacity-100 shadow-[0_24px_80px_rgba(0,0,0,0.55)] outline-hidden"
@@ -187,7 +187,7 @@ export function AvatarDropdown({
 
         <div className="p-1">
           <DropdownMenuItem
-            mode="headless"
+            mode="primitive"
             className={itemClassName()}
             onSelect={handleAction(logout)}
             disabled={logout?.disabled}

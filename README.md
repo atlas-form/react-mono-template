@@ -144,7 +144,7 @@ https://github.com/atlas-form/react-mono-template.git
   这里放页面装配、布局语义、业务组合类组件，不要求固定通用格式。
 
 - `packages/ui-core`
-  更底层的 headless 基础组件能力，一般不是业务页面直接改的第一选择。
+  更底层的 primitive 基础组件能力，一般不是业务页面直接改的第一选择。
 
 - `packages/ui-theme`
   全局主题变量、light/dark 主题能力。

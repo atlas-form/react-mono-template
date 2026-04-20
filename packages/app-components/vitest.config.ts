@@ -22,14 +22,14 @@ export default defineConfig({
         find: "@workspace/ui-core/components/dropdown-menu",
         replacement: path.resolve(
           __dirname,
-          "../ui-core/src/headless/dropdown-menu/index.ts"
+          "../ui-core/src/primitives/dropdown-menu/index.ts"
         ),
       },
       {
         find: "@workspace/ui-core/components/table",
         replacement: path.resolve(
           __dirname,
-          "../ui-core/src/headless/table/index.ts"
+          "../ui-core/src/primitives/table/index.ts"
         ),
       },
       {
@@ -38,7 +38,7 @@ export default defineConfig({
       },
       {
         find: /^@workspace\/ui-core\/components\/(.*)$/,
-        replacement: `${path.resolve(__dirname, "../ui-core/src/headless")}/$1/index.ts`,
+        replacement: `${path.resolve(__dirname, "../ui-core/src/primitives")}/$1/index.ts`,
       },
       {
         find: /^@workspace\/ui-core\/lib\/(.*)\.js$/,

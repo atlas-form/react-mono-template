@@ -90,7 +90,7 @@ export function Time({
 
   return (
     <CoreTime
-      mode="headless"
+      mode="primitive"
       value={toCoreValue(value)}
       defaultValue={toCoreValue(defaultValue)}
       onValueChange={(nextValue) => {

@@ -50,7 +50,8 @@
   "exports": {
     "./styles.css": "./src/styles/index.css",
     "./lib/*": "./src/lib/*",
-    "./components/*": "./src/headless/*/index.ts",
+    "./components/*": "./src/primitives/*/index.ts",
+    "./primitives/*": "./src/primitives/*/index.ts",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }

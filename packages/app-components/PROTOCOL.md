@@ -15,7 +15,7 @@
 ## 不属于本包的内容
 
 - 简单、基础、通用、样式固定的组件，不得放入本包，必须进入 `@workspace/ui-components`。
-- headless 原语与行为契约，不得放入本包，必须进入 `@workspace/ui-core`。
+- primitive 原语与行为契约，不得放入本包，必须进入 `@workspace/ui-core`。
 - 主题 token，不得放入本包，必须进入 `@workspace/ui-theme`。
 
 ## API 原则

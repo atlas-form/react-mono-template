@@ -125,7 +125,7 @@ export function DataTableRowActionsCell<T>({
               <span className="sr-only">{rowActions.moreLabel ?? resolvedMoreLabel}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              mode="headless"
+              mode="primitive"
               align="end"
               sideOffset={8}
               className="z-[2000] min-w-36 overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg outline-hidden"
@@ -133,7 +133,7 @@ export function DataTableRowActionsCell<T>({
               {moreItems.map((item) => (
                 <DropdownMenuItem
                   key={item.key}
-                  mode="headless"
+                  mode="primitive"
                   variant={item.variant ?? "default"}
                   className="flex min-h-8 cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-none outline-hidden transition focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-disabled:pointer-events-none data-disabled:opacity-50"
                   disabled={resolveRowActionDisabled(

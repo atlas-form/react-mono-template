@@ -127,7 +127,7 @@ AI 在使用 mock 时必须明确汇报：
   放 light/dark/system 共用的主题 token 和主题模式能力。
 
 - `packages/ui-core`
-  headless 基础组件层。
+  primitive 基础组件层。
   放行为契约、无障碍接线、最小样式能力和底层原语。
 
 - `packages/ui-components`
@@ -152,7 +152,7 @@ AI 在使用 mock 时必须明确汇报：
 - 组件验证和展示：`apps/test`
 - 通用服务能力：`packages/services`
 - 主题变量和主题模式：`packages/ui-theme`
-- headless 原语和基础行为：`packages/ui-core`
+- primitive 原语和基础行为：`packages/ui-core`
 - 共享产品组件：`packages/ui-components`
 - 共享复合组件：`packages/app-components`
 - 本地 mock 能力：`packages/mock`
@@ -235,7 +235,7 @@ apps/*
 - 主题 token 层：
   [packages/ui-theme/PROTOCOL.md](../packages/ui-theme/PROTOCOL.md)
 
-- headless 基础组件层：
+- primitive 基础组件层：
   [packages/ui-core/PROTOCOL.md](../packages/ui-core/PROTOCOL.md)
 
 - 产品级共享组件层：
@@ -261,7 +261,7 @@ apps/*
 - 修改主题变量、light/dark token、主题模式：
   必读 `packages/ui-theme/PROTOCOL.md`
 
-- 新增或改造 headless 原语组件：
+- 新增或改造 primitive 原语组件：
   必读 `packages/ui-core/PROTOCOL.md`
 
 - 新增或改造共享产品组件：
@@ -281,7 +281,7 @@ AI 在动手前必须先判断改动属于哪一层：
 - 页面编排、路由、布局、页面状态：放 `apps/web`
 - 可复用服务能力：放 `packages/services`
 - 共享主题 token：放 `packages/ui-theme`
-- headless 原语能力：放 `packages/ui-core`
+- primitive 原语能力：放 `packages/ui-core`
 - 共享产品组件：放 `packages/ui-components`
 - 共享复合组件：放 `packages/app-components`
 - mock 接口与本地模拟能力：放 `packages/mock`
