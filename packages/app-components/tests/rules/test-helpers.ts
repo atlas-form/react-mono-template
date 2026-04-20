@@ -15,6 +15,11 @@ export interface ExportedPropBlockMatch {
   text: string
 }
 
+export interface SourceFileMatch {
+  file: string
+  text: string
+}
+
 export function readPackageJson() {
   return JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as {
     exports?: Record<string, string>
@@ -90,6 +95,25 @@ export function findSourceMatches(
   })
 }
 
+export function findSourceFilesMatching(
+  files: string[],
+  matcher: (source: string) => boolean
+): SourceFileMatch[] {
+  return files.flatMap((file) => {
+    const relativeFile = path.relative(packageRoot, file)
+    const source = readFileSync(file, "utf8")
+
+    return matcher(source)
+      ? [
+          {
+            file: relativeFile,
+            text: source,
+          },
+        ]
+      : []
+  })
+}
+
 export function findExportedPropBlocksMatching(
   files: string[],
   matcher: (blockText: string) => boolean
@@ -126,6 +150,10 @@ export function toFileExports(matches: ExportedPropBlockMatch[]): string[] {
   return matches
     .map((match) => `${match.file}:${match.exportName}`)
     .sort()
+}
+
+export function toFiles(matches: Array<{ file: string }>): string[] {
+  return [...new Set(matches.map((match) => match.file))].sort()
 }
 
 function walk(dir: string): string[] {
