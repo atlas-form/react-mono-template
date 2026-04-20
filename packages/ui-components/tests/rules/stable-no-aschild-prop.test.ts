@@ -1,16 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
-  findExportedPropBlocksMatching,
+  findExportedPropMemberMatches,
   findStableTsxFiles,
   toFileExports,
 } from "./test-helpers"
 
 describe("stable component asChild props", () => {
   it("does not expose asChild through exported stable props", () => {
-    const matches = findExportedPropBlocksMatching(
-      findStableTsxFiles(),
-      (blockText) => /\basChild\??:\s*/.test(blockText)
-    )
+    const matches = findExportedPropMemberMatches(findStableTsxFiles(), (propName) => propName === "asChild")
 
     expect(toFileExports(matches)).toEqual([])
   })

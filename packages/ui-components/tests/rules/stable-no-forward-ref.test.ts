@@ -1,15 +1,20 @@
+import ts from "typescript"
 import { describe, expect, it } from "vitest"
 import {
-  findMatches,
+  findCallExpressionFindings,
   findStableTsxFiles,
   toLocations,
 } from "./test-helpers"
 
 describe("stable component ref protocols", () => {
   it("does not use forwardRef inside stable components", () => {
-    const findings = findMatches(findStableTsxFiles(), (line) =>
-      /\bforwardRef\s*</.test(line) || /\bforwardRef\s*\(/.test(line)
-    )
+    const findings = findCallExpressionFindings(findStableTsxFiles(), (node) => {
+      if (ts.isIdentifier(node.expression)) {
+        return node.expression.text === "forwardRef"
+      }
+
+      return false
+    })
 
     expect(toLocations(findings)).toEqual([])
   })

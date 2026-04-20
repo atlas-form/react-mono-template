@@ -1,15 +1,20 @@
 import { describe, expect, it } from "vitest"
 import {
-  findMatches,
+  findImportFindings,
   findStableTsxFiles,
   toLocations,
 } from "./test-helpers"
 
 describe("stable component core utility imports", () => {
   it("does not import ui-core utility modules inside stable components", () => {
-    const findings = findMatches(findStableTsxFiles(), (line) =>
-      /from\s+["']@workspace\/ui-core\/lib\/utils(?:\.js)?["']/.test(line)
-    )
+    const findings = findImportFindings(findStableTsxFiles(), (node) => {
+      const moduleSpecifier = node.moduleSpecifier.getText().slice(1, -1)
+
+      return (
+        moduleSpecifier === "@workspace/ui-core/lib/utils" ||
+        moduleSpecifier === "@workspace/ui-core/lib/utils.js"
+      )
+    })
 
     expect(toLocations(findings)).toEqual([])
   })

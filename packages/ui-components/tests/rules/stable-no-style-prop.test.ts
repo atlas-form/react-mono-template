@@ -1,16 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
-  findExportedPropBlocksMatching,
+  findExportedPropMemberMatches,
   findStableTsxFiles,
   toFileExports,
 } from "./test-helpers"
 
 describe("stable component style props", () => {
   it("does not expose style through exported stable props", () => {
-    const matches = findExportedPropBlocksMatching(
-      findStableTsxFiles(),
-      (blockText) => /\bstyle\??:\s*/.test(blockText)
-    )
+    const matches = findExportedPropMemberMatches(findStableTsxFiles(), (propName) => propName === "style")
 
     expect(toFileExports(matches)).toEqual([])
   })

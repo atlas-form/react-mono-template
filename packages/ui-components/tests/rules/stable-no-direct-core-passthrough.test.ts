@@ -1,11 +1,22 @@
+import ts from "typescript"
 import { describe, expect, it } from "vitest"
-import { findMatches, findStableTsxFiles, toFiles } from "./test-helpers"
+import { findJsxFindings, findStableTsxFiles, toFiles } from "./test-helpers"
 
 describe("stable component passthroughs", () => {
   it("does not directly passthrough props into Core* components", () => {
-    const findings = findMatches(findStableTsxFiles(), (line) =>
-      /return <Core\w+ \{\.\.\.(props|rest)\}(?:\s*\/>|>)/.test(line)
-    )
+    const findings = findJsxFindings(findStableTsxFiles(), (node) => {
+      const tagName = node.tagName.getText()
+
+      if (!tagName.startsWith("Core")) {
+        return false
+      }
+
+      return node.attributes.properties.some(
+        (attribute) =>
+          ts.isJsxSpreadAttribute(attribute) &&
+          (attribute.expression.getText() === "props" || attribute.expression.getText() === "rest")
+      )
+    })
 
     expect(toFiles(findings)).toEqual([])
   })

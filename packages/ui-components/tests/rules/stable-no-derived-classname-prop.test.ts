@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest"
 import {
-  findExportedPropBlocksMatching,
+  findExportedPropMemberMatches,
   findStableTsxFiles,
   toFileExports,
 } from "./test-helpers"
 
 describe("stable component derived className props", () => {
   it("does not expose *ClassName props through exported stable props", () => {
-    const matches = findExportedPropBlocksMatching(
+    const matches = findExportedPropMemberMatches(
       findStableTsxFiles(),
-      (blockText) => /\b\w+ClassName\??:\s*/.test(blockText)
+      (propName) => propName.endsWith("ClassName")
     )
 
     expect(toFileExports(matches)).toEqual([])
