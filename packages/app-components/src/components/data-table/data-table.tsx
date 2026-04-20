@@ -656,7 +656,9 @@ export function DataTable<T, TQuery extends object = object>({
           placeholder={field.placeholder}
           disabled={disabled}
           updateStrategy="enter"
-          inputClassName={field.fieldKey && field.fieldOptions?.length ? "pr-36" : undefined}
+          trailingContentWidth={
+            field.fieldKey && field.fieldOptions?.length ? "wide" : "default"
+          }
           trailingContent={
             field.fieldKey && field.fieldOptions?.length ? (
               <DataTableInlineSelect

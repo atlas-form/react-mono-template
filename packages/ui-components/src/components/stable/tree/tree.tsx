@@ -43,8 +43,6 @@ export interface TreeProps extends Omit<TreeViewProps, "searchValue"> {
   placeholder?: string
   searchPlaceholder?: string
   emptySearchLabel?: ReactNode
-  triggerClassName?: string
-  contentClassName?: string
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -475,8 +473,6 @@ export function Tree({
   maxHeight = 320,
   placeholder = "Select nodes",
   searchPlaceholder = "Search nodes",
-  triggerClassName,
-  contentClassName,
   open,
   defaultOpen = false,
   onOpenChange,
@@ -517,7 +513,6 @@ export function Tree({
             "flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border bg-background px-3 py-2 text-left text-sm shadow-xs outline-none transition",
             "border-input hover:border-ring/60 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
             disabled && "cursor-not-allowed opacity-60",
-            triggerClassName,
           )}
         >
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
@@ -566,7 +561,7 @@ export function Tree({
 
       <CorePopoverContent
         align="start"
-        className={cn("rounded-2xl p-0", contentClassName)}
+        className="rounded-2xl p-0"
         style={contentWidth ? { width: contentWidth } : undefined}
       >
         <div className="space-y-3 p-3">

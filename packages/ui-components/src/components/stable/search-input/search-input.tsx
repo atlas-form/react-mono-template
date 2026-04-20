@@ -14,9 +14,8 @@ export interface SearchInputProps {
   placeholder?: string
   disabled?: boolean
   updateStrategy?: "immediate" | "blur-enter" | "enter"
-  inputClassName?: string
   trailingContent?: ReactNode
-  trailingContentClassName?: string
+  trailingContentWidth?: "default" | "wide"
 }
 
 export function SearchInput({
@@ -25,9 +24,8 @@ export function SearchInput({
   placeholder,
   disabled = false,
   updateStrategy = "immediate",
-  inputClassName,
   trailingContent,
-  trailingContentClassName,
+  trailingContentWidth = "default",
 }: SearchInputProps) {
   const [draftValue, setDraftValue] = useState(value)
 
@@ -86,16 +84,18 @@ export function SearchInput({
         placeholder={placeholder}
         disabled={disabled}
         type="search"
-        className={cn("pl-9", trailingContent ? "pr-32" : undefined, inputClassName)}
+        className={cn(
+          "pl-9",
+          trailingContent
+            ? trailingContentWidth === "wide"
+              ? "pr-36"
+              : "pr-32"
+            : undefined
+        )}
       />
 
       {trailingContent ? (
-        <div
-          className={cn(
-            "absolute top-1/2 right-2 flex -translate-y-1/2 items-center",
-            trailingContentClassName
-          )}
-        >
+        <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center">
           <span className="mr-2 h-5 w-px bg-border" aria-hidden="true" />
           {trailingContent}
         </div>
