@@ -7,12 +7,15 @@ import {
 } from "react"
 import {
   Button,
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  IconButton,
   Input,
+  Switch,
 } from "@workspace/ui-components"
 import {
   applyThemeOverrides,
@@ -28,6 +31,39 @@ type TokenDefinition = {
   label: string
   description: string
 }
+
+const PREVIEWABLE_TOKEN_KEYS = new Set<string>([
+  "primary",
+  "primary-outline",
+  "primary-foreground",
+  "secondary",
+  "secondary-foreground",
+  "muted",
+  "muted-foreground",
+  "accent",
+  "accent-foreground",
+  "border",
+  "destructive",
+  "info",
+  "success",
+  "warning",
+  "error",
+  "input",
+  "ring",
+  "chart-1",
+  "chart-2",
+  "chart-3",
+  "chart-4",
+  "chart-5",
+  "sidebar",
+  "sidebar-foreground",
+  "sidebar-primary",
+  "sidebar-primary-foreground",
+  "sidebar-accent",
+  "sidebar-accent-foreground",
+  "sidebar-border",
+  "sidebar-ring",
+])
 
 const CORE_TOKEN_DEFINITIONS: readonly TokenDefinition[] = [
   { key: "background", label: "Background", description: "页面背景主色。" },
@@ -287,16 +323,255 @@ function resolveColorInputValue(value: string) {
   return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`
 }
 
+function buildPreviewTokenStyle(modeValues: ThemeDraft[ThemeMode]) {
+  return ALL_TOKEN_DEFINITIONS.reduce<Record<string, string>>((style, token) => {
+    style[`--${token.key}`] = modeValues[token.key]
+    return style
+  }, {})
+}
+
+function getPreviewTitle(tokenKey: string) {
+  if (tokenKey.startsWith("chart-")) {
+    return "图表色板预览"
+  }
+
+  if (tokenKey.startsWith("sidebar")) {
+    return "侧边导航预览"
+  }
+
+  if (tokenKey === "input" || tokenKey === "ring") {
+    return "表单交互预览"
+  }
+
+  if (tokenKey === "info" || tokenKey === "success" || tokenKey === "warning" || tokenKey === "error") {
+    return "状态语义预览"
+  }
+
+  return "组件语义预览"
+}
+
+function TokenPreviewPanel({
+  token,
+  draft,
+  activeMode,
+}: {
+  token: TokenDefinition
+  draft: ThemeDraft
+  activeMode: ThemeMode
+}) {
+  const previewStyle = buildPreviewTokenStyle(draft[activeMode]) as CSSProperties
+
+  if (!PREVIEWABLE_TOKEN_KEYS.has(token.key)) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{token.label}</CardTitle>
+          <CardDescription>
+            这是基础语义 token，主要作用在整体基底层，不提供单独组件预览。
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-xl border border-(--border) bg-(--surface) p-4 text-sm text-(--muted-foreground)">
+            建议直接观察整页背景、文本和表面层的整体变化。
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <div style={previewStyle}>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <CardTitle>{getPreviewTitle(token.key)}</CardTitle>
+              <CardDescription>
+                当前预览聚焦 `{token.label}`，右侧示例会直接消费当前主题变量。
+              </CardDescription>
+            </div>
+            <Badge variant="outline">{token.key}</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {token.key === "primary" ||
+            token.key === "primary-outline" ||
+            token.key === "primary-foreground" ? (
+              <div className="rounded-xl border border-(--border) bg-(--surface) p-4">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <Button>Primary Action</Button>
+                  <Button variant="outline">Outline Action</Button>
+                  <Badge>Live</Badge>
+                  <IconButton variant="primary" label="favorite">
+                    <span className="text-sm">★</span>
+                  </IconButton>
+                </div>
+                <div className="text-sm text-(--muted-foreground)">
+                  观察主按钮、描边按钮、badge 和 icon action 的变化。
+                </div>
+              </div>
+            ) : null}
+
+            {token.key === "secondary" || token.key === "secondary-foreground" ? (
+              <div className="rounded-xl border border-(--border) bg-(--surface) p-4">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <Button variant="secondary">Secondary</Button>
+                  <div className="rounded-lg bg-(--secondary) px-3 py-2 text-sm text-(--secondary-foreground)">
+                    Secondary Surface
+                  </div>
+                </div>
+                <div className="text-sm text-(--muted-foreground)">
+                  用来判断次级按钮和弱强调表面的层级是否合适。
+                </div>
+              </div>
+            ) : null}
+
+            {token.key === "muted" || token.key === "muted-foreground" ? (
+              <div className="rounded-xl border border-(--border) bg-(--muted) p-4">
+                <div className="text-sm font-medium text-(--foreground)">Muted block</div>
+                <div className="mt-1 text-sm text-(--muted-foreground)">
+                  说明文字、弱提示、次要信息会落在这一组语义上。
+                </div>
+              </div>
+            ) : null}
+
+            {token.key === "accent" || token.key === "accent-foreground" ? (
+              <div className="rounded-xl border border-(--border) bg-(--surface) p-4">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <div className="rounded-lg bg-(--accent) px-3 py-2 text-sm text-(--accent-foreground)">
+                    Hover Surface
+                  </div>
+                  <IconButton label="accent action">
+                    <span className="text-sm">✦</span>
+                  </IconButton>
+                </div>
+                <div className="text-sm text-(--muted-foreground)">
+                  accent 更适合 hover、选中背景和轻强调区块。
+                </div>
+              </div>
+            ) : null}
+
+            {token.key === "border" ? (
+              <div className="grid gap-3">
+                <div className="rounded-xl border border-(--border) bg-(--surface) p-4">Panel Border</div>
+                <div className="rounded-xl border border-(--border) bg-(--card) p-4">Card Border</div>
+              </div>
+            ) : null}
+
+            {token.key === "destructive" ||
+            token.key === "info" ||
+            token.key === "success" ||
+            token.key === "warning" ||
+            token.key === "error" ? (
+              <div className="grid gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="destructive">Delete</Button>
+                  <IconButton variant="destructive" label="delete">
+                    <span className="text-sm">⌫</span>
+                  </IconButton>
+                </div>
+                <div className="grid gap-2">
+                  <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "color-mix(in oklab, var(--info) 14%, transparent)", color: "var(--info)" }}>
+                    Info notice
+                  </div>
+                  <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "color-mix(in oklab, var(--success) 14%, transparent)", color: "var(--success)" }}>
+                    Success notice
+                  </div>
+                  <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "color-mix(in oklab, var(--warning) 14%, transparent)", color: "var(--warning)" }}>
+                    Warning notice
+                  </div>
+                  <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "color-mix(in oklab, var(--error) 14%, transparent)", color: "var(--error)" }}>
+                    Error notice
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {token.key === "input" || token.key === "ring" ? (
+              <div className="grid gap-3">
+                <Input value="Theme input preview" onValueChange={() => {}} />
+                <div className="rounded-xl border border-(--input) bg-(--background) p-3 shadow-[0_0_0_3px_color-mix(in_oklab,var(--ring)_45%,transparent)]">
+                  <div className="text-sm">Focused field shell</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Switch checked />
+                  <span className="text-sm text-(--muted-foreground)">Switch focus / active contrast</span>
+                </div>
+              </div>
+            ) : null}
+
+            {token.key.startsWith("chart-") ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-5 gap-2">
+                  {["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"].map((key) => (
+                    <div key={key} className="space-y-2 text-center text-xs text-(--muted-foreground)">
+                      <div className="h-16 rounded-lg" style={{ background: `var(--${key})` }} />
+                      <div>{key}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-end gap-2 rounded-xl border border-(--border) bg-(--surface) p-4">
+                  {[36, 54, 48, 68, 42].map((height, index) => (
+                    <div
+                      key={height}
+                      className="flex-1 rounded-t-md"
+                      style={{
+                        height,
+                        background: `var(--chart-${index + 1})`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {token.key.startsWith("sidebar") ? (
+              <div className="rounded-xl border border-(--sidebar-border) bg-(--sidebar) p-4 text-(--sidebar-foreground)">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold">Workspace</div>
+                  <IconButton variant="primary" label="sidebar primary">
+                    <span className="text-sm">+</span>
+                  </IconButton>
+                </div>
+                <div className="mt-4 space-y-2">
+                  <div className="rounded-lg bg-(--sidebar-accent) px-3 py-2 text-sm text-(--sidebar-accent-foreground)">
+                    Active item
+                  </div>
+                  <div className="rounded-lg px-3 py-2 text-sm">Default item</div>
+                  <div
+                    className="rounded-lg px-3 py-2 text-sm"
+                    style={{
+                      background: "var(--sidebar-primary)",
+                      color: "var(--sidebar-primary-foreground)",
+                    }}
+                  >
+                    Primary shortcut
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 function ThemeTokenField({
   token,
   activeMode,
   value,
   onChange,
+  selected,
+  onSelect,
 }: {
   token: TokenDefinition
   activeMode: ThemeMode
   value: string
   onChange: (value: string) => void
+  selected: boolean
+  onSelect: () => void
 }) {
   const colorInputId = useId()
   const colorInputRef = useRef<HTMLInputElement | null>(null)
@@ -355,7 +630,17 @@ function ThemeTokenField({
   }
 
   return (
-    <div className="rounded-xl border border-(--border) bg-(--card) p-3">
+    <div
+      className="rounded-xl border bg-(--card) p-3 transition-shadow"
+      style={{
+        borderColor: selected ? "var(--primary)" : "var(--border)",
+        boxShadow: selected
+          ? "0 0 0 1px color-mix(in oklab, var(--primary) 55%, transparent)"
+          : "none",
+      }}
+      onClick={onSelect}
+      onFocusCapture={onSelect}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm font-medium">{token.label}</div>
@@ -398,13 +683,17 @@ function ThemeTokenField({
 }
 
 export default function ThemeGuidePage() {
-  const [activeMode, setActiveMode] = useState<ThemeMode>("light")
   const [draft, setDraft] = useState<ThemeDraft>(() =>
     mergeDraftWithDefaults(loadThemeOverrides())
   )
   const [editorShellMode, setEditorShellMode] = useState<ThemeMode>(() =>
     getResolvedDocumentTheme()
   )
+  const [selectedTokenKey, setSelectedTokenKey] = useState("primary")
+  const activeMode = editorShellMode
+  const selectedToken =
+    ALL_TOKEN_DEFINITIONS.find((token) => token.key === selectedTokenKey) ??
+    ALL_TOKEN_DEFINITIONS[0]
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -413,7 +702,8 @@ export default function ThemeGuidePage() {
 
     const root = document.documentElement
     const observer = new MutationObserver(() => {
-      setEditorShellMode(getResolvedDocumentTheme())
+      const resolvedTheme = getResolvedDocumentTheme()
+      setEditorShellMode(resolvedTheme)
     })
 
     observer.observe(root, {
@@ -498,32 +788,18 @@ export default function ThemeGuidePage() {
           </CardHeader>
         </Card>
 
-        <div id="semantic-tokens">
+        <div
+          id="semantic-tokens"
+          className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]"
+        >
           <Card>
             <CardHeader>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <CardTitle>Semantic Tokens</CardTitle>
-                  <CardDescription>字段名与 `ui-theme` 保持一致。</CardDescription>
-                </div>
-                <div className="flex items-center gap-2 rounded-xl bg-(--muted) p-1">
-                  {(["light", "dark"] as const).map((mode) => (
-                    <button
-                      key={mode}
-                      type="button"
-                      className="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
-                      style={{
-                        background: activeMode === mode ? "var(--card)" : "transparent",
-                        color:
-                          activeMode === mode
-                            ? "var(--card-foreground)"
-                            : "var(--muted-foreground)",
-                      }}
-                      onClick={() => setActiveMode(mode)}
-                    >
-                      {mode}
-                    </button>
-                  ))}
+                  <CardDescription>
+                    当前正在编辑 `{activeMode}` 主题，切换请使用 topbar。
+                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -531,7 +807,7 @@ export default function ThemeGuidePage() {
               <div className="space-y-6">
                 <section className="space-y-4">
                   <div className="text-sm font-semibold">Core tokens</div>
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
                     {CORE_TOKEN_DEFINITIONS.map((token) => (
                       <ThemeTokenField
                         key={token.key}
@@ -539,6 +815,8 @@ export default function ThemeGuidePage() {
                         activeMode={activeMode}
                         value={draft[activeMode][token.key]}
                         onChange={(value) => updateToken(activeMode, token.key, value)}
+                        selected={selectedTokenKey === token.key}
+                        onSelect={() => setSelectedTokenKey(token.key)}
                       />
                     ))}
                   </div>
@@ -546,7 +824,7 @@ export default function ThemeGuidePage() {
 
                 <section className="space-y-4">
                   <div className="text-sm font-semibold">Component tokens</div>
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
                     {COMPONENT_TOKEN_DEFINITIONS.map((token) => (
                       <ThemeTokenField
                         key={token.key}
@@ -554,6 +832,8 @@ export default function ThemeGuidePage() {
                         activeMode={activeMode}
                         value={draft[activeMode][token.key]}
                         onChange={(value) => updateToken(activeMode, token.key, value)}
+                        selected={selectedTokenKey === token.key}
+                        onSelect={() => setSelectedTokenKey(token.key)}
                       />
                     ))}
                   </div>
@@ -561,6 +841,14 @@ export default function ThemeGuidePage() {
               </div>
             </CardContent>
           </Card>
+
+          <div className="xl:sticky xl:top-4 xl:self-start">
+            <TokenPreviewPanel
+              token={selectedToken}
+              draft={draft}
+              activeMode={activeMode}
+            />
+          </div>
         </div>
       </div>
     </div>
