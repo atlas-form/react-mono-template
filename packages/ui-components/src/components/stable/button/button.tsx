@@ -1,6 +1,6 @@
 import type { MouseEventHandler, ReactNode } from "react"
 import { Button as CoreButton } from "@workspace/ui-core/components/button"
-import { cn } from "@workspace/ui-core/lib/utils.js"
+import { cn } from "../../../lib/utils"
 
 export type ButtonVariant =
   | "default"

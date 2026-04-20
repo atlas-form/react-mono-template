@@ -15,7 +15,7 @@ import {
   PopoverTrigger as CorePopoverTrigger,
 } from "@workspace/ui-core/components/popover"
 import { ScrollArea as CoreScrollArea } from "@workspace/ui-core/components/scroll-area"
-import { cn } from "@workspace/ui-core/lib/utils.js"
+import { cn } from "../../../lib/utils"
 
 export interface TreeNode {
   id: string
@@ -503,60 +503,58 @@ export function Tree({
 
   return (
     <CorePopover open={resolvedOpen} onOpenChange={setResolvedOpen}>
-      <CorePopoverTrigger asChild>
-        <button
-          ref={triggerRef}
-          id={triggerId}
-          type="button"
-          disabled={disabled}
-          className={cn(
-            "flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border bg-background px-3 py-2 text-left text-sm shadow-xs outline-none transition",
-            "border-input hover:border-ring/60 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
-            disabled && "cursor-not-allowed opacity-60",
-          )}
-        >
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-            {selectedNodes.length ? (
-              selectedNodes.map((node) => (
+      <CorePopoverTrigger
+        ref={triggerRef}
+        id={triggerId}
+        type="button"
+        disabled={disabled}
+        className={cn(
+          "flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border bg-background px-3 py-2 text-left text-sm shadow-xs outline-none transition",
+          "border-input hover:border-ring/60 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
+          disabled && "cursor-not-allowed opacity-60",
+        )}
+      >
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          {selectedNodes.length ? (
+            selectedNodes.map((node) => (
+              <span
+                key={node.id}
+                className="inline-flex max-w-full items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm"
+              >
+                <span className="truncate">{node.label}</span>
                 <span
-                  key={node.id}
-                  className="inline-flex max-w-full items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm"
+                  aria-hidden="true"
+                  className="inline-flex size-4 items-center justify-center rounded text-muted-foreground hover:text-foreground"
+                  onMouseDown={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+
+                    const nextValue = toggleNodeSelection({
+                      node,
+                      checked: false,
+                      cascade,
+                      selectedIds: new Set(value),
+                      index,
+                    })
+
+                    onValueChange(nextValue)
+                  }}
                 >
-                  <span className="truncate">{node.label}</span>
-                  <span
-                    aria-hidden="true"
-                    className="inline-flex size-4 items-center justify-center rounded text-muted-foreground hover:text-foreground"
-                    onMouseDown={(event) => {
-                      event.preventDefault()
-                      event.stopPropagation()
-
-                      const nextValue = toggleNodeSelection({
-                        node,
-                        checked: false,
-                        cascade,
-                        selectedIds: new Set(value),
-                        index,
-                      })
-
-                      onValueChange(nextValue)
-                    }}
-                  >
-                    <XIcon className="size-3.5" />
-                  </span>
+                  <XIcon className="size-3.5" />
                 </span>
-              ))
-            ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
-            )}
-          </div>
+              </span>
+            ))
+          ) : (
+            <span className="text-muted-foreground">{placeholder}</span>
+          )}
+        </div>
 
-          <ChevronDownIcon
-            className={cn(
-              "size-4 shrink-0 text-muted-foreground transition-transform",
-              resolvedOpen && "rotate-180",
-            )}
-          />
-        </button>
+        <ChevronDownIcon
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground transition-transform",
+            resolvedOpen && "rotate-180",
+          )}
+        />
       </CorePopoverTrigger>
 
       <CorePopoverContent

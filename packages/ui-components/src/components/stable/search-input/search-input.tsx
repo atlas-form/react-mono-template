@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react"
 import { Input as CoreInput } from "@workspace/ui-core/components/input"
-import { cn } from "@workspace/ui-core/lib/utils.js"
+import { cn } from "../../../lib/utils"
 
 export interface SearchInputProps {
   value: string

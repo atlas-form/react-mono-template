@@ -232,13 +232,13 @@ export {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./components/stable/tooltip"
+} from "./components/custom/tooltip"
 export type {
   TooltipContentProps,
   TooltipProps,
   TooltipProviderProps,
   TooltipTriggerProps,
-} from "./components/stable/tooltip"
+} from "./components/custom/tooltip"
 
 export {
   Card,
