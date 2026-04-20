@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { readPackageJson } from "./test-helpers"
+import { readPackageJson } from "./ast-helpers"
 
 describe("ui-components package exports", () => {
   it("only exposes the approved public export categories", () => {

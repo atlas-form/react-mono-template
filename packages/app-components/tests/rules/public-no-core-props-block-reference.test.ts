@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest"
 import {
-  findExportedPropBlocksMatching,
+  findExportedPropMemberMatches,
   findPublicSourceFiles,
   toFileExports,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("app-components public prop protocols", () => {
   it("does not expose Core* references from exported public props", () => {
-    const matches = findExportedPropBlocksMatching(
+    const matches = findExportedPropMemberMatches(
       findPublicSourceFiles(),
-      (blockText) => /\bCore[A-Z]\w*\b/.test(blockText)
+      (_propName, typeText) => /\bCore[A-Z]\w*\b/.test(typeText)
     )
 
     expect(toFileExports(matches)).toEqual([])

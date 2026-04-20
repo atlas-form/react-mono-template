@@ -3,7 +3,7 @@ import {
   findExportedPropMemberMatches,
   findStableTsxFiles,
   toFileExports,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("stable component derived className props", () => {
   it("does not expose *ClassName props through exported stable props", () => {

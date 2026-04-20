@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 import ts from "typescript"
-import { findStableTsxFiles, findTypeAliasFindings, toFiles } from "./test-helpers"
+import {
+  findStableTsxFiles,
+  findTypeAliasFindings,
+  toFiles,
+} from "./ast-helpers"
 
 describe("stable component prop aliases", () => {
   it("does not expose Core*Props aliases from stable components", () => {
@@ -9,7 +13,10 @@ describe("stable component prop aliases", () => {
         return false
       }
 
-      if (!ts.isTypeReferenceNode(node.type) || !ts.isIdentifier(node.type.typeName)) {
+      if (
+        !ts.isTypeReferenceNode(node.type) ||
+        !ts.isIdentifier(node.type.typeName)
+      ) {
         return false
       }
 

@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest"
 import {
-  findSourceMatches,
+  findExportFindings,
   findPublicSourceFiles,
   toLocations,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("app-components public re-export boundaries", () => {
   it("does not directly re-export ui-core modules from public sources", () => {
-    const findings = findSourceMatches(
-      findPublicSourceFiles(),
-      /export\s+(?:type\s+)?\{[\s\S]*?\}\s+from\s+["']@workspace\/ui-core\/[^"']+["']/g
+    const findings = findExportFindings(findPublicSourceFiles(), (node) =>
+      node.moduleSpecifier?.getText().slice(1, -1).startsWith("@workspace/ui-core/") ?? false
     )
 
     expect(toLocations(findings)).toEqual([])

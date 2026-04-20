@@ -3,7 +3,7 @@ import {
   findImportFindings,
   findStableTsxFiles,
   toLocations,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("stable component core utility imports", () => {
   it("does not import ui-core utility modules inside stable components", () => {

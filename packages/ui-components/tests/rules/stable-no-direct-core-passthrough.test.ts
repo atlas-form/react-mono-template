@@ -1,6 +1,6 @@
 import ts from "typescript"
 import { describe, expect, it } from "vitest"
-import { findJsxFindings, findStableTsxFiles, toFiles } from "./test-helpers"
+import { findJsxFindings, findStableTsxFiles, toFiles } from "./ast-helpers"
 
 describe("stable component passthroughs", () => {
   it("does not directly passthrough props into Core* components", () => {
@@ -14,7 +14,8 @@ describe("stable component passthroughs", () => {
       return node.attributes.properties.some(
         (attribute) =>
           ts.isJsxSpreadAttribute(attribute) &&
-          (attribute.expression.getText() === "props" || attribute.expression.getText() === "rest")
+          (attribute.expression.getText() === "props" ||
+            attribute.expression.getText() === "rest")
       )
     })
 

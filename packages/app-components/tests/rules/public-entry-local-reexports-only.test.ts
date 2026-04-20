@@ -1,15 +1,16 @@
 import { describe, expect, it } from "vitest"
 import {
-  findMatches,
+  findExportFindings,
   findPublicEntryFiles,
   toLocations,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("app-components public entry protocols", () => {
   it("only re-exports local modules from public entry files", () => {
-    const findings = findMatches(findPublicEntryFiles(), (line) =>
-      /^export\b.*from\s+["'](?!\.)/.test(line)
-    )
+    const findings = findExportFindings(findPublicEntryFiles(), (node) => {
+      const moduleSpecifier = node.moduleSpecifier?.getText().slice(1, -1)
+      return Boolean(moduleSpecifier && !moduleSpecifier.startsWith("./"))
+    })
 
     expect(toLocations(findings)).toEqual([])
   })

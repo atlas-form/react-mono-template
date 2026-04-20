@@ -3,11 +3,14 @@ import {
   findExportedPropMemberMatches,
   findStableTsxFiles,
   toFileExports,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("stable component className props", () => {
   it("does not expose className through exported stable props", () => {
-    const matches = findExportedPropMemberMatches(findStableTsxFiles(), (propName) => propName === "className")
+    const matches = findExportedPropMemberMatches(
+      findStableTsxFiles(),
+      (propName) => propName === "className"
+    )
 
     expect(toFileExports(matches)).toEqual([])
   })

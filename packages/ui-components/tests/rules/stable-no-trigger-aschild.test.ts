@@ -1,10 +1,6 @@
 import ts from "typescript"
 import { describe, expect, it } from "vitest"
-import {
-  findJsxFindings,
-  findStableTsxFiles,
-  toLocations,
-} from "./test-helpers"
+import { findJsxFindings, findStableTsxFiles, toLocations } from "./ast-helpers"
 
 describe("stable component trigger protocols", () => {
   it("does not use Trigger asChild inside stable components", () => {

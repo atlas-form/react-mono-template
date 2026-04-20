@@ -4,17 +4,20 @@ import {
   findCallExpressionFindings,
   findStableTsxFiles,
   toLocations,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("stable component ref protocols", () => {
   it("does not use forwardRef inside stable components", () => {
-    const findings = findCallExpressionFindings(findStableTsxFiles(), (node) => {
-      if (ts.isIdentifier(node.expression)) {
-        return node.expression.text === "forwardRef"
-      }
+    const findings = findCallExpressionFindings(
+      findStableTsxFiles(),
+      (node) => {
+        if (ts.isIdentifier(node.expression)) {
+          return node.expression.text === "forwardRef"
+        }
 
-      return false
-    })
+        return false
+      }
+    )
 
     expect(toLocations(findings)).toEqual([])
   })

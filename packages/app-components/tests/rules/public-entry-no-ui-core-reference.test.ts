@@ -1,15 +1,22 @@
 import { describe, expect, it } from "vitest"
 import {
-  findMatches,
+  findExportFindings,
+  findImportFindings,
   findPublicEntryFiles,
   toLocations,
-} from "./test-helpers"
+} from "./ast-helpers"
 
 describe("app-components public entry primitive boundaries", () => {
   it("does not reference ui-core from public entry files", () => {
-    const findings = findMatches(findPublicEntryFiles(), (line) =>
-      /@workspace\/ui-core/.test(line)
-    )
+    const files = findPublicEntryFiles()
+    const findings = [
+      ...findImportFindings(files, (node) =>
+        node.moduleSpecifier.getText().slice(1, -1).startsWith("@workspace/ui-core")
+      ),
+      ...findExportFindings(files, (node) =>
+        node.moduleSpecifier?.getText().slice(1, -1).startsWith("@workspace/ui-core") ?? false
+      ),
+    ]
 
     expect(toLocations(findings)).toEqual([])
   })
