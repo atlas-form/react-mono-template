@@ -15,13 +15,52 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     resolve: {
       extensions: [".ts", ".tsx", ".mjs", ".js", ".mts", ".jsx", ".json"],
-      alias: {
-        "@": path.resolve(__dirname, "src"),
-        "@workspace/shared-i18n": path.resolve(
-          __dirname,
-          "../../packages/shared-i18n/src/index.ts"
-        ),
-      },
+      alias: [
+        {
+          find: /^@$/,
+          replacement: path.resolve(__dirname, "src"),
+        },
+        {
+          find: /^@workspace\/ui-components$/,
+          replacement: path.resolve(
+            __dirname,
+            "../../packages/ui-components/src/index.ts"
+          ),
+        },
+        {
+          find: /^@workspace\/app-components$/,
+          replacement: path.resolve(
+            __dirname,
+            "../../packages/app-components/src/index.ts"
+          ),
+        },
+        {
+          find: /^@workspace\/services$/,
+          replacement: path.resolve(
+            __dirname,
+            "../../packages/services/src/index.ts"
+          ),
+        },
+        {
+          find: /^@workspace\/services\/(.+)$/,
+          replacement: path.resolve(__dirname, "../../packages/services/src/$1"),
+        },
+        {
+          find: /^@workspace\/shared-i18n$/,
+          replacement: path.resolve(
+            __dirname,
+            "../../packages/shared-i18n/src/index.ts"
+          ),
+        },
+        {
+          find: /^react-router$/,
+          replacement: path.resolve(__dirname, "node_modules/react-router"),
+        },
+        {
+          find: "@/",
+          replacement: `${path.resolve(__dirname, "src")}/`,
+        },
+      ],
     },
     build: {
       rollupOptions: {

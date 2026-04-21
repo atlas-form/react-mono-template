@@ -1,9 +1,8 @@
 import { Suspense } from "react"
 import type { ReactNode } from "react"
 import type { RouteObject } from "react-router"
-import { PageLoading } from "@workspace/app-components"
+import { PageLoading, RouteErrorBoundary } from "@workspace/app-components"
 import AppLayout from "@/layouts/AppLayout"
-import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
 import {
   ButtonGuidePage,
   DataTableGuidePage,

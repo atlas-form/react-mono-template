@@ -6,10 +6,10 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { getCurrentUserPermissionsApi, meApi, loginApi } from "@/api"
-import { showGlobalError } from "@/components/system/showGlobalError"
 import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
 import { setAccess } from "@/store/accessSlice"
+import { showGlobalError } from "@workspace/app-components"
 import { Alert } from "@workspace/ui-components/stable/alert"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import { Button } from "@workspace/ui-components/stable/button"
@@ -80,7 +80,8 @@ export default function LoginPage() {
           <Badge variant="outline">Admin Blueprint</Badge>
           <CardTitle>基于 `apps/web` 模板的新管理台入口</CardTitle>
           <CardDescription>
-            保留现有鉴权恢复、React Query、Redux 和 mock 接法，UI 改用 workspace 自有组件。
+            保留现有鉴权恢复、React Query、Redux 和 mock 接法，UI 改用 workspace
+            自有组件。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -97,7 +98,9 @@ export default function LoginPage() {
             Workspace Admin
           </p>
           <CardTitle>登录管理台</CardTitle>
-          <CardDescription>使用现有 mock 账号流程进入后台壳层。</CardDescription>
+          <CardDescription>
+            使用现有 mock 账号流程进入后台壳层。
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-5">
@@ -126,7 +129,7 @@ export default function LoginPage() {
                   )}
                 />
                 {errors.identifier ? (
-                  <p className="text-sm text-[var(--destructive)]">
+                  <p className="text-sm text-destructive">
                     {errors.identifier.message}
                   </p>
                 ) : null}
@@ -149,7 +152,7 @@ export default function LoginPage() {
                   )}
                 />
                 {errors.password ? (
-                  <p className="text-sm text-[var(--destructive)]">
+                  <p className="text-sm text-destructive">
                     {errors.password.message}
                   </p>
                 ) : null}

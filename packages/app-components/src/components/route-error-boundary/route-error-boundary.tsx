@@ -1,7 +1,7 @@
 import { isRouteErrorResponse, useRouteError } from "react-router"
-import { PageErrorState } from "@workspace/app-components"
+import { PageErrorState } from "../page-error-state"
 
-export default function RouteErrorBoundary() {
+export function RouteErrorBoundary() {
   const error = useRouteError()
 
   const message = (() => {

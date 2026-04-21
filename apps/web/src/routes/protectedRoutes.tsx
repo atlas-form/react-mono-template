@@ -1,8 +1,7 @@
 import { Suspense, type ReactNode } from "react"
 import type { RouteObject } from "react-router"
-import { PageLoading } from "@workspace/app-components"
+import { PageLoading, RouteErrorBoundary } from "@workspace/app-components"
 import AppLayout from "@/layouts/AppLayout"
-import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
 import { AboutPage, GuidePage, LogoutPage } from "@/routes/lazy/protectedPages"
 
 function withSuspense(node: ReactNode) {

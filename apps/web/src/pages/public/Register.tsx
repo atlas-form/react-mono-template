@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { registerApi } from "@/api"
-import { showGlobalError } from "@/components/system/showGlobalError"
 import { createRegisterSchema } from "@/forms/authSchemas"
+import { showGlobalError } from "@workspace/app-components"
 import { Button } from "@workspace/ui-components/stable/button"
 
 const authShellClassName =

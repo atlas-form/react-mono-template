@@ -4,6 +4,8 @@ export { PageLoading } from "./components/page-loading"
 export type { PageLoadingProps } from "./components/page-loading"
 export { PageErrorState } from "./components/page-error-state"
 export type { PageErrorStateProps } from "./components/page-error-state"
+export { RouteErrorBoundary } from "./components/route-error-boundary"
+export { showGlobalError } from "./components/show-global-error"
 export { AvatarDropdown } from "./components/avatar-dropdown"
 export type {
   AvatarDropdownAction,
