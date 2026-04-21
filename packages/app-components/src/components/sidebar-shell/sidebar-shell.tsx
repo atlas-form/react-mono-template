@@ -51,6 +51,7 @@ export interface SidebarShellProps {
   brandTitle: ReactNode
   brandDescription?: ReactNode
   sections: SidebarShellSection[]
+  header?: ReactNode
   footerAccount?: {
     avatarSrc?: string
     avatarAlt: string
@@ -74,6 +75,7 @@ export function SidebarShell({
   brandTitle,
   brandDescription,
   sections,
+  header,
   footerAccount,
   children,
 }: SidebarShellProps) {
@@ -143,7 +145,16 @@ export function SidebarShell({
           <SidebarRail />
         </Sidebar>
 
-        <SidebarInset>{children}</SidebarInset>
+        <SidebarInset>
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+            {header}
+            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
+              <div className="flex min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pr-1">
+                {children}
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
   )

@@ -42,13 +42,23 @@ export function AdminAppShell({ children }: AdminAppShellProps) {
   }, [currentItem, defaultPath, hasVisibleMenus, isLoading, navigate])
 
   return (
-    // <div className="h-screen overflow-hidden bg-(--app-bg) text-(--app-text)">
-    //   <div className="flex h-full min-w-0 flex-col overflow-hidden">
     <SidebarShell
       brandEyebrow="Workspace"
       brandTitle="Admin"
       brandDescription="Enterprise"
       sections={sections}
+      header={
+        <TopBar
+          title={currentItem?.label ?? "Admin"}
+          trailing={[
+            <Badge key="badge" variant="outline">
+              Admin Console
+            </Badge>,
+            <LanguageSwitch key="lang" />,
+            <ThemeToggle key="theme" />,
+          ]}
+        />
+      }
       footerAccount={{
         avatarAlt: user?.name ?? "Admin",
         avatarSrc: user?.avatar,
@@ -65,23 +75,7 @@ export function AdminAppShell({ children }: AdminAppShellProps) {
         })),
       }}
     >
-      <TopBar
-        title={currentItem?.label ?? "Admin"}
-        trailing={[
-          <Badge key="badge" variant="outline">
-            Admin Console
-          </Badge>,
-          <LanguageSwitch key="lang" />,
-          <ThemeToggle key="theme" />,
-        ]}
-      />
-      <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
-        <div className="flex min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pr-1">
-          {children}
-        </div>
-      </div>
+      {children}
     </SidebarShell>
-    //   </div>
-    // </div>
   )
 }

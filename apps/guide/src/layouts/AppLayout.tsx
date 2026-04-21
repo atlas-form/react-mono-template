@@ -153,6 +153,18 @@ export default function AppLayout() {
           brandTitle="Guide"
           brandDescription="Admin Shell"
           sections={sections}
+          header={
+            <TopBar
+              title={currentSection.label}
+              trailing={[
+                <Badge key="badge" variant="outline">
+                  No Login
+                </Badge>,
+                <LanguageSwitch key="lang" />,
+                <ThemeToggle key="theme" />,
+              ]}
+            />
+          }
           footerAccount={{
             avatarAlt: "Guide Center",
             avatarFallback: "G",
@@ -170,21 +182,7 @@ export default function AppLayout() {
             ],
           }}
         >
-          <TopBar
-            title={currentSection.label}
-            trailing={[
-              <Badge key="badge" variant="outline">
-                No Login
-              </Badge>,
-              <LanguageSwitch key="lang" />,
-              <ThemeToggle key="theme" />,
-            ]}
-          />
-          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
-            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
-              <Outlet />
-            </div>
-          </div>
+          <Outlet />
         </SidebarShell>
       </div>
     </div>
