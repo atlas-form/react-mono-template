@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import {
   AvatarDropdown,
   AvatarDropdownItem,
@@ -184,15 +184,28 @@ function SidebarNavRow({ item }: { item: SidebarShellNavEntry }) {
   const hasActiveChild = item.subItems?.some((subItem) => subItem.active) ?? false
   const [open, setOpen] = useState(hasActiveChild)
 
+  useEffect(() => {
+    if (hasActiveChild) {
+      setOpen(true)
+    }
+  }, [hasActiveChild])
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        active={item.active || hasActiveChild}
+        active={item.active}
+        activeGroup={hasActiveChild}
         variant="primary"
         disclosure
         disclosureOpen={open}
         tooltip={typeof item.label === "string" ? item.label : undefined}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          if (hasActiveChild) {
+            return
+          }
+
+          setOpen((current) => !current)
+        }}
       >
         {item.icon}
         <span className="truncate group-data-[collapsible=icon]:hidden">

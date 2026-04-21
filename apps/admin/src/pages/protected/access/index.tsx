@@ -25,7 +25,7 @@ import {
   flattenPermissionResources,
   roleProfiles,
   type PermissionResourceNode,
-} from "./accessShared"
+} from "./_shared/access-shared"
 
 type ResourceSummaryType = "menu" | "button" | "api"
 

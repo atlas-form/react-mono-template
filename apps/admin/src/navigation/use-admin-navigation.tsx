@@ -1,8 +1,8 @@
 import { useMemo } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router"
 import type { SidebarShellSection } from "@workspace/app-components/sidebar-shell"
-import { getCurrentUserMenusApi, type CurrentUserMenuNode } from "@/api/admin"
+import type { RootState } from "@/store"
 import {
   navigationSections,
   type NavigationItemConfig,
@@ -10,35 +10,55 @@ import {
   type NavigationSubItemConfig,
 } from "./menu-config"
 
-function collectPermissionCodes(nodes: CurrentUserMenuNode[]): Set<string> {
-  return nodes.reduce((codes, node) => {
-    if (node.permission_code) {
-      codes.add(node.permission_code)
-    }
-
-    for (const childCode of collectPermissionCodes(node.children)) {
-      codes.add(childCode)
-    }
-
-    return codes
-  }, new Set<string>())
+interface CurrentNavigationItem {
+  label: string
+  path: string
 }
 
-function isVisibleItem(item: NavigationItemConfig, visibleCodes: Set<string>) {
-  return visibleCodes.has(item.permissionCode)
+function matchesNavigationSubItem(
+  subItem: NavigationSubItemConfig,
+  pathname: string
+) {
+  const matcher =
+    subItem.matcher ??
+    ((currentPathname: string) => currentPathname === subItem.href)
+
+  return matcher(pathname)
+}
+
+function isVisibleSubItem(
+  subItem: NavigationSubItemConfig,
+  visibleCodes: Set<string>
+) {
+  return visibleCodes.has(subItem.permissionCode)
 }
 
 function findCurrentItem(
   sections: NavigationSectionConfig[],
   pathname: string
-): NavigationItemConfig | null {
+): CurrentNavigationItem | null {
   for (const section of sections) {
     for (const item of section.items) {
-      const matcher =
-        item.matcher ?? ((currentPathname: string) => currentPathname === item.path)
+      if (item.subItems?.length) {
+        for (const subItem of item.subItems) {
+          if (matchesNavigationSubItem(subItem, pathname)) {
+            return {
+              label: subItem.label,
+              path: subItem.href,
+            }
+          }
+        }
+      }
 
-      if (matcher(pathname)) {
-        return item
+      if (!item.path) {
+        continue
+      }
+
+      if (pathname === item.path) {
+        return {
+          label: item.label,
+          path: item.path,
+        }
       }
     }
   }
@@ -48,8 +68,27 @@ function findCurrentItem(
 
 function getDefaultItem(
   sections: NavigationSectionConfig[]
-): NavigationItemConfig | null {
-  return sections.flatMap((section) => section.items)[0] ?? null
+): CurrentNavigationItem | null {
+  for (const section of sections) {
+    for (const item of section.items) {
+      const firstSubItem = item.subItems?.[0]
+      if (firstSubItem) {
+        return {
+          label: firstSubItem.label,
+          path: firstSubItem.href,
+        }
+      }
+
+      if (item.path) {
+        return {
+          label: item.label,
+          path: item.path,
+        }
+      }
+    }
+  }
+
+  return null
 }
 
 function toSidebarSubItems(
@@ -59,7 +98,7 @@ function toSidebarSubItems(
 ) {
   return subItems?.map((subItem) => ({
     ...subItem,
-    active: pathname === subItem.href,
+    active: matchesNavigationSubItem(subItem, pathname),
     onSelect: () => navigate(subItem.href),
   }))
 }
@@ -67,23 +106,36 @@ function toSidebarSubItems(
 export function useAdminNavigation() {
   const navigate = useNavigate()
   const location = useLocation()
-
-  const menusQuery = useQuery({
-    queryKey: ["admin", "current-user-menus"],
-    queryFn: getCurrentUserMenusApi,
-  })
-
-  const visibleCodes = useMemo(
-    () => collectPermissionCodes(menusQuery.data ?? []),
-    [menusQuery.data]
+  const permissionCodes = useSelector(
+    (state: RootState) => state.adminAccess.permissionCodes
   )
+  const visibleCodes = useMemo(() => new Set(permissionCodes), [permissionCodes])
 
   const visibleSections = useMemo<NavigationSectionConfig[]>(
     () =>
       navigationSections
         .map((section) => ({
           ...section,
-          items: section.items.filter((item) => isVisibleItem(item, visibleCodes)),
+          items: section.items
+            .map((item) => {
+              const visibleSubItems = item.subItems?.filter((subItem) =>
+                isVisibleSubItem(subItem, visibleCodes)
+              )
+
+              if (visibleSubItems?.length) {
+                return {
+                  ...item,
+                  subItems: visibleSubItems,
+                }
+              }
+
+              if (item.permissionCode && visibleCodes.has(item.permissionCode)) {
+                return item
+              }
+
+              return null
+            })
+            .filter((item): item is NavigationItemConfig => Boolean(item)),
         }))
         .filter((section) => section.items.length > 0),
     [visibleCodes]
@@ -104,15 +156,12 @@ export function useAdminNavigation() {
       visibleSections.map((section) => ({
         label: section.label,
         items: section.items.map((item) => {
-          const matcher =
-            item.matcher ?? ((pathname: string) => pathname === item.path)
-
           return {
             label: item.label,
-            href: item.path,
-            active: matcher(location.pathname),
+            href: item.path ?? "#",
+            active: item.path ? location.pathname === item.path : false,
             icon: item.icon,
-            onSelect: () => navigate(item.path),
+            onSelect: item.path ? () => navigate(item.path!) : undefined,
             subItems: toSidebarSubItems(item.subItems, location.pathname, navigate),
           }
         }),
@@ -124,7 +173,7 @@ export function useAdminNavigation() {
     currentItem,
     defaultPath: defaultItem?.path ?? null,
     hasVisibleMenus: visibleSections.length > 0,
-    isLoading: menusQuery.isLoading,
+    isLoading: false,
     sections,
   }
 }

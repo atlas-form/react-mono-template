@@ -95,6 +95,7 @@ export type SidebarMenuButtonProps = React.ComponentProps<"button"> & {
   mode?: BaseMode
   asChild?: boolean
   isActive?: boolean
+  isActiveGroup?: boolean
   disclosure?: boolean
   disclosureOpen?: boolean
   tooltip?: string | Omit<TooltipContentProps, "mode">

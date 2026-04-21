@@ -1,15 +1,21 @@
 import { Suspense, type ReactNode } from "react"
 import type { RouteObject } from "react-router"
+import { Navigate } from "react-router"
 import { PageLoading, RouteErrorBoundary } from "@workspace/app-components"
 import AppLayout from "@/layouts/AppLayout"
 import {
-  AccessPage,
   AccessBlueprintPage,
+  AdminUsersPage,
   DataTablePage,
   DashboardPage,
+  MenusPage,
   MembersPage,
   OrdersPage,
+  PermissionsPage,
+  RolePermissionsPage,
+  RolesPage,
   SettingsPage,
+  UserRolesPage,
 } from "@/routes/lazy/protectedPages"
 
 function withSuspense(node: ReactNode) {
@@ -35,11 +41,31 @@ export const protectedRoutes: RouteObject = {
     },
     {
       path: "access",
-      element: withSuspense(<AccessPage />),
+      element: <Navigate to="/access/admin-users" replace />,
     },
     {
-      path: "access/blueprint",
-      element: withSuspense(<AccessBlueprintPage />),
+      path: "access/admin-users",
+      element: withSuspense(<AdminUsersPage />),
+    },
+    {
+      path: "access/roles",
+      element: withSuspense(<RolesPage />),
+    },
+    {
+      path: "access/permissions",
+      element: withSuspense(<PermissionsPage />),
+    },
+    {
+      path: "access/role-permissions",
+      element: withSuspense(<RolePermissionsPage />),
+    },
+    {
+      path: "access/user-roles",
+      element: withSuspense(<UserRolesPage />),
+    },
+    {
+      path: "access/menus",
+      element: withSuspense(<MenusPage />),
     },
     {
       path: "settings",
@@ -48,6 +74,10 @@ export const protectedRoutes: RouteObject = {
     {
       path: "datatable",
       element: withSuspense(<DataTablePage />),
+    },
+    {
+      path: "access/blueprint",
+      element: withSuspense(<AccessBlueprintPage />),
     },
   ],
 }

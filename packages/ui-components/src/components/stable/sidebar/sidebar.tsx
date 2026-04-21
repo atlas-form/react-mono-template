@@ -1,4 +1,9 @@
-import type { ChangeEvent, MouseEvent, ReactNode } from "react"
+import type {
+  ChangeEvent,
+  MouseEvent,
+  MouseEventHandler,
+  ReactNode,
+} from "react"
 import {
   Sidebar as CoreSidebar,
   SidebarContent as CoreSidebarContent,
@@ -108,6 +113,7 @@ export interface SidebarMenuItemProps {
 export interface SidebarMenuButtonProps {
   children: ReactNode
   active?: boolean
+  activeGroup?: boolean
   disabled?: boolean
   disclosure?: boolean
   disclosureOpen?: boolean
@@ -278,6 +284,7 @@ export function SidebarMenuItem({ children }: SidebarMenuItemProps) {
 export function SidebarMenuButton({
   children,
   active = false,
+  activeGroup = false,
   disabled = false,
   disclosure = false,
   disclosureOpen = false,
@@ -289,6 +296,7 @@ export function SidebarMenuButton({
   return (
     <CoreSidebarMenuButton
       isActive={active}
+      isActiveGroup={activeGroup}
       disabled={disabled}
       disclosure={disclosure}
       disclosureOpen={disclosureOpen}
@@ -351,12 +359,21 @@ export function SidebarMenuSubButton({
   size = "md",
   onClick,
 }: SidebarMenuSubButtonProps) {
+  const handleClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
+    if (!onClick) {
+      return
+    }
+
+    event.preventDefault()
+    onClick()
+  }
+
   return (
     <CoreSidebarMenuSubButton
       href={href}
       isActive={active}
       size={size}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {children}
     </CoreSidebarMenuSubButton>

@@ -14,7 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui-components/stable/table"
-import { permissionResourceTree, flattenPermissionResources } from "./accessShared"
+import {
+  permissionResourceTree,
+  flattenPermissionResources,
+} from "../_shared/access-shared"
 
 const resourceRows = flattenPermissionResources(permissionResourceTree)
 

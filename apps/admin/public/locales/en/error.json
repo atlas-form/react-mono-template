@@ -7,5 +7,6 @@
   "-10003": "user disabled",
   "-10004": "password hash failed",
   "-10005": "password hash parse failed",
-  "-10006": "invalid password"
+  "-10006": "invalid password",
+  "-11000": "admin user not found"
 }

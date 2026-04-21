@@ -758,6 +758,7 @@ function SidebarMenuButton({
   mode = DEFAULT_MODE,
   asChild = false,
   isActive = false,
+  isActiveGroup = false,
   disclosure = false,
   disclosureOpen = false,
   variant = "default",
@@ -801,6 +802,7 @@ function SidebarMenuButton({
       data-sidebar="menu-button"
       data-size={size}
       data-active={isActive}
+      data-active-group={isActiveGroup}
       data-disclosure={disclosure}
       data-disclosure-open={disclosureOpen}
       aria-expanded={disclosure ? disclosureOpen : undefined}
