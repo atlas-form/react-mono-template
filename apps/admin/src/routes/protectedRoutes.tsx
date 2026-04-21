@@ -5,6 +5,7 @@ import PageLoading from "@/components/system/PageLoading"
 import RouteErrorBoundary from "@/components/system/RouteErrorBoundary"
 import {
   AccessPage,
+  AccessBlueprintPage,
   DataTablePage,
   DashboardPage,
   MembersPage,
@@ -36,6 +37,10 @@ export const protectedRoutes: RouteObject = {
     {
       path: "access",
       element: withSuspense(<AccessPage />),
+    },
+    {
+      path: "access/blueprint",
+      element: withSuspense(<AccessBlueprintPage />),
     },
     {
       path: "settings",

@@ -66,10 +66,6 @@ const navItems: AdminNavItem[] = [
     path: "/settings",
     icon: <SquareTerminal />,
     matcher: (pathname: string) => pathname.startsWith("/settings"),
-    subItems: [
-      { label: "审计开关", href: "/settings" },
-      { label: "策略配置", href: "/settings" },
-    ],
   },
   {
     label: "DataTable 超长菜单名称显示效果检查示例项目",
@@ -100,9 +96,7 @@ export default function AppLayout() {
           href: item.path,
           active: item.matcher(location.pathname),
           icon: item.icon,
-          onSelect: item.subItems?.length
-            ? undefined
-            : () => navigate(item.path),
+          onSelect: () => navigate(item.path),
           subItems: item.subItems?.map((subItem) => ({
             ...subItem,
             active: location.pathname === subItem.href,
@@ -169,7 +163,7 @@ export default function AppLayout() {
             ]}
           />
           <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden p-3">
-            <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+            <div className="flex min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
               <Outlet />
             </div>
           </div>
