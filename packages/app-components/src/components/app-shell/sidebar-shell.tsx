@@ -199,13 +199,7 @@ function SidebarNavRow({ item }: { item: SidebarShellNavEntry }) {
         disclosure
         disclosureOpen={open}
         tooltip={typeof item.label === "string" ? item.label : undefined}
-        onClick={() => {
-          if (hasActiveChild) {
-            return
-          }
-
-          setOpen((current) => !current)
-        }}
+        onClick={() => setOpen((current) => !current)}
       >
         {item.icon}
         <span className="truncate group-data-[collapsible=icon]:hidden">
