@@ -1,5 +1,5 @@
 import { isRouteErrorResponse, useRouteError } from "react-router"
-import { PageErrorState } from "../page-error-state"
+import { PageErrorState } from "./page-error-state"
 
 export function RouteErrorBoundary() {
   const error = useRouteError()

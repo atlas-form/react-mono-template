@@ -3,7 +3,7 @@ import {
   AvatarDropdown,
   AvatarDropdownItem,
   type AvatarDropdownAction,
-} from "../avatar-dropdown"
+} from "./avatar-dropdown"
 import {
   SidebarFooter,
   Sidebar,

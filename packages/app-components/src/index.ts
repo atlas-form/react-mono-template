@@ -1,22 +1,34 @@
-export { TopBar } from "./components/top-bar"
-export type { TopBarProps } from "./components/top-bar"
-export { PageLoading } from "./components/page-loading"
-export type { PageLoadingProps } from "./components/page-loading"
-export { PageErrorState } from "./components/page-error-state"
-export type { PageErrorStateProps } from "./components/page-error-state"
-export { RouteErrorBoundary } from "./components/route-error-boundary"
-export { showGlobalError } from "./components/show-global-error"
-export { AvatarDropdown } from "./components/avatar-dropdown"
+export {
+  AvatarDropdown,
+  AvatarDropdownItem,
+  SidebarShell,
+  TopBar,
+} from "./components/app-shell"
 export type {
   AvatarDropdownAction,
   AvatarDropdownItemProps,
   AvatarDropdownProps,
-} from "./components/avatar-dropdown"
-export { AvatarDropdownItem } from "./components/avatar-dropdown"
-export { LanguageSwitch } from "./components/language-switch"
-export type { LanguageSwitchProps } from "./components/language-switch"
-export { ThemeToggle } from "./components/theme-toggle"
-export type { ThemeToggleProps } from "./components/theme-toggle"
+  SidebarShellNavEntry,
+  SidebarShellProps,
+  SidebarShellSection,
+  SidebarShellSubEntry,
+  TopBarProps,
+} from "./components/app-shell"
+export {
+  PageErrorState,
+  PageLoading,
+  RouteErrorBoundary,
+  showGlobalError,
+} from "./components/feedback"
+export type {
+  PageErrorStateProps,
+  PageLoadingProps,
+} from "./components/feedback"
+export { LanguageSwitch, ThemeToggle } from "./components/preferences"
+export type {
+  LanguageSwitchProps,
+  ThemeToggleProps,
+} from "./components/preferences"
 export {
   Tooltip,
   TooltipContent,
@@ -29,13 +41,6 @@ export type {
   TooltipProviderProps,
   TooltipTriggerProps,
 } from "./components/tooltip"
-export { SidebarShell } from "./components/sidebar-shell"
-export type {
-  SidebarShellNavEntry,
-  SidebarShellProps,
-  SidebarShellSection,
-  SidebarShellSubEntry,
-} from "./components/sidebar-shell"
 export { DatePicker } from "./components/date-time-picker"
 export { DateTimePicker } from "./components/date-time-picker"
 export { DateRangePicker } from "./components/date-time-picker"

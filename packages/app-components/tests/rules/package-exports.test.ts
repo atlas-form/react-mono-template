@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs"
+import path from "node:path"
 import { describe, expect, it } from "vitest"
 import { readPackageJson } from "./ast-helpers"
 
@@ -13,7 +15,7 @@ describe("app-components package exports", () => {
     expect(invalidKeys).toEqual([])
   })
 
-  it("maps component subpath exports to matching component index files", () => {
+  it("maps component subpath exports to public component index files", () => {
     const exportsMap = readPackageJson().exports ?? {}
 
     const invalidEntries = Object.entries(exportsMap)
@@ -23,10 +25,15 @@ describe("app-components package exports", () => {
           return [key]
         }
 
-        const componentName = key.slice(2)
-        const expectedPath = `./src/components/${componentName}/index.ts`
+        const normalizedValue = value.replaceAll("\\", "/")
+        const isComponentIndex =
+          normalizedValue.startsWith("./src/components/") &&
+          normalizedValue.endsWith("/index.ts")
+        const absolutePath = path.resolve(import.meta.dirname, "../../", value)
 
-        return value === expectedPath ? [] : [`${key} -> ${value}`]
+        return isComponentIndex && existsSync(absolutePath)
+          ? []
+          : [`${key} -> ${value}`]
       })
 
     expect(invalidEntries).toEqual([])
