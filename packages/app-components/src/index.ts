@@ -23,13 +23,13 @@ export type {
   TooltipProviderProps,
   TooltipTriggerProps,
 } from "./components/tooltip"
-export { AdminSidebar } from "./components/admin-sidebar"
+export { SidebarShell } from "./components/sidebar-shell"
 export type {
-  AdminSidebarNavEntry,
-  AdminSidebarProps,
-  AdminSidebarSection,
-  AdminSidebarSubEntry,
-} from "./components/admin-sidebar"
+  SidebarShellNavEntry,
+  SidebarShellProps,
+  SidebarShellSection,
+  SidebarShellSubEntry,
+} from "./components/sidebar-shell"
 export { DatePicker } from "./components/date-time-picker"
 export { DateTimePicker } from "./components/date-time-picker"
 export { DateRangePicker } from "./components/date-time-picker"

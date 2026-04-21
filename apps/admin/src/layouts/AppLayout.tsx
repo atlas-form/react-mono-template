@@ -19,9 +19,9 @@ import {
   ThemeToggle,
 } from "@workspace/app-components"
 import {
-  AdminSidebar,
-  type AdminSidebarSection,
-} from "@workspace/app-components/admin-sidebar"
+  SidebarShell,
+  type SidebarShellSection,
+} from "@workspace/app-components/sidebar-shell"
 import { TopBar } from "@workspace/app-components/top-bar"
 import { Badge } from "@workspace/ui-components/stable/badge"
 
@@ -87,7 +87,7 @@ export default function AppLayout() {
     )
   }, [location.pathname])
 
-  const sections = useMemo<AdminSidebarSection[]>(
+  const sections = useMemo<SidebarShellSection[]>(
     () => [
       {
         label: "Platform",
@@ -118,7 +118,7 @@ export default function AppLayout() {
   return (
     <div className="h-screen overflow-hidden bg-(--app-bg) text-(--app-text)">
       <div className="flex h-full min-w-0 flex-col overflow-hidden">
-        <AdminSidebar
+        <SidebarShell
           brandEyebrow="Workspace"
           brandTitle="Admin"
           brandDescription="Enterprise"
@@ -167,7 +167,7 @@ export default function AppLayout() {
               <Outlet />
             </div>
           </div>
-        </AdminSidebar>
+        </SidebarShell>
       </div>
     </div>
   )
