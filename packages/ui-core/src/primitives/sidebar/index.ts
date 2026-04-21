@@ -22,6 +22,7 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  useSidebar,
 } from "./sidebar"
 export { sidebarClassNames, sidebarMenuButtonVariants } from "./sidebar.styles"
 export type {

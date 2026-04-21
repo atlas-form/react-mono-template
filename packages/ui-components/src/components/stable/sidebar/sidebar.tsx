@@ -28,6 +28,7 @@ import {
   SidebarRail as CoreSidebarRail,
   SidebarSeparator as CoreSidebarSeparator,
   SidebarTrigger as CoreSidebarTrigger,
+  useSidebar as useCoreSidebar,
 } from "@workspace/ui-core/components/sidebar"
 
 export type SidebarSide = "left" | "right"
@@ -195,6 +196,10 @@ export function SidebarRail({
   ariaLabel = "Toggle sidebar",
 }: SidebarRailProps) {
   return <CoreSidebarRail aria-label={ariaLabel} />
+}
+
+export function useSidebar() {
+  return useCoreSidebar()
 }
 
 export function SidebarInset({ children }: SidebarInsetProps) {

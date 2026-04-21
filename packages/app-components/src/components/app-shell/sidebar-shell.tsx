@@ -22,6 +22,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarSeparator,
+  useSidebar,
 } from "@workspace/ui-components"
 import { TooltipProvider } from "../tooltip"
 
@@ -161,6 +162,7 @@ export function SidebarShell({
 }
 
 function SidebarNavRow({ item }: { item: SidebarShellNavEntry }) {
+  const { state } = useSidebar()
   const hasSubItems = Boolean(item.subItems?.length)
 
   if (!hasSubItems) {
@@ -199,7 +201,18 @@ function SidebarNavRow({ item }: { item: SidebarShellNavEntry }) {
         disclosure
         disclosureOpen={open}
         tooltip={typeof item.label === "string" ? item.label : undefined}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          if (state === "collapsed") {
+            if (hasActiveChild) {
+              return
+            }
+
+            item.subItems?.[0]?.onSelect?.()
+            return
+          }
+
+          setOpen((current) => !current)
+        }}
       >
         {item.icon}
         <span className="truncate group-data-[collapsible=icon]:hidden">

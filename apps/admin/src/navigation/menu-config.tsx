@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
 import {
+  LayoutDashboard,
+  Settings,
   ShieldCheck,
 } from "lucide-react"
 
@@ -66,6 +68,42 @@ export const navigationSections: NavigationSectionConfig[] = [
             label: "菜单配置",
             href: "/access/menus",
             matcher: (pathname) => pathname.startsWith("/access/menus"),
+          },
+        ],
+      },
+      {
+        label: "运营中心",
+        icon: <LayoutDashboard />,
+        subItems: [
+          {
+            permissionCode: "admin:access",
+            label: "订单管理",
+            href: "/orders",
+            matcher: (pathname) => pathname.startsWith("/orders"),
+          },
+          {
+            permissionCode: "admin:access",
+            label: "会员管理",
+            href: "/members",
+            matcher: (pathname) => pathname.startsWith("/members"),
+          },
+        ],
+      },
+      {
+        label: "系统配置",
+        icon: <Settings />,
+        subItems: [
+          {
+            permissionCode: "admin:access",
+            label: "控制台",
+            href: "/",
+            matcher: (pathname) => pathname === "/",
+          },
+          {
+            permissionCode: "admin:access",
+            label: "系统设置",
+            href: "/settings",
+            matcher: (pathname) => pathname.startsWith("/settings"),
           },
         ],
       },

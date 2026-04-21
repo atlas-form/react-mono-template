@@ -31,6 +31,7 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  useSidebar,
 } from "./components/stable/sidebar"
 export type {
   SidebarCollapsible,

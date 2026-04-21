@@ -22,6 +22,7 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  useSidebar,
 } from "./sidebar"
 export type {
   SidebarCollapsible,
