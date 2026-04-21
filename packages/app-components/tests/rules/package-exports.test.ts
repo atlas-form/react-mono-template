@@ -15,7 +15,7 @@ describe("app-components package exports", () => {
     expect(invalidKeys).toEqual([])
   })
 
-  it("maps component subpath exports to public component index files", () => {
+  it("points subpath exports to existing public component index files", () => {
     const exportsMap = readPackageJson().exports ?? {}
 
     const invalidEntries = Object.entries(exportsMap)
