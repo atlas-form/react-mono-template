@@ -97,9 +97,10 @@ export default defineConfig(({ mode }) => {
         ? undefined
         : {
             "/api": {
-              target: env.VITE_WEB_API_PROXY,
+              target: env.VITE_ADMIN_API_PROXY,
               changeOrigin: true,
               ws: false,
+              rewrite: (path) => path.replace(/^\/api/, ""),
             },
             "/auth": {
               target: env.VITE_AUTH_PROXY,

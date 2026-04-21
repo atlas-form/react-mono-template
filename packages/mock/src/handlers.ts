@@ -8,6 +8,9 @@ interface MockUserState {
   avatar: string
   emailVerified: boolean
   disabled: boolean
+  roleCodes: string[]
+  menuPermissionCodes: string[]
+  permissionCodes: string[]
 }
 
 interface MockFileRecord {
@@ -36,7 +39,39 @@ let currentUser: MockUserState = {
   avatar: "",
   emailVerified: true,
   disabled: false,
+  roleCodes: ["super_admin"],
+  menuPermissionCodes: ["admin:user", "admin:access"],
+  permissionCodes: [
+    "admin:user",
+    "admin:user:list",
+    "admin:user:create",
+    "admin:user_role:list",
+    "admin:user_role:assign",
+    "admin:access",
+    "admin:role:list",
+    "admin:permission:list",
+    "admin:role_permission:grant",
+  ],
 }
+
+const menuTree = [
+  {
+    id: 1,
+    name: "用户管理",
+    path: "/users",
+    parent_id: null,
+    permission_code: "admin:user",
+    children: [],
+  },
+  {
+    id: 2,
+    name: "权限管理",
+    path: "/access",
+    parent_id: null,
+    permission_code: "admin:access",
+    children: [],
+  },
+]
 
 const uploadedFiles = new Map<string, MockFileRecord>()
 const tableUsers: MockTableUser[] = [
@@ -110,7 +145,47 @@ export const handlers = [
     })
   }),
 
-  http.post("*/auth/session/login", async () => {
+  http.post("*/auth/session/login", async ({ request }) => {
+    const body = (await request.json().catch(() => null)) as {
+      identifier?: string
+    } | null
+    const identifier = body?.identifier?.trim().toLowerCase() ?? ""
+
+    if (identifier.includes("access")) {
+      currentUser.roleCodes = ["security_admin"]
+      currentUser.menuPermissionCodes = ["admin:access"]
+      currentUser.permissionCodes = [
+        "admin:access",
+        "admin:role:list",
+        "admin:permission:list",
+        "admin:role_permission:grant",
+      ]
+    } else if (identifier.includes("user")) {
+      currentUser.roleCodes = ["ops_admin"]
+      currentUser.menuPermissionCodes = ["admin:user"]
+      currentUser.permissionCodes = [
+        "admin:user",
+        "admin:user:list",
+        "admin:user:create",
+        "admin:user_role:list",
+        "admin:user_role:assign",
+      ]
+    } else {
+      currentUser.roleCodes = ["super_admin"]
+      currentUser.menuPermissionCodes = ["admin:user", "admin:access"]
+      currentUser.permissionCodes = [
+        "admin:user",
+        "admin:user:list",
+        "admin:user:create",
+        "admin:user_role:list",
+        "admin:user_role:assign",
+        "admin:access",
+        "admin:role:list",
+        "admin:permission:list",
+        "admin:role_permission:grant",
+      ]
+    }
+
     return success(authTokens)
   }),
 
@@ -134,6 +209,22 @@ export const handlers = [
       email: currentUser.email,
       email_verified: currentUser.emailVerified,
       disabled: currentUser.disabled,
+    })
+  }),
+
+  http.get("*/api/admin/me/menus", async () => {
+    return success(
+      menuTree.filter((item) =>
+        currentUser.menuPermissionCodes.includes(item.permission_code)
+      )
+    )
+  }),
+
+  http.get("*/api/admin/me/permissions", async () => {
+    return success({
+      user_id: currentUser.id,
+      role_codes: currentUser.roleCodes,
+      permission_codes: currentUser.permissionCodes,
     })
   }),
 

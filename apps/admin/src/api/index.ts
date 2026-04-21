@@ -15,6 +15,12 @@ export {
   type UpdateProfilePayload,
   type UserInfo,
 } from "@workspace/services/api/auth"
+export {
+  getCurrentUserMenusApi,
+  getCurrentUserPermissionsApi,
+  type CurrentUserMenuNode,
+  type CurrentUserPermissionsResponse,
+} from "./admin"
 
 export {
   deleteWithSignedUrlApi,

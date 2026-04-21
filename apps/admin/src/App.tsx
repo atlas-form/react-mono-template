@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { RouterProvider, createBrowserRouter, Navigate } from "react-router"
 import { useQuery } from "@tanstack/react-query"
 import { loginSuccess } from "@/store/authSlice"
+import { resetAccess, setAccess } from "@/store/accessSlice"
 import type { RootState } from "@/store"
 import { publicRoutes } from "@/routes/publicRoutes"
 import { protectedRoutes } from "@/routes/protectedRoutes"
 import PageLoading from "@/components/system/PageLoading"
 import { ToastProvider } from "@workspace/ui-components/stable/toast"
-import { meApi } from "./api"
+import { getCurrentUserPermissionsApi, meApi } from "./api"
 import { toRequestError } from "@workspace/services/errors/request-error"
 
 export default function App() {
@@ -20,12 +21,25 @@ export default function App() {
     queryKey: ["auth", "restore", token],
     enabled: Boolean(token),
     retry: false,
-    queryFn: async () => meApi(),
+    queryFn: async () => {
+      const [user, access] = await Promise.all([
+        meApi(),
+        getCurrentUserPermissionsApi(),
+      ])
+
+      return { user, access }
+    },
   })
 
   useEffect(() => {
     if (!token || !restoreQuery.data) return
-    dispatch(loginSuccess({ token, user: restoreQuery.data }))
+    dispatch(loginSuccess({ token, user: restoreQuery.data.user }))
+    dispatch(
+      setAccess({
+        roleCodes: restoreQuery.data.access.role_codes,
+        permissionCodes: restoreQuery.data.access.permission_codes,
+      })
+    )
   }, [dispatch, restoreQuery.data, token])
 
   useEffect(() => {
@@ -36,7 +50,8 @@ export default function App() {
     )
     localStorage.removeItem("token")
     localStorage.removeItem("refreshToken")
-  }, [restoreQuery.error, restoreQuery.isError])
+    dispatch(resetAccess())
+  }, [dispatch, restoreQuery.error, restoreQuery.isError])
 
   const isRestored = !token || restoreQuery.status !== "pending"
 

@@ -5,10 +5,11 @@ import { useMemo } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { meApi, loginApi } from "@/api"
+import { getCurrentUserPermissionsApi, meApi, loginApi } from "@/api"
 import { showGlobalError } from "@/components/system/showGlobalError"
 import { createLoginSchema } from "@/forms/authSchemas"
 import { loginSuccess } from "@/store/authSlice"
+import { setAccess } from "@/store/accessSlice"
 import { Alert } from "@workspace/ui-components/stable/alert"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import { Button } from "@workspace/ui-components/stable/button"
@@ -52,9 +53,18 @@ export default function LoginPage() {
       localStorage.setItem("token", token)
       localStorage.setItem("refreshToken", refreshToken)
 
-      const user = await meApi()
+      const [user, access] = await Promise.all([
+        meApi(),
+        getCurrentUserPermissionsApi(),
+      ])
 
       dispatch(loginSuccess({ token, user }))
+      dispatch(
+        setAccess({
+          roleCodes: access.role_codes,
+          permissionCodes: access.permission_codes,
+        })
+      )
 
       navigate(from, { replace: true })
     } catch (err) {
