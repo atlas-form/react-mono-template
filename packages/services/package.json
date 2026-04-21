@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:rules": "vitest run -c vitest.config.ts tests/rules"
   },
   "dependencies": {
     "@tanstack/react-query": "catalog:",
@@ -14,7 +15,9 @@
     "react-i18next": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "exports": {
     "./api/auth": "./src/api/auth.ts",
