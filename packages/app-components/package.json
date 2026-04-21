@@ -34,6 +34,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./page-loading": "./src/components/page-loading/index.ts",
+    "./page-error-state": "./src/components/page-error-state/index.ts",
     "./top-bar": "./src/components/top-bar/index.ts",
     "./language-switch": "./src/components/language-switch/index.ts",
     "./theme-toggle": "./src/components/theme-toggle/index.ts",

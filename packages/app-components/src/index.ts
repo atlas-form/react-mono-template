@@ -1,5 +1,9 @@
 export { TopBar } from "./components/top-bar"
 export type { TopBarProps } from "./components/top-bar"
+export { PageLoading } from "./components/page-loading"
+export type { PageLoadingProps } from "./components/page-loading"
+export { PageErrorState } from "./components/page-error-state"
+export type { PageErrorStateProps } from "./components/page-error-state"
 export { AvatarDropdown } from "./components/avatar-dropdown"
 export type {
   AvatarDropdownAction,
