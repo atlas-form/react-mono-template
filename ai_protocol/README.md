@@ -111,9 +111,13 @@ AI 在使用 mock 时必须明确汇报：
   当前主业务应用。
   负责路由、页面、布局、页面状态编排、应用启动注入。
 
-- `apps/test`
-  组件验证应用。
-  用于验证共享组件在不同主题、语言和交互状态下的表现。
+- `apps/admin`
+  商用后台应用。
+  负责后台路由、页面、布局、权限编排、后台业务流程与管理台壳层装配。
+
+- `apps/guide`
+  示例与参考应用。
+  用于展示共享组件、复合组件和推荐页面装配方式，给 AI 提供合法样例。
 
 ### packages 层
 
@@ -148,8 +152,9 @@ AI 在使用 mock 时必须明确汇报：
 
 在开始写代码前，AI 必须先判断需求属于哪一层：
 
-- 页面、路由、布局、页面交互流程：`apps/web`
-- 组件验证和展示：`apps/test`
+- 业务前台页面、路由、布局、页面交互流程：`apps/web`
+- 后台页面、后台路由、权限编排、后台壳层：`apps/admin`
+- 组件展示、样例表达、用法参考：`apps/guide`
 - 通用服务能力：`packages/services`
 - 主题变量和主题模式：`packages/ui-theme`
 - primitive 原语和基础行为：`packages/ui-core`
@@ -224,8 +229,11 @@ apps/*
 - `apps/web` 业务应用规则：
   [apps/web/PROTOCOL.md](../apps/web/PROTOCOL.md)
 
-- `apps/test` 组件验证应用规则：
-  [apps/test/PROTOCOL.md](../apps/test/PROTOCOL.md)
+- `apps/admin` 商用后台应用规则：
+  [apps/admin/PROTOCOL.md](../apps/admin/PROTOCOL.md)
+
+- `apps/guide` 示例与参考应用规则：
+  [apps/guide/PROTOCOL.md](../apps/guide/PROTOCOL.md)
 
 ### packages 层
 
@@ -250,10 +258,19 @@ apps/*
 ## 按任务类型选择协议
 
 - 新增或修改业务页面：
-  先读 `apps/PROTOCOL.md`，再读 `apps/web/PROTOCOL.md`
+  先判断是 `web` 还是 `admin`
+  再读 `apps/PROTOCOL.md` 和对应 app 的本地协议
 
 - 新增 app 或调整 app 分层：
   必读 `apps/PROTOCOL.md`，再读目标 app 的本地协议
+
+- 新增或修改后台页面、后台导航、权限菜单、后台壳层：
+  必读 `apps/PROTOCOL.md`
+  同时必读 `apps/admin/PROTOCOL.md`
+
+- 新增或修改示例页、组件展示页、AI 参考样例：
+  必读 `apps/PROTOCOL.md`
+  同时必读 `apps/guide/PROTOCOL.md`
 
 - 修改共享服务、API 基础设施、query、i18n、url：
   必读 `packages/services/PROTOCOL.md`
@@ -266,7 +283,7 @@ apps/*
 
 - 新增或改造共享产品组件：
   必读 `packages/ui-components/PROTOCOL.md`
-  同时必读 `apps/test/PROTOCOL.md`
+  同时应参考 `apps/guide/PROTOCOL.md` 中的合法展示方式
 
 - 新增或改造共享复合组件：
   必读 `packages/app-components/PROTOCOL.md`
@@ -278,14 +295,15 @@ apps/*
 
 AI 在动手前必须先判断改动属于哪一层：
 
-- 页面编排、路由、布局、页面状态：放 `apps/web`
+- 前台页面编排、路由、布局、页面状态：放 `apps/web`
+- 后台页面编排、后台导航、权限编排、后台壳层：放 `apps/admin`
 - 可复用服务能力：放 `packages/services`
 - 共享主题 token：放 `packages/ui-theme`
 - primitive 原语能力：放 `packages/ui-core`
 - 共享产品组件：放 `packages/ui-components`
 - 共享复合组件：放 `packages/app-components`
 - mock 接口与本地模拟能力：放 `packages/mock`
-- 组件验证：放 `apps/test`
+- 样例展示与参考页面：放 `apps/guide`
 
 禁止跳过分层判断直接写代码。
 
@@ -296,7 +314,9 @@ AI 宣称完成前，必须按对应协议执行门禁命令。
 最少要求不是固定一套，而是取决于改动落点：
 
 - `apps/web` 改动：按 `apps/web/PROTOCOL.md` 执行
-- `ui-components` 改动：按 `packages/ui-components/PROTOCOL.md` 和 `apps/test/PROTOCOL.md` 执行
+- `apps/admin` 改动：按 `apps/admin/PROTOCOL.md` 执行
+- `apps/guide` 改动：按 `apps/guide/PROTOCOL.md` 执行
+- `ui-components` 改动：按 `packages/ui-components/PROTOCOL.md` 执行，必要时同步补 `apps/guide` 合法样例
 - `ui-core` 改动：按 `packages/ui-core/PROTOCOL.md` 执行
 - `mock` 改动：至少执行 `pnpm --filter @workspace/mock typecheck`
 - `services` / `ui-theme` 改动：按各自协议执行
