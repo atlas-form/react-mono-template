@@ -49,6 +49,8 @@ AI 在 app 中开发功能时，必须按以下顺序：
 - 每个 app 都必须有自己的 `PROTOCOL.md`。
 - 顶层 `apps/PROTOCOL.md` 负责统一 app 层总原则。
 - 具体 app 的协议负责定义本地特殊规则。
+- 若某类页面已经沉淀为稳定页面类型协议，应优先放在 `apps/page-protocols/*.PROTOCOL.md` 中按类型管理。
+- AI 在 app 中写页面时，除了读取 app 本地协议，还应判断是否存在对应页面类型协议。
 
 ## 7. 完成定义
 

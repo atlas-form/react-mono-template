@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { Input } from "@workspace/ui-components"
 import type { DataTableInsertActionConfig } from "@workspace/app-components"
 import { createAdminUserApi } from "@/api"
-import { adminUsersQueryKey } from "./admin-users-data"
+import { adminUsersQueryKey } from "./constants"
 
 export function useCreateAdminUserInsertAction(
   invalidateAdminUsers: () => Promise<unknown>
