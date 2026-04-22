@@ -27,6 +27,7 @@ import {
 import { TooltipProvider } from "../tooltip"
 
 export interface SidebarShellSubEntry {
+  key?: string
   label: ReactNode
   href: string
   active?: boolean
@@ -34,6 +35,7 @@ export interface SidebarShellSubEntry {
 }
 
 export interface SidebarShellNavEntry {
+  key?: string
   label: ReactNode
   href?: string
   active?: boolean
@@ -43,6 +45,7 @@ export interface SidebarShellNavEntry {
 }
 
 export interface SidebarShellSection {
+  key?: string
   label: ReactNode
   items: SidebarShellNavEntry[]
 }
@@ -102,12 +105,12 @@ export function SidebarShell({
 
           <SidebarContent>
             {sections.map((section) => (
-              <SidebarGroup key={String(section.label)}>
+              <SidebarGroup key={section.key ?? String(section.label)}>
                 <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {section.items.map((item) => (
-                      <SidebarNavRow key={item.href ?? String(item.label)} item={item} />
+                      <SidebarNavRow key={item.key ?? item.href ?? String(item.label)} item={item} />
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
@@ -223,7 +226,7 @@ function SidebarNavRow({ item }: { item: SidebarShellNavEntry }) {
       {open ? (
         <SidebarMenuSub>
           {item.subItems?.map((subItem) => (
-            <SidebarMenuSubItem key={subItem.href}>
+            <SidebarMenuSubItem key={subItem.key ?? subItem.href}>
               <SidebarMenuSubButton
                 active={subItem.active}
                 href={subItem.href}

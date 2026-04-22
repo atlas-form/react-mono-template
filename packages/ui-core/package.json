@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "test:rules": "vitest run -c vitest.config.ts tests/rules",
+    "rules": "vitest run -c vitest.config.ts tests/rules",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

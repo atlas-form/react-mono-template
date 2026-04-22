@@ -77,7 +77,7 @@ AI 在 `ui-core` 新增组件时，必须按以下顺序：
 4. 拆分为 `*.tsx`、`*.styles.ts`、`*.types.ts`、`index.ts`。
 5. 参考 `src/primitives/button` 组织 API。
 6. 检查该能力是否被错误地做成了产品层语义。
-7. 运行 `pnpm -C packages/ui-core test:rules`，确保结构与依赖边界合法。
+7. 运行 `pnpm -C packages/ui-core rules`，确保结构与依赖边界合法。
 8. 运行 `pnpm -C packages/ui-core typecheck`。
 9. 通过相关门禁后，才允许对外导出。
 
@@ -113,5 +113,5 @@ AI 在 `ui-core` 新增组件时，必须按以下顺序：
 - `mode` 规范完整。
 - 公共导出为显式导出。
 - 没有依赖上层包。
-- `pnpm -C packages/ui-core test:rules` 通过。
+- `pnpm -C packages/ui-core rules` 通过。
 - `pnpm -C packages/ui-core typecheck` 通过。

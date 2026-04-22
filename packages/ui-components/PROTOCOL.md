@@ -98,7 +98,7 @@ AI 在修改或新增本包组件时，必须按以下顺序：
 3. 优先参考现有合法 stable 组件写法。
 4. 只暴露最小白名单 API。
 5. 写完后运行：
-   - `pnpm -C packages/ui-components test:rules`
+   - `pnpm -C packages/ui-components rules`
    - `pnpm -C packages/ui-components typecheck`
 
 如果 AI 发现自己需要加：
@@ -134,5 +134,5 @@ AI 在修改或新增本包组件时，必须按以下顺序：
 - 组件归属判断正确。
 - API 没有泄露 primitive 控制面。
 - 没有新增灵活逃生口。
-- `pnpm -C packages/ui-components test:rules` 通过。
+- `pnpm -C packages/ui-components rules` 通过。
 - `pnpm -C packages/ui-components typecheck` 通过。

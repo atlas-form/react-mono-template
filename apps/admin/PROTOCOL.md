@@ -143,6 +143,7 @@ AI 在 `admin` 动手前，至少先回答下面 5 个问题：
 - 禁止直接复制 `app-components` 或 `ui-components` 内部实现到页面
 - 禁止因为赶进度绕过 `api/`、`navigation/`、`store/` 等本地职责边界
 - 禁止把权限码、菜单码、路由匹配规则散落在多个无关文件中重复维护
+- 禁止在 `navigation/menu-config.tsx` 中省略稳定 `id`，或用 `label`、`href`、`#` 之类占位值充当导航身份标识
 
 ## 10. admin 对整个框架的意义
 
@@ -168,5 +169,5 @@ AI 在 `admin` 动手前，至少先回答下面 5 个问题：
 
 - `pnpm -C apps/admin lint`
 - `pnpm -C apps/admin test`
-- `pnpm -C apps/admin test:rules`
+- `pnpm -C apps/admin rules`
 - `pnpm -C apps/admin build`

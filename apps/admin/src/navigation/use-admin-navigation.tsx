@@ -97,7 +97,9 @@ function toSidebarSubItems(
   navigate: ReturnType<typeof useNavigate>
 ) {
   return subItems?.map((subItem) => ({
-    ...subItem,
+    key: subItem.id,
+    label: subItem.label,
+    href: subItem.href,
     active: matchesNavigationSubItem(subItem, pathname),
     onSelect: () => navigate(subItem.href),
   }))
@@ -154,11 +156,13 @@ export function useAdminNavigation() {
   const sections = useMemo<SidebarShellSection[]>(
     () =>
       visibleSections.map((section) => ({
+        key: section.id,
         label: section.label,
         items: section.items.map((item) => {
           return {
+            key: item.id,
             label: item.label,
-            href: item.path ?? "#",
+            href: item.path,
             active: item.path ? location.pathname === item.path : false,
             icon: item.icon,
             onSelect: item.path ? () => navigate(item.path!) : undefined,

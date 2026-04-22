@@ -17,6 +17,21 @@ export interface CreateAdminUserRequest {
   status: AdminUserStatus
 }
 
+export interface UserDirectoryItem {
+  id: string
+  name: string
+}
+
+export interface ListUsersQuery {
+  page?: number
+  pageSize?: number
+}
+
+export interface ListUsersResponse {
+  items: UserDirectoryItem[]
+  total: number
+}
+
 export interface RoleResponse {
   id: number
   name: string
@@ -108,6 +123,16 @@ export const listAdminUsersApi = async (): Promise<AdminUserResponse[]> => {
   return request<undefined, AdminUserResponse[]>({
     method: "GET",
     url: "/api/admin/admin-users",
+  })
+}
+
+export const listUsersApi = async (
+  query: ListUsersQuery = {}
+): Promise<ListUsersResponse> => {
+  return request<ListUsersQuery, ListUsersResponse>({
+    method: "GET",
+    url: "/api/users",
+    body: query,
   })
 }
 

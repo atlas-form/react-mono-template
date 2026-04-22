@@ -68,7 +68,7 @@
    是：留在对应 app 内
 
 5. 改完后运行：
-   `pnpm -C packages/app-components test:rules`
+   `pnpm -C packages/app-components rules`
    `pnpm -C packages/app-components typecheck`
 
 ## 7. 局部协议
@@ -104,5 +104,5 @@
 - 没有把基础组件错误塞进本包。
 - 没有对外泄露 `ui-core` 原始控制面。
 - 如属于核心框架件，局部协议已同步。
-- `pnpm -C packages/app-components test:rules` 通过。
+- `pnpm -C packages/app-components rules` 通过。
 - `pnpm -C packages/app-components typecheck` 通过。

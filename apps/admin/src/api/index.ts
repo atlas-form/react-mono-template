@@ -25,6 +25,7 @@ export {
   getCurrentUserMenusApi,
   getCurrentUserPermissionsApi,
   listAdminUsersApi,
+  listUsersApi,
   listMenusApi,
   listPermissionsApi,
   listRolesApi,
@@ -40,10 +41,13 @@ export {
   type CurrentUserPermissionsResponse,
   type GrantRolePermissionRequest,
   type MenuResponse,
+  type ListUsersQuery,
+  type ListUsersResponse,
   type PermissionKind,
   type PermissionResponse,
   type RolePermissionResponse,
   type RoleResponse,
+  type UserDirectoryItem,
   type UserRoleResponse,
 } from "./admin"
 

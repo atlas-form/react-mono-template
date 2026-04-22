@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test:rules": "vitest run -c vitest.config.ts"
+    "rules": "vitest run -c vitest.config.ts"
   },
   "dependencies": {
     "date-fns": "catalog:",

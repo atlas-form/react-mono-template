@@ -13,7 +13,7 @@
     "format": "turbo format",
     "typecheck": "turbo typecheck",
     "test": "turbo test --filter=admin --filter=guide --filter=web",
-    "test:rules": "turbo test:rules",
+    "rules": "turbo rules",
     "test:watch": "turbo test:watch --filter=admin --filter=guide --filter=web"
   },
   "devDependencies": {
