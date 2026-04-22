@@ -22,8 +22,8 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
 } from "./sidebar"
+export { useSidebar } from "./sidebar.context"
 export { sidebarClassNames, sidebarMenuButtonVariants } from "./sidebar.styles"
 export type {
   SidebarCollapsible,

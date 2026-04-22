@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ShieldCheck, SquareMousePointer, Waypoints } from "lucide-react"
 import { TreeView, type TreeNode } from "@workspace/ui-components"
 import { Badge } from "@workspace/ui-components/stable/badge"
@@ -50,12 +50,6 @@ export default function AccessPage() {
 
   const activeRole =
     roleProfiles.find((role) => role.id === activeRoleId) ?? roleProfiles[0]
-
-  useEffect(() => {
-    if (activeRole) {
-      setSelectedPermissionIds(activeRole.presetIds)
-    }
-  }, [activeRole])
 
   const flatResources = useMemo(
     () => flattenPermissionResources(permissionResourceTree),
@@ -158,7 +152,10 @@ export default function AccessPage() {
                   <button
                     key={role.id}
                     type="button"
-                    onClick={() => setActiveRoleId(role.id)}
+                    onClick={() => {
+                      setActiveRoleId(role.id)
+                      setSelectedPermissionIds(role.presetIds)
+                    }}
                     className={`w-full rounded-[var(--ui-radius-lg)] border px-4 py-3 text-left transition ${
                       active
                         ? "border-(--app-accent) bg-(--app-active-bg)"

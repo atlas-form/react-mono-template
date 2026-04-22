@@ -20,6 +20,11 @@ import {
 import { Skeleton } from "../skeleton"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip"
 import {
+  SidebarContext,
+  type SidebarContextProps,
+  useSidebar,
+} from "./sidebar.context"
+import {
   sidebarContainerVariants,
   sidebarClassNames,
   sidebarContentClassName,
@@ -94,34 +99,11 @@ function clampValue(value: number, min: number, max: number) {
 function getRootFontSize() {
   if (typeof window === "undefined") return 16
 
-  return Number.parseFloat(
-    window.getComputedStyle(document.documentElement).fontSize
-  ) || 16
-}
-
-type SidebarContextProps = {
-  state: "expanded" | "collapsed"
-  open: boolean
-  setOpen: (open: boolean) => void
-  openMobile: boolean
-  setOpenMobile: (open: boolean) => void
-  isMobile: boolean
-  toggleSidebar: () => void
-  sidebarWidth: number
-  sidebarWidthMin: number
-  sidebarWidthMax: number
-  setSidebarWidth: (width: number) => void
-}
-
-const SidebarContext = React.createContext<SidebarContextProps | null>(null)
-
-function useSidebar() {
-  const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.")
-  }
-
-  return context
+  return (
+    Number.parseFloat(
+      window.getComputedStyle(document.documentElement).fontSize
+    ) || 16
+  )
 }
 
 function SidebarProvider({
@@ -189,7 +171,9 @@ function SidebarProvider({
   )
 
   const toggleSidebar = React.useCallback(() => {
-    return isMobile ? setOpenMobile((nextOpen) => !nextOpen) : setOpen((nextOpen) => !nextOpen)
+    return isMobile
+      ? setOpenMobile((nextOpen) => !nextOpen)
+      : setOpen((nextOpen) => !nextOpen)
   }, [isMobile, setOpen, setOpenMobile])
 
   React.useEffect(() => {
@@ -259,10 +243,7 @@ function SidebarProvider({
             ...style,
           } as React.CSSProperties
         }
-        className={cn(
-          sidebarWrapperClassName,
-          className
-        )}
+        className={cn(sidebarWrapperClassName, className)}
         {...props}
       >
         {children}
@@ -295,10 +276,7 @@ function Sidebar({
     return (
       <div
         data-slot="sidebar"
-        className={cn(
-          sidebarStaticClassName,
-          className
-        )}
+        className={cn(sidebarStaticClassName, className)}
         {...props}
       >
         {children}
@@ -318,7 +296,12 @@ function Sidebar({
     }
 
     return (
-      <Sheet mode={mode} open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet
+        mode={mode}
+        open={openMobile}
+        onOpenChange={setOpenMobile}
+        {...props}
+      >
         <SheetContent
           mode={mode}
           dir={dir}
@@ -335,7 +318,9 @@ function Sidebar({
         >
           <SheetHeader mode={mode} className={sidebarClassNames.slot2}>
             <SheetTitle mode={mode}>Sidebar</SheetTitle>
-            <SheetDescription mode={mode}>Displays the mobile sidebar.</SheetDescription>
+            <SheetDescription mode={mode}>
+              Displays the mobile sidebar.
+            </SheetDescription>
           </SheetHeader>
           <div className={sidebarClassNames.slot3}>{children}</div>
         </SheetContent>
@@ -362,20 +347,19 @@ function Sidebar({
     >
       <div
         data-slot="sidebar-gap"
-        className={cn(
-          sidebarGapVariants({ variant }),
-          )}
+        className={cn(sidebarGapVariants({ variant }))}
       />
       <div
         data-slot="sidebar-container"
         data-side={side}
-        className={cn(
-          sidebarContainerVariants({ variant }),
-          className
-        )}
+        className={cn(sidebarContainerVariants({ variant }), className)}
         {...props}
       >
-        <div data-sidebar="sidebar" data-slot="sidebar-inner" className={sidebarClassNames.slot5}>
+        <div
+          data-sidebar="sidebar"
+          data-slot="sidebar-inner"
+          className={sidebarClassNames.slot5}
+        >
           {children}
         </div>
       </div>
@@ -433,12 +417,19 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon className={iconClassName} />
-      <span className={cn(sidebarTriggerSrOnlyClassName, textClassName)}>Toggle Sidebar</span>
+      <span className={cn(sidebarTriggerSrOnlyClassName, textClassName)}>
+        Toggle Sidebar
+      </span>
     </Button>
   )
 }
 
-function SidebarRail({ mode = DEFAULT_MODE, className, onClick, ...props }: SidebarRailProps) {
+function SidebarRail({
+  mode = DEFAULT_MODE,
+  className,
+  onClick,
+  ...props
+}: SidebarRailProps) {
   const {
     isMobile,
     open,
@@ -458,8 +449,8 @@ function SidebarRail({ mode = DEFAULT_MODE, className, onClick, ...props }: Side
       event.preventDefault()
 
       const side =
-        event.currentTarget.closest<HTMLElement>("[data-side]")?.dataset.side ===
-        "right"
+        event.currentTarget.closest<HTMLElement>("[data-side]")?.dataset
+          .side === "right"
           ? "right"
           : "left"
       const startX = event.clientX
@@ -538,16 +529,17 @@ function SidebarRail({ mode = DEFAULT_MODE, className, onClick, ...props }: Side
       }}
       onPointerDown={handlePointerDown}
       title="Toggle Sidebar"
-      className={cn(
-        sidebarRailClassName,
-        className
-      )}
+      className={cn(sidebarRailClassName, className)}
       {...props}
     />
   )
 }
 
-function SidebarInset({ mode = DEFAULT_MODE, className, ...props }: SidebarInsetProps) {
+function SidebarInset({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarInsetProps) {
   if (mode === "primitive") {
     return <main className={className} {...props} />
   }
@@ -555,16 +547,17 @@ function SidebarInset({ mode = DEFAULT_MODE, className, ...props }: SidebarInset
   return (
     <main
       data-slot="sidebar-inset"
-      className={cn(
-        sidebarInsetClassName,
-        className
-      )}
+      className={cn(sidebarInsetClassName, className)}
       {...props}
     />
   )
 }
 
-function SidebarInput({ mode = DEFAULT_MODE, className, ...props }: SidebarInputProps) {
+function SidebarInput({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarInputProps) {
   if (mode === "primitive") {
     return <Input mode={mode} className={className} {...props} />
   }
@@ -580,7 +573,11 @@ function SidebarInput({ mode = DEFAULT_MODE, className, ...props }: SidebarInput
   )
 }
 
-function SidebarHeader({ mode = DEFAULT_MODE, className, ...props }: SidebarHeaderProps) {
+function SidebarHeader({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarHeaderProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -595,7 +592,11 @@ function SidebarHeader({ mode = DEFAULT_MODE, className, ...props }: SidebarHead
   )
 }
 
-function SidebarFooter({ mode = DEFAULT_MODE, className, ...props }: SidebarFooterProps) {
+function SidebarFooter({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarFooterProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -610,7 +611,11 @@ function SidebarFooter({ mode = DEFAULT_MODE, className, ...props }: SidebarFoot
   )
 }
 
-function SidebarSeparator({ mode = DEFAULT_MODE, className, ...props }: SidebarSeparatorProps) {
+function SidebarSeparator({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarSeparatorProps) {
   if (mode === "primitive") {
     return <Separator mode={mode} className={className} {...props} />
   }
@@ -626,7 +631,11 @@ function SidebarSeparator({ mode = DEFAULT_MODE, className, ...props }: SidebarS
   )
 }
 
-function SidebarContent({ mode = DEFAULT_MODE, className, ...props }: SidebarContentProps) {
+function SidebarContent({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarContentProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -635,16 +644,17 @@ function SidebarContent({ mode = DEFAULT_MODE, className, ...props }: SidebarCon
     <div
       data-slot="sidebar-content"
       data-sidebar="content"
-      className={cn(
-        sidebarContentClassName,
-        className
-      )}
+      className={cn(sidebarContentClassName, className)}
       {...props}
     />
   )
 }
 
-function SidebarGroup({ mode = DEFAULT_MODE, className, ...props }: SidebarGroupProps) {
+function SidebarGroup({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarGroupProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -675,10 +685,7 @@ function SidebarGroupLabel({
     <Comp
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
-      className={cn(
-        sidebarGroupLabelClassName,
-        className
-      )}
+      className={cn(sidebarGroupLabelClassName, className)}
       {...props}
     />
   )
@@ -700,16 +707,17 @@ function SidebarGroupAction({
     <Comp
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
-      className={cn(
-        sidebarGroupActionClassName,
-        className
-      )}
+      className={cn(sidebarGroupActionClassName, className)}
       {...props}
     />
   )
 }
 
-function SidebarGroupContent({ mode = DEFAULT_MODE, className, ...props }: SidebarGroupContentProps) {
+function SidebarGroupContent({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarGroupContentProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -724,7 +732,11 @@ function SidebarGroupContent({ mode = DEFAULT_MODE, className, ...props }: Sideb
   )
 }
 
-function SidebarMenu({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuProps) {
+function SidebarMenu({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarMenuProps) {
   if (mode === "primitive") {
     return <ul className={className} {...props} />
   }
@@ -739,7 +751,11 @@ function SidebarMenu({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuPr
   )
 }
 
-function SidebarMenuItem({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuItemProps) {
+function SidebarMenuItem({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarMenuItemProps) {
   if (mode === "primitive") {
     return <li className={className} {...props} />
   }
@@ -861,16 +877,17 @@ function SidebarMenuAction({
     <Comp
       data-slot="sidebar-menu-action"
       data-sidebar="menu-action"
-      className={cn(
-        sidebarMenuActionVariants({ showOnHover }),
-        className
-      )}
+      className={cn(sidebarMenuActionVariants({ showOnHover }), className)}
       {...props}
     />
   )
 }
 
-function SidebarMenuBadge({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuBadgeProps) {
+function SidebarMenuBadge({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarMenuBadgeProps) {
   if (mode === "primitive") {
     return <div className={className} {...props} />
   }
@@ -879,10 +896,7 @@ function SidebarMenuBadge({ mode = DEFAULT_MODE, className, ...props }: SidebarM
     <div
       data-slot="sidebar-menu-badge"
       data-sidebar="menu-badge"
-      className={cn(
-        sidebarMenuBadgeClassName,
-        className
-      )}
+      className={cn(sidebarMenuBadgeClassName, className)}
       {...props}
     />
   )
@@ -942,7 +956,11 @@ function SidebarMenuSkeleton({
   )
 }
 
-function SidebarMenuSub({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuSubProps) {
+function SidebarMenuSub({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarMenuSubProps) {
   if (mode === "primitive") {
     return <ul className={className} {...props} />
   }
@@ -951,16 +969,17 @@ function SidebarMenuSub({ mode = DEFAULT_MODE, className, ...props }: SidebarMen
     <ul
       data-slot="sidebar-menu-sub"
       data-sidebar="menu-sub"
-      className={cn(
-        sidebarMenuSubClassName,
-        className
-      )}
+      className={cn(sidebarMenuSubClassName, className)}
       {...props}
     />
   )
 }
 
-function SidebarMenuSubItem({ mode = DEFAULT_MODE, className, ...props }: SidebarMenuSubItemProps) {
+function SidebarMenuSubItem({
+  mode = DEFAULT_MODE,
+  className,
+  ...props
+}: SidebarMenuSubItemProps) {
   if (mode === "primitive") {
     return <li className={className} {...props} />
   }
@@ -995,10 +1014,7 @@ function SidebarMenuSubButton({
       data-sidebar="menu-sub-button"
       data-size={size}
       data-active={isActive}
-      className={cn(
-        sidebarMenuSubButtonVariants({ size }),
-        className
-      )}
+      className={cn(sidebarMenuSubButtonVariants({ size }), className)}
       {...props}
     />
   )
@@ -1028,5 +1044,4 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
 }
