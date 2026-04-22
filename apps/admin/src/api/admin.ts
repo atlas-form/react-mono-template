@@ -4,9 +4,10 @@ export type AdminUserStatus = "enabled" | "disabled"
 
 export interface AdminUserResponse {
   user_id: string
-  display_name: string
-  remark: string | null
+  display_name?: string
+  remark?: string | null
   status: AdminUserStatus
+  roles: RoleResponse[]
 }
 
 export interface CreateAdminUserRequest {

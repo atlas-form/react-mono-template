@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 import { ShieldCheck, ShieldOff, SquareUserRound, Users } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Input } from "@workspace/ui-components"
 import { Badge } from "@workspace/ui-components/stable/badge"
 import {
@@ -12,15 +12,14 @@ import {
 import {
   createAdminUserApi,
   listAdminUsersApi,
-  listUserRolesApi,
   type AdminUserStatus as ApiAdminUserStatus,
 } from "@/api"
 
 type AdminUserStatusLabel = "启用" | "停用"
 
 interface AdminUserRow {
-  userId: string
-  displayName: string
+  user_id: string
+  display_name: string
   remark: string | null
   status: ApiAdminUserStatus
   roles: string[]
@@ -37,33 +36,28 @@ const statusOptions = [
   { label: "停用", value: "停用" },
 ] as const
 
+const adminUsersQueryKey = ["admin", "admin-users", "rows"] as const
+
 export default function AdminUsersPage() {
   const [draftUserId, setDraftUserId] = useState("")
   const [draftDisplayName, setDraftDisplayName] = useState("")
   const [draftRemark, setDraftRemark] = useState("")
+  const queryClient = useQueryClient()
 
   const loadAdminUserRows = useCallback(async (): Promise<AdminUserRow[]> => {
     const adminUsers = await listAdminUsersApi()
 
-    const rows = await Promise.all(
-      adminUsers.map(async (adminUser) => {
-        const roles = await listUserRolesApi(adminUser.user_id)
-
-        return {
-          userId: adminUser.user_id,
-          displayName: adminUser.display_name,
-          remark: adminUser.remark,
-          status: adminUser.status,
-          roles: roles.map((role) => role.name),
-        }
-      })
-    )
-
-    return rows
+    return adminUsers.map((adminUser) => ({
+      user_id: adminUser.user_id,
+      display_name: adminUser.display_name?.trim() || "未设置显示名称",
+      remark: adminUser.remark ?? null,
+      status: adminUser.status,
+      roles: adminUser.roles.map((role) => role.name),
+    }))
   }, [])
 
-  const metricsQuery = useQuery({
-    queryKey: ["admin", "admin-users", "metrics"],
+  const adminUsersQuery = useQuery({
+    queryKey: adminUsersQueryKey,
     queryFn: loadAdminUserRows,
   })
 
@@ -72,14 +66,14 @@ export default function AdminUsersPage() {
       {
         key: "all",
         label: "后台账号总数",
-        value: `${metricsQuery.data?.length ?? 0}`,
+        value: `${adminUsersQuery.data?.length ?? 0}`,
         tail: "当前已注册为后台可登录账号的后台用户数量。",
         icon: <SquareUserRound className="size-4" />,
       },
       {
         key: "enabled",
         label: "启用账号",
-        value: `${(metricsQuery.data ?? []).filter((row) => row.status === "enabled").length}`,
+        value: `${(adminUsersQuery.data ?? []).filter((row) => row.status === "enabled").length}`,
         tail: "具备正常后台访问能力的账号。",
         icon: <ShieldCheck className="size-4" />,
         variant: "success" as const,
@@ -87,7 +81,7 @@ export default function AdminUsersPage() {
       {
         key: "disabled",
         label: "停用账号",
-        value: `${(metricsQuery.data ?? []).filter((row) => row.status === "disabled").length}`,
+        value: `${(adminUsersQuery.data ?? []).filter((row) => row.status === "disabled").length}`,
         tail: "已被禁用，需要人工恢复或复核。",
         icon: <ShieldOff className="size-4" />,
         variant: "danger" as const,
@@ -95,13 +89,13 @@ export default function AdminUsersPage() {
       {
         key: "multi-role",
         label: "多角色账号",
-        value: `${(metricsQuery.data ?? []).filter((row) => row.roles.length > 1).length}`,
+        value: `${(adminUsersQuery.data ?? []).filter((row) => row.roles.length > 1).length}`,
         tail: "同时挂载多个角色的重点账号。",
         icon: <Users className="size-4" />,
         variant: "accent" as const,
       },
     ],
-    [metricsQuery.data]
+    [adminUsersQuery.data]
   )
 
   const fetchData = useCallback(
@@ -119,14 +113,17 @@ export default function AdminUsersPage() {
       sort: DataTableSortState | null
     }): Promise<DataTableFetchResult<AdminUserRow>> => {
       void signal
-      const rows = await loadAdminUserRows()
+      const rows = await queryClient.ensureQueryData({
+        queryKey: adminUsersQueryKey,
+        queryFn: loadAdminUserRows,
+      })
 
       const filteredRows = rows.filter((row) => {
         const keyword = query.keyword.trim().toLowerCase()
         const searchCandidatesByField = {
-          all: [row.displayName, row.userId, row.remark ?? "", ...row.roles],
-          display_name: [row.displayName],
-          user_id: [row.userId],
+          all: [row.display_name, row.user_id, row.remark ?? "", ...row.roles],
+          display_name: [row.display_name],
+          user_id: [row.user_id],
           remark: row.remark ? [row.remark] : [],
           role: row.roles,
         } as const
@@ -165,7 +162,7 @@ export default function AdminUsersPage() {
         total: sortedRows.length,
       }
     },
-    [loadAdminUserRows]
+    [loadAdminUserRows, queryClient]
   )
 
   return (
@@ -176,16 +173,11 @@ export default function AdminUsersPage() {
         <DataTable<AdminUserRow, AdminUserTableQuery>
           columns={[
             {
-              key: "displayName",
+              key: "display_name",
               header: "显示名称",
               sortable: true,
               renderCell: (row) => (
-                <div>
-                  <p className="font-medium">{row.displayName}</p>
-                  <p className="text-xs text-(--app-muted-text)">
-                    {row.userId}
-                  </p>
-                </div>
+                <span className="font-medium">{row.display_name}</span>
               ),
             },
             {
@@ -239,7 +231,7 @@ export default function AdminUsersPage() {
             },
           ]}
           fetchData={fetchData}
-          getRowId={(row) => row.userId}
+          getRowId={(row) => row.user_id}
           height="100%"
           initialPageSize={10}
           initialQuery={{
@@ -291,7 +283,9 @@ export default function AdminUsersPage() {
               setDraftUserId("")
               setDraftDisplayName("")
               setDraftRemark("")
-              await metricsQuery.refetch()
+              await queryClient.invalidateQueries({
+                queryKey: adminUsersQueryKey,
+              })
             },
           }}
           selection={{}}
@@ -335,7 +329,7 @@ export default function AdminUsersPage() {
                 key: "assign-role",
                 label: "查看角色",
                 onClick: (row) => {
-                  console.info("view roles", row.userId)
+                  console.info("view roles", row.user_id)
                 },
               },
             ],
@@ -358,10 +352,10 @@ function mapStatusLabelToApiStatus(
 
 function getSortValue(row: AdminUserRow, columnKey: string) {
   switch (columnKey) {
-    case "displayName":
-      return row.displayName
-    case "userId":
-      return row.userId
+    case "display_name":
+      return row.display_name
+    case "user_id":
+      return row.user_id
     case "remark":
       return row.remark ?? ""
     case "status":
