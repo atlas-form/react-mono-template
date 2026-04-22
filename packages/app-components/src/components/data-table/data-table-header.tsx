@@ -35,7 +35,7 @@ function getCustomQueryFieldLayoutStyle(field: DataTableQueryField<object>) {
 function getToolbarWidthClass(actionCount: number) {
   if (actionCount >= 3) return "sm:w-[7.5rem]"
   if (actionCount === 2) return "sm:w-[5rem]"
-  if (actionCount === 1) return "sm:w-[2.5rem]"
+  if (actionCount === 1) return "sm:w-8"
   return "sm:w-auto"
 }
 
@@ -182,9 +182,9 @@ function ToolbarActions({
 
   return (
     <div
-      className={`w-[2.5rem] flex-none self-stretch ${getToolbarWidthClass(actionCount)}`}
+      className={`w-8 flex-none self-stretch ${getToolbarWidthClass(actionCount)}`}
     >
-      <div className="flex h-full w-full items-center justify-center pl-2 sm:pl-4">
+      <div className="flex h-full w-full items-center justify-center">
         <div className="flex w-full flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-center sm:justify-center sm:gap-1">
           {insert !== false ? (
             <IconToolButton

@@ -105,6 +105,12 @@ export const navigationSections: NavigationSectionConfig[] = [
             href: "/settings",
             matcher: (pathname) => pathname.startsWith("/settings"),
           },
+          {
+            permissionCode: "admin:access",
+            label: "DataTable 示例",
+            href: "/datatable",
+            matcher: (pathname) => pathname.startsWith("/datatable"),
+          },
         ],
       },
     ],

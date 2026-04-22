@@ -47,6 +47,7 @@ export { DateRangePicker } from "./components/date-time-picker"
 export { MultipleDatePicker } from "./components/date-time-picker"
 export { TimePicker } from "./components/date-time-picker"
 export { DataTable } from "./components/data-table"
+export { MetricCards } from "./components/metric-cards"
 export type {
   DataTableBulkDeleteConfig,
   DataTableBulkUpdateConfig,
@@ -73,6 +74,11 @@ export type {
   DataTableSortState,
   DataTableTextQueryField,
 } from "./components/data-table"
+export type {
+  MetricCardsItem,
+  MetricCardsProps,
+  MetricCardsVariant,
+} from "./components/metric-cards"
 export type {
   DatePickerProps,
   DateTimePickerProps,
