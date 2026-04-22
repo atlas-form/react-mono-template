@@ -1,12 +1,10 @@
-const translation = {
+const messages = {
   common: {
     validation: {
       required: "此项必填",
       emailInvalid: "请输入有效邮箱地址",
     },
   },
-  welcome: "欢迎使用 React",
-  description: "这是一个 i18n 的示例。",
   datatable: {
     insert: {
       label: "新增",
@@ -16,32 +14,6 @@ const translation = {
     actions: {
       deleteTitle: "删除 {{name}}？",
       deleteDescription: "此操作会将客户 {{id}} 从当前列表中移除。",
-    },
-  },
-  header: {
-    theme: {
-      system: "跟随系统",
-      light: "浅色",
-      dark: "深色",
-    },
-    language: {
-      en: "English",
-      zhCN: "简体中文",
-    },
-    me: {
-      fallbackName: "用户",
-      uploadAvatar: "上传头像",
-      settings: "设置",
-      profile: "个人资料",
-      logout: "退出登录",
-      crop: {
-        title: "调整头像",
-        description: "拖动并缩放图片，圆形区域就是最终头像显示区域。",
-        zoom: "缩放",
-        cancel: "取消",
-        confirm: "保存",
-        confirming: "上传中...",
-      },
     },
   },
   login: {
@@ -151,4 +123,4 @@ const translation = {
   },
 } as const
 
-export default translation
+export default messages

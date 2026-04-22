@@ -1,12 +1,10 @@
-const translation = {
+const messages = {
   common: {
     validation: {
       required: "This field is required",
       emailInvalid: "Please enter a valid email address",
     },
   },
-  welcome: "Welcome to React",
-  description: "This is an example of i18n.",
   datatable: {
     insert: {
       label: "Insert",
@@ -17,32 +15,6 @@ const translation = {
       deleteTitle: "Delete {{name}}?",
       deleteDescription:
         "This action will remove customer {{id}} from the current list.",
-    },
-  },
-  header: {
-    theme: {
-      system: "System",
-      light: "Light",
-      dark: "Dark",
-    },
-    language: {
-      en: "English",
-      zhCN: "Simplified Chinese",
-    },
-    me: {
-      fallbackName: "User",
-      uploadAvatar: "Upload Avatar",
-      settings: "Settings",
-      profile: "Profile",
-      logout: "Logout",
-      crop: {
-        title: "Adjust Avatar",
-        description: "Drag and zoom. The circle is the visible avatar area.",
-        zoom: "Zoom",
-        cancel: "Cancel",
-        confirm: "Save",
-        confirming: "Uploading...",
-      },
     },
   },
   login: {
@@ -159,4 +131,4 @@ const translation = {
   },
 } as const
 
-export default translation
+export default messages

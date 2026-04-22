@@ -1,4 +1,5 @@
 import type { SupportedLanguage } from "../index"
+import { localeResources } from "../resources"
 
 export interface TimePickerCopy {
   placeholder: string
@@ -6,19 +7,6 @@ export interface TimePickerCopy {
   ariaLabel: string
 }
 
-const TIME_PICKER_COPY: Record<SupportedLanguage, TimePickerCopy> = {
-  en: {
-    placeholder: "Select time",
-    clearLabel: "Clear time",
-    ariaLabel: "Time",
-  },
-  zhCN: {
-    placeholder: "选择时间",
-    clearLabel: "清除时间",
-    ariaLabel: "时间",
-  },
-}
-
 export function getTimePickerCopy(language: SupportedLanguage) {
-  return TIME_PICKER_COPY[language]
+  return localeResources[language].components.timePicker
 }

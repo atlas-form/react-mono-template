@@ -1,24 +1,19 @@
 import type { SupportedLanguage } from "../index"
+import { localeResources } from "../resources"
 
 export interface MultipleDatePickerCopy {
   placeholder: string
   selectedDays: (count: number) => string
 }
 
-const MULTIPLE_DATE_PICKER_COPY: Record<
-  SupportedLanguage,
-  MultipleDatePickerCopy
-> = {
-  en: {
-    placeholder: "Select multiple dates",
-    selectedDays: (count: number) => `${count} days selected`,
-  },
-  zhCN: {
-    placeholder: "选择多个日期",
-    selectedDays: (count: number) => `已选择 ${count} 天`,
-  },
-}
-
 export function getMultipleDatePickerCopy(language: SupportedLanguage) {
-  return MULTIPLE_DATE_PICKER_COPY[language]
+  const copy = localeResources[language].components.multipleDatePicker
+
+  return {
+    placeholder: copy.placeholder,
+    selectedDays: (count: number) =>
+      language === "zhCN"
+        ? `已选择 ${count} ${copy.selectedDaysSuffix}`
+        : `${count} ${copy.selectedDaysSuffix}`,
+  }
 }

@@ -15,7 +15,7 @@ import { updateUser } from "@/store/authSlice"
 import { createCroppedImageFile } from "@/utils/imageCrop"
 
 export default function HeaderMe() {
-  const { t } = useTranslation()
+  const { t } = useTranslation("components")
   const dispatch = useDispatch()
   const me = useSelector((state: RootState) => state.auth.user)
   const [menuOpen, setMenuOpen] = useState(false)

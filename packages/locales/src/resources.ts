@@ -1,28 +1,34 @@
-import enError from "../lang/en/error"
-import enTranslation from "../lang/en/translation"
-import zhCNError from "../lang/zhCN/error"
-import zhCNTranslation from "../lang/zhCN/translation"
+import enComponents from "../lang/en/components"
+import enErrors from "../lang/en/errors"
+import enMessages from "../lang/en/messages"
+import zhCNComponents from "../lang/zhCN/components"
+import zhCNErrors from "../lang/zhCN/errors"
+import zhCNMessages from "../lang/zhCN/messages"
 
-export type LocaleNamespace = "translation" | "error"
+export type LocaleNamespace = "messages" | "components" | "errors"
 
 export type LocaleResources = {
   en: {
-    translation: typeof enTranslation
-    error: typeof enError
+    messages: typeof enMessages
+    components: typeof enComponents
+    errors: typeof enErrors
   }
   zhCN: {
-    translation: typeof zhCNTranslation
-    error: typeof zhCNError
+    messages: typeof zhCNMessages
+    components: typeof zhCNComponents
+    errors: typeof zhCNErrors
   }
 }
 
 export const localeResources: LocaleResources = {
   en: {
-    translation: enTranslation,
-    error: enError,
+    messages: enMessages,
+    components: enComponents,
+    errors: enErrors,
   },
   zhCN: {
-    translation: zhCNTranslation,
-    error: zhCNError,
+    messages: zhCNMessages,
+    components: zhCNComponents,
+    errors: zhCNErrors,
   },
 }

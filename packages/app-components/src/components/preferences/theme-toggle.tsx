@@ -23,7 +23,7 @@ export interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation("components")
   const [mode, setMode] = useState<ThemeMode>(() => getStoredThemeMode())
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
     getSystemTheme()
