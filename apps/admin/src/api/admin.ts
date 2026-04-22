@@ -3,6 +3,7 @@ import { request } from "@workspace/services/api/base"
 export type AdminUserStatus = "enabled" | "disabled"
 
 export interface AdminUserResponse {
+  display_id?: string
   user_id: string
   display_name?: string
   remark?: string | null
@@ -15,21 +16,6 @@ export interface CreateAdminUserRequest {
   display_name: string
   remark?: string | null
   status: AdminUserStatus
-}
-
-export interface UserDirectoryItem {
-  id: string
-  name: string
-}
-
-export interface ListUsersQuery {
-  page?: number
-  pageSize?: number
-}
-
-export interface ListUsersResponse {
-  items: UserDirectoryItem[]
-  total: number
 }
 
 export interface RoleResponse {
@@ -123,16 +109,6 @@ export const listAdminUsersApi = async (): Promise<AdminUserResponse[]> => {
   return request<undefined, AdminUserResponse[]>({
     method: "GET",
     url: "/api/admin/admin-users",
-  })
-}
-
-export const listUsersApi = async (
-  query: ListUsersQuery = {}
-): Promise<ListUsersResponse> => {
-  return request<ListUsersQuery, ListUsersResponse>({
-    method: "GET",
-    url: "/api/users",
-    body: query,
   })
 }
 

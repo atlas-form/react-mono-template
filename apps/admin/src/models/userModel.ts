@@ -1,11 +1,13 @@
 export interface UserInfo {
   id: string
+  display_id: string
   email: string
   name: string
   avatar: string
 }
 
 export interface MeResponse {
+  id: string
   display_user_id?: string | null
   username: string
   display_name?: string | null

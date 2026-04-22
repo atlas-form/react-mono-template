@@ -4,8 +4,8 @@ export function getAdminUserSortValue(row: AdminUserRow, columnKey: string) {
   switch (columnKey) {
     case "display_name":
       return row.display_name
-    case "user_id":
-      return row.user_id
+    case "display_id":
+      return row.display_id
     case "remark":
       return row.remark ?? ""
     case "status":

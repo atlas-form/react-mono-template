@@ -5,6 +5,14 @@ import type { AdminUserRow } from "../types"
 
 export const adminUserColumns: DataTableColumn<AdminUserRow>[] = [
   {
+    key: "display_id",
+    header: "ID",
+    sortable: true,
+    renderCell: (row) => (
+      <span className="font-mono text-sm">{row.display_id}</span>
+    ),
+  },
+  {
     key: "display_name",
     header: "显示名称",
     sortable: true,

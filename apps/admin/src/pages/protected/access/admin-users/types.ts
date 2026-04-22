@@ -4,6 +4,7 @@ export type AdminUserStatusLabel = "启用" | "停用"
 
 export interface AdminUserRow {
   user_id: string
+  display_id: string
   display_name: string
   remark: string | null
   status: ApiAdminUserStatus
@@ -12,6 +13,6 @@ export interface AdminUserRow {
 
 export interface AdminUserTableQuery {
   keyword: string
-  keywordField: "all" | "display_name" | "user_id" | "remark" | "role"
+  keywordField: "all" | "display_name" | "display_id" | "remark" | "role"
   status: "" | AdminUserStatusLabel
 }

@@ -23,6 +23,7 @@ export function useAdminUsersData() {
 
     return adminUsers.map((adminUser) => ({
       user_id: adminUser.user_id,
+      display_id: adminUser.display_id?.trim() || adminUser.user_id,
       display_name: adminUser.display_name?.trim() || "未设置显示名称",
       remark: adminUser.remark ?? null,
       status: adminUser.status,

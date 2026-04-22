@@ -64,7 +64,8 @@ export function AdminAppShell({ children }: AdminAppShellProps) {
         avatarSrc: user?.avatar,
         avatarFallback: (user?.name ?? "A").charAt(0).toUpperCase(),
         displayName: user?.name ?? "Admin",
-        displayId: user?.id || user?.email || "workspace-admin@example.com",
+        displayId:
+          user?.display_id || user?.email || "workspace-admin@example.com",
         logout: {
           label: "Log out",
           onSelect: handleLogout,

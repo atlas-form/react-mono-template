@@ -20,12 +20,14 @@ export interface RegisterRequest {
 
 export interface UserInfo {
   id: string
+  display_id: string
   email: string
   name: string
   avatar: string
 }
 
 export interface MeResponse {
+  id: string
   display_user_id?: string | null
   username: string
   display_name?: string | null
@@ -77,11 +79,34 @@ export const meApi = async (): Promise<UserInfo> => {
   })
 
   return {
-    id: response.display_user_id ?? "",
+    id: response.id,
+    display_id: response.display_user_id ?? "",
     email: response.email ?? "",
     name: response.display_name || response.username,
     avatar: response.avatar ?? "",
   }
+}
+
+export const getAuthUserProfileApi = async (
+  accessToken: string
+): Promise<MeResponse> => {
+  const response = await fetch("/auth/user/me", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+
+  const json = (await response.json().catch(() => ({}))) as {
+    data?: MeResponse
+  }
+
+  if (!response.ok || !json.data) {
+    throw new Error("failed to fetch auth user profile")
+  }
+
+  return json.data
 }
 
 interface UpdateProfileRequestBody {
