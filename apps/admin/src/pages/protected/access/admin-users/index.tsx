@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
+import { ShieldCheck, ShieldOff, SquareUserRound, Users } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Input } from "@workspace/ui-components"
 import { Badge } from "@workspace/ui-components/stable/badge"
@@ -72,27 +73,31 @@ export default function AdminUsersPage() {
         key: "all",
         label: "后台账号总数",
         value: `${metricsQuery.data?.length ?? 0}`,
-        description: "当前已注册为后台可登录账号的后台用户数量。",
+        tail: "当前已注册为后台可登录账号的后台用户数量。",
+        icon: <SquareUserRound className="size-4" />,
       },
       {
         key: "enabled",
         label: "启用账号",
         value: `${(metricsQuery.data ?? []).filter((row) => row.status === "enabled").length}`,
-        description: "具备正常后台访问能力的账号。",
+        tail: "具备正常后台访问能力的账号。",
+        icon: <ShieldCheck className="size-4" />,
         variant: "success" as const,
       },
       {
         key: "disabled",
         label: "停用账号",
         value: `${(metricsQuery.data ?? []).filter((row) => row.status === "disabled").length}`,
-        description: "已被禁用，需要人工恢复或复核。",
+        tail: "已被禁用，需要人工恢复或复核。",
+        icon: <ShieldOff className="size-4" />,
         variant: "danger" as const,
       },
       {
         key: "multi-role",
         label: "多角色账号",
         value: `${(metricsQuery.data ?? []).filter((row) => row.roles.length > 1).length}`,
-        description: "同时挂载多个角色的重点账号。",
+        tail: "同时挂载多个角色的重点账号。",
+        icon: <Users className="size-4" />,
         variant: "accent" as const,
       },
     ],
@@ -164,10 +169,10 @@ export default function AdminUsersPage() {
   )
 
   return (
-    <div className="space-y-4">
+    <div className="w-full min-w-0 space-y-4">
       <MetricCards items={metricCards} />
 
-      <div className="flex h-[calc(100vh-22rem)] min-h-[40rem] min-w-0 flex-1 overflow-hidden">
+      <div className="flex h-[calc(100vh-22rem)] min-h-160 min-w-0 flex-1 overflow-hidden">
         <DataTable<AdminUserRow, AdminUserTableQuery>
           columns={[
             {
@@ -177,7 +182,9 @@ export default function AdminUsersPage() {
               renderCell: (row) => (
                 <div>
                   <p className="font-medium">{row.displayName}</p>
-                  <p className="text-xs text-(--app-muted-text)">{row.userId}</p>
+                  <p className="text-xs text-(--app-muted-text)">
+                    {row.userId}
+                  </p>
                 </div>
               ),
             },
@@ -189,7 +196,9 @@ export default function AdminUsersPage() {
                 row.remark?.trim() ? (
                   row.remark
                 ) : (
-                  <span className="text-sm text-(--app-muted-text)">无备注</span>
+                  <span className="text-sm text-(--app-muted-text)">
+                    无备注
+                  </span>
                 ),
             },
             {
@@ -197,7 +206,9 @@ export default function AdminUsersPage() {
               header: "状态",
               sortable: true,
               renderCell: (row) => (
-                <Badge variant={row.status === "enabled" ? "default" : "outline"}>
+                <Badge
+                  variant={row.status === "enabled" ? "default" : "outline"}
+                >
                   {mapApiStatusToLabel(row.status)}
                 </Badge>
               ),
@@ -215,7 +226,9 @@ export default function AdminUsersPage() {
                     ))}
                   </div>
                 ) : (
-                  <span className="text-sm text-(--app-muted-text)">未分配角色</span>
+                  <span className="text-sm text-(--app-muted-text)">
+                    未分配角色
+                  </span>
                 ),
             },
             {
@@ -237,7 +250,8 @@ export default function AdminUsersPage() {
           insert={{
             label: "新增后台账号",
             title: "创建后台账号",
-            description: "当前服务端要求传入 user_id、display_name，remark 可选，状态默认创建为启用。",
+            description:
+              "当前服务端要求传入 user_id、display_name，remark 可选，状态默认创建为启用。",
             renderContent: () => (
               <div className="grid gap-4 py-2">
                 <Input

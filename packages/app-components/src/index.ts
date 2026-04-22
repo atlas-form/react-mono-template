@@ -75,6 +75,8 @@ export type {
   DataTableTextQueryField,
 } from "./components/data-table"
 export type {
+  MetricCardsCardClassNames,
+  MetricCardsCardProps,
   MetricCardsItem,
   MetricCardsProps,
   MetricCardsVariant,

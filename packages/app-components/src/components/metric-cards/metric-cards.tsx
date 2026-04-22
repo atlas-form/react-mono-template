@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { Card, CardContent } from "@workspace/ui-core/components/card"
 
 export type MetricCardsVariant =
@@ -13,93 +13,143 @@ export interface MetricCardsItem {
   label: ReactNode
   value: ReactNode
   description?: ReactNode
+  tail?: ReactNode
+  icon?: ReactNode
   variant?: MetricCardsVariant
 }
 
 export interface MetricCardsProps {
   items: readonly MetricCardsItem[]
   variant?: MetricCardsVariant
+  card?: ComponentType<MetricCardsCardProps>
+}
+
+export interface MetricCardsCardClassNames {
+  card: string
+  iconWrap: string
+  icon: string
+  label: string
+  value: string
+  tail: string
+}
+
+export interface MetricCardsCardProps {
+  item: MetricCardsItem
+  index: number
+  variant: MetricCardsVariant
+  classNames: MetricCardsCardClassNames
 }
 
 const metricCardVariantClassNames: Record<
   MetricCardsVariant,
-  {
-    card: string
-    label: string
-    value: string
-    description: string
-  }
+  MetricCardsCardClassNames
 > = {
   default: {
     card: "bg-[var(--surface)] ring-0 shadow-none",
+    iconWrap: "bg-[color:color-mix(in_oklab,var(--foreground)_8%,var(--surface))]",
+    icon: "text-[var(--foreground)]",
     label: "text-[var(--muted-foreground)]",
     value: "text-[var(--foreground)]",
-    description: "text-[var(--muted-foreground)]",
+    tail: "text-[var(--muted-foreground)]",
   },
   accent: {
     card: "bg-[var(--accent)] ring-0 shadow-none",
+    iconWrap: "bg-[color:color-mix(in_oklab,var(--foreground)_8%,var(--accent))]",
+    icon: "text-[var(--foreground)]",
     label: "text-[var(--muted-foreground)]",
     value: "text-[var(--foreground)]",
-    description: "text-[var(--muted-foreground)]",
+    tail: "text-[var(--muted-foreground)]",
   },
   success: {
     card:
       "bg-[color:color-mix(in_oklab,var(--success)_10%,var(--surface))] ring-0 shadow-none",
+    iconWrap:
+      "bg-[color:color-mix(in_oklab,var(--success)_18%,var(--surface))]",
+    icon: "text-[var(--success)]",
     label: "text-[var(--muted-foreground)]",
     value: "text-[var(--success)]",
-    description: "text-[var(--foreground)]",
+    tail: "text-[var(--foreground)]",
   },
   warning: {
     card:
       "bg-[color:color-mix(in_oklab,var(--warning,#d97706)_10%,var(--surface))] ring-0 shadow-none",
+    iconWrap:
+      "bg-[color:color-mix(in_oklab,var(--warning,#d97706)_18%,var(--surface))]",
+    icon: "text-[var(--warning,#b45309)]",
     label: "text-[var(--muted-foreground)]",
     value: "text-[var(--warning,#b45309)]",
-    description: "text-[var(--foreground)]",
+    tail: "text-[var(--foreground)]",
   },
   danger: {
     card:
       "bg-[color:color-mix(in_oklab,var(--destructive)_10%,var(--surface))] ring-0 shadow-none",
+    iconWrap:
+      "bg-[color:color-mix(in_oklab,var(--destructive)_18%,var(--surface))]",
+    icon: "text-[var(--destructive)]",
     label: "text-[var(--muted-foreground)]",
     value: "text-[var(--destructive)]",
-    description: "text-[var(--foreground)]",
+    tail: "text-[var(--foreground)]",
   },
+}
+
+function DefaultMetricCard({
+  item,
+  classNames,
+}: MetricCardsCardProps) {
+  return (
+    <Card className={`h-full min-w-0 ${classNames.card}`}>
+      <CardContent className="px-3 py-2 sm:px-3.5 sm:py-2.5">
+        <div className="flex min-h-14 items-center gap-2.5 sm:min-h-16 sm:gap-3">
+          {item.icon ? (
+            <div
+              className={`hidden size-8 shrink-0 items-center justify-center rounded-lg sm:flex sm:size-9 ${classNames.iconWrap}`}
+            >
+              <span className={`flex items-center justify-center ${classNames.icon}`}>
+                {item.icon}
+              </span>
+            </div>
+          ) : null}
+
+          <div className="min-w-0 flex-1 text-left sm:text-left">
+            <p className={`truncate text-xs sm:text-sm ${classNames.label}`}>
+              {item.label}
+            </p>
+            <p
+              className={`mt-0.5 truncate text-xl leading-none font-semibold sm:text-2xl ${classNames.value}`}
+            >
+              {item.value}
+            </p>
+            <p
+              className={`mt-0.5 line-clamp-2 text-[11px] leading-3.5 sm:text-xs sm:leading-4 ${classNames.tail}`}
+            >
+              {item.tail ?? item.description}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
 }
 
 export function MetricCards({
   items,
   variant = "default",
+  card: CardComponent = DefaultMetricCard,
 }: MetricCardsProps) {
   return (
-    <div className="grid grid-cols-4 gap-2 sm:gap-3 xl:gap-4">
+    <div className="grid w-full min-w-0 grid-cols-4 gap-2 sm:gap-3 xl:gap-4">
       {items.map((item, index) => {
         const resolvedVariant = item.variant ?? variant
         const classNames = metricCardVariantClassNames[resolvedVariant]
 
         return (
-          <Card
+          <CardComponent
             key={item.key ?? (typeof item.label === "string" ? item.label : index)}
-            className={`h-full min-w-0 ${classNames.card}`}
-          >
-            <CardContent className="px-3 sm:px-4">
-              <div className="space-y-1.5 sm:space-y-2">
-                <p className={`text-xs leading-tight sm:text-sm ${classNames.label}`}>
-                  {item.label}
-                </p>
-                <p
-                  className={`text-2xl leading-none font-semibold sm:text-3xl ${classNames.value}`}
-                >
-                  {item.value}
-                </p>
-                {item.description ? (
-                  <p
-                    className={`line-clamp-3 text-[11px] leading-4 sm:text-sm sm:leading-5 ${classNames.description}`}
-                  >
-                    {item.description}
-                  </p>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
+            item={item}
+            index={index}
+            variant={resolvedVariant}
+            classNames={classNames}
+          />
         )
       })}
     </div>
