@@ -37,8 +37,12 @@ function createWorkspaceAliases(appDir) {
       replacement: path.resolve(appDir, "../../packages/services/src/$1"),
     },
     {
-      find: /^@workspace\/shared-i18n$/,
-      replacement: path.resolve(appDir, "../../packages/shared-i18n/src/index.ts"),
+      find: /^@workspace\/locales$/,
+      replacement: path.resolve(appDir, "../../packages/locales/src/index.ts"),
+    },
+    {
+      find: /^@workspace\/locales\/(.+)$/,
+      replacement: `${path.resolve(appDir, "../../packages/locales/src")}/$1.ts`,
     },
     {
       find: /^react-router$/,
@@ -67,8 +71,7 @@ function createManualChunkName(id) {
   if (
     id.includes("i18next") ||
     id.includes("react-i18next") ||
-    id.includes("i18next-browser-languagedetector") ||
-    id.includes("i18next-http-backend")
+    id.includes("i18next-browser-languagedetector")
   ) {
     return "vendor-i18n"
   }

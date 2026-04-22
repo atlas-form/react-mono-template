@@ -39,12 +39,12 @@ export default defineConfig({
         replacement: `${path.resolve(__dirname, "./src")}/$1`,
       },
       {
-        find: /^@workspace\/shared-i18n$/,
-        replacement: path.resolve(__dirname, "../shared-i18n/src/index.ts"),
+        find: /^@workspace\/locales$/,
+        replacement: path.resolve(__dirname, "../locales/src/index.ts"),
       },
       {
-        find: /^@workspace\/shared-i18n\/(.*)$/,
-        replacement: `${path.resolve(__dirname, "../shared-i18n/src")}/$1`,
+        find: /^@workspace\/locales\/(.*)$/,
+        replacement: `${path.resolve(__dirname, "../locales/src")}/$1`,
       },
       {
         find: /^@workspace\/ui-components$/,

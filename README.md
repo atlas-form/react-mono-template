@@ -150,8 +150,13 @@ https://github.com/atlas-form/react-mono-template.git
   全局主题变量、light/dark 主题能力。
 
 - `packages/services`
-  通用服务层，例如 API、i18n、query、错误模型。
+  通用服务层，例如 API、query、错误模型。
   当前请求路径应在服务代码中显式完整定义，环境变量主要用于 dev proxy 与 mock 开关。
+
+- `packages/locales`
+  统一语言资源层。
+  放共享翻译资源、i18n 装配、语言归一化和组件 copy。
+  默认不再把共享语言文件散落到 `apps/*/public/locales`。
 
 ## 环境文件约定
 

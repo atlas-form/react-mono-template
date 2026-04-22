@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@workspace/app-components": "workspace:*",
+    "@workspace/locales": "workspace:*",
     "@workspace/mock": "workspace:*",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-theme": "workspace:*",

@@ -8,7 +8,6 @@
     "test:rules": "vitest run -c vitest.config.ts"
   },
   "dependencies": {
-    "@workspace/shared-i18n": "workspace:*",
     "date-fns": "catalog:",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-theme": "workspace:*",

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import {
   getTimePickerCopy,
   normalizeLanguage,
-} from "@workspace/shared-i18n"
+} from "@workspace/locales"
 import { Button } from "@workspace/ui-core/components/button"
 import {
   Popover,

@@ -12,7 +12,8 @@
       "@workspace/ui-components": ["../../packages/ui-components/src/index.ts"],
       "@workspace/ui-components/stable/*": ["../../packages/ui-components/src/components/stable/*"],
       "@workspace/ui-components/*": ["../../packages/ui-components/src/*"],
-      "@workspace/shared-i18n": ["../../packages/shared-i18n/src/index.ts"]
+      "@workspace/locales": ["../../packages/locales/src/index.ts"],
+      "@workspace/locales/*": ["../../packages/locales/src/*"]
     }
   },
   "include": ["src"]

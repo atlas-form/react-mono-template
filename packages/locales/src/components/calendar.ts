@@ -1,4 +1,4 @@
-import type { SupportedLanguage } from "./index"
+import type { SupportedLanguage } from "../index"
 
 export interface CalendarCopy {
   previousYearLabel: string

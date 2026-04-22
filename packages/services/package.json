@@ -8,11 +8,8 @@
     "test:rules": "vitest run -c vitest.config.ts tests/rules"
   },
   "dependencies": {
-    "@tanstack/react-query": "catalog:",
-    "i18next": "catalog:",
-    "i18next-browser-languagedetector": "catalog:",
-    "i18next-http-backend": "catalog:",
-    "react-i18next": "catalog:"
+    "@workspace/locales": "workspace:*",
+    "@tanstack/react-query": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -26,7 +23,6 @@
     "./errors/request-error": "./src/errors/request-error.ts",
     "./errors/error-message": "./src/errors/error-message.ts",
     "./http-client": "./src/http-client.ts",
-    "./i18n": "./src/i18n.ts",
     "./query/client": "./src/query/client.ts",
     "./query/create-resource-query": "./src/query/create-resource-query.ts",
     "./query/keys": "./src/query/keys.ts",

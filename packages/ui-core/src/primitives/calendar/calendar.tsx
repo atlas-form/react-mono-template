@@ -2,7 +2,7 @@ import * as React from "react"
 import {
   getCalendarCopy,
   normalizeLanguage,
-} from "@workspace/shared-i18n"
+} from "@workspace/locales"
 import {
   DayPicker,
   type DayButton,

@@ -1,4 +1,4 @@
-import i18n from "../i18n"
+import i18n from "@workspace/locales/i18n"
 import type { RequestError } from "./request-error"
 
 export function getRequestErrorMessage(error: RequestError): string {

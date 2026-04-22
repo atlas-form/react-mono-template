@@ -138,8 +138,13 @@ AI 在使用 mock 时必须明确汇报：
 
 - `packages/services`
   全局服务层。
-  放跨应用复用的 API 基础设施、i18n、query client 和错误模型。
+  放跨应用复用的 API 基础设施、query client 和错误模型。
   `group` 仅表示目标服务域，不表示路径前缀分组。
+
+- `packages/locales`
+  统一语言资源层。
+  放共享语言资源、语言枚举、语言归一化、i18n 装配和组件文案 copy。
+  默认不应再把共享语言包散落在 `apps/*/public/locales`。
 
 - `packages/ui-theme`
   全局主题语义层。
@@ -171,6 +176,7 @@ AI 在使用 mock 时必须明确汇报：
 - 后台页面、后台路由、权限编排、后台壳层：`apps/admin`
 - 组件展示、样例表达、用法参考：`apps/guide`
 - 通用服务能力：`packages/services`
+- 统一语言资源与 i18n 装配：`packages/locales`
 - 主题变量和主题模式：`packages/ui-theme`
 - primitive 原语和基础行为：`packages/ui-core`
 - 共享产品组件：`packages/ui-components`
@@ -196,16 +202,19 @@ apps/*
 @workspace/app-components
   -> @workspace/ui-components
   -> @workspace/ui-core
+  -> @workspace/locales
   -> 不依赖 apps
+
+@workspace/ui-core
+  -> @workspace/locales
+  -> 不依赖 apps，不依赖 ui-components
 
 @workspace/ui-components
   -> @workspace/ui-core
   -> @workspace/ui-theme
 
-@workspace/ui-core
-  -> 不依赖 apps，不依赖 ui-components
-
 @workspace/services
+  -> @workspace/locales
   -> 不依赖 UI 层
 
 @workspace/mock
@@ -216,6 +225,8 @@ apps/*
 这意味着：
 
 - `internal/*` 是工程标准层，不是业务复用层
+- 共享语言资源默认进入 `packages/locales`
+- app 不应再各自维护整套 `public/locales`
 - app 不应复制共享组件实现
 - app 不应复制共享复合组件实现
 - app 不应直接承接本应进入共享层的服务逻辑

@@ -1,7 +1,7 @@
 import {
   normalizeLanguage,
   type SupportedLanguage as PickerLanguage,
-} from "@workspace/shared-i18n"
+} from "@workspace/locales"
 
 export interface YearRange {
   from: number

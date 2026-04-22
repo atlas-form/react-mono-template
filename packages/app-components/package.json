@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@workspace/services": "workspace:*",
-    "@workspace/shared-i18n": "workspace:*",
+    "@workspace/locales": "workspace:*",
     "@workspace/ui-components": "workspace:*",
     "@workspace/ui-core": "workspace:*",
     "@workspace/ui-theme": "workspace:*",

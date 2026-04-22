@@ -17,7 +17,7 @@ import {
   DataTableSurfaceHeader,
   DataTableSurfaceRow,
 } from "./data-table-surface"
-import { getDataTableCopy, normalizeLanguage } from "@workspace/shared-i18n"
+import { getDataTableCopy, normalizeLanguage } from "@workspace/locales"
 import { useTranslation } from "react-i18next"
 import {
   Fragment,
