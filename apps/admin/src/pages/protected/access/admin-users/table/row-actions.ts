@@ -1,5 +1,5 @@
 import type { DataTableRowActionsConfig } from "@workspace/app-components"
-import type { AdminUserRow } from "./types"
+import type { AdminUserRow } from "../types"
 
 export const adminUserRowActions: DataTableRowActionsConfig<AdminUserRow> = {
   edit: false,

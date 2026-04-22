@@ -63,13 +63,15 @@ return <MetricCards items={metricCards} />
 
 ## 3. 文件落点规则
 
-如果页面使用 `MetricCards`，默认应有独立的 metrics 文件：
+如果页面使用 `MetricCards`，模板页默认应有独立的 `metrics/` 目录：
 
-- `<page>-metrics.tsx`
+- `metrics/index.tsx`
 
 它只负责：
 
 - `rows -> MetricCards items`
+
+普通小页面可暂时保留单文件 `<page>-metrics.tsx`，但模板页优先目录化。
 
 不要把卡片映射逻辑长期放在：
 

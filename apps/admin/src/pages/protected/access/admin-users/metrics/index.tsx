@@ -1,6 +1,6 @@
 import { ShieldCheck, ShieldOff, SquareUserRound, Users } from "lucide-react"
 import type { MetricCardsItem } from "@workspace/app-components"
-import type { AdminUserRow } from "./types"
+import type { AdminUserRow } from "../types"
 
 export function buildAdminUserMetricCards(
   rows: readonly AdminUserRow[]

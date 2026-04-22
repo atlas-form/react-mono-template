@@ -2,17 +2,17 @@ import type {
   DataTableFetchResult,
   DataTableSortState,
 } from "@workspace/app-components"
+import { adminUserColumns } from "./columns"
 import {
   adminUserBuiltInQueryFields,
-  adminUserColumns,
   adminUserQueryFields,
-} from "./admin-users-config"
+} from "./query-fields"
 import {
   adminUserInitialQuery,
   adminUserPageSizeOptions,
-} from "./constants"
-import { adminUserRowActions } from "./admin-users-row-actions"
-import type { AdminUserRow, AdminUserTableQuery } from "./types"
+} from "../constants"
+import { adminUserRowActions } from "./row-actions"
+import type { AdminUserRow, AdminUserTableQuery } from "../types"
 
 export function buildAdminUsersTable(
   fetchData: (params: {

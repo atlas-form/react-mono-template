@@ -105,11 +105,16 @@
   types.ts
   constants.ts
   <page>-data.tsx
-  <page>-metrics.tsx
-  <page>-config.tsx
-  <page>-table-logic.ts
-  <page>-table.ts
-  <page>-row-actions.ts
+  metrics/
+    index.tsx
+  table/
+    index.ts
+    logic.ts
+    columns.tsx
+    query-fields.ts
+    status.ts
+    sort.ts
+    row-actions.ts
   dialogs/
     create-<entity>-dialog.tsx
     edit-<entity>-dialog.tsx
@@ -119,6 +124,14 @@
 如果页面带有任何弹窗型交互，优先直接建立 `dialogs/` 目录。
 
 不要为了“暂时只有一个弹窗”把目录骨架做成特例。
+
+如果页面要作为 AI 模板长期参考，`metrics` 也优先目录化，不要默认保留单文件：
+
+- `metrics/index.tsx`
+
+后续若指标区复杂化，再继续在 `metrics/` 下扩展即可。
+
+模板页中，所有 `DataTable` 相关结构优先统一收敛到 `table/` 目录，不再额外保留页面根目录 `config/` 或单独的 `<page>-row-actions.ts`。
 
 ---
 
@@ -191,7 +204,7 @@
 - 弹窗 JSX
 - 通过 `<page>-table` 文件转出口再间接依赖表格纯逻辑
 
-### `<page>-metrics.tsx`
+### `metrics/index.tsx`
 
 职责：
 
@@ -202,22 +215,12 @@
 - 只做摘要映射
 - 不直接发请求
 
-### `<page>-config.tsx`
+模板规则：
 
-职责：
+- 模板页优先直接使用 `metrics/` 目录
+- 不要因为“当前只有 MetricCards”就把模板页长期定格为单文件 metrics
 
-- `DataTable columns`
-- `builtInQueryFields`
-- `queryFields`
-- 状态映射
-- 排序字段映射
-
-不要负责：
-
-- query 请求
-- 表单提交
-
-### `<page>-table-logic.ts`
+### `table/logic.ts`
 
 职责：
 
@@ -232,18 +235,7 @@
 - 这一层默认处理 `DataTable` 的本地查询行为
 - `data.tsx` 应直接依赖这一层，不要通过页面装配文件中转
 
-### `<page>-row-actions.ts`
-
-职责：
-
-- `rowActions` 配置
-
-规则：
-
-- 所有单行更多操作优先收口到这里
-- 不要把行操作长期留在 `index.tsx`
-
-### `<page>-table.ts`
+### `table/index.ts`
 
 职责：
 
@@ -263,10 +255,45 @@
 
 - 让页面主文件只拿 `table` 配置即可
 
-命名规则：
+模板目录规则：
 
-- 纯配置收口优先使用 `<page>-table.ts`
-- 只有当文件内部确实持有 React hook 行为时，才使用 `use-<page>-table.ts`
+- 模板页中，`table/index.ts` 负责收口表格入口配置
+- 不要把成熟模板页长期维持在页面根目录分散的表格文件
+
+### `table/columns.tsx`
+
+职责：
+
+- `DataTable columns`
+- 列级展示表达
+
+### `table/query-fields.ts`
+
+职责：
+
+- `builtInQueryFields`
+- `queryFields`
+
+### `table/status.ts`
+
+职责：
+
+- 表格域内的状态映射
+- 状态标签与状态枚举互转
+
+### `table/sort.ts`
+
+职责：
+
+- 排序值映射
+- 排序比较规则
+
+### `table/row-actions.ts`
+
+职责：
+
+- `rowActions` 配置
+- 所有单行操作定义
 
 ### `dialogs/*.tsx`
 
@@ -291,13 +318,16 @@ AI 在新建这类页面时，默认按如下顺序：
 1. `types.ts`
 2. `constants.ts`
 3. `<page>-data.tsx`
-4. `<page>-metrics.tsx`
-5. `<page>-config.tsx`
-6. `<page>-table-logic.ts`
-7. `<page>-row-actions.ts`
-8. `<page>-table.ts`
-9. `dialogs/*.tsx`
-10. `index.tsx`
+4. `metrics/index.tsx`
+5. `table/logic.ts`
+6. `table/columns.tsx`
+7. `table/query-fields.ts`
+8. `table/status.ts`
+9. `table/sort.ts`
+10. `table/row-actions.ts`
+11. `table/index.ts`
+12. `dialogs/*.tsx`
+13. `index.tsx`
 
 不要先把所有逻辑写进 `index.tsx` 再回头拆。
 

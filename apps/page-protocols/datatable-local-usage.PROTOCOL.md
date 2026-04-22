@@ -65,19 +65,22 @@ const fetchData = async ({ page, pageSize, query, sort }) => {
 
 `DataTable` 相关逻辑默认拆成：
 
-- `<page>-config.tsx`
-  - columns
-  - builtInQueryFields
-  - queryFields
-  - 状态映射
-  - 排序字段映射
-- `<page>-table-logic.ts`
+- `table/logic.ts`
   - filter
   - sort
   - paginate
-- `<page>-table.ts`
+- `table/index.ts`
   - 收口页面级 `DataTable` 配置
-- `<page>-row-actions.ts`
+- `table/columns.tsx`
+  - columns
+- `table/query-fields.ts`
+  - builtInQueryFields
+  - queryFields
+- `table/status.ts`
+  - 状态映射
+- `table/sort.ts`
+  - 排序字段映射
+- `table/row-actions.ts`
   - rowActions
 
 不要把这些全部写在主页面。
@@ -86,6 +89,12 @@ const fetchData = async ({ page, pageSize, query, sort }) => {
 
 - 如果只是收口配置，不要滥用 `use-*` 命名
 - 只有文件内部真的持有 hook 行为时，才使用 `use-<page>-table.ts`
+- 当页面已经拆出表格入口与纯逻辑两个文件时，模板页优先收敛为 `table/` 目录
+
+模板升级规则：
+
+- 模板页不要再单独保留页面根目录 `config/`
+- 表格相关配置统一收进 `table/`
 
 ---
 
@@ -105,7 +114,7 @@ const fetchData = async ({ page, pageSize, query, sort }) => {
 
 `rowActions` 默认收口到独立文件：
 
-- `<page>-row-actions.ts`
+- `table/row-actions.ts`
 
 目的：
 
@@ -138,7 +147,7 @@ AI 不能混用两种模式。
 - 禁止把 filter / sort / paginate 直接堆在 `index.tsx`
 - 禁止把 columns / queryFields / rowActions 长期塞在页面主文件
 - 禁止把服务端查询型逻辑混进本地数据型表格页
-- 禁止让 `data.tsx` 通过 `<page>-table` 文件间接依赖表格纯逻辑
+- 禁止让 `data.tsx` 通过 `table/index.ts` 间接依赖表格纯逻辑
 
 ---
 

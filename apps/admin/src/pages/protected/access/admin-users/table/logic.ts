@@ -1,5 +1,9 @@
-import type { AdminUserRow, AdminUserStatusLabel, AdminUserTableQuery } from "./types"
-import { mapStatusLabelToApiStatus } from "./admin-users-config"
+import type {
+  AdminUserRow,
+  AdminUserStatusLabel,
+  AdminUserTableQuery,
+} from "../types"
+import { mapStatusLabelToApiStatus } from "./status"
 
 export function filterAdminUsers(
   rows: readonly AdminUserRow[],

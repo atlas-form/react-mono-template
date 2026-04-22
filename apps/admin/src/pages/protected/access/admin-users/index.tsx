@@ -1,7 +1,7 @@
 import { DataTable, MetricCards } from "@workspace/app-components"
 import { useAdminUsersData } from "./admin-users-data"
-import { buildAdminUsersTable } from "./admin-users-table"
 import { useCreateAdminUserInsertAction } from "./dialogs/create-admin-user-dialog"
+import { buildAdminUsersTable } from "./table"
 import type { AdminUserRow, AdminUserTableQuery } from "./types"
 
 export default function AdminUsersPage() {

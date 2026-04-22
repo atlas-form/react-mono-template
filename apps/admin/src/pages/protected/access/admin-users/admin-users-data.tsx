@@ -5,16 +5,13 @@ import type {
   DataTableSortState,
 } from "@workspace/app-components"
 import { listAdminUsersApi } from "@/api"
-import { buildAdminUserMetricCards } from "./admin-users-metrics"
-import {
-  compareSortValues,
-  getAdminUserSortValue,
-} from "./admin-users-config"
+import { buildAdminUserMetricCards } from "./metrics"
+import { compareSortValues, getAdminUserSortValue } from "./table/sort"
 import {
   filterAdminUsers,
   paginateAdminUsers,
   sortAdminUsers,
-} from "./admin-users-table-logic"
+} from "./table/logic"
 import { adminUsersQueryKey } from "./constants"
 import type { AdminUserRow, AdminUserTableQuery } from "./types"
 
