@@ -9,7 +9,7 @@ const adminUsersDataFile = path.join(adminUsersPageDir, "admin-users-data.tsx")
 describe("admin shared query page import boundaries", () => {
   it("keeps page index away from table internals", () => {
     const findings = findImportFindings([adminUsersIndexFile], (node) => {
-      const specifier = node.moduleSpecifier.getText().replaceAll('"', "").replaceAll("'", "")
+      const specifier = node.moduleSpecifier.getText().replace(/['"]/g, "")
       return specifier.startsWith("./table/") && specifier !== "./table"
     })
 
@@ -18,7 +18,7 @@ describe("admin shared query page import boundaries", () => {
 
   it("forces data layer to consume table logic directly instead of table entry", () => {
     const findings = findImportFindings([adminUsersDataFile], (node) => {
-      const specifier = node.moduleSpecifier.getText().replaceAll('"', "").replaceAll("'", "")
+      const specifier = node.moduleSpecifier.getText().replace(/['"]/g, "")
       return specifier === "./table"
     })
 
@@ -27,7 +27,7 @@ describe("admin shared query page import boundaries", () => {
 
   it("keeps data layer from depending on page dialogs", () => {
     const findings = findImportFindings([adminUsersDataFile], (node) => {
-      const specifier = node.moduleSpecifier.getText().replaceAll('"', "").replaceAll("'", "")
+      const specifier = node.moduleSpecifier.getText().replace(/['"]/g, "")
       return specifier.startsWith("./dialogs/")
     })
 
