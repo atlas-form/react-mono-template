@@ -276,10 +276,10 @@ export function DataTableHeader<TQuery extends object>({
     : trailingBuiltInQueryFields
 
   return hasAnyQueryFields ? (
-    <div className="flex min-w-0 items-start gap-4 overflow-hidden">
-      <div className="flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden">
-        <div className="flex min-w-0 flex-wrap items-start gap-3 overflow-hidden sm:flex-nowrap sm:items-center sm:justify-between">
-          <div className="flex min-w-0 max-w-full flex-1 flex-wrap items-start gap-2.5 overflow-hidden sm:flex-nowrap sm:items-center">
+    <div className="flex min-w-0 items-start gap-4">
+      <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+        <div className="flex min-w-0 flex-wrap items-start gap-3 sm:flex-nowrap sm:items-center sm:justify-between">
+          <div className="flex min-w-0 max-w-full flex-1 flex-wrap items-start gap-2.5 sm:flex-nowrap sm:items-center">
             {builtInFields.map((field) => (
               <QueryFieldItem
                 key={field.key}
@@ -299,15 +299,19 @@ export function DataTableHeader<TQuery extends object>({
         </div>
 
         {hasUserQueryFields ? (
-          <div className="flex min-w-0 flex-wrap items-start gap-1.5">
-            {queryFields.map((field) => (
-              <QueryFieldItem
-                key={field.key}
-                field={field}
-                renderQueryFieldControl={renderQueryFieldControl}
-                compact
-              />
-            ))}
+          <div className="min-w-0">
+            <div className="overflow-x-auto pb-2">
+              <div className="flex min-w-max items-start gap-1.5">
+                {queryFields.map((field) => (
+                  <QueryFieldItem
+                    key={field.key}
+                    field={field}
+                    renderQueryFieldControl={renderQueryFieldControl}
+                    compact
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         ) : null}
       </div>

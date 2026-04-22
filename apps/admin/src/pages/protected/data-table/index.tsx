@@ -6,6 +6,7 @@ import {
   DataTable,
   type DateRangeValue,
   type DataTableFetchResult,
+  type DataTableQueryField,
   type DataTableSortState,
 } from "@workspace/app-components"
 
@@ -41,7 +42,37 @@ interface CustomerTableQuery {
   status: "" | CustomerRow["status"]
   region: "" | CustomerRow["region"]
   createdAt?: DateRangeValue
+  custom01: string
+  custom02: string
+  custom03: string
+  custom04: string
+  custom05: string
+  custom06: string
+  custom07: string
+  custom08: string
+  custom09: string
+  custom10: string
+  custom11: string
+  custom12: string
+  custom13: string
+  custom14: string
+  custom15: string
+  custom16: string
+  custom17: string
+  custom18: string
+  custom19: string
+  custom20: string
 }
+
+const customQueryFields: DataTableQueryField<CustomerTableQuery>[] = Array.from(
+  { length: 20 },
+  (_, index) => ({
+    key: `custom${String(index + 1).padStart(2, "0")}` as keyof CustomerTableQuery & string,
+    type: "text",
+    label: `Custom ${index + 1}`,
+    placeholder: `Custom ${index + 1}`,
+  })
+)
 
 export default function DataTablePage() {
   const { t } = useTranslation()
@@ -323,6 +354,26 @@ export default function DataTablePage() {
           status: "",
           region: "",
           createdAt: undefined,
+          custom01: "",
+          custom02: "",
+          custom03: "",
+          custom04: "",
+          custom05: "",
+          custom06: "",
+          custom07: "",
+          custom08: "",
+          custom09: "",
+          custom10: "",
+          custom11: "",
+          custom12: "",
+          custom13: "",
+          custom14: "",
+          custom15: "",
+          custom16: "",
+          custom17: "",
+          custom18: "",
+          custom19: "",
+          custom20: "",
         }}
         selection={{}}
         builtInQueryFields={[
@@ -385,6 +436,7 @@ export default function DataTablePage() {
               value: region,
             })),
           },
+          ...customQueryFields,
         ]}
         pageSizeOptions={[10, 15, 30, 50]}
         rowActions={{
