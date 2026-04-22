@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Card, CardContent } from "@workspace/ui-components/stable/card"
+import { Card, CardContent } from "@workspace/ui-core/components/card"
 
 export type MetricCardsVariant =
   | "default"
@@ -24,32 +24,44 @@ export interface MetricCardsProps {
 const metricCardVariantClassNames: Record<
   MetricCardsVariant,
   {
-    container: string
+    card: string
+    label: string
     value: string
+    description: string
   }
 > = {
   default: {
-    container: "border-transparent bg-(--app-panel)",
-    value: "text-(--app-text)",
+    card: "bg-[var(--surface)] ring-0 shadow-none",
+    label: "text-[var(--muted-foreground)]",
+    value: "text-[var(--foreground)]",
+    description: "text-[var(--muted-foreground)]",
   },
   accent: {
-    container: "border-transparent bg-(--app-active-bg)",
-    value: "text-(--app-text)",
+    card: "bg-[var(--accent)] ring-0 shadow-none",
+    label: "text-[var(--muted-foreground)]",
+    value: "text-[var(--foreground)]",
+    description: "text-[var(--muted-foreground)]",
   },
   success: {
-    container:
-      "border-[color:color-mix(in_oklab,var(--success)_40%,var(--app-border))] bg-[color:color-mix(in_oklab,var(--success)_10%,var(--app-panel))]",
+    card:
+      "bg-[color:color-mix(in_oklab,var(--success)_10%,var(--surface))] ring-0 shadow-none",
+    label: "text-[var(--muted-foreground)]",
     value: "text-[var(--success)]",
+    description: "text-[var(--foreground)]",
   },
   warning: {
-    container:
-      "border-[color:color-mix(in_oklab,var(--warning,#d97706)_40%,var(--app-border))] bg-[color:color-mix(in_oklab,var(--warning,#d97706)_10%,var(--app-panel))]",
+    card:
+      "bg-[color:color-mix(in_oklab,var(--warning,#d97706)_10%,var(--surface))] ring-0 shadow-none",
+    label: "text-[var(--muted-foreground)]",
     value: "text-[var(--warning,#b45309)]",
+    description: "text-[var(--foreground)]",
   },
   danger: {
-    container:
-      "border-[color:color-mix(in_oklab,var(--destructive)_40%,var(--app-border))] bg-[color:color-mix(in_oklab,var(--destructive)_10%,var(--app-panel))]",
-    value: "text-destructive",
+    card:
+      "bg-[color:color-mix(in_oklab,var(--destructive)_10%,var(--surface))] ring-0 shadow-none",
+    label: "text-[var(--muted-foreground)]",
+    value: "text-[var(--destructive)]",
+    description: "text-[var(--foreground)]",
   },
 }
 
@@ -58,32 +70,36 @@ export function MetricCards({
   variant = "default",
 }: MetricCardsProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-4 gap-2 sm:gap-3 xl:gap-4">
       {items.map((item, index) => {
         const resolvedVariant = item.variant ?? variant
         const classNames = metricCardVariantClassNames[resolvedVariant]
 
         return (
-          <div
+          <Card
             key={item.key ?? (typeof item.label === "string" ? item.label : index)}
-            className={`rounded-[var(--ui-radius-lg)] border ${classNames.container}`}
+            className={`h-full min-w-0 ${classNames.card}`}
           >
-            <Card>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-sm text-(--app-muted-text)">{item.label}</p>
-                  <p className={`text-3xl font-semibold ${classNames.value}`}>
-                    {item.value}
+            <CardContent className="px-3 sm:px-4">
+              <div className="space-y-1.5 sm:space-y-2">
+                <p className={`text-xs leading-tight sm:text-sm ${classNames.label}`}>
+                  {item.label}
+                </p>
+                <p
+                  className={`text-2xl leading-none font-semibold sm:text-3xl ${classNames.value}`}
+                >
+                  {item.value}
+                </p>
+                {item.description ? (
+                  <p
+                    className={`line-clamp-3 text-[11px] leading-4 sm:text-sm sm:leading-5 ${classNames.description}`}
+                  >
+                    {item.description}
                   </p>
-                  {item.description ? (
-                    <p className="text-sm text-(--app-muted-text)">
-                      {item.description}
-                    </p>
-                  ) : null}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                ) : null}
+              </div>
+            </CardContent>
+          </Card>
         )
       })}
     </div>
