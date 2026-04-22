@@ -13,7 +13,7 @@
     "format": "turbo format",
     "typecheck": "turbo typecheck",
     "test": "turbo test --filter=admin --filter=guide --filter=web",
-    "test:rules": "pnpm -C packages/ui-core test:rules && pnpm -C packages/ui-components test:rules && pnpm -C packages/app-components test:rules && pnpm -C packages/services test:rules",
+    "test:rules": "turbo test:rules",
     "test:watch": "turbo test:watch --filter=admin --filter=guide --filter=web"
   },
   "devDependencies": {

@@ -168,4 +168,5 @@ AI 在 `admin` 动手前，至少先回答下面 5 个问题：
 
 - `pnpm -C apps/admin lint`
 - `pnpm -C apps/admin test`
+- `pnpm -C apps/admin test:rules`
 - `pnpm -C apps/admin build`
