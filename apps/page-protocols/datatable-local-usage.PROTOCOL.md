@@ -75,12 +75,17 @@ const fetchData = async ({ page, pageSize, query, sort }) => {
   - filter
   - sort
   - paginate
+- `<page>-table.ts`
+  - 收口页面级 `DataTable` 配置
 - `<page>-row-actions.ts`
   - rowActions
-- `use-<page>-table.ts`
-  - 收口 DataTable 页面配置
 
 不要把这些全部写在主页面。
+
+命名规则：
+
+- 如果只是收口配置，不要滥用 `use-*` 命名
+- 只有文件内部真的持有 hook 行为时，才使用 `use-<page>-table.ts`
 
 ---
 
@@ -133,6 +138,7 @@ AI 不能混用两种模式。
 - 禁止把 filter / sort / paginate 直接堆在 `index.tsx`
 - 禁止把 columns / queryFields / rowActions 长期塞在页面主文件
 - 禁止把服务端查询型逻辑混进本地数据型表格页
+- 禁止让 `data.tsx` 通过 `<page>-table` 文件间接依赖表格纯逻辑
 
 ---
 

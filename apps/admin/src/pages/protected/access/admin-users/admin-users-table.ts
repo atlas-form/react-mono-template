@@ -1,24 +1,20 @@
-import type { DataTableFetchResult, DataTableSortState } from "@workspace/app-components"
+import type {
+  DataTableFetchResult,
+  DataTableSortState,
+} from "@workspace/app-components"
 import {
   adminUserBuiltInQueryFields,
   adminUserColumns,
   adminUserQueryFields,
-  compareSortValues,
-  getAdminUserSortValue,
 } from "./admin-users-config"
 import {
   adminUserInitialQuery,
   adminUserPageSizeOptions,
 } from "./constants"
 import { adminUserRowActions } from "./admin-users-row-actions"
-import {
-  filterAdminUsers,
-  paginateAdminUsers,
-  sortAdminUsers,
-} from "./admin-users-table-logic"
 import type { AdminUserRow, AdminUserTableQuery } from "./types"
 
-export function useAdminUsersTable(
+export function buildAdminUsersTable(
   fetchData: (params: {
     page: number
     pageSize: number
@@ -41,12 +37,4 @@ export function useAdminUsersTable(
     bulkDelete: false,
     bulkUpdate: false,
   } as const
-}
-
-export {
-  compareSortValues,
-  filterAdminUsers,
-  getAdminUserSortValue,
-  paginateAdminUsers,
-  sortAdminUsers,
 }

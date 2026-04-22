@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react"
-import { Input } from "@workspace/ui-components"
 import type { DataTableInsertActionConfig } from "@workspace/app-components"
+import { Input } from "@workspace/ui-components"
 import { createAdminUserApi } from "@/api"
-import { adminUsersQueryKey } from "./constants"
 
 export function useCreateAdminUserInsertAction(
   invalidateAdminUsers: () => Promise<unknown>
@@ -61,14 +60,4 @@ export function useCreateAdminUserInsertAction(
     }),
     [draftDisplayName, draftRemark, draftUserId, invalidateAdminUsers]
   )
-}
-
-export async function invalidateAdminUsersQuery(
-  invalidateQueries: (params: {
-    queryKey: typeof adminUsersQueryKey
-  }) => Promise<unknown>
-) {
-  return invalidateQueries({
-    queryKey: adminUsersQueryKey,
-  })
 }

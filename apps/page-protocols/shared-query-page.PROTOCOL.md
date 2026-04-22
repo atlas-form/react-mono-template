@@ -108,17 +108,17 @@
   <page>-metrics.tsx
   <page>-config.tsx
   <page>-table-logic.ts
+  <page>-table.ts
   <page>-row-actions.ts
-  use-<page>-table.ts
   dialogs/
     create-<entity>-dialog.tsx
     edit-<entity>-dialog.tsx
     delete-<entity>-dialog.tsx
 ```
 
-如果页面当前只有一个弹窗，可以先不建 `dialogs/` 目录。
+如果页面带有任何弹窗型交互，优先直接建立 `dialogs/` 目录。
 
-一旦页面出现第 2 个弹窗，必须切换成 `dialogs/` 目录。
+不要为了“暂时只有一个弹窗”把目录骨架做成特例。
 
 ---
 
@@ -189,6 +189,7 @@
 - 列定义
 - 行操作配置
 - 弹窗 JSX
+- 通过 `<page>-table` 文件转出口再间接依赖表格纯逻辑
 
 ### `<page>-metrics.tsx`
 
@@ -229,6 +230,7 @@
 - 必须尽量纯函数化
 - 不要耦合 React hook
 - 这一层默认处理 `DataTable` 的本地查询行为
+- `data.tsx` 应直接依赖这一层，不要通过页面装配文件中转
 
 ### `<page>-row-actions.ts`
 
@@ -241,7 +243,7 @@
 - 所有单行更多操作优先收口到这里
 - 不要把行操作长期留在 `index.tsx`
 
-### `use-<page>-table.ts`
+### `<page>-table.ts`
 
 职责：
 
@@ -260,6 +262,11 @@
 目标：
 
 - 让页面主文件只拿 `table` 配置即可
+
+命名规则：
+
+- 纯配置收口优先使用 `<page>-table.ts`
+- 只有当文件内部确实持有 React hook 行为时，才使用 `use-<page>-table.ts`
 
 ### `dialogs/*.tsx`
 
@@ -288,7 +295,7 @@ AI 在新建这类页面时，默认按如下顺序：
 5. `<page>-config.tsx`
 6. `<page>-table-logic.ts`
 7. `<page>-row-actions.ts`
-8. `use-<page>-table.ts`
+8. `<page>-table.ts`
 9. `dialogs/*.tsx`
 10. `index.tsx`
 

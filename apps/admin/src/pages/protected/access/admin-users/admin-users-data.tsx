@@ -8,11 +8,13 @@ import { listAdminUsersApi } from "@/api"
 import { buildAdminUserMetricCards } from "./admin-users-metrics"
 import {
   compareSortValues,
-  filterAdminUsers,
   getAdminUserSortValue,
+} from "./admin-users-config"
+import {
+  filterAdminUsers,
   paginateAdminUsers,
   sortAdminUsers,
-} from "./use-admin-users-table"
+} from "./admin-users-table-logic"
 import { adminUsersQueryKey } from "./constants"
 import type { AdminUserRow, AdminUserTableQuery } from "./types"
 
@@ -74,9 +76,17 @@ export function useAdminUsersData() {
     [loadAdminUserRows, queryClient]
   )
 
+  const invalidateAdminUsers = useCallback(
+    () =>
+      queryClient.invalidateQueries({
+        queryKey: adminUsersQueryKey,
+      }),
+    [queryClient]
+  )
+
   return {
     metricCards,
     fetchData,
-    queryClient,
+    invalidateAdminUsers,
   }
 }
