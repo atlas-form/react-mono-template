@@ -279,6 +279,12 @@ importers:
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 6.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../../internal/eslint-config
+      '@workspace/vite-config':
+        specifier: workspace:*
+        version: link:../../internal/vite-config
       eslint:
         specifier: 'catalog:'
         version: 9.39.3(jiti@2.6.1)
@@ -397,6 +403,12 @@ importers:
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 6.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../../internal/eslint-config
+      '@workspace/vite-config':
+        specifier: workspace:*
+        version: link:../../internal/vite-config
       eslint:
         specifier: 'catalog:'
         version: 9.39.3(jiti@2.6.1)
@@ -512,6 +524,12 @@ importers:
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 6.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../../internal/eslint-config
+      '@workspace/vite-config':
+        specifier: workspace:*
+        version: link:../../internal/vite-config
       eslint:
         specifier: 'catalog:'
         version: 9.39.3(jiti@2.6.1)
@@ -539,6 +557,44 @@ importers:
       typescript-eslint:
         specifier: 'catalog:'
         version: 8.57.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
+      vite:
+        specifier: 'catalog:'
+        version: 8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.1(@types/node@25.5.0)(jsdom@29.0.1(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@25.5.0)(typescript@5.9.3))(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+
+  internal/eslint-config:
+    dependencies:
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 9.39.3
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.3(jiti@2.6.1)
+      eslint-plugin-react-hooks:
+        specifier: 'catalog:'
+        version: 7.0.1(eslint@9.39.3(jiti@2.6.1))
+      eslint-plugin-react-refresh:
+        specifier: 'catalog:'
+        version: 0.5.2(eslint@9.39.3(jiti@2.6.1))
+      globals:
+        specifier: 'catalog:'
+        version: 17.4.0
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.57.2(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
+
+  internal/tsconfig: {}
+
+  internal/vite-config:
+    dependencies:
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.2.2(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1))
       vite:
         specifier: 'catalog:'
         version: 8.0.2(@types/node@25.5.0)(esbuild@0.27.3)(jiti@2.6.1)
@@ -778,6 +834,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.14)
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../../internal/eslint-config
       eslint:
         specifier: 'catalog:'
         version: 9.39.3(jiti@2.6.1)

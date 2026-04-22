@@ -33,6 +33,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/vite-config": "workspace:*",
     "@eslint/js": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",

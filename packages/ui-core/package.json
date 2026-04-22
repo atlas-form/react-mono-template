@@ -33,6 +33,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
     "@eslint/js": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@turbo/gen": "catalog:",

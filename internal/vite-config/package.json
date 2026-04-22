@@ -1,0 +1,18 @@
+{
+  "name": "@workspace/vite-config",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./react-app": {
+      "types": "./react-app.d.ts",
+      "default": "./react-app.js"
+    }
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

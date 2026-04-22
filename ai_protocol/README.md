@@ -102,8 +102,23 @@ AI 在使用 mock 时必须明确汇报：
 
 目录分为两层：
 
+- `internal/*`：工程级内部标准
 - `apps/*`：最终应用
 - `packages/*`：共享能力
+
+### internal 层
+
+- `internal/tsconfig`
+  统一 TypeScript 基础配置。
+  根目录 `tsconfig*.json` 只应作为薄入口，不再散落重复编译选项。
+
+- `internal/eslint-config`
+  统一 ESLint flat config 规则工厂。
+  app/package 本地 `eslint.config.*` 只应表达目录差异，不应复制整套 lint 规则。
+
+- `internal/vite-config`
+  统一 Vite 与 Vitest 工程配置。
+  app 本地 `vite.config.*` 只应表达应用私有差异，如代理目标、端口、极少量局部覆盖。
 
 ### apps 层
 
@@ -169,6 +184,9 @@ AI 在使用 mock 时必须明确汇报：
 默认依赖方向应保持如下：
 
 ```text
+internal/*
+  -> 只承载工程配置，不承载业务运行时代码
+
 apps/*
   -> @workspace/app-components
   -> @workspace/ui-components
@@ -197,6 +215,7 @@ apps/*
 
 这意味着：
 
+- `internal/*` 是工程标准层，不是业务复用层
 - app 不应复制共享组件实现
 - app 不应复制共享复合组件实现
 - app 不应直接承接本应进入共享层的服务逻辑
