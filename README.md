@@ -160,17 +160,21 @@ https://github.com/atlas-form/react-mono-template.git
 
 ## 环境文件约定
 
-当前仓库根目录使用标准 Vite 环境文件命名：
+当前仓库环境文件按“共享层 + app 层”拆分：
 
-- `.env.development`
-- `.env.mock`
-- `.env.production`
+- 根目录：
+  - `.env.development`
+  - `.env.production`
+- 每个 app 自己维护：
+  - `apps/<app>/.env.development`
+  - `apps/<app>/.env.production`
 
 其中：
 
-- `pnpm dev` 读取根目录 `.env.development`
-- `pnpm mock` 读取根目录 `.env.mock`
-- 本地联调主要配置 `VITE_*_PROXY`
+- 根目录只保留共享代理，例如 `VITE_AUTH_PROXY`、`VITE_FILE_PROXY`
+- 每个 app 自己提供 `VITE_API_PROXY`
+- `pnpm dev` 会同时读取根目录共享 env 和当前 app 的 `.env.development`
+- `pnpm mock` 天然就是 mock 运行模式，不需要额外 env 开关
 - 不再使用 `VITE_*_URL` 做请求前缀拼接
 
 ## 用户不会判断位置也没关系

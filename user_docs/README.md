@@ -34,5 +34,5 @@
 - AI 执行规则不在这里，而在 [ai_protocol/README.md](../ai_protocol/README.md)。
 - 当前共享 UI 默认按分类子路径消费，例如 `@workspace/ui-components/stable/button`。
 - 当前通知能力默认通过 `@workspace/ui-components/stable/toast` 使用。
-- 当前本地联调主要依赖 `VITE_*_PROXY` 和 `VITE_ENABLE_MOCK`，不再使用 `VITE_*_URL` 作为请求前缀拼接配置。
-- `pnpm dev` 默认读取根目录 `.env.development`。
+- 当前本地联调主要依赖 `VITE_*_PROXY`，mock 由运行模式决定，不再使用 `VITE_*_URL` 作为请求前缀拼接配置。
+- `pnpm dev` 会读取根目录共享 env 和当前 app 自己的 `.env.development`。

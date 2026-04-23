@@ -65,8 +65,11 @@ pnpm typecheck
 
 环境文件约定：
 
-- `pnpm dev` 使用根目录 `.env.development`
-- `pnpm mock` 使用根目录 `.env.mock`
+- 根目录共享 env 只保留 `VITE_AUTH_PROXY`、`VITE_FILE_PROXY`
+- 每个 app 自己维护 `.env.development`、`.env.production`
+- app 级 env 统一使用 `VITE_API_PROXY`
+- `pnpm dev` 会合并读取根目录共享 env 和当前 app 的 `.env.development`
+- `pnpm mock` 直接使用 mock 运行模式
 - 本地联调只应依赖 `VITE_*_PROXY`
 - 不再使用 `VITE_*_URL` 作为请求前缀拼接配置
 

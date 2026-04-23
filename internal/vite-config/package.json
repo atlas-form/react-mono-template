@@ -3,11 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
   "exports": {
-    "./react-app": {
-      "types": "./react-app.d.ts",
-      "default": "./react-app.js"
-    }
+    "./react-app": "./src/react-app/index.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "catalog:",

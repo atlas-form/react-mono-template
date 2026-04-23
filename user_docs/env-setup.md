@@ -48,13 +48,19 @@ pnpm dev
 默认读取的环境文件是：
 
 - 根目录 `.env.development`
+- 当前 app 的 `.env.development`
 
 本地 `dev` 主要需要提供 dev proxy 目标，例如：
 
 ```env
-VITE_WEB_API_PROXY=http://localhost:8000
 VITE_AUTH_PROXY=http://localhost:9000
 VITE_FILE_PROXY=http://localhost:9000
+```
+
+同时当前 app 还需要自己的 API 代理：
+
+```env
+VITE_API_PROXY=http://localhost:8000
 ```
 
 如果这些 proxy 地址没有准备好，`pnpm dev` 通常无法完成本地真实联调。
@@ -103,15 +109,7 @@ mock 环境下：
 
 ## mock 环境使用什么配置
 
-mock 模式默认使用根目录下的：
-
-- [../.env.mock](../.env.mock)
-
-当前最小配置是：
-
-```env
-VITE_ENABLE_MOCK=true
-```
+mock 模式不需要单独环境变量。
 
 ## 什么时候优先用 mock
 

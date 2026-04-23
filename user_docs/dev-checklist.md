@@ -41,16 +41,21 @@
 常见最小示例：
 
 ```env
-VITE_WEB_API_PROXY=http://localhost:8000
 VITE_AUTH_PROXY=http://localhost:9000
 VITE_FILE_PROXY=http://localhost:9000
 ```
 
-这些值通常放在根目录 `.env.development`。
+这些共享值通常放在根目录 `.env.development`。
+
+当前 app 还需要自己的：
+
+```env
+VITE_API_PROXY=http://localhost:8000
+```
 
 你不一定非要用这些端口，但必须保证：
 
-- `VITE_WEB_API_PROXY` 指向可用的 API 服务
+- `VITE_API_PROXY` 指向当前 app 可用的 API 服务
 - `VITE_AUTH_PROXY` 指向可用的认证服务
 - `VITE_FILE_PROXY` 指向可用的文件服务
 
