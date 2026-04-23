@@ -1,10 +1,7 @@
 import { existsSync } from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
-import {
-  findPrimitiveDirectories,
-  getPrimitiveBaseName,
-} from "./ast-helpers"
+import { findPrimitiveDirectories, getPrimitiveBaseName } from "./ast-helpers"
 
 describe("ui-core primitive directory structure", () => {
   it("keeps the required primitive file set in every primitive directory", () => {

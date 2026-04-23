@@ -22,7 +22,9 @@ export type SheetTriggerProps = React.ComponentProps<
   mode?: BaseMode
 }
 
-export type SheetCloseProps = React.ComponentProps<typeof SheetPrimitive.Close> & {
+export type SheetCloseProps = React.ComponentProps<
+  typeof SheetPrimitive.Close
+> & {
   mode?: BaseMode
 }
 
@@ -71,7 +73,9 @@ export type SheetFooterProps = React.ComponentProps<"div"> & {
   classResolver?: SheetClassResolver
 }
 
-export type SheetTitleProps = React.ComponentProps<typeof SheetPrimitive.Title> & {
+export type SheetTitleProps = React.ComponentProps<
+  typeof SheetPrimitive.Title
+> & {
   mode?: BaseMode
   classNameMode?: SheetClassNameMode
   classResolver?: SheetClassResolver

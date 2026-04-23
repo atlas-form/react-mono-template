@@ -35,10 +35,7 @@ function resolveStyledHoverCardClassName({
   return cn(defaultClassName, className)
 }
 
-function HoverCard({
-  mode = DEFAULT_MODE,
-  ...props
-}: HoverCardProps) {
+function HoverCard({ mode = DEFAULT_MODE, ...props }: HoverCardProps) {
   if (mode === "primitive") {
     return <HoverCardPrimitive.Root {...props} />
   }

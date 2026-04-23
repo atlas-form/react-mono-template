@@ -10,7 +10,9 @@ export type HoverCardClassResolver = (params: {
   className?: string
 }) => string
 
-export type HoverCardProps = React.ComponentProps<typeof HoverCardPrimitive.Root> & {
+export type HoverCardProps = React.ComponentProps<
+  typeof HoverCardPrimitive.Root
+> & {
   mode?: BaseMode
 }
 

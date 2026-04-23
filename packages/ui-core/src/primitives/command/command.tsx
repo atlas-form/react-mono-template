@@ -11,10 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../dialog"
-import {
-  InputGroup,
-  InputGroupAddon,
-} from "../input-group"
+import { InputGroup, InputGroupAddon } from "../input-group"
 import { SearchIcon, CheckIcon } from "../../lib/icon-slots"
 
 function Command({

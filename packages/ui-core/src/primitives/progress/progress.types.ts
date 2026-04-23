@@ -10,7 +10,9 @@ export type ProgressClassResolver = (params: {
   className?: string
 }) => string
 
-export type ProgressProps = React.ComponentProps<typeof ProgressPrimitive.Root> & {
+export type ProgressProps = React.ComponentProps<
+  typeof ProgressPrimitive.Root
+> & {
   mode?: BaseMode
   classNameMode?: ProgressClassNameMode
   classResolver?: ProgressClassResolver

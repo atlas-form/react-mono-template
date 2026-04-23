@@ -39,10 +39,7 @@ function resolveStyledPopoverClassName({
   return cn(defaultClassName, className)
 }
 
-function Popover({
-  mode = DEFAULT_MODE,
-  ...props
-}: PopoverProps) {
+function Popover({ mode = DEFAULT_MODE, ...props }: PopoverProps) {
   if (mode === "primitive") {
     return <PopoverPrimitive.Root {...props} />
   }
@@ -101,10 +98,7 @@ function PopoverContent({
   )
 }
 
-function PopoverAnchor({
-  mode = DEFAULT_MODE,
-  ...props
-}: PopoverAnchorProps) {
+function PopoverAnchor({ mode = DEFAULT_MODE, ...props }: PopoverAnchorProps) {
   if (mode === "primitive") {
     return <PopoverPrimitive.Anchor {...props} />
   }

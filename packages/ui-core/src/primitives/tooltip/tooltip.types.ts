@@ -16,7 +16,9 @@ export type TooltipProviderProps = React.ComponentProps<
   mode?: BaseMode
 }
 
-export type TooltipProps = React.ComponentProps<typeof TooltipPrimitive.Root> & {
+export type TooltipProps = React.ComponentProps<
+  typeof TooltipPrimitive.Root
+> & {
   mode?: BaseMode
 }
 

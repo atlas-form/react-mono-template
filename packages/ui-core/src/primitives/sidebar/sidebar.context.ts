@@ -14,7 +14,9 @@ export type SidebarContextProps = {
   setSidebarWidth: (width: number) => void
 }
 
-export const SidebarContext = React.createContext<SidebarContextProps | null>(null)
+export const SidebarContext = React.createContext<SidebarContextProps | null>(
+  null
+)
 
 export function useSidebar() {
   const context = React.useContext(SidebarContext)

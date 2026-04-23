@@ -10,7 +10,9 @@ export type SeparatorClassResolver = (params: {
   className?: string
 }) => string
 
-export type SeparatorProps = React.ComponentProps<typeof SeparatorPrimitive.Root> & {
+export type SeparatorProps = React.ComponentProps<
+  typeof SeparatorPrimitive.Root
+> & {
   mode?: BaseMode
   classNameMode?: SeparatorClassNameMode
   classResolver?: SeparatorClassResolver

@@ -399,7 +399,10 @@ function DropdownMenuShortcut({
   )
 }
 
-function DropdownMenuSub({ mode = DEFAULT_MODE, ...props }: DropdownMenuSubProps) {
+function DropdownMenuSub({
+  mode = DEFAULT_MODE,
+  ...props
+}: DropdownMenuSubProps) {
   if (mode === "primitive") {
     return <DropdownMenuPrimitive.Sub {...props} />
   }

@@ -43,30 +43,30 @@ export type ChartStyleProps = {
   config: ChartConfig
 }
 
-export type ChartTooltipContentProps =
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
-      mode?: BaseMode
-      hideLabel?: boolean
-      hideIndicator?: boolean
-      indicator?: "line" | "dot" | "dashed"
-      nameKey?: string
-      labelKey?: string
-      classNameMode?: ChartClassNameMode
-      classResolver?: ChartClassResolver
-      labelClassNameMode?: ChartClassNameMode
-      labelClassResolver?: ChartClassResolver
-      valueClassName?: string
-      valueClassNameMode?: ChartClassNameMode
-      valueClassResolver?: ChartClassResolver
-    } &
-    Omit<
-      RechartsPrimitive.DefaultTooltipContentProps<
-        TooltipValueType,
-        TooltipNameType
-      >,
-      "accessibilityLayer"
-    >
+export type ChartTooltipContentProps = React.ComponentProps<
+  typeof RechartsPrimitive.Tooltip
+> &
+  React.ComponentProps<"div"> & {
+    mode?: BaseMode
+    hideLabel?: boolean
+    hideIndicator?: boolean
+    indicator?: "line" | "dot" | "dashed"
+    nameKey?: string
+    labelKey?: string
+    classNameMode?: ChartClassNameMode
+    classResolver?: ChartClassResolver
+    labelClassNameMode?: ChartClassNameMode
+    labelClassResolver?: ChartClassResolver
+    valueClassName?: string
+    valueClassNameMode?: ChartClassNameMode
+    valueClassResolver?: ChartClassResolver
+  } & Omit<
+    RechartsPrimitive.DefaultTooltipContentProps<
+      TooltipValueType,
+      TooltipNameType
+    >,
+    "accessibilityLayer"
+  >
 
 export type ChartLegendContentProps = React.ComponentProps<"div"> & {
   mode?: BaseMode

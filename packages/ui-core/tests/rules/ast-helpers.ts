@@ -13,7 +13,9 @@ export interface RuleFinding {
 }
 
 export function findUiCoreSourceFiles(): string[] {
-  return walk(srcRoot).filter((file) => /\.(ts|tsx)$/.test(file)).sort()
+  return walk(srcRoot)
+    .filter((file) => /\.(ts|tsx)$/.test(file))
+    .sort()
 }
 
 export function findPrimitiveDirectories(): string[] {
@@ -105,7 +107,9 @@ function toFinding(
   node: ts.Node
 ): RuleFinding {
   const relativeFile = path.relative(packageRoot, file)
-  const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+  const { line } = sourceFile.getLineAndCharacterOfPosition(
+    node.getStart(sourceFile)
+  )
 
   return {
     file: relativeFile,

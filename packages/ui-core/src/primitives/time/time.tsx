@@ -195,9 +195,12 @@ function Time({
         behavior,
       })
 
-      window.setTimeout(() => {
-        syncLockRef.current = false
-      }, behavior === "smooth" ? 180 : 0)
+      window.setTimeout(
+        () => {
+          syncLockRef.current = false
+        },
+        behavior === "smooth" ? 180 : 0
+      )
     },
     [itemHeight]
   )
@@ -215,7 +218,9 @@ function Time({
         return
       }
 
-      emitValueChange(setValueBySegment(resolvedValue, segment, nextSegmentValue))
+      emitValueChange(
+        setValueBySegment(resolvedValue, segment, nextSegmentValue)
+      )
     },
     [emitValueChange, resolvedValue]
   )
@@ -250,7 +255,9 @@ function Time({
       event.preventDefault()
 
       const options = getOptions(segment)
-      const currentIndex = options.indexOf(getValueBySegment(resolvedValue, segment))
+      const currentIndex = options.indexOf(
+        getValueBySegment(resolvedValue, segment)
+      )
       const delta = event.key === "ArrowUp" ? -1 : 1
       const nextIndex = Math.min(
         Math.max(currentIndex + delta, 0),
@@ -323,7 +330,10 @@ function Time({
     >
       <div
         aria-hidden="true"
-        className={cn("pointer-events-none absolute top-1/2 z-10 -translate-y-1/2", resolvedSelectionClassName)}
+        className={cn(
+          "pointer-events-none absolute top-1/2 z-10 -translate-y-1/2",
+          resolvedSelectionClassName
+        )}
       />
 
       {segments.map((segment) => {
@@ -366,7 +376,6 @@ function Time({
                 ))}
               </div>
             </div>
-
           </div>
         )
       })}

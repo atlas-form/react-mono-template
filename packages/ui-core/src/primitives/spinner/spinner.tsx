@@ -38,7 +38,12 @@ function Spinner({
 }: SpinnerProps) {
   if (mode === "primitive") {
     return (
-      <Loader2Icon role="status" aria-label="Loading" className={className} {...props} />
+      <Loader2Icon
+        role="status"
+        aria-label="Loading"
+        className={className}
+        {...props}
+      />
     )
   }
 

@@ -12,8 +12,7 @@ describe("ui-core primitive index exports", () => {
       findPrimitiveIndexFiles(),
       (node) =>
         !node.exportClause ||
-        node.isTypeOnly === false &&
-          ts.isNamespaceExport(node.exportClause)
+        (node.isTypeOnly === false && ts.isNamespaceExport(node.exportClause))
     )
 
     expect(toLocations(findings)).toEqual([])

@@ -42,52 +42,50 @@ function resolveStyledClassName({
   return cn(defaultClassName, className)
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
-  mode = DEFAULT_MODE,
-  asChild = false,
-  ...props
-}, ref) {
-  const Comp = asChild ? Slot.Root : "button"
-  const resolvedMode: BaseMode = mode
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  function Button({ mode = DEFAULT_MODE, asChild = false, ...props }, ref) {
+    const Comp = asChild ? Slot.Root : "button"
+    const resolvedMode: BaseMode = mode
 
-  if (resolvedMode === "primitive") {
+    if (resolvedMode === "primitive") {
+      const {
+        className,
+        variant: _variant,
+        size: _size,
+        classNameMode: _classNameMode,
+        classResolver: _classResolver,
+        ...rest
+      } = props
+      return <Comp ref={ref} className={className} {...rest} />
+    }
+
     const {
       className,
-      variant: _variant,
-      size: _size,
-      classNameMode: _classNameMode,
-      classResolver: _classResolver,
-      ...rest
+      variant = "default",
+      size = "default",
+      classNameMode = "merge",
+      classResolver,
+      ...styledProps
     } = props
-    return <Comp ref={ref} className={className} {...rest} />
+    const resolvedVariant = (variant ?? "default") as ButtonVariant
+    const resolvedSize = (size ?? "default") as ButtonSize
+    const resolvedClassName = resolveStyledClassName({
+      className,
+      variant: resolvedVariant,
+      size: resolvedSize,
+      classNameMode,
+      classResolver,
+    })
+
+    return (
+      <Comp
+        ref={ref}
+        data-slot="button"
+        data-variant={resolvedVariant}
+        data-size={resolvedSize}
+        className={resolvedClassName}
+        {...styledProps}
+      />
+    )
   }
-
-  const {
-    className,
-    variant = "default",
-    size = "default",
-    classNameMode = "merge",
-    classResolver,
-    ...styledProps
-  } = props
-  const resolvedVariant = (variant ?? "default") as ButtonVariant
-  const resolvedSize = (size ?? "default") as ButtonSize
-  const resolvedClassName = resolveStyledClassName({
-    className,
-    variant: resolvedVariant,
-    size: resolvedSize,
-    classNameMode,
-    classResolver,
-  })
-
-  return (
-    <Comp
-      ref={ref}
-      data-slot="button"
-      data-variant={resolvedVariant}
-      data-size={resolvedSize}
-      className={resolvedClassName}
-      {...styledProps}
-    />
-  )
-})
+)

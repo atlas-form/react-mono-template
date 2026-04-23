@@ -87,7 +87,8 @@ function InputGroupButton({
   variant = "ghost",
   size = "xs",
   ...props
-}: Omit<StyledButtonProps, "size"> & VariantProps<typeof inputGroupButtonVariants>) {
+}: Omit<StyledButtonProps, "size"> &
+  VariantProps<typeof inputGroupButtonVariants>) {
   return (
     <Button
       type={type}

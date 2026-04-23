@@ -26,7 +26,7 @@ export type StyledButtonProps = ButtonBaseProps &
   }
 
 export type HeadlessButtonProps = ButtonBaseProps & {
-  mode: "primitive" 
+  mode: "primitive"
   variant?: never
   size?: never
   classNameMode?: never

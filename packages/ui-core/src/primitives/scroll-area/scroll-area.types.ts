@@ -10,7 +10,9 @@ export type ScrollAreaClassResolver = (params: {
   className?: string
 }) => string
 
-export type ScrollAreaProps = React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
+export type ScrollAreaProps = React.ComponentProps<
+  typeof ScrollAreaPrimitive.Root
+> & {
   mode?: BaseMode
   classNameMode?: ScrollAreaClassNameMode
   classResolver?: ScrollAreaClassResolver

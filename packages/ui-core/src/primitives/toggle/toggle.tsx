@@ -43,10 +43,7 @@ function resolveStyledToggleClassName({
   return cn(defaultClassName, className)
 }
 
-function Toggle({
-  mode = DEFAULT_MODE,
-  ...props
-}: ToggleProps) {
+function Toggle({ mode = DEFAULT_MODE, ...props }: ToggleProps) {
   if (mode === "primitive") {
     const {
       className,

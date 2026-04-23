@@ -1,5 +1,6 @@
 packages:
   - "apps/*"
+  - "showcases/*"
   - "internal/*"
   - "packages/*"
 allowBuilds:

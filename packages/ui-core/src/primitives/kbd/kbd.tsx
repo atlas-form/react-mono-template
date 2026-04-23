@@ -1,11 +1,7 @@
 import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { kbdClassNames } from "./kbd.styles"
-import type {
-  KbdClassResolver,
-  KbdGroupProps,
-  KbdProps,
-} from "./kbd.types"
+import type { KbdClassResolver, KbdGroupProps, KbdProps } from "./kbd.types"
 
 function resolveStyledKbdClassName({
   className,

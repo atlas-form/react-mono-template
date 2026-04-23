@@ -10,7 +10,9 @@ export type CheckboxClassResolver = (params: {
   className?: string
 }) => string
 
-export type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & {
+export type CheckboxProps = React.ComponentProps<
+  typeof CheckboxPrimitive.Root
+> & {
   mode?: BaseMode
   classNameMode?: CheckboxClassNameMode
   classResolver?: CheckboxClassResolver

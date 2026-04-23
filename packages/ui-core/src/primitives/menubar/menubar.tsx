@@ -59,7 +59,8 @@ function Menubar({
   classResolver,
   ...props
 }: MenubarProps) {
-  const defaultClassName = "flex h-8 items-center gap-0.5 rounded-lg border p-0.75"
+  const defaultClassName =
+    "flex h-8 items-center gap-0.5 rounded-lg border p-0.75"
 
   if (mode === "primitive") {
     return <MenubarPrimitive.Root className={className} {...props} />
@@ -241,7 +242,11 @@ function MenubarCheckboxItem({
 
   if (mode === "primitive") {
     return (
-      <MenubarPrimitive.CheckboxItem className={className} checked={checked} {...props}>
+      <MenubarPrimitive.CheckboxItem
+        className={className}
+        checked={checked}
+        {...props}
+      >
         <span className={indicatorClassName}>
           <MenubarPrimitive.ItemIndicator>
             <CheckIcon />

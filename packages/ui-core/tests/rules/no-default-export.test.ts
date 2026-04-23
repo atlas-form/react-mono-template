@@ -13,16 +13,17 @@ describe("ui-core module exports", () => {
         return true
       }
 
-      if (
-        !ts.canHaveModifiers(node) ||
-        !ts.getModifiers(node)?.length
-      ) {
+      if (!ts.canHaveModifiers(node) || !ts.getModifiers(node)?.length) {
         return false
       }
 
-      return ts
-        .getModifiers(node)
-        ?.some((modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword) ?? false
+      return (
+        ts
+          .getModifiers(node)
+          ?.some(
+            (modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword
+          ) ?? false
+      )
     })
 
     expect(toLocations(findings)).toEqual([])

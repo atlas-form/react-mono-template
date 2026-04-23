@@ -190,7 +190,12 @@ function BreadcrumbSeparator({
 }: BreadcrumbSeparatorProps) {
   if (mode === "primitive") {
     return (
-      <li role="presentation" aria-hidden="true" className={className} {...props}>
+      <li
+        role="presentation"
+        aria-hidden="true"
+        className={className}
+        {...props}
+      >
         {children ?? <ChevronRightIcon />}
       </li>
     )

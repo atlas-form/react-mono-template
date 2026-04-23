@@ -63,6 +63,11 @@ pnpm lint
 pnpm typecheck
 ```
 
+其中：
+
+- `pnpm build` 默认只构建真实应用（当前为 `apps/admin`、`apps/web`）
+- `showcases/*` 不参与根级 `pnpm build`，按需单独本地运行或单独构建
+
 环境文件约定：
 
 - 根目录共享 env 只保留 `VITE_AUTH_PROXY`、`VITE_FILE_PROXY`
@@ -133,8 +138,10 @@ AI 在使用 mock 时必须明确汇报：
   商用后台应用。
   负责后台路由、页面、布局、权限编排、后台业务流程与管理台壳层装配。
 
-- `apps/guide`
-  示例与参考应用。
+### showcases 层
+
+- `showcases/guide`
+  示例与参考展示站点。
   用于展示共享组件、复合组件和推荐页面装配方式，给 AI 提供合法样例。
 
 ### packages 层
@@ -177,7 +184,7 @@ AI 在使用 mock 时必须明确汇报：
 
 - 业务前台页面、路由、布局、页面交互流程：`apps/web`
 - 后台页面、后台路由、权限编排、后台壳层：`apps/admin`
-- 组件展示、样例表达、用法参考：`apps/guide`
+- 组件展示、样例表达、用法参考：`showcases/guide`
 - 通用服务能力：`packages/services`
 - 统一语言资源与 i18n 装配：`packages/locales`
 - 主题变量和主题模式：`packages/ui-theme`
@@ -197,6 +204,12 @@ internal/*
   -> 只承载工程配置，不承载业务运行时代码
 
 apps/*
+  -> @workspace/app-components
+  -> @workspace/ui-components
+  -> @workspace/services
+  -> @workspace/ui-theme
+
+showcases/*
   -> @workspace/app-components
   -> @workspace/ui-components
   -> @workspace/services
@@ -265,8 +278,13 @@ apps/*
 - `apps/admin` 商用后台应用规则：
   [apps/admin/PROTOCOL.md](../apps/admin/PROTOCOL.md)
 
-- `apps/guide` 示例与参考应用规则：
-  [apps/guide/PROTOCOL.md](../apps/guide/PROTOCOL.md)
+### showcases 层
+
+- `showcases/*` 通用规则：
+  [showcases/PROTOCOL.md](../showcases/PROTOCOL.md)
+
+- `showcases/guide` 示例与参考展示规则：
+  [showcases/guide/PROTOCOL.md](../showcases/guide/PROTOCOL.md)
 
 ### packages 层
 
@@ -297,13 +315,16 @@ apps/*
 - 新增 app 或调整 app 分层：
   必读 `apps/PROTOCOL.md`，再读目标 app 的本地协议
 
+- 新增 showcase 或调整 showcase 分层：
+  必读 `showcases/PROTOCOL.md`，再读目标 showcase 的本地协议
+
 - 新增或修改后台页面、后台导航、权限菜单、后台壳层：
   必读 `apps/PROTOCOL.md`
   同时必读 `apps/admin/PROTOCOL.md`
 
 - 新增或修改示例页、组件展示页、AI 参考样例：
-  必读 `apps/PROTOCOL.md`
-  同时必读 `apps/guide/PROTOCOL.md`
+  必读 `showcases/PROTOCOL.md`
+  同时必读 `showcases/guide/PROTOCOL.md`
 
 - 修改共享服务、API 基础设施、query、i18n、url：
   必读 `packages/services/PROTOCOL.md`
@@ -316,7 +337,7 @@ apps/*
 
 - 新增或改造共享产品组件：
   必读 `packages/ui-components/PROTOCOL.md`
-  同时应参考 `apps/guide/PROTOCOL.md` 中的合法展示方式
+  同时应参考 `showcases/guide/PROTOCOL.md` 中的合法展示方式
 
 - 新增或改造共享复合组件：
   必读 `packages/app-components/PROTOCOL.md`
@@ -330,13 +351,13 @@ AI 在动手前必须先判断改动属于哪一层：
 
 - 前台页面编排、路由、布局、页面状态：放 `apps/web`
 - 后台页面编排、后台导航、权限编排、后台壳层：放 `apps/admin`
+- 样例展示与参考页面：放 `showcases/guide`
 - 可复用服务能力：放 `packages/services`
 - 共享主题 token：放 `packages/ui-theme`
 - primitive 原语能力：放 `packages/ui-core`
 - 共享产品组件：放 `packages/ui-components`
 - 共享复合组件：放 `packages/app-components`
 - mock 接口与本地模拟能力：放 `packages/mock`
-- 样例展示与参考页面：放 `apps/guide`
 
 禁止跳过分层判断直接写代码。
 
@@ -348,8 +369,8 @@ AI 宣称完成前，必须按对应协议执行门禁命令。
 
 - `apps/web` 改动：按 `apps/web/PROTOCOL.md` 执行
 - `apps/admin` 改动：按 `apps/admin/PROTOCOL.md` 执行
-- `apps/guide` 改动：按 `apps/guide/PROTOCOL.md` 执行
-- `ui-components` 改动：按 `packages/ui-components/PROTOCOL.md` 执行，必要时同步补 `apps/guide` 合法样例
+- `showcases/guide` 改动：按 `showcases/guide/PROTOCOL.md` 执行
+- `ui-components` 改动：按 `packages/ui-components/PROTOCOL.md` 执行，必要时同步补 `showcases/guide` 合法样例
 - `ui-core` 改动：按 `packages/ui-core/PROTOCOL.md` 执行
 - `mock` 改动：至少执行 `pnpm --filter @workspace/mock typecheck`
 - `services` / `ui-theme` 改动：按各自协议执行

@@ -110,7 +110,10 @@ function ContextMenuPortal({
   )
 }
 
-function ContextMenuSub({ mode = DEFAULT_MODE, ...props }: ContextMenuSubProps) {
+function ContextMenuSub({
+  mode = DEFAULT_MODE,
+  ...props
+}: ContextMenuSubProps) {
   if (mode === "primitive") {
     return <ContextMenuPrimitive.Sub {...props} />
   }

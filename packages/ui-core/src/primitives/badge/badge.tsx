@@ -37,11 +37,7 @@ function resolveStyledBadgeClassName({
   return cn(defaultClassName, className)
 }
 
-function Badge({
-  mode = DEFAULT_MODE,
-  asChild = false,
-  ...props
-}: BadgeProps) {
+function Badge({ mode = DEFAULT_MODE, asChild = false, ...props }: BadgeProps) {
   const Comp = asChild ? Slot.Root : "span"
 
   if (mode === "primitive") {

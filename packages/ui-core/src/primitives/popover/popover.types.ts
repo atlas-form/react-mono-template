@@ -10,7 +10,9 @@ export type PopoverClassResolver = (params: {
   className?: string
 }) => string
 
-export type PopoverProps = React.ComponentProps<typeof PopoverPrimitive.Root> & {
+export type PopoverProps = React.ComponentProps<
+  typeof PopoverPrimitive.Root
+> & {
   mode?: BaseMode
 }
 

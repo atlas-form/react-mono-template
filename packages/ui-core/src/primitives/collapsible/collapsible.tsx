@@ -8,10 +8,7 @@ import type {
   CollapsibleTriggerProps,
 } from "./collapsible.types"
 
-function Collapsible({
-  mode = DEFAULT_MODE,
-  ...props
-}: CollapsibleProps) {
+function Collapsible({ mode = DEFAULT_MODE, ...props }: CollapsibleProps) {
   if (mode === "primitive") {
     return <CollapsiblePrimitive.Root {...props} />
   }

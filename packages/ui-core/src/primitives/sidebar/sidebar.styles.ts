@@ -49,8 +49,7 @@ export const sidebarInputClassName = "h-8 w-full bg-background shadow-none"
 
 export const sidebarHeaderClassName = "flex flex-col gap-2 p-2"
 
-export const sidebarFooterClassName =
-  "flex flex-col gap-2 p-2"
+export const sidebarFooterClassName = "flex flex-col gap-2 p-2"
 
 export const sidebarSeparatorClassName =
   "mx-2 bg-sidebar-border data-horizontal:w-auto"
@@ -58,8 +57,7 @@ export const sidebarSeparatorClassName =
 export const sidebarContentClassName =
   "no-scrollbar flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden"
 
-export const sidebarGroupClassName =
-  "relative flex w-full min-w-0 flex-col p-2"
+export const sidebarGroupClassName = "relative flex w-full min-w-0 flex-col p-2"
 
 export const sidebarGroupLabelClassName =
   "flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0"
@@ -74,13 +72,13 @@ export const sidebarMenuClassName = "flex w-full min-w-0 flex-col gap-0"
 export const sidebarMenuItemClassName = "group/menu-item relative"
 
 export const sidebarMenuButtonVariants = cva(
-  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:w-8! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-2! group-data-[collapsible=icon]:py-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground data-[active-group=true]:data-[disclosure-open=false]:bg-sidebar-accent data-[active-group=true]:data-[disclosure-open=false]:text-sidebar-primary group-data-[collapsible=icon]:data-[active-group=true]:bg-sidebar-accent group-data-[collapsible=icon]:data-[active-group=true]:text-sidebar-primary [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
+  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:w-8! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-2! group-data-[collapsible=icon]:py-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-data-[collapsible=icon]:data-[active-group=true]:bg-sidebar-accent group-data-[collapsible=icon]:data-[active-group=true]:text-sidebar-primary data-[active-group=true]:data-[disclosure-open=false]:bg-sidebar-accent data-[active-group=true]:data-[disclosure-open=false]:text-sidebar-primary data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
   {
     variants: {
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         primary:
-          "data-active:text-sidebar-primary hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-active:text-sidebar-primary",
         outline:
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
       },

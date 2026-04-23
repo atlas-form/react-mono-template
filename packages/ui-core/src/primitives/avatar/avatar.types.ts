@@ -19,7 +19,9 @@ export type AvatarProps = React.ComponentProps<typeof AvatarPrimitive.Root> & {
   classResolver?: AvatarClassResolver
 }
 
-export type AvatarImageProps = React.ComponentProps<typeof AvatarPrimitive.Image> & {
+export type AvatarImageProps = React.ComponentProps<
+  typeof AvatarPrimitive.Image
+> & {
   mode?: BaseMode
   classNameMode?: AvatarClassNameMode
   classResolver?: AvatarClassResolver

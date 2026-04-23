@@ -62,7 +62,10 @@ function ResizablePanelGroup({
   )
 }
 
-function ResizablePanel({ mode = DEFAULT_MODE, ...props }: ResizablePanelProps) {
+function ResizablePanel({
+  mode = DEFAULT_MODE,
+  ...props
+}: ResizablePanelProps) {
   if (mode === "primitive") {
     return <ResizablePrimitive.Panel {...props} />
   }

@@ -42,7 +42,9 @@ function TooltipProvider({
   ...props
 }: TooltipProviderProps) {
   if (mode === "primitive") {
-    return <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} />
+    return (
+      <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} />
+    )
   }
 
   return (
@@ -54,10 +56,7 @@ function TooltipProvider({
   )
 }
 
-function Tooltip({
-  mode = DEFAULT_MODE,
-  ...props
-}: TooltipProps) {
+function Tooltip({ mode = DEFAULT_MODE, ...props }: TooltipProps) {
   if (mode === "primitive") {
     return <TooltipPrimitive.Root {...props} />
   }

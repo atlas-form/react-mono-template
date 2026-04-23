@@ -96,7 +96,10 @@ function NativeSelect({
   )
 }
 
-function NativeSelectOption({ mode = DEFAULT_MODE, ...props }: NativeSelectOptionProps) {
+function NativeSelectOption({
+  mode = DEFAULT_MODE,
+  ...props
+}: NativeSelectOptionProps) {
   if (mode === "primitive") {
     return <option {...props} />
   }

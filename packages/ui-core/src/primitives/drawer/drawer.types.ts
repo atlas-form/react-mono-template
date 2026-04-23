@@ -26,7 +26,9 @@ export type DrawerPortalProps = React.ComponentProps<
   mode?: BaseMode
 }
 
-export type DrawerCloseProps = React.ComponentProps<typeof DrawerPrimitive.Close> & {
+export type DrawerCloseProps = React.ComponentProps<
+  typeof DrawerPrimitive.Close
+> & {
   mode?: BaseMode
 }
 
@@ -65,7 +67,9 @@ export type DrawerFooterProps = React.ComponentProps<"div"> & {
   classResolver?: DrawerClassResolver
 }
 
-export type DrawerTitleProps = React.ComponentProps<typeof DrawerPrimitive.Title> & {
+export type DrawerTitleProps = React.ComponentProps<
+  typeof DrawerPrimitive.Title
+> & {
   mode?: BaseMode
   classNameMode?: DrawerClassNameMode
   classResolver?: DrawerClassResolver

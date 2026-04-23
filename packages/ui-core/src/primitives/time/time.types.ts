@@ -42,7 +42,7 @@ export type StyledTimeProps = TimeBaseProps & {
 }
 
 export type HeadlessTimeProps = TimeBaseProps & {
-  mode: "primitive" 
+  mode: "primitive"
   classNameMode?: never
   classResolver?: never
   columnClassNameMode?: never

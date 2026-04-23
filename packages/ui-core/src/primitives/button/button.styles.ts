@@ -12,7 +12,7 @@ export const buttonVariants = cva(
         secondary:
           "bg-[var(--secondary)] text-[var(--secondary-foreground,var(--foreground))] hover:bg-[var(--secondary-hover,var(--secondary))] disabled:bg-[var(--secondary-disabled,var(--secondary))]",
         destructive:
-          "bg-[var(--destructive)] text-[var(--destructive-foreground,var(--primary-foreground,var(--background)))] hover:bg-[var(--destructive-hover,var(--destructive))] disabled:bg-[var(--destructive-disabled,var(--destructive))] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "bg-[var(--destructive)] text-[var(--destructive-foreground,var(--primary-foreground,var(--background)))] hover:bg-[var(--destructive-hover,var(--destructive))] focus-visible:border-destructive/40 focus-visible:ring-destructive/20 disabled:bg-[var(--destructive-disabled,var(--destructive))]",
         outline:
           "border-[var(--primary-outline,var(--primary))] bg-[var(--surface)] text-[var(--primary-outline,var(--primary))] hover:bg-[var(--surface-hover,var(--surface))]",
         ghost:

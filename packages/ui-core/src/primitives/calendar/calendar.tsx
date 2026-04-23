@@ -1,8 +1,5 @@
 import * as React from "react"
-import {
-  getCalendarCopy,
-  normalizeLanguage,
-} from "@workspace/locales"
+import { getCalendarCopy, normalizeLanguage } from "@workspace/locales"
 import {
   DayPicker,
   type DayButton,
@@ -76,8 +73,7 @@ function Calendar({
       captionLayout={captionLayout}
       locale={locale}
       formatters={{
-        formatMonthDropdown: (date) =>
-          formatCalendarMonth(date, locale?.code),
+        formatMonthDropdown: (date) => formatCalendarMonth(date, locale?.code),
         formatCaption: (date) =>
           formatCalendarMonth(date, locale?.code, {
             includeYear: true,
@@ -178,18 +174,14 @@ function CalendarDropdown({
   onChange,
   "aria-label": ariaLabel,
 }: CalendarDropdownProps) {
-  const selectedValue =
-    value === undefined ? undefined : String(value)
+  const selectedValue = value === undefined ? undefined : String(value)
 
   const selectedOption = options?.find(
     (option) => String(option.value) === selectedValue
   )
 
   return (
-    <span
-      data-disabled={disabled}
-      className={classNames.dropdown_root}
-    >
+    <span data-disabled={disabled} className={classNames.dropdown_root}>
       <Select
         value={selectedValue}
         disabled={disabled}
@@ -262,10 +254,7 @@ function CalendarDayButton({
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
-      className={cn(
-        calendarClassNames.dayButton,
-        className
-      )}
+      className={cn(calendarClassNames.dayButton, className)}
       {...props}
     />
   )
@@ -304,10 +293,7 @@ function CalendarNav({
     (endMonth === undefined || nextYearMonth <= endMonth)
 
   return (
-    <nav
-      {...props}
-      className={cn(classNames.nav, className)}
-    >
+    <nav {...props} className={cn(classNames.nav, className)}>
       <div className="flex items-center gap-1">
         <Button
           type="button"
@@ -323,10 +309,7 @@ function CalendarNav({
             goToMonth(previousYearMonth)
           }}
         >
-          <DefaultCalendarChevron
-            orientation="left-double"
-            props={{}}
-          />
+          <DefaultCalendarChevron orientation="left-double" props={{}} />
         </Button>
         <Button
           type="button"
@@ -336,19 +319,19 @@ function CalendarNav({
           aria-label={copy.previousMonthLabel}
           onClick={onPreviousClick}
         >
-          {renderChevron
-            ? renderChevron({
-                orientation: "left",
-                className: classNames.chevron,
-                props: {},
-              })
-            : (
-                <DefaultCalendarChevron
-                  orientation="left"
-                  className={classNames.chevron}
-                  props={{}}
-                />
-              )}
+          {renderChevron ? (
+            renderChevron({
+              orientation: "left",
+              className: classNames.chevron,
+              props: {},
+            })
+          ) : (
+            <DefaultCalendarChevron
+              orientation="left"
+              className={classNames.chevron}
+              props={{}}
+            />
+          )}
         </Button>
       </div>
 
@@ -361,19 +344,19 @@ function CalendarNav({
           aria-label={copy.nextMonthLabel}
           onClick={onNextClick}
         >
-          {renderChevron
-            ? renderChevron({
-                orientation: "right",
-                className: classNames.chevron,
-                props: {},
-              })
-            : (
-                <DefaultCalendarChevron
-                  orientation="right"
-                  className={classNames.chevron}
-                  props={{}}
-                />
-              )}
+          {renderChevron ? (
+            renderChevron({
+              orientation: "right",
+              className: classNames.chevron,
+              props: {},
+            })
+          ) : (
+            <DefaultCalendarChevron
+              orientation="right"
+              className={classNames.chevron}
+              props={{}}
+            />
+          )}
         </Button>
         <Button
           type="button"
@@ -389,10 +372,7 @@ function CalendarNav({
             goToMonth(nextYearMonth)
           }}
         >
-          <DefaultCalendarChevron
-            orientation="right-double"
-            props={{}}
-          />
+          <DefaultCalendarChevron orientation="right-double" props={{}} />
         </Button>
       </div>
     </nav>

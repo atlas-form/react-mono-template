@@ -5,10 +5,7 @@ import { Progress as ProgressPrimitive } from "radix-ui"
 import { DEFAULT_MODE } from "../../lib/component-mode"
 import { cn } from "../../lib/utils"
 import { progressClassNames } from "./progress.styles"
-import type {
-  ProgressClassResolver,
-  ProgressProps,
-} from "./progress.types"
+import type { ProgressClassResolver, ProgressProps } from "./progress.types"
 
 function resolveStyledProgressClassName({
   className,

@@ -10,13 +10,17 @@ export type MenubarClassResolver = (params: {
   className?: string
 }) => string
 
-export type MenubarProps = React.ComponentProps<typeof MenubarPrimitive.Root> & {
+export type MenubarProps = React.ComponentProps<
+  typeof MenubarPrimitive.Root
+> & {
   mode?: BaseMode
   classNameMode?: MenubarClassNameMode
   classResolver?: MenubarClassResolver
 }
 
-export type MenubarMenuProps = React.ComponentProps<typeof MenubarPrimitive.Menu> & {
+export type MenubarMenuProps = React.ComponentProps<
+  typeof MenubarPrimitive.Menu
+> & {
   mode?: BaseMode
 }
 
@@ -56,7 +60,9 @@ export type MenubarContentProps = React.ComponentProps<
 
 export type MenubarItemVariant = "default" | "destructive"
 
-export type MenubarItemProps = React.ComponentProps<typeof MenubarPrimitive.Item> & {
+export type MenubarItemProps = React.ComponentProps<
+  typeof MenubarPrimitive.Item
+> & {
   mode?: BaseMode
   inset?: boolean
   variant?: MenubarItemVariant
@@ -111,7 +117,9 @@ export type MenubarShortcutProps = React.ComponentProps<"span"> & {
   classResolver?: MenubarClassResolver
 }
 
-export type MenubarSubProps = React.ComponentProps<typeof MenubarPrimitive.Sub> & {
+export type MenubarSubProps = React.ComponentProps<
+  typeof MenubarPrimitive.Sub
+> & {
   mode?: BaseMode
 }
 
