@@ -42,6 +42,6 @@ export function createAuthRegisterSchema(t: Translate) {
     })
     .refine((value) => value.password === value.confirmPassword, {
       path: ["confirmPassword"],
-      message: t("authRegister.error.passwordMismatch", { ns: "pages" }),
+      message: t("validation.passwordMismatch", { ns: "common" }),
     })
 }

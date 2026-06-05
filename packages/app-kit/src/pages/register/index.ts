@@ -1,3 +1,8 @@
 export { createAuthRegisterSchema } from "./auth-register-schema"
-export { AuthRegisterPage } from "./auth-register-page"
-export type { AuthRegisterPageProps } from "./types"
+export { AuthRegisterView } from "./auth-register-view"
+export type {
+  AuthRegisterFooterLink,
+  AuthRegisterSubmitValues,
+  AuthRegisterViewLabels,
+  AuthRegisterViewProps,
+} from "./auth-register-view"

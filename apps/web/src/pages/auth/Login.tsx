@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useDispatch } from "react-redux"
 import { useTranslation } from "react-i18next"
 import {
@@ -11,11 +11,8 @@ import {
   loginApi,
   meApi,
 } from "@/api"
-import { setAccess } from "@/store/accessSlice"
 import { loginSuccess } from "@/store/authSlice"
-
-const authLinkClassName =
-  "font-medium text-(--app-text) underline-offset-4 transition hover:underline"
+import { setAccess } from "@/store/accessSlice"
 
 function createLoginLabels(
   t: ReturnType<typeof useTranslation>["t"]
@@ -75,11 +72,8 @@ export default function LoginPage() {
       labels={createLoginLabels(t)}
       footerLink={{
         prefix: t("login.footer.toRegisterPrefix"),
-        action: (
-          <Link to="/register" className={authLinkClassName}>
-            {t("login.footer.toRegisterAction")}
-          </Link>
-        ),
+        to: "/register",
+        label: t("login.footer.toRegisterAction"),
       }}
       onSubmit={handleLogin}
     />

@@ -32,6 +32,7 @@ export {
   PageLoading,
   RouteErrorBoundary,
 } from "./components/feedback"
+export { AuthPageForm } from "./components/auth-page-form"
 export {
   AuthProfilePage,
   AuthProfileView,
@@ -45,6 +46,13 @@ export {
   useAuthProfileLabels,
   useAuthProfilePage,
 } from "./pages/profile"
+export type {
+  AuthPageFormField,
+  AuthPageFormFooterLink,
+  AuthPageFormLabels,
+  AuthPageFormNotice,
+  AuthPageFormProps,
+} from "./components/auth-page-form"
 export type {
   AppNoticeProps,
   AppNoticeVariant,

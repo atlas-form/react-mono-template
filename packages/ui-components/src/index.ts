@@ -132,6 +132,7 @@ export {
   FieldGroup,
   FieldLabel,
   FieldLegend,
+  RequiredFieldLabel,
   FieldSeparator,
   FieldSet,
   FieldTitle,
@@ -143,6 +144,7 @@ export type {
   FieldGroupProps,
   FieldLabelProps,
   FieldLegendProps,
+  RequiredFieldLabelProps,
   FieldProps,
   FieldSeparatorProps,
   FieldSetProps,
@@ -270,6 +272,8 @@ export type {
 
 export { Badge } from "./components/stable/badge"
 export type { BadgeProps } from "./components/stable/badge"
+
+export { linkClassName } from "./components/stable/link"
 
 export { Separator } from "./components/stable/separator"
 export type { SeparatorProps } from "./components/stable/separator"

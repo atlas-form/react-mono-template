@@ -47,6 +47,7 @@
     "./language-switch": "./src/components/preferences/index.ts",
     "./theme-toggle": "./src/components/preferences/index.ts",
     "./tooltip": "./src/components/tooltip/index.ts",
+    "./auth-page-form": "./src/components/auth-page-form/index.ts",
     "./file-upload": "./src/components/file-upload/index.ts",
     "./avatar-photo-editor": "./src/components/file-upload/index.ts",
     "./profile": "./src/pages/profile/index.ts",
