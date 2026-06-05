@@ -26,11 +26,11 @@ const pages = {
         placeholder: "请输入用户名",
       },
       displayName: {
-        label: "显示名称（可选）",
+        label: "显示名称",
         placeholder: "请输入显示名称",
       },
       email: {
-        label: "邮箱（可选）",
+        label: "邮箱",
         placeholder: "请输入邮箱",
       },
     },

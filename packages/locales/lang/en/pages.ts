@@ -29,11 +29,11 @@ const pages = {
         placeholder: "Enter username",
       },
       displayName: {
-        label: "Display name (optional)",
+        label: "Display name",
         placeholder: "Enter display name",
       },
       email: {
-        label: "Email (optional)",
+        label: "Email",
         placeholder: "Enter email",
       },
     },
