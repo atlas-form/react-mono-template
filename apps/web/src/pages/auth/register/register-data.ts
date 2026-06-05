@@ -1,7 +1,7 @@
 import { registerApi } from "@/api"
-import type { AuthRegisterSubmitValues } from "@workspace/app-kit/register"
+import type { RegisterFormValues } from "./types"
 
-export async function registerAuthAccount(values: AuthRegisterSubmitValues) {
+export async function registerAuthAccount(values: RegisterFormValues) {
   await registerApi({
     username: values.username.trim(),
     password: values.password,

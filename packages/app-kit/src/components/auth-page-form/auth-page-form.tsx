@@ -49,7 +49,7 @@ export interface AuthPageFormNotice {
 
 export interface AuthPageFormProps<TFieldValues extends FieldValues> {
   labels: AuthPageFormLabels
-  control: Control<TFieldValues>
+  control: Control<TFieldValues, unknown, TFieldValues>
   fields: AuthPageFormField<TFieldValues>[]
   footerLink?: AuthPageFormFooterLink
   notice?: AuthPageFormNotice
