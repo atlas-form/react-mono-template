@@ -36,6 +36,10 @@ export interface FieldLabelProps {
   children: ReactNode
 }
 
+export interface RequiredFieldLabelProps {
+  children: ReactNode
+}
+
 export interface FieldTitleProps {
   children: ReactNode
 }
@@ -72,6 +76,17 @@ export function FieldContent({ children }: FieldContentProps) {
 
 export function FieldLabel({ children }: FieldLabelProps) {
   return <CoreFieldLabel>{children}</CoreFieldLabel>
+}
+
+export function RequiredFieldLabel({ children }: RequiredFieldLabelProps) {
+  return (
+    <FieldLabel>
+      {children}
+      <span aria-hidden="true" className="ml-1 text-destructive">
+        *
+      </span>
+    </FieldLabel>
+  )
 }
 
 export function FieldTitle({ children }: FieldTitleProps) {

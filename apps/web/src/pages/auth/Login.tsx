@@ -1,25 +1,22 @@
-import { Link, useLocation, useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useDispatch } from "react-redux"
 import { useTranslation } from "react-i18next"
 import {
-  AuthLoginView,
-  type AuthLoginSubmitValues,
-  type AuthLoginViewLabels,
-} from "@workspace/app-kit/login"
+  AuthView,
+  createAuthLoginSchema,
+  type AuthViewLabels,
+} from "@workspace/app-kit/auth"
 import {
   ensureCurrentAppUserPermissions,
   loginApi,
   meApi,
 } from "@/api"
-import { setAccess } from "@/store/accessSlice"
 import { loginSuccess } from "@/store/authSlice"
-
-const authLinkClassName =
-  "font-medium text-(--app-text) underline-offset-4 transition hover:underline"
+import { setAccess } from "@/store/accessSlice"
 
 function createLoginLabels(
   t: ReturnType<typeof useTranslation>["t"]
-): AuthLoginViewLabels {
+): AuthViewLabels {
   return {
     brand: t("login.brand"),
     heroTitleLine1: t("login.hero.titleLine1"),
@@ -28,10 +25,6 @@ function createLoginLabels(
     welcome: t("login.welcome"),
     title: t("login.title"),
     subtitle: t("login.subtitle"),
-    identifierLabel: t("login.form.identifier.label"),
-    identifierPlaceholder: t("login.form.identifier.placeholder"),
-    passwordLabel: t("login.form.password.label"),
-    passwordPlaceholder: t("login.form.password.placeholder"),
     submit: t("login.form.submit"),
     submitting: t("login.form.submitting"),
   }
@@ -44,7 +37,7 @@ export default function LoginPage() {
   const location = useLocation()
   const from = location.state?.from?.pathname ?? "/home"
 
-  const handleLogin = async (values: AuthLoginSubmitValues) => {
+  const handleLogin = async (values: { identifier: string; password: string }) => {
     try {
       const res = await loginApi(values)
       const token = res.accessToken
@@ -71,15 +64,35 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthLoginView
+    <AuthView
       labels={createLoginLabels(t)}
+      createSchema={createAuthLoginSchema}
+      defaultValues={{
+        identifier: "",
+        password: "",
+      }}
+      fields={[
+        {
+          id: "identifier",
+          name: "identifier",
+          label: t("login.form.identifier.label"),
+          placeholder: t("login.form.identifier.placeholder"),
+          type: "text",
+          required: true,
+        },
+        {
+          id: "password",
+          name: "password",
+          label: t("login.form.password.label"),
+          placeholder: t("login.form.password.placeholder"),
+          type: "password",
+          required: true,
+        },
+      ]}
       footerLink={{
         prefix: t("login.footer.toRegisterPrefix"),
-        action: (
-          <Link to="/register" className={authLinkClassName}>
-            {t("login.footer.toRegisterAction")}
-          </Link>
-        ),
+        to: "/register",
+        label: t("login.footer.toRegisterAction"),
       }}
       onSubmit={handleLogin}
     />

@@ -1,0 +1,1 @@
+export { linkClassName } from "./link"

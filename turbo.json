@@ -22,7 +22,9 @@
       "dependsOn": ["^typecheck"]
     },
     "test": {},
-    "rules": {},
+    "rules": {
+      "cache": false
+    },
     "test:watch": {
       "cache": false,
       "persistent": true
