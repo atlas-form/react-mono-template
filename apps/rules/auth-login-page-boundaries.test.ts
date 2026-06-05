@@ -3,16 +3,21 @@ import {
   appName,
   fileExists,
   findImportFindings,
+  getImportSpecifier,
+  hasImport,
   resolveAppPath,
   toLocations,
 } from "./ast-helpers"
 
-const loginFiles = [
+const authPageFiles = [
   resolveAppPath("src/pages/auth/Login.tsx"),
+  resolveAppPath("src/pages/auth/register/index.tsx"),
   resolveAppPath("src/pages/public/Login.tsx"),
 ].filter(fileExists)
 
-const forbiddenLoginImports = new Set([
+const forbiddenAuthPageImports = new Set([
+  "@workspace/app-kit/login",
+  "@workspace/app-kit/register",
   "react-hook-form",
   "@hookform/resolvers/zod",
   "zod",
@@ -20,13 +25,21 @@ const forbiddenLoginImports = new Set([
   "@workspace/ui-components/stable/field",
 ])
 
-describe(`${appName} auth login page boundaries`, () => {
-  it("keeps form implementation inside app-kit login components", () => {
-    const findings = findImportFindings(loginFiles, (node) => {
-      const specifier = node.moduleSpecifier.getText().replace(/["']/g, "")
-      return forbiddenLoginImports.has(specifier)
+describe(`${appName} auth page boundaries`, () => {
+  it("keeps auth form implementation inside the unified app-kit auth view", () => {
+    const findings = findImportFindings(authPageFiles, (node) => {
+      return forbiddenAuthPageImports.has(getImportSpecifier(node))
     })
 
     expect(toLocations(findings)).toEqual([])
+  })
+
+  it("uses the unified app-kit auth entry for auth pages", () => {
+    const missingAuthViewImport = authPageFiles
+      .filter((file) => !hasImport(file, "@workspace/app-kit/auth"))
+      .map((file) => file.replace(resolveAppPath(), "").replace(/^\//, ""))
+      .sort()
+
+    expect(missingAuthViewImport).toEqual([])
   })
 })
